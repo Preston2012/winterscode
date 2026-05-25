@@ -97,6 +97,7 @@ export const portfolio: PortfolioItem[] = [
     },
     links: [
       { label: 'Visit site →', href: 'https://sogncontracting.com', primary: true },
+      { label: 'GitHub →', href: 'https://github.com/Preston2012/Sogncontracting' },
     ],
   },
   {
@@ -122,6 +123,7 @@ export const portfolio: PortfolioItem[] = [
     links: [
       { label: 'Visit site →', href: 'https://baseline.marketing', primary: true },
       { label: '/built page', href: 'https://baseline.marketing/built' },
+      { label: 'GitHub →', href: 'https://github.com/Preston2012/baseline.marketing' },
     ],
   },
 
@@ -161,6 +163,7 @@ export const portfolio: PortfolioItem[] = [
     ],
     links: [
       { label: 'View site →', href: 'https://baseline.marketing', primary: true },
+      { label: 'Showcase repo →', href: 'https://github.com/Preston2012/baseline-showcase' },
     ],
   },
   {
@@ -239,7 +242,9 @@ export const portfolio: PortfolioItem[] = [
         value: 'Private beta · feedback iteration before store submission.',
       },
     ],
-    links: [],
+    links: [
+      { label: 'GitHub →', href: 'https://github.com/Preston2012/choplight', primary: true },
+    ],
   },
   {
     slug: 'demiurge-mykonos',
@@ -273,7 +278,9 @@ export const portfolio: PortfolioItem[] = [
         value: 'Demiurge live · MyKonos in private beta on real phones · backend stable',
       },
     ],
-    links: [],
+    links: [
+      { label: 'Engine on GitHub →', href: 'https://github.com/Preston2012/demi', primary: true },
+    ],
   },
 ];
 
