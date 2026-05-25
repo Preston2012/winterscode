@@ -1,0 +1,22 @@
+# Hashed assets (Astro emits content-addressed paths under /_astro/) are
+# immutable: a content change yields a new path. Cache aggressively at the
+# edge AND in browsers. Both perf signals from Lighthouse improve:
+#   - "Use efficient cache lifetimes" passes
+#   - Repeat visits get bytes from cache, not network
+
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Hashed fonts in same directory get the same treatment via the wildcard above.
+
+# Brand assets (favicon, brandmark, og-image) get long cache too — they
+# rarely change but aren't content-hashed, so use a shorter lifetime that
+# we can purge if we ever do change them.
+/brandmark.svg
+  Cache-Control: public, max-age=86400, must-revalidate
+
+/og-image.svg
+  Cache-Control: public, max-age=86400, must-revalidate
+
+/favicon.ico
+  Cache-Control: public, max-age=86400, must-revalidate

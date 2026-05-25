@@ -1,0 +1,160 @@
+---
+/**
+ * PageHero, minimal hero for sub-pages (/work, /services, /about, /contact).
+ *
+ * Smaller than home Hero. Just eyebrow + H1 + sub. No morph word, no
+ * Workshop preview card, no trust signals, those live on home.
+ *
+ * Spec ref: docs/design/S6_PLUS.md, Section 1 of each sub-page.
+ *
+ * Maker's stamp: brain memory #2586. Default to showing the stamp seal
+ * on the right side of the H1. Identity pages (work/services/about)
+ * keep the default. Utility/action pages (contact) opt out with
+ * showStamp={false}.
+ *
+ * Props:
+ *   eyebrow: short uppercase locator string (e.g. "WORK", "SERVICES")
+ *   h1: the page H1 (verbatim from spec, locked copy)
+ *   sub: the page sub copy (verbatim from spec, locked copy)
+ *   sub2: optional second sub line (used by /about, /contact)
+ *   showStamp: render the WC maker's stamp seal (default true)
+ */
+import Stamp from '../ui/Stamp.astro';
+
+interface Props {
+  eyebrow: string;
+  h1: string;
+  sub: string;
+  sub2?: string;
+  showStamp?: boolean;
+}
+
+const { eyebrow, h1, sub, sub2, showStamp = true } = Astro.props;
+---
+
+<section class="page-hero" aria-labelledby="page-hero-h1">
+  <div class="ph-row">
+    <div class="ph-text">
+      <div class="ph-eyebrow">
+        <span class="line" aria-hidden="true"></span>
+        <span class="text">{eyebrow}</span>
+      </div>
+
+      <h1 class="ph-h1" id="page-hero-h1">{h1}</h1>
+    </div>
+
+    {showStamp && (
+      <div class="ph-seal" aria-hidden="false">
+        <Stamp size={80} glow="soft" ariaLabel="Winters Code" />
+      </div>
+    )}
+  </div>
+
+  <p class="ph-sub">
+    {sub}
+    {sub2 && <><br /><em>{sub2}</em></>}
+  </p>
+</section>
+
+<style>
+  .page-hero {
+    padding: 32px 4px 24px;
+    position: relative;
+  }
+  @media (min-width: 768px) {
+    .page-hero { padding: 48px 4px 32px; }
+  }
+  @media (min-width: 1024px) {
+    .page-hero { padding: 72px 0 48px; }
+  }
+
+  .ph-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    justify-content: space-between;
+  }
+  .ph-text {
+    flex: 1;
+    min-width: 0;
+  }
+  .ph-seal {
+    flex-shrink: 0;
+    margin-top: 4px;
+    /* Scale down on mobile so the stamp sits at ~50px without dominating
+       the H1. The Stamp component renders at size=80 (its default for
+       this slot), CSS scales the visual on smaller viewports. */
+    transform: scale(calc(50 / 80));
+    transform-origin: top right;
+  }
+  @media (min-width: 768px) {
+    .ph-seal { transform: scale(calc(64 / 80)); }
+  }
+  @media (min-width: 1024px) {
+    .ph-row { gap: 32px; }
+    .ph-seal { transform: scale(1); margin-top: 8px; }
+  }
+
+  .ph-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .ph-eyebrow .line {
+    width: 32px;
+    height: 1px;
+    background: var(--color-copper);
+  }
+  .ph-eyebrow .text {
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--color-copper);
+  }
+  @media (min-width: 1024px) {
+    .ph-eyebrow .line { width: 48px; }
+    .ph-eyebrow .text { font-size: 13px; }
+  }
+
+  .ph-h1 {
+    font-family: var(--font-serif);
+    font-weight: 500;
+    font-size: 32px;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: var(--color-ash-100);
+    margin: 0;
+    text-wrap: balance;
+    max-width: 18ch;
+    overflow-wrap: anywhere;
+  }
+  @media (min-width: 768px) {
+    .ph-h1 { font-size: 44px; line-height: 1.08; max-width: 20ch; }
+  }
+  @media (min-width: 1024px) {
+    .ph-h1 { font-size: 56px; line-height: 1.05; max-width: 22ch; }
+  }
+
+  .ph-sub {
+    margin: 18px 0 0;
+    max-width: 560px;
+    font-size: 14px;
+    color: var(--color-ash-300);
+    line-height: 1.55;
+  }
+  .ph-sub em {
+    color: var(--color-ash-100);
+    font-style: italic;
+    font-family: var(--font-serif);
+    font-weight: 500;
+  }
+  @media (min-width: 768px) {
+    .ph-sub { font-size: 15px; margin-top: 20px; }
+  }
+  @media (min-width: 1024px) {
+    .ph-sub { font-size: 17px; line-height: 1.5; margin-top: 24px; }
+  }
+</style>

@@ -1,0 +1,294 @@
+---
+/**
+ * Instrument preview, live chat widget lands in S8 when Anthropic API key
+ * + Cloudflare Worker proxy are provisioned. Until then, render a clean
+ * preview card that shows what's coming, no embarrassing "S8 placeholder"
+ * label, just a real-looking "coming online" surface.
+ *
+ * When S8 ships: replace this entire component with the real chat widget.
+ */
+---
+
+<section class="instrument" id="instruments" aria-labelledby="ip-h">
+  <header class="ip-head">
+    <div class="ip-eyebrow">
+      <span class="line" aria-hidden="true"></span>
+      <h2 class="ip-h" id="ip-h">03 · INSTRUMENT</h2>
+      <span class="ip-no">No. 01 · MyKonos</span>
+    </div>
+    <span class="ip-status">
+      <span class="ip-pulse" aria-hidden="true"></span>
+      coming online
+    </span>
+  </header>
+
+  <article class="ip-card" aria-describedby="ip-desc">
+    <div class="ip-window">
+      <div class="ip-titlebar">
+        <span class="ip-dot ip-dot-r" aria-hidden="true"></span>
+        <span class="ip-dot ip-dot-y" aria-hidden="true"></span>
+        <span class="ip-dot ip-dot-g" aria-hidden="true"></span>
+        <span class="ip-title">~/mykonos · chat</span>
+      </div>
+      <div class="ip-thread" aria-hidden="true">
+        <div class="ip-msg ip-msg-user">
+          <span class="ip-msg-author">visitor</span>
+          <p>my dog's name is Max</p>
+        </div>
+        <div class="ip-msg ip-msg-bot">
+          <span class="ip-msg-author">mykonos</span>
+          <p>Got it, Max. What kind of dog?</p>
+        </div>
+        <div class="ip-msg ip-msg-user">
+          <span class="ip-msg-author">visitor</span>
+          <p>...3 turns later... what's my dog's name?</p>
+        </div>
+        <div class="ip-msg ip-msg-bot ip-msg-pulse">
+          <span class="ip-msg-author">mykonos</span>
+          <p>Max.</p>
+        </div>
+      </div>
+      <div class="ip-memory" aria-hidden="true">
+        <span class="ip-mem-label">MEMORY</span>
+        <span class="ip-mem-card">dog: Max</span>
+      </div>
+    </div>
+
+    <p class="ip-desc" id="ip-desc">
+      Real chat against the Demiurge memory engine.
+      <em>Tell it something. Three turns later, ask. It remembers.</em>
+      Most AI assistants reset every conversation. MyKonos doesn't.
+    </p>
+    <p class="ip-note">
+      Live chat goes online once the Worker proxy ships.
+    </p>
+  </article>
+</section>
+
+<style>
+  .instrument {
+    padding: 40px 4px 48px;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  @media (min-width: 768px) {
+    .instrument { padding: 56px 4px 64px; max-width: 860px; }
+  }
+  @media (min-width: 1024px) {
+    .instrument { padding: 72px 0 80px; max-width: 720px; }
+  }
+
+  .ip-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--copper-hairline);
+    margin-bottom: 20px;
+  }
+  .ip-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .ip-eyebrow .line {
+    width: 28px;
+    height: 1px;
+    background: var(--color-copper);
+  }
+  @media (min-width: 1024px) { .ip-eyebrow .line { width: 40px; } }
+  .ip-h {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    color: var(--color-copper);
+    text-transform: uppercase;
+    margin: 0;
+  }
+  @media (min-width: 1024px) { .ip-h { font-size: 13px; } }
+  .ip-no {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--color-ash-500);
+    letter-spacing: 0.08em;
+  }
+  .ip-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--color-amber);
+    letter-spacing: 0.04em;
+  }
+  .ip-pulse {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color-amber);
+    box-shadow: 0 0 8px rgba(240, 184, 120, 0.6);
+    animation: ip-pulse 2.4s ease-in-out infinite;
+  }
+  @keyframes ip-pulse {
+    0%, 100% { opacity: 0.5; transform: scale(0.9); }
+    50% { opacity: 1; transform: scale(1.2); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ip-pulse { animation: none; }
+  }
+
+  /* ─── Card ─── */
+  .ip-card {
+    background: var(--color-bg-card);
+    border: 1px solid var(--copper-hairline);
+    border-radius: var(--radius-card);
+    padding: 18px;
+    position: relative;
+  }
+  @media (min-width: 1024px) {
+    .ip-card { padding: 24px 28px 28px; }
+  }
+
+  /* ─── Window (terminal-ish preview) ─── */
+  .ip-window {
+    background: var(--color-bg-deep);
+    border: 1px solid var(--copper-hairline);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 18px;
+  }
+  .ip-titlebar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--copper-hairline);
+    background: var(--color-bg-raised);
+  }
+  .ip-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    opacity: 0.6;
+  }
+  .ip-dot-r { background: #d05a5a; }
+  .ip-dot-y { background: #d8a85a; }
+  .ip-dot-g { background: var(--color-wc-green); }
+  .ip-title {
+    margin-left: auto;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--color-ash-500);
+    letter-spacing: 0.04em;
+  }
+  @media (min-width: 768px) {
+    .ip-title { font-size: 11px; }
+  }
+
+  .ip-thread {
+    padding: 14px 14px 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .ip-msg {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .ip-msg-author {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--color-ash-500);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .ip-msg p {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-size: 13px;
+    line-height: 1.4;
+    padding: 8px 12px;
+    border-radius: 8px;
+    max-width: 80%;
+    overflow-wrap: anywhere;
+  }
+  .ip-msg-user {
+    align-items: flex-end;
+  }
+  .ip-msg-user p {
+    background: rgba(200, 128, 74, 0.1);
+    color: var(--color-ash-100);
+    border: 1px solid var(--copper-hairline);
+  }
+  .ip-msg-user .ip-msg-author { padding-right: 12px; }
+  .ip-msg-bot p {
+    background: rgba(77, 216, 168, 0.08);
+    color: var(--color-ash-100);
+    border: 1px solid rgba(77, 216, 168, 0.2);
+  }
+  .ip-msg-bot .ip-msg-author { padding-left: 4px; }
+  .ip-msg-pulse p {
+    animation: ip-msg-pulse 3s ease-in-out infinite;
+  }
+  @keyframes ip-msg-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(77, 216, 168, 0); }
+    50%      { box-shadow: 0 0 18px 2px rgba(77, 216, 168, 0.2); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ip-msg-pulse p { animation: none; }
+  }
+
+  .ip-memory {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px 12px;
+    border-top: 1px dashed rgba(216, 144, 90, 0.15);
+    margin-top: 4px;
+  }
+  .ip-mem-label {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--color-ash-500);
+    letter-spacing: 0.16em;
+  }
+  .ip-mem-card {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 6px;
+    background: rgba(77, 216, 168, 0.12);
+    border: 1px solid rgba(77, 216, 168, 0.3);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--color-wc-green);
+  }
+
+  /* ─── Description below window ─── */
+  .ip-desc {
+    font-family: var(--font-sans);
+    font-size: 14px;
+    color: var(--color-ash-300);
+    line-height: 1.6;
+    margin: 0 0 12px;
+  }
+  @media (min-width: 1024px) { .ip-desc { font-size: 15px; } }
+  .ip-desc em {
+    color: var(--color-ash-100);
+    font-style: italic;
+    font-family: var(--font-serif);
+    font-weight: 500;
+  }
+  .ip-note {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--color-ash-500);
+    margin: 0;
+    font-style: italic;
+    letter-spacing: 0.02em;
+  }
+</style>

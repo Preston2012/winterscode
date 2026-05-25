@@ -1,0 +1,109 @@
+/*
+ * Print stylesheet. Only loaded when printing.
+ * Linked from BaseLayout.astro with <link rel="stylesheet" media="print">
+ * which means the browser parses it at lowest priority and never blocks
+ * screen paint on these rules. Saves ~1KB off the critical-path CSS chunk.
+ *
+ * Strips patina, grain, animations, decorative chrome; force-black-on-white
+ * for ink economy; expands link URLs after anchor text so paper readers can
+ * find them.
+ */
+
+*,
+*::before,
+*::after {
+  animation: none !important;
+  transition: none !important;
+  text-shadow: none !important;
+  box-shadow: none !important;
+  background-image: none !important;
+  filter: none !important;
+  -webkit-filter: none !important;
+  -webkit-print-color-adjust: economy;
+  print-color-adjust: economy;
+}
+
+html,
+body {
+  background: #ffffff !important;
+  color: #111111 !important;
+  font-size: 11pt;
+  line-height: 1.45;
+}
+
+/* Decorative chrome that doesn't belong on paper. */
+.scroll-progress,
+.load-sweep,
+.workshop-pill,
+.topmark-menu-btn,
+.topnav-contact,
+.topnav-links,
+.kbd-sheet,
+.menu-overlay,
+.menu-panel,
+.divider-mark,
+.edge-mark,
+[aria-hidden="true"][data-decorative],
+svg[aria-hidden="true"] {
+  display: none !important;
+}
+
+.topmark {
+  border-bottom: 1px solid #333 !important;
+  padding: 0 0 8px !important;
+}
+
+.topmark-brand .name {
+  color: #111 !important;
+  font-size: 14pt !important;
+}
+
+.topmark-brand .est,
+.topmark-brand .creed {
+  color: #555 !important;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #111 !important;
+  page-break-after: avoid;
+}
+
+p, li, dd {
+  color: #222 !important;
+}
+
+a {
+  color: #111 !important;
+  text-decoration: underline !important;
+}
+
+a[href^="http"]::after,
+a[href^="mailto:"]::after,
+a[href^="tel:"]::after {
+  content: " (" attr(href) ")";
+  font-size: 9pt;
+  color: #555;
+  word-break: break-all;
+}
+
+.divider,
+.divider-line {
+  background: none !important;
+  border-top: 1px solid #ccc !important;
+  height: 0 !important;
+  margin: 18pt 0 !important;
+}
+
+.section-numeral {
+  color: #555 !important;
+  font-size: 16pt !important;
+}
+
+h2 + p,
+h3 + p {
+  page-break-inside: avoid;
+}
+
+section {
+  page-break-inside: avoid;
+}

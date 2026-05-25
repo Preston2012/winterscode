@@ -1,0 +1,874 @@
+---
+/**
+ * /work : full apps + sites gallery.
+ *
+ * Spec ref: docs/design/S6_PLUS.md "/work page spec" (~line 1175).
+ * Design soul: dense/dashboard. Proof-via-density. Live numbers
+ * (Lighthouse scores, store badges, build durations).
+ *
+ * Sections:
+ *   01 APPS GRID    : 4 cards (Baseline, StainSlayer, ChopLight, Demi+MyKonos)
+ *   02 SITES GRID   : 2 cards (Sogn, Baseline Marketing) with live Lighthouse
+ *   03 PROCESS      : 3-step (questionnaire + consult, SOW + 50%, live in days)
+ *   04 CONTACT      : reusable section
+ *
+ * Each card has expand-to-detail: click reveals stack + scope + result
+ * rows, app store / play store / visit-site links, optional pull quote.
+ * Vanilla JS toggle, no framework.
+ */
+
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/layout/Header.astro';
+import MobileMenu from '../components/layout/MobileMenu.astro';
+import PageHero from '../components/sections/PageHero.astro';
+import Divider from '../components/ui/Divider.astro';
+import Contact from '../components/sections/Contact.astro';
+import { sites, apps } from '../lib/portfolio.ts';
+import Explainer from '../components/ui/Explainer.astro';
+import Instrument from '../components/sections/Instrument.astro';
+import SognContact from '../components/sections/SognContact.astro';
+---
+
+<BaseLayout
+  title="Work · Winters Code"
+  description="Apps and sites I've built. Live Lighthouse on every site. One app on the stores, three in beta. Days for sites, weeks for apps."
+>
+  <Header />
+  <MobileMenu />
+
+  <PageHero
+    eyebrow="WORK · APPS + SITES"
+    h1="Apps and sites I've built."
+    sub="One app live on App Store and Play Store. Three more in private beta. Sites live and serving traffic. Lighthouse scores and build durations from real data."
+    sub2="Every screenshot is a real product. I design and I build, end to end."
+  />
+
+  <Divider label="01" />
+
+  <!-- APPS GRID -->
+  <section class="wk-section" aria-labelledby="wk-apps-h">
+    <header class="wk-head">
+      <div class="wk-eyebrow">
+        <span class="line" aria-hidden="true"></span>
+        <h2 class="wk-h" id="wk-apps-h">01 · MOBILE APPS</h2>
+        <span class="wk-meta">{apps.length} built on iOS & Android</span>
+      </div>
+    </header>
+
+    <ul class="wk-grid wk-grid-apps" role="list">
+      {apps.map((p) => (
+        <li class="wk-card-wrap" role="listitem" id={p.slug}>
+          <article
+            class="wk-card"
+            data-slug={p.slug}
+            data-status={p.status}
+            data-widget={p.slug === 'demiurge-mykonos' ? 'true' : undefined}
+          >
+            <div class="wk-preview" aria-hidden={p.slug === 'demiurge-mykonos' ? undefined : (p.image ? undefined : 'true')}>
+              {p.slug === 'demiurge-mykonos' ? (
+                <Instrument />
+              ) : p.image ? (
+                <picture>
+                  {p.image.srcSmall && (
+                    <source
+                      type="image/webp"
+                      srcset={`${p.image.srcXSmall ? p.image.srcXSmall + " 480w, " : ""}${p.image.srcSmall} 720w, ${p.image.src} 1280w`}
+                      sizes="(min-width: 1024px) 50vw, 100vw"
+                    />
+                  )}
+                  <img
+                    src={p.image.src}
+                    alt={p.image.alt}
+                    width={p.image.width}
+                    height={p.image.height}
+                    loading="lazy"
+                    decoding="async"
+                    class="wk-img"
+                  />
+                </picture>
+              ) : (
+                <span class="wk-mark" aria-hidden="true">{p.numeral}</span>
+              )}
+            </div>
+
+            <div class="wk-body">
+              <div class="wk-title-row">
+                <h3 class="wk-title">{p.name}</h3>
+                <span class={`wk-status wk-status-${p.status}`}>
+                  {p.status.toUpperCase()}
+                </span>
+              </div>
+              <p class="wk-meta-line">{p.meta}</p>
+
+              <div class="wk-tags" role="list">
+                {p.tags.map((t) => (
+                  <span class="wk-tag" role="listitem">{t}</span>
+                ))}
+              </div>
+
+              <button
+                type="button"
+                class="wk-expand-btn"
+                data-toggle-target={p.slug}
+                aria-expanded="false"
+                aria-controls={`${p.slug}-detail`}
+              >
+                <span data-toggle-label>more details</span>
+                <span class="wk-expand-icon" aria-hidden="true">+</span>
+              </button>
+
+              <div
+                class="wk-detail"
+                id={`${p.slug}-detail`}
+                hidden
+              >
+                <dl class="wk-detail-rows">
+                  {p.details.map((d) => (
+                    <div class="wk-detail-row">
+                      <dt>{d.label}</dt>
+                      <dd>{d.value}</dd>
+                    </div>
+                  ))}
+                </dl>
+
+                {p.quote && (
+                  <blockquote class="wk-quote">
+                    <p>{p.quote.text}</p>
+                    <cite>{p.quote.attr}</cite>
+                  </blockquote>
+                )}
+
+                {p.links.length > 0 && (
+                  <div class="wk-links">
+                    {p.links.map((link) => (
+                      <a
+                        href={link.href}
+                        class={link.primary ? 'wk-link wk-link-primary' : 'wk-link'}
+                        target="_blank"
+                        rel="noopener"
+                      >
+                        {link.label}
+                      </a>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </article>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <Divider label="02" />
+
+  <!-- SITES GRID with live Lighthouse -->
+  <section class="wk-section" aria-labelledby="wk-sites-h">
+    <header class="wk-head">
+      <div class="wk-eyebrow">
+        <span class="line" aria-hidden="true"></span>
+        <h2 class="wk-h" id="wk-sites-h">02 · SITES</h2>
+        <span class="wk-meta">
+          live Lighthouse on every one
+          <Explainer label="?">
+            Each card below shows real-time Lighthouse scores fetched fresh when you load this page. No screenshots, no hard-coded numbers. If a score drops on a client site I shipped, you'll see it here.
+          </Explainer>
+        </span>
+      </div>
+    </header>
+
+    <ul class="wk-grid wk-grid-sites" role="list">
+      {sites.map((p) => (
+        <li class="wk-card-wrap" role="listitem" id={p.slug}>
+          <article
+            class="wk-card wk-card-site"
+            data-slug={p.slug}
+            data-status={p.status}
+            data-widget={p.slug === 'sogn-contracting' ? 'true' : undefined}
+          >
+            {p.slug === 'sogn-contracting' && (
+              <div class="wk-preview" aria-hidden="false">
+                <SognContact />
+              </div>
+            )}
+            <div class="wk-body">
+              <div class="wk-title-row">
+                <h3 class="wk-title">{p.name}</h3>
+                <span class={`wk-status wk-status-${p.status}`}>
+                  {p.status.toUpperCase()}
+                </span>
+              </div>
+              <p class="wk-meta-line">{p.meta}</p>
+
+              <div class="wk-tags" role="list">
+                {p.tags.map((t) => (
+                  <span class="wk-tag" role="listitem">{t}</span>
+                ))}
+              </div>
+
+              <div
+                class="wk-lighthouse"
+                data-lh-site={p.slug}
+                aria-live="polite"
+              >
+                <span class="wk-lh-label">
+                  LIGHTHOUSE
+                  <Explainer label="?">
+                    Google's scorecard for any website. Four numbers, 0 to 100 each: speed, accessibility, security, and how well Google can read the page. 100 is perfect. Most small-business sites score 50-70. These numbers re-measure every time you load this page. Scores shown are mobile (the harder test). Desktop usually runs 2 to 5 points higher.
+                  </Explainer>
+                </span>
+                <span class="wk-lh-scores" data-lh-scores>
+                  <span class="wk-lh-pending">measuring...</span>
+                </span>
+                <span class="wk-lh-measured" data-lh-measured></span>
+              </div>
+
+              <button
+                type="button"
+                class="wk-expand-btn"
+                data-toggle-target={p.slug}
+                aria-expanded="false"
+                aria-controls={`${p.slug}-detail`}
+              >
+                <span data-toggle-label>more details</span>
+                <span class="wk-expand-icon" aria-hidden="true">+</span>
+              </button>
+
+              <div class="wk-detail" id={`${p.slug}-detail`} hidden>
+                <dl class="wk-detail-rows">
+                  {p.details.map((d) => (
+                    <div class="wk-detail-row">
+                      <dt>{d.label}</dt>
+                      <dd>{d.value}</dd>
+                    </div>
+                  ))}
+                </dl>
+
+                {p.quote && (
+                  <blockquote class="wk-quote">
+                    <p>{p.quote.text}</p>
+                    <cite>{p.quote.attr}</cite>
+                  </blockquote>
+                )}
+
+                {p.links.length > 0 && (
+                  <div class="wk-links">
+                    {p.links.map((link) => (
+                      <a
+                        href={link.href}
+                        class={link.primary ? 'wk-link wk-link-primary' : 'wk-link'}
+                        target="_blank"
+                        rel="noopener"
+                      >
+                        {link.label}
+                      </a>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </article>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <Divider label="03" />
+
+  <!-- PROCESS -->
+  <section class="wk-section wk-process" aria-labelledby="wk-process-h">
+    <header class="wk-head">
+      <div class="wk-eyebrow">
+        <span class="line" aria-hidden="true"></span>
+        <h2 class="wk-h" id="wk-process-h">03 · PROCESS</h2>
+        <span class="wk-meta">how a build actually runs</span>
+      </div>
+    </header>
+
+    <ol class="wk-steps" role="list">
+      <li class="wk-step">
+        <span class="wk-step-num" aria-hidden="true">01</span>
+        <div class="wk-step-body">
+          <h3 class="wk-step-h">Questionnaire + consult</h3>
+          <p class="wk-step-p">
+            Two-page form. Business, audience, services, goals, what you
+            have, what you need. Free consult to scope it.
+          </p>
+          <p class="wk-step-time">No cost. No pitch deck.</p>
+        </div>
+      </li>
+      <li class="wk-step">
+        <span class="wk-step-num" aria-hidden="true">02</span>
+        <div class="wk-step-body">
+          <h3 class="wk-step-h">SOW + 50%</h3>
+          <p class="wk-step-p">
+            Statement of work locks scope. 50% deposit clears. Work
+            starts the same week.
+          </p>
+          <p class="wk-step-time">Stripe invoice. Standard contract.</p>
+        </div>
+      </li>
+      <li class="wk-step">
+        <span class="wk-step-num" aria-hidden="true">03</span>
+        <div class="wk-step-body">
+          <h3 class="wk-step-h">Live in days</h3>
+          <p class="wk-step-p">
+            Build, review, polish, ship. Final 50% on launch. Hosting
+            and maintenance optional, never required.
+          </p>
+          <p class="wk-step-time">Starter sites: 3 to 7 business days.</p>
+        </div>
+      </li>
+    </ol>
+  </section>
+
+  <Divider label="04" />
+
+  <Contact sectionNumber="04" />
+</BaseLayout>
+
+<script is:inline>
+  (function () {
+    // ----- expand / collapse cards
+    const buttons = document.querySelectorAll('[data-toggle-target]');
+    for (const btn of buttons) {
+      btn.addEventListener('click', () => {
+        const slug = btn.getAttribute('data-toggle-target');
+        const detail = document.getElementById(slug + '-detail');
+        if (!detail) return;
+        const isOpen = btn.getAttribute('aria-expanded') === 'true';
+        if (isOpen) {
+          detail.hidden = true;
+          btn.setAttribute('aria-expanded', 'false');
+          const lbl = btn.querySelector('[data-toggle-label]');
+          if (lbl) lbl.textContent = 'more details';
+          const icon = btn.querySelector('.wk-expand-icon');
+          if (icon) icon.textContent = '+';
+        } else {
+          detail.hidden = false;
+          btn.setAttribute('aria-expanded', 'true');
+          const lbl = btn.querySelector('[data-toggle-label]');
+          if (lbl) lbl.textContent = 'less';
+          const icon = btn.querySelector('.wk-expand-icon');
+          if (icon) icon.textContent = '\u2212';
+        }
+      });
+    }
+
+    // If URL has a hash matching a card slug, auto-expand it.
+    if (location.hash && location.hash.length > 1) {
+      const slug = location.hash.slice(1);
+      const btn = document.querySelector(
+        '[data-toggle-target="' + slug + '"]',
+      );
+      if (btn && btn.getAttribute('aria-expanded') === 'false') btn.click();
+    }
+
+    // ----- live Lighthouse from /api/workshop
+    async function loadLighthouse() {
+      try {
+        const res = await fetch('/api/workshop', {
+          headers: { accept: 'application/json' },
+        });
+        if (!res.ok) return;
+        const data = await res.json();
+        const lh = data.lighthouse;
+        if (!lh) return;
+        function fill(slug, scores) {
+          const root = document.querySelector('[data-lh-site="' + slug + '"]');
+          if (!root) return;
+          const target = root.querySelector('[data-lh-scores]');
+          const measured = root.querySelector('[data-lh-measured]');
+          if (!Array.isArray(scores) || scores.length !== 4) return;
+          target.textContent = '';
+          const labels = ['perf', 'a11y', 'best', 'seo'];
+          scores.forEach((n, i) => {
+            const pill = document.createElement('span');
+            pill.className = 'wk-lh-pill';
+            const grade =
+              n >= 90 ? 'good' : n >= 50 ? 'ok' : 'low';
+            pill.classList.add('wk-lh-pill-' + grade);
+            pill.textContent = labels[i] + ' ' + n;
+            target.appendChild(pill);
+          });
+          if (measured && lh.measured) {
+            measured.textContent = 'measured ' + lh.measured;
+          }
+        }
+        // Each /work card gets its real site's PSI scores.
+        // Previously baseline-marketing card showed winterscode scores by mistake.
+        if (lh.baseline) fill('baseline-marketing', lh.baseline);
+        if (lh.sogn) fill('sogn-contracting', lh.sogn);
+      } catch (e) {
+        // Silent fail. Lighthouse panel falls back to "measuring..." text.
+      }
+    }
+    loadLighthouse();
+  })();
+</script>
+
+<style>
+  .wk-section {
+    padding: 32px 4px 40px;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  @media (min-width: 768px) {
+    .wk-section { padding: 48px 4px 56px; max-width: 860px; }
+  }
+  @media (min-width: 1024px) {
+    .wk-section { padding: 64px 0 72px; max-width: 1080px; }
+  }
+
+  .wk-head {
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--copper-hairline);
+  }
+  .wk-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .wk-eyebrow .line {
+    width: 28px;
+    height: 1px;
+    background: var(--color-copper);
+  }
+  @media (min-width: 1024px) { .wk-eyebrow .line { width: 40px; } }
+  .wk-h {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    color: var(--color-copper);
+    text-transform: uppercase;
+    margin: 0;
+  }
+  @media (min-width: 1024px) { .wk-h { font-size: 13px; } }
+  .wk-meta {
+    font-family: var(--font-sans);
+    font-size: 11px;
+    color: var(--color-ash-500);
+    font-style: italic;
+  }
+
+  /* Grid */
+  .wk-grid {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 16px;
+  }
+  /* Apps grid: single-column at all breakpoints. Each widget gets
+     the full container width so dense interactive demos can breathe
+     vertically without the 2-col squeeze. Container caps at 960px. */
+  .wk-grid-apps {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    max-width: 960px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  @media (min-width: 768px) { .wk-grid-apps { gap: 28px; } }
+  @media (min-width: 1024px) { .wk-grid-apps { gap: 32px; } }
+
+  /* Sites grid: 2-col at 768+ as before. */
+  /* Sites are 1-col on tablet so widget cards (Sogn) get full width to
+     breathe. 2-col only at desktop where there's actual horizontal room. */
+  @media (min-width: 768px) {
+    .wk-grid-sites { gap: 24px; }
+  }
+  @media (min-width: 1024px) {
+    .wk-grid-sites { grid-template-columns: 1fr 1fr; gap: 24px; }
+  }
+
+  .wk-card-wrap { display: contents; }
+
+  /* Card */
+  .wk-card {
+    background: var(--color-bg-card);
+    border: 1px solid var(--copper-hairline);
+    border-radius: var(--radius-card);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: border-color 200ms;
+  }
+  .wk-card:hover { border-color: var(--color-wc-green); }
+
+  .wk-preview {
+    background:
+      radial-gradient(circle at 30% 40%, rgba(216, 144, 90, 0.15), transparent 60%),
+      linear-gradient(135deg, var(--color-bg-raised), var(--color-bg-card));
+    aspect-ratio: 16 / 8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px solid var(--copper-hairline);
+    overflow: hidden;
+  }
+  .wk-preview > picture,
+  .wk-img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  /* Widget cards: when the preview slot holds a live widget (not an
+     image), the 16/8 aspect-ratio and gradient bg fight the widget's
+     own framing. Strip them so the widget sets its own height and
+     visual treatment. */
+  .wk-card[data-widget="true"] .wk-preview {
+    aspect-ratio: auto;
+    background: var(--color-bg-card);
+    border-bottom: 1px solid var(--copper-hairline);
+    align-items: stretch;
+    justify-content: stretch;
+    overflow: visible;
+    padding: 0;
+  }
+  .wk-card[data-widget="true"] .wk-preview > * {
+    width: 100%;
+  }
+
+  .wk-preview > picture { line-height: 0; }
+
+  .wk-mark {
+    font-family: var(--font-serif);
+    font-size: 56px;
+    font-style: italic;
+    color: var(--color-copper);
+    opacity: 0.7;
+    line-height: 1;
+  }
+
+  .wk-body {
+    padding: 14px 16px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  @media (min-width: 1024px) { .wk-body { padding: 16px 18px 18px; } }
+
+  .wk-card-site .wk-body {
+    /* No image, so card needs more presence */
+    padding-top: 20px;
+  }
+
+  .wk-title-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .wk-title {
+    font-family: var(--font-serif);
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--color-ash-100);
+    letter-spacing: -0.01em;
+    margin: 0;
+  }
+  @media (min-width: 1024px) { .wk-title { font-size: 20px; } }
+
+  .wk-status {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    padding: 2px 6px;
+    border-radius: 3px;
+    text-transform: uppercase;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .wk-status-live {
+    background: rgba(77, 216, 168, 0.15);
+    color: var(--color-wc-green);
+    border: 1px solid rgba(77, 216, 168, 0.3);
+  }
+  .wk-status-beta {
+    background: rgba(240, 184, 120, 0.15);
+    color: var(--color-amber);
+    border: 1px solid rgba(240, 184, 120, 0.3);
+  }
+  .wk-status-planned {
+    background: rgba(200, 128, 74, 0.10);
+    color: var(--color-copper);
+    border: 1px solid var(--copper-hairline);
+  }
+
+  .wk-meta-line {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-size: 13px;
+    color: var(--color-ash-400);
+    line-height: 1.4;
+  }
+
+  .wk-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 2px;
+  }
+  .wk-tag {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    color: var(--color-ash-500);
+    background: var(--color-bg-deep);
+    border: 1px solid var(--copper-hairline);
+    padding: 3px 7px;
+    border-radius: 3px;
+  }
+
+  /* Lighthouse pills (sites only) */
+  .wk-lighthouse {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 10px 0 4px;
+    border-top: 1px dashed var(--copper-hairline);
+    margin-top: 4px;
+  }
+  .wk-lh-label {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    color: var(--color-copper);
+    text-transform: uppercase;
+  }
+  .wk-lh-scores {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    align-items: center;
+  }
+  .wk-lh-pending {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--color-ash-500);
+    font-style: italic;
+  }
+  .wk-lh-pill {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.04em;
+    padding: 3px 7px;
+    border-radius: 3px;
+    font-weight: 600;
+  }
+  .wk-lh-pill-good {
+    background: rgba(77, 216, 168, 0.12);
+    color: var(--color-wc-green);
+    border: 1px solid rgba(77, 216, 168, 0.3);
+  }
+  .wk-lh-pill-ok {
+    background: rgba(240, 184, 120, 0.12);
+    color: var(--color-amber);
+    border: 1px solid rgba(240, 184, 120, 0.3);
+  }
+  .wk-lh-pill-low {
+    background: rgba(217, 107, 94, 0.12);
+    color: #d96b5e;
+    border: 1px solid rgba(217, 107, 94, 0.3);
+  }
+  .wk-lh-measured {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--color-ash-500);
+    letter-spacing: 0.04em;
+  }
+
+  /* Expand button */
+  .wk-expand-btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    background: transparent;
+    border: 1px solid var(--copper-hairline);
+    border-radius: var(--radius-btn);
+    padding: 8px 12px;
+    color: var(--color-ash-300);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: border-color 200ms, color 200ms;
+    min-height: 38px;
+  }
+  .wk-expand-btn:hover {
+    border-color: var(--color-wc-green);
+    color: var(--color-wc-green);
+  }
+  .wk-expand-icon {
+    font-family: var(--font-mono);
+    font-weight: 600;
+    color: var(--color-copper);
+    margin-left: 8px;
+  }
+  .wk-expand-btn[aria-expanded="true"] .wk-expand-icon {
+    color: var(--color-wc-green);
+  }
+
+  /* Detail panel */
+  .wk-detail {
+    padding-top: 12px;
+    margin-top: 4px;
+    border-top: 1px dashed var(--copper-hairline);
+    animation: wk-fade-in 200ms ease-out;
+  }
+  @keyframes wk-fade-in {
+    0% { opacity: 0; transform: translateY(-2px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  .wk-detail[hidden] { display: none; }
+
+  .wk-detail-rows {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .wk-detail-row {
+    display: grid;
+    gap: 4px;
+  }
+  @media (min-width: 768px) {
+    .wk-detail-row { grid-template-columns: 90px 1fr; gap: 12px; }
+  }
+  .wk-detail-row dt {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.16em;
+    color: var(--color-copper);
+    text-transform: uppercase;
+    margin: 0;
+  }
+  .wk-detail-row dd {
+    font-family: var(--font-sans);
+    font-size: 13px;
+    color: var(--color-ash-300);
+    line-height: 1.55;
+    margin: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .wk-quote {
+    margin: 12px 0 0;
+    padding: 10px 12px;
+    border-left: 2px solid var(--color-copper);
+    background: rgba(200, 128, 74, 0.06);
+    border-radius: 0 var(--radius-btn) var(--radius-btn) 0;
+  }
+  .wk-quote p {
+    margin: 0 0 4px;
+    font-family: var(--font-serif);
+    font-size: 13px;
+    font-style: italic;
+    color: var(--color-ash-100);
+    line-height: 1.4;
+  }
+  .wk-quote cite {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--color-ash-500);
+    font-style: normal;
+    letter-spacing: 0.06em;
+  }
+
+  .wk-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+  }
+  .wk-link {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-ash-300);
+    text-decoration: none;
+    padding: 8px 12px;
+    border-radius: var(--radius-btn);
+    border: 1px solid var(--copper-hairline);
+    transition: border-color 200ms, color 200ms;
+  }
+  .wk-link:hover {
+    border-color: var(--color-wc-green);
+    color: var(--color-wc-green);
+  }
+  .wk-link-primary {
+    background: var(--color-wc-green);
+    border-color: var(--color-wc-green);
+    color: var(--color-bg-deep);
+    font-weight: 600;
+  }
+  .wk-link-primary:hover {
+    background: var(--color-wc-green);
+    color: var(--color-bg-deep);
+  }
+
+  /* Process steps */
+  .wk-steps {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 16px;
+  }
+  @media (min-width: 768px) {
+    .wk-steps { grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+  }
+  .wk-step {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 16px;
+    background: var(--color-bg-card);
+    border: 1px solid var(--copper-hairline);
+    border-radius: var(--radius-card);
+  }
+  .wk-step-num {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 44px;
+    line-height: 1;
+    color: var(--color-copper);
+    opacity: 0.85;
+  }
+  .wk-step-h {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--color-ash-100);
+  }
+  .wk-step-p {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-size: 13px;
+    color: var(--color-ash-300);
+    line-height: 1.55;
+  }
+  .wk-step-time {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--color-ash-500);
+    letter-spacing: 0.06em;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .wk-detail { animation: none; }
+  }
+</style>

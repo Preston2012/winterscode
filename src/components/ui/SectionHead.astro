@@ -1,0 +1,77 @@
+---
+/**
+ * Section header used at the top of every major homepage section.
+ * Big italic copper numeral on the left, kicker + H2 on the right.
+ */
+
+export interface Props {
+  /** The 2-digit section number, e.g. "01" / "02" / "03" / "04". */
+  number: string;
+  /** Small uppercase tracker text above the H2 (e.g. "Try it"). */
+  kicker: string;
+  /** Main H2 text. */
+  title: string;
+}
+
+const { number, kicker, title } = Astro.props;
+---
+
+<div class="section-head">
+  <div class="section-numeral" aria-hidden="true">{number}</div>
+  <div class="section-title">
+    <div class="kicker mono">{kicker}</div>
+    <h2 class="h2">{title}</h2>
+  </div>
+</div>
+
+<style>
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    margin-bottom: 6px;
+  }
+  @media (min-width: 768px) {
+    .section-head { gap: 20px; margin-bottom: 10px; }
+  }
+  @media (min-width: 1024px) {
+    .section-head { gap: 28px; margin-bottom: 14px; }
+  }
+
+  .section-numeral {
+    font-family: var(--font-serif);
+    font-size: 48px;
+    font-weight: 500;
+    color: var(--color-copper);
+    line-height: 1;
+    letter-spacing: -0.02em;
+    font-feature-settings: "ss01";
+    font-style: italic;
+    transition: color 200ms, transform 200ms, text-shadow 200ms;
+    position: relative;
+  }
+  @media (min-width: 768px) {
+    .section-numeral { font-size: 60px; }
+  }
+  @media (min-width: 1024px) {
+    .section-numeral {
+      font-size: 80px;
+      text-shadow: 0 0 24px rgba(216, 144, 90, 0.15);
+    }
+  }
+
+  .section-title { flex: 1; padding-bottom: 6px; }
+  .section-title .kicker {
+    font-family: var(--font-sans);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-ash-500);
+    margin-bottom: 2px;
+  }
+  @media (min-width: 768px) {
+    .section-title .kicker { font-size: 12px; margin-bottom: 6px; }
+  }
+  .section-title h2 { margin: 0; }
+</style>

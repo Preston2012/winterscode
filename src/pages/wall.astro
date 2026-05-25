@@ -1,0 +1,831 @@
+---
+/**
+ * /wall : the full live workshop broadcast.
+ *
+ * Dense, Bloomberg-terminal aesthetic. Every section pulls from /api/workshop
+ * (server-rendered with live data at build time, then refreshed client-side).
+ *
+ * 6 modules per S6_PLUS.md design doc:
+ *   1. DEPLOYS. last deploy time, 30-day count, per-repo breakdown
+ *   2. LIGHTHOUSE. winterscode + sogn live scores, history sparkline
+ *   3. SECURITY. observatory grade + headers present
+ *   4. ENGINE. Demiurge memories, uptime, last write
+ *   5. CALENDAR. next 3 available consult slots, by event type
+ *   6. ACCEPTING. geographic acceptance, capacity status
+ *
+ * Mono everywhere. Copper hairlines. Scanline borders. Dense rows.
+ * "Apple status page meets Bloomberg terminal" per design doc.
+ *
+ * Server-side fetch at build time provides the SSR'd values (no flash of
+ * placeholder). Client-side refresh on focus + every 30s keeps it live.
+ *
+ * Audience: technical evaluators (A3) + clients on a maintenance plan who
+ * want transparency. Most homepage visitors never land here.
+ */
+
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/layout/Header.astro';
+import MobileMenu from '../components/layout/MobileMenu.astro';
+import PageHero from '../components/sections/PageHero.astro';
+import Divider from '../components/ui/Divider.astro';
+import Contact from '../components/sections/Contact.astro';
+
+// Server-side fetch at build / SSR time. Failures fall back to safe defaults.
+// The page hydrates with these values, then client JS refreshes from the
+// same endpoint to keep things fresh.
+let initialData: any = null;
+let fetchError: string | null = null;
+
+try {
+  // Build-time fetch only works for fully-deployed APIs. Use the public URL
+  // since this runs in the build container. If we move to live SSR later
+  // this can become Astro.url-relative.
+  const r = await fetch('https://winterscode.com/api/workshop', {
+    headers: { 'user-agent': 'winterscode-build/1.0' },
+    signal: AbortSignal.timeout(6000),
+  });
+  if (r.ok) initialData = await r.json();
+} catch (err) {
+  fetchError = err instanceof Error ? err.message : 'fetch failed';
+}
+
+// Safe extractors with sensible fallbacks
+const deploys = initialData?.deploys ?? { last: '.', last_message: '.', count_30d: 0, repo_count: 0, source: 'fallback' };
+const lighthouse = initialData?.lighthouse ?? { winterscode: [0,0,0,0], sogn: [0,0,0,0], baseline: [0,0,0,0], measured: '.', source: 'fallback' };
+const security = initialData?.security ?? { grade: '.', headers_ok: [], source: 'fallback' };
+const engine = initialData?.engine ?? { memories: 0, added_last_7d: 0, uptime_30d_pct: 0, source: 'fallback' };
+const calendar = initialData?.calendar ?? { next: '.', source: 'fallback' };
+const speed = initialData?.speed ?? { last_three: '.', source: 'fallback' };
+
+// Format Lighthouse arrays for display
+const lhWC = Array.isArray(lighthouse.winterscode) ? lighthouse.winterscode : [0,0,0,0];
+const lhSogn = Array.isArray(lighthouse.sogn) ? lighthouse.sogn : [0,0,0,0];
+const lhBaseline = Array.isArray(lighthouse.baseline) ? lighthouse.baseline : [0,0,0,0];
+
+// LH average (P/A/SEO/BP). easier to scan at a glance
+function avg(arr: number[]): number {
+  if (!arr.length) return 0;
+  return Math.round(arr.reduce((a, b) => a + b, 0) / arr.length);
+}
+const lhWCAvg = avg(lhWC);
+const lhSognAvg = avg(lhSogn);
+const lhBaselineAvg = avg(lhBaseline);
+
+// Engine memory format with thousands separator
+const memCount = (engine.memories ?? 0).toLocaleString();
+
+const updatedAt = initialData?.updated_at ?? new Date().toISOString();
+---
+
+<BaseLayout
+  title="The Wall · Workshop Broadcast · Winters Code"
+  description="Live broadcast from the workshop. Deploys, Lighthouse, security grade, engine state, and next consult slot. Refreshes when you focus the tab."
+>
+  <Header />
+  <MobileMenu />
+
+  <PageHero
+    eyebrow="The Wall · Workshop Broadcast"
+    h1="The shop, live."
+    sub="Deploys pushed, sites measured, slots open. Everything happening right now, on one page."
+    sub2="Refreshes when you focus the tab. The numbers are real, the sources are linked."
+    showStamp={false}
+  />
+
+  <section class="wall-grid" aria-label="Live workshop data">
+    <div class="wall-status-bar">
+      <span class="wall-pulse" aria-hidden="true"></span>
+      <span class="wall-status-text">LIVE</span>
+      <span class="wall-status-sep">·</span>
+      <span class="wall-status-updated" data-wall-updated>updated {new Date(updatedAt).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true, timeZone: 'America/Los_Angeles' })} PT</span>
+      <span class="wall-status-sep">·</span>
+      <span class="wall-status-source">{fetchError ? `source: fallback (${fetchError})` : 'source: /api/workshop'}</span>
+    </div>
+
+    {/* MODULE 01. DEPLOYS */}
+    <article class="wall-mod wall-mod-wide" data-mod="deploys">
+      <header class="wall-mod-head">
+        <span class="wall-mod-num">01</span>
+        <h2 class="wall-mod-title">DEPLOYS</h2>
+        <span class="wall-mod-badge" data-mod-source={deploys.source}>{deploys.source}</span>
+      </header>
+      <div class="wall-mod-body">
+        <div class="wall-stat-big">
+          <span class="wall-stat-num" data-deploys-last>{deploys.last}</span>
+          <span class="wall-stat-label">since last push</span>
+        </div>
+        <div class="wall-stat-grid">
+          <div class="wall-stat-cell">
+            <span class="wall-stat-cell-num" data-deploys-30d>{deploys.count_30d}</span>
+            <span class="wall-stat-cell-label">commits · 30d</span>
+          </div>
+          <div class="wall-stat-cell">
+            <span class="wall-stat-cell-num" data-deploys-repos>{deploys.repo_count}</span>
+            <span class="wall-stat-cell-label">repos active</span>
+          </div>
+        </div>
+        <p class="wall-mod-detail" data-deploys-msg>last: {deploys.last_message}</p>
+      </div>
+    </article>
+
+    {/* MODULE 02. LIGHTHOUSE */}
+    <article class="wall-mod wall-mod-wide" data-mod="lighthouse">
+      <header class="wall-mod-head">
+        <span class="wall-mod-num">02</span>
+        <h2 class="wall-mod-title">LIGHTHOUSE</h2>
+        <span class="wall-mod-badge" data-mod-source={lighthouse.source}>{lighthouse.source}</span>
+      </header>
+      <div class="wall-mod-body">
+        <table class="wall-table" aria-label="Lighthouse scores per site, mobile">
+          <thead>
+            <tr>
+              <th scope="col">site</th>
+              <th scope="col" class="wall-num">perf</th>
+              <th scope="col" class="wall-num">a11y</th>
+              <th scope="col" class="wall-num">seo</th>
+              <th scope="col" class="wall-num">bp</th>
+              <th scope="col" class="wall-num">avg</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">winterscode</th>
+              <td class="wall-num" data-lh-wc-0>{lhWC[0]}</td>
+              <td class="wall-num" data-lh-wc-1>{lhWC[1]}</td>
+              <td class="wall-num" data-lh-wc-2>{lhWC[2]}</td>
+              <td class="wall-num" data-lh-wc-3>{lhWC[3]}</td>
+              <td class="wall-num wall-num-strong" data-lh-wc-avg>{lhWCAvg}</td>
+            </tr>
+            <tr>
+              <th scope="row">sogn</th>
+              <td class="wall-num" data-lh-sogn-0>{lhSogn[0]}</td>
+              <td class="wall-num" data-lh-sogn-1>{lhSogn[1]}</td>
+              <td class="wall-num" data-lh-sogn-2>{lhSogn[2]}</td>
+              <td class="wall-num" data-lh-sogn-3>{lhSogn[3]}</td>
+              <td class="wall-num wall-num-strong" data-lh-sogn-avg>{lhSognAvg}</td>
+            </tr>
+            <tr>
+              <th scope="row">baseline</th>
+              <td class="wall-num" data-lh-baseline-0>{lhBaseline[0]}</td>
+              <td class="wall-num" data-lh-baseline-1>{lhBaseline[1]}</td>
+              <td class="wall-num" data-lh-baseline-2>{lhBaseline[2]}</td>
+              <td class="wall-num" data-lh-baseline-3>{lhBaseline[3]}</td>
+              <td class="wall-num wall-num-strong" data-lh-baseline-avg>{lhBaselineAvg}</td>
+            </tr>
+          </tbody>
+        </table>
+        <p class="wall-mod-detail">Mobile · measured <span data-lh-measured>{lighthouse.measured}</span> · desktop typically 2-5 points higher</p>
+      </div>
+    </article>
+
+    {/* MODULE 03. SECURITY */}
+    <article class="wall-mod" data-mod="security">
+      <header class="wall-mod-head">
+        <span class="wall-mod-num">03</span>
+        <h2 class="wall-mod-title">SECURITY</h2>
+        <span class="wall-mod-badge" data-mod-source={security.source}>{security.source}</span>
+      </header>
+      <div class="wall-mod-body">
+        <div class="wall-stat-big">
+          <span class={`wall-grade wall-grade-${(security.grade || '?').toLowerCase().replace('+','plus').replace('-','minus')}`} data-sec-grade>{security.grade}</span>
+          <span class="wall-stat-label">observatory grade</span>
+        </div>
+        <ul class="wall-list" data-sec-headers>
+          {(security.headers_ok || []).map((h: string) => (
+            <li class="wall-list-ok"><span class="wall-list-icon">✓</span> {h}</li>
+          ))}
+        </ul>
+      </div>
+    </article>
+
+    {/* MODULE 04. ENGINE */}
+    <article class="wall-mod" data-mod="engine">
+      <header class="wall-mod-head">
+        <span class="wall-mod-num">04</span>
+        <h2 class="wall-mod-title">ENGINE</h2>
+        <span class="wall-mod-badge" data-mod-source={engine.source}>{engine.source}</span>
+      </header>
+      <div class="wall-mod-body">
+        <div class="wall-stat-big">
+          <span class="wall-stat-num" data-engine-mem>{memCount}</span>
+          <span class="wall-stat-label">demiurge memories</span>
+        </div>
+        <div class="wall-stat-grid">
+          <div class="wall-stat-cell">
+            <span class="wall-stat-cell-num" data-engine-week>+{engine.added_last_7d ?? 0}</span>
+            <span class="wall-stat-cell-label">added · 7d</span>
+          </div>
+          <div class="wall-stat-cell">
+            <span class="wall-stat-cell-num" data-engine-uptime>{engine.uptime_30d_pct}%</span>
+            <span class="wall-stat-cell-label">uptime · 30d</span>
+          </div>
+        </div>
+        <p class="wall-mod-detail">Memory engine + AI workflow built in-house. Runs alongside my builds.</p>
+      </div>
+    </article>
+
+    {/* MODULE 05. CALENDAR */}
+    <article class="wall-mod" data-mod="calendar">
+      <header class="wall-mod-head">
+        <span class="wall-mod-num">05</span>
+        <h2 class="wall-mod-title">CALENDAR</h2>
+        <span class="wall-mod-badge" data-mod-source={calendar.source}>{calendar.source}</span>
+      </header>
+      <div class="wall-mod-body">
+        <div class="wall-stat-big">
+          <span class="wall-stat-num" data-cal-next>{calendar.next}</span>
+          <span class="wall-stat-label">next available slot</span>
+        </div>
+        <p class="wall-mod-detail">Consults are free in Bandon + Coos + Curry. Travel deposits credit on signing.</p>
+        <a class="wall-cta" href="/contact">book a consult →</a>
+      </div>
+    </article>
+
+    {/* MODULE 06. ACCEPTING */}
+    <article class="wall-mod" data-mod="accepting">
+      <header class="wall-mod-head">
+        <span class="wall-mod-num">06</span>
+        <h2 class="wall-mod-title">ACCEPTING</h2>
+        <span class="wall-mod-badge wall-mod-badge-static">policy</span>
+      </header>
+      <div class="wall-mod-body">
+        <ul class="wall-zone-list">
+          <li class="wall-zone wall-zone-free">
+            <span class="wall-zone-icon">●</span>
+            <div class="wall-zone-meta">
+              <span class="wall-zone-name">Bandon</span>
+              <span class="wall-zone-cost">free in-person · or video</span>
+            </div>
+          </li>
+          <li class="wall-zone wall-zone-free">
+            <span class="wall-zone-icon">●</span>
+            <div class="wall-zone-meta">
+              <span class="wall-zone-name">Coos &amp; Curry counties</span>
+              <span class="wall-zone-cost">free 30-min video</span>
+            </div>
+          </li>
+          <li class="wall-zone">
+            <span class="wall-zone-icon">●</span>
+            <div class="wall-zone-meta">
+              <span class="wall-zone-name">1.5hr drive</span>
+              <span class="wall-zone-cost">$250 deposit · credits to project</span>
+            </div>
+          </li>
+          <li class="wall-zone">
+            <span class="wall-zone-icon">●</span>
+            <div class="wall-zone-meta">
+              <span class="wall-zone-name">2.5hr drive</span>
+              <span class="wall-zone-cost">$400 deposit · credits to project</span>
+            </div>
+          </li>
+          <li class="wall-zone wall-zone-remote">
+            <span class="wall-zone-icon">○</span>
+            <div class="wall-zone-meta">
+              <span class="wall-zone-name">outside drive zones</span>
+              <span class="wall-zone-cost">video consults only</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </article>
+
+    {/* MODULE 07. SPEED RECORD */}
+    <article class="wall-mod wall-mod-wide" data-mod="speed">
+      <header class="wall-mod-head">
+        <span class="wall-mod-num">07</span>
+        <h2 class="wall-mod-title">RECENT BUILDS</h2>
+        <span class="wall-mod-badge" data-mod-source={speed.source}>{speed.source}</span>
+      </header>
+      <div class="wall-mod-body">
+        <div class="wall-stat-big">
+          <span class="wall-stat-num" data-speed-last>{speed.last_three}</span>
+          <span class="wall-stat-label">first client build · Sogn Contracting</span>
+        </div>
+        <p class="wall-mod-detail">Contract to live, in business days. Sogn Contracting (May 2026) shipped in 3 days. Starter sites typically 3-7 days. Pro sites 1-2 weeks. App MVP 2-4 weeks. Custom builds quoted in consult.</p>
+      </div>
+    </article>
+  </section>
+
+  <Divider label="01" />
+
+  <Contact sectionNumber="01" />
+
+  <script is:inline>
+    // Wall live-refresh script. Pulls /api/workshop on focus + every 30s
+    // while tab is visible. Pauses when hidden. Updates DOM in place. no
+    // re-render flash. Falls back silently on any error (last good values
+    // remain visible).
+    (function () {
+      var lastFetch = 0;
+      var minIntervalMs = 25000;
+
+      function setText(sel, text) {
+        var el = document.querySelector(sel);
+        if (el && text !== undefined && text !== null) el.textContent = text;
+      }
+
+      function refresh() {
+        var now = Date.now();
+        if (now - lastFetch < minIntervalMs) return;
+        lastFetch = now;
+        fetch('/api/workshop', { signal: AbortSignal.timeout(6000) })
+          .then(function (r) { return r.ok ? r.json() : null; })
+          .then(function (d) {
+            if (!d) return;
+
+            // Update badge sources per module. SSR may have baked 'fallback' if
+            // build-time fetch hit GH rate limits or PSI quota. KV-cached upstream
+            // recovers within minutes, but bake stays until next deploy. Patch
+            // the badge attributes here to reflect actual current upstream state.
+            function setBadge(modName, src) {
+              if (!src) return;
+              var badge = document.querySelector('[data-mod="' + modName + '"] .wall-mod-badge');
+              if (badge) { badge.setAttribute('data-mod-source', src); badge.textContent = src; }
+            }
+            if (d.deploys) setBadge('deploys', d.deploys.source);
+            if (d.lighthouse) setBadge('lighthouse', d.lighthouse.source);
+            if (d.security) setBadge('security', d.security.source);
+            if (d.engine) setBadge('engine', d.engine.source);
+            if (d.calendar) setBadge('calendar', d.calendar.source);
+            if (d.speed) setBadge('speed', d.speed.source);
+
+            if (d.deploys) {
+              setText('[data-deploys-last]', d.deploys.last);
+              setText('[data-deploys-30d]', d.deploys.count_30d);
+              setText('[data-deploys-repos]', d.deploys.repo_count);
+              setText('[data-deploys-msg]', 'last: ' + d.deploys.last_message);
+            }
+            if (d.lighthouse) {
+              var lh = d.lighthouse;
+              if (Array.isArray(lh.winterscode)) {
+                for (var i = 0; i < 4; i++) setText('[data-lh-wc-' + i + ']', lh.winterscode[i]);
+                var avgWC = Math.round(lh.winterscode.reduce(function(a,b){return a+b;},0) / 4);
+                setText('[data-lh-wc-avg]', avgWC);
+              }
+              if (Array.isArray(lh.sogn)) {
+                for (var i = 0; i < 4; i++) setText('[data-lh-sogn-' + i + ']', lh.sogn[i]);
+                var avgSogn = Math.round(lh.sogn.reduce(function(a,b){return a+b;},0) / 4);
+                setText('[data-lh-sogn-avg]', avgSogn);
+              }
+              if (Array.isArray(lh.baseline)) {
+                for (var i = 0; i < 4; i++) setText('[data-lh-baseline-' + i + ']', lh.baseline[i]);
+                var avgBaseline = Math.round(lh.baseline.reduce(function(a,b){return a+b;},0) / 4);
+                setText('[data-lh-baseline-avg]', avgBaseline);
+              }
+              setText('[data-lh-measured]', lh.measured);
+            }
+            if (d.security) {
+              setText('[data-sec-grade]', d.security.grade);
+              // Update headers list
+              var headersList = document.querySelector('[data-sec-headers]');
+              if (headersList && Array.isArray(d.security.headers_ok)) {
+                headersList.innerHTML = '';
+                d.security.headers_ok.forEach(function (h) {
+                  var li = document.createElement('li');
+                  li.className = 'wall-list-ok';
+                  li.innerHTML = '<span class="wall-list-icon">✓</span> ' + h;
+                  headersList.appendChild(li);
+                });
+              }
+            }
+            if (d.engine) {
+              setText('[data-engine-mem]', (d.engine.memories || 0).toLocaleString());
+              setText('[data-engine-week]', '+' + (d.engine.added_last_7d || 0));
+              setText('[data-engine-uptime]', (d.engine.uptime_30d_pct || 0) + '%');
+            }
+            if (d.calendar) setText('[data-cal-next]', d.calendar.next);
+            if (d.speed) setText('[data-speed-last]', d.speed.last_three);
+
+            // Update "updated" timestamp
+            var when = new Date(d.updated_at || Date.now()).toLocaleTimeString('en-US', {
+              hour: 'numeric', minute: '2-digit', hour12: true, timeZone: 'America/Los_Angeles'
+            });
+            setText('[data-wall-updated]', 'updated ' + when + ' PT');
+          })
+          .catch(function () { /* silently fall back to last values */ });
+      }
+
+      // Initial refresh after first paint, then on visibility/focus + every 30s
+      if (document.visibilityState === 'visible') refresh();
+      document.addEventListener('visibilitychange', function () {
+        if (document.visibilityState === 'visible') refresh();
+      });
+      window.addEventListener('focus', refresh);
+      setInterval(function () {
+        if (document.visibilityState === 'visible') refresh();
+      }, 30000);
+    })();
+  </script>
+</BaseLayout>
+
+<style>
+  .wall-grid {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 8px 0 32px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  @media (min-width: 768px) {
+    .wall-grid {
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      padding: 16px 0 48px;
+    }
+    .wall-mod-wide {
+      grid-column: span 2;
+    }
+  }
+  @media (min-width: 1024px) {
+    .wall-grid {
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 20px;
+      padding: 24px 0 64px;
+    }
+    .wall-mod-wide {
+      grid-column: span 2;
+    }
+  }
+
+  .wall-status-bar {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    padding: 10px 12px;
+    border: 1px solid var(--copper-hairline);
+    border-radius: var(--radius-btn);
+    background: rgba(200, 128, 74, 0.03);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--color-ash-400);
+    letter-spacing: 0.06em;
+  }
+  @media (min-width: 768px) {
+    .wall-status-bar {
+      font-size: 11px;
+      padding: 12px 14px;
+    }
+  }
+  .wall-status-text {
+    color: var(--color-wc-green);
+    font-weight: 600;
+    letter-spacing: 0.18em;
+  }
+  .wall-status-sep {
+    color: var(--color-ash-700);
+  }
+  .wall-pulse {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color-wc-green);
+    box-shadow: 0 0 8px rgba(77, 216, 168, 0.5);
+    animation: wall-pulse 2.4s ease-in-out infinite;
+  }
+  @keyframes wall-pulse {
+    0%, 100% { opacity: 0.6; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.2); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .wall-pulse { animation: none; }
+  }
+
+  .wall-mod {
+    background: var(--color-bg-card);
+    border: 1px solid var(--copper-hairline);
+    border-radius: var(--radius-card);
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+  .wall-mod::before,
+  .wall-mod::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 8px;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(200, 128, 74, 0.04) 2px,
+      rgba(200, 128, 74, 0.04) 3px
+    );
+  }
+  .wall-mod::before { top: 0; }
+  .wall-mod::after { bottom: 0; transform: scaleY(-1); }
+
+  .wall-mod-head {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    padding: 14px 16px 10px;
+    border-bottom: 1px solid var(--copper-hairline);
+    position: relative;
+    z-index: 1;
+  }
+  @media (min-width: 768px) {
+    .wall-mod-head {
+      padding: 16px 18px 12px;
+    }
+  }
+
+  .wall-mod-num {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--color-copper);
+    letter-spacing: 0.12em;
+    font-weight: 600;
+  }
+  .wall-mod-title {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--color-ash-100);
+    letter-spacing: 0.18em;
+    font-weight: 600;
+    margin: 0;
+    flex: 1;
+  }
+  @media (min-width: 1024px) {
+    .wall-mod-title {
+      font-size: 13px;
+    }
+  }
+  .wall-mod-badge {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--color-ash-500);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    border: 1px solid var(--copper-hairline);
+    border-radius: 3px;
+    background: var(--color-bg-deep);
+  }
+  .wall-mod-badge[data-mod-source="live"] {
+    color: var(--color-wc-green);
+    border-color: rgba(77, 216, 168, 0.3);
+  }
+  .wall-mod-badge[data-mod-source="fallback"] {
+    color: var(--color-amber);
+    border-color: rgba(240, 184, 120, 0.3);
+  }
+  /* CACHED = was live recently, served from KV. Copper instead of amber so
+     visitors don't read it as broken. It's real data, just not from this
+     exact request. PSI quota recovery + 12h cache means most of the day. */
+  .wall-mod-badge[data-mod-source="cached"] {
+    color: var(--color-copper-bright);
+    border-color: rgba(200, 128, 74, 0.4);
+  }
+
+  .wall-mod-body {
+    padding: 16px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    position: relative;
+    z-index: 1;
+  }
+  @media (min-width: 768px) {
+    .wall-mod-body {
+      padding: 18px;
+    }
+  }
+
+  .wall-stat-big {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .wall-stat-num {
+    font-family: var(--font-mono);
+    font-size: 28px;
+    color: var(--color-ash-100);
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    font-feature-settings: 'tnum';
+  }
+  @media (min-width: 768px) {
+    .wall-stat-num { font-size: 32px; }
+  }
+  @media (min-width: 1024px) {
+    .wall-stat-num { font-size: 36px; }
+  }
+  .wall-stat-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--color-ash-500);
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-weight: 500;
+  }
+
+  .wall-stat-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    padding-top: 8px;
+    border-top: 1px dashed var(--copper-hairline);
+  }
+  .wall-stat-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .wall-stat-cell-num {
+    font-family: var(--font-mono);
+    font-size: 18px;
+    color: var(--color-copper-bright);
+    font-weight: 600;
+    line-height: 1;
+    font-feature-settings: 'tnum';
+  }
+  @media (min-width: 1024px) {
+    .wall-stat-cell-num { font-size: 20px; }
+  }
+  .wall-stat-cell-label {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--color-ash-500);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+
+  .wall-mod-detail {
+    font-family: var(--font-sans);
+    font-size: 12px;
+    color: var(--color-ash-400);
+    line-height: 1.55;
+    margin: 0;
+    padding-top: 8px;
+    border-top: 1px dashed var(--copper-hairline);
+  }
+  @media (min-width: 1024px) {
+    .wall-mod-detail { font-size: 13px; }
+  }
+
+  .wall-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--font-mono);
+    font-size: 12px;
+  }
+  .wall-table thead th {
+    text-align: left;
+    color: var(--color-ash-500);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: 10px;
+    padding: 0 0 8px;
+    border-bottom: 1px solid var(--copper-hairline);
+  }
+  .wall-table th.wall-num,
+  .wall-table td.wall-num {
+    text-align: right;
+    font-feature-settings: 'tnum';
+  }
+  .wall-table tbody th {
+    text-align: left;
+    color: var(--color-ash-300);
+    font-weight: 500;
+    padding: 10px 0;
+    font-family: var(--font-sans);
+  }
+  .wall-table tbody td {
+    text-align: right;
+    color: var(--color-ash-100);
+    padding: 10px 0;
+    font-feature-settings: 'tnum';
+  }
+  .wall-table tbody tr {
+    border-bottom: 1px dashed var(--copper-hairline);
+  }
+  .wall-table tbody tr:last-child {
+    border-bottom: 0;
+  }
+  .wall-num-strong {
+    color: var(--color-copper-bright) !important;
+    font-weight: 600;
+  }
+
+  .wall-grade {
+    font-family: var(--font-mono);
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--color-ash-100);
+    line-height: 1;
+    letter-spacing: -0.04em;
+  }
+  @media (min-width: 768px) { .wall-grade { font-size: 44px; } }
+  .wall-grade-a,
+  .wall-grade-aplus { color: var(--color-wc-green); }
+  .wall-grade-b,
+  .wall-grade-bplus { color: var(--color-wc-green-bright); }
+  .wall-grade-c,
+  .wall-grade-cplus { color: var(--color-amber); }
+  .wall-grade-d,
+  .wall-grade-f { color: var(--color-copper); }
+
+  .wall-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .wall-list-ok {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--color-ash-300);
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+  }
+  .wall-list-icon {
+    color: var(--color-wc-green);
+    font-weight: 700;
+  }
+
+  .wall-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 14px;
+    border-radius: var(--radius-btn);
+    background: var(--color-wc-green);
+    color: var(--color-bg-deep);
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 13px;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.2s;
+    align-self: flex-start;
+  }
+  .wall-cta:hover {
+    background: var(--color-wc-green-bright);
+    transform: translateY(-1px);
+  }
+
+  .wall-zone-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .wall-zone {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 6px 0;
+    border-bottom: 1px dashed var(--copper-hairline);
+  }
+  .wall-zone:last-child {
+    border-bottom: 0;
+  }
+  .wall-zone-icon {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    color: var(--color-copper);
+    line-height: 1.4;
+  }
+  .wall-zone-free .wall-zone-icon {
+    color: var(--color-wc-green);
+  }
+  .wall-zone-remote .wall-zone-icon {
+    color: var(--color-ash-500);
+  }
+  .wall-zone-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .wall-zone-name {
+    font-family: var(--font-sans);
+    font-size: 13px;
+    color: var(--color-ash-100);
+    font-weight: 500;
+  }
+  .wall-zone-cost {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--color-ash-500);
+    letter-spacing: 0.04em;
+  }
+  @media (min-width: 1024px) {
+    .wall-zone-name { font-size: 14px; }
+    .wall-zone-cost { font-size: 11px; }
+  }
+</style>

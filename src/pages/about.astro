@@ -1,0 +1,519 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/layout/Header.astro';
+import MobileMenu from '../components/layout/MobileMenu.astro';
+import PageHero from '../components/sections/PageHero.astro';
+import Divider from '../components/ui/Divider.astro';
+import Contact from '../components/sections/Contact.astro';
+---
+
+<BaseLayout
+  title="About · Winters Code"
+  description="Preston Winters. 6th generation Bandon, Oregon. Solo software shop. I've owned small businesses. I know what it's like to drown in software you didn't choose."
+>
+  <Header />
+  <MobileMenu />
+
+  <PageHero
+    eyebrow="About · Preston Winters"
+    h1="I'm Preston Winters."
+    sub="6th generation Bandon, Oregon. Solo software shop. I write the code, I ship the work, I answer the phone."
+    sub2="I've owned small businesses. I know what it's like to drown in software you didn't choose."
+  />
+
+  <Divider label="01" />
+
+  <!-- ─────────── Section 01 · The story (photo + prose) ─────────── -->
+  <section class="ab-story" aria-labelledby="ab-story-h">
+    <figure class="ab-photo">
+      <picture>
+        <source
+          type="image/webp"
+          srcset="
+            /photo/preston-560.webp 560w,
+            /photo/preston-840.webp 840w,
+            /photo/preston-1120.webp 1120w
+          "
+          sizes="(min-width: 1024px) 380px, (min-width: 768px) 300px, 100vw"
+        />
+        <img
+          src="/photo/preston-840.webp"
+          alt="Preston Winters with his daughter at the Coquille River Lighthouse, Bandon, Oregon."
+          width="840"
+          height="796"
+          loading="lazy"
+          decoding="async"
+          class="ab-photo-img"
+        />
+      </picture>
+      <figcaption class="ab-photo-cap">
+        Coquille River Lighthouse, Bandon. Where I'm from, where I work,
+        where my kids are growing up.
+      </figcaption>
+    </figure>
+
+    <div class="ab-prose">
+      <h2 class="ab-story-h" id="ab-story-h">The short version.</h2>
+
+      <p>
+        Sixth generation Bandon. My dad's fifth gen, his dad before him,
+        all the way back. I grew up here. My three daughters are growing
+        up here. The plan is to stay.
+      </p>
+
+      <p>
+        I'm self-taught on every stack I work in. Started with landscaping
+        as a teenager and never stopped, I'm a licensed landscaping pro
+        in Oregon. Picked up code somewhere along the way and didn't put
+        it down. Now I build websites, apps, and AI tools for businesses
+        on the Oregon coast. The landscaping work taught me how to show
+        up on time, do the job right, and not make excuses. The same
+        rules apply to software.
+      </p>
+
+      <p>
+        I've been building my own software for a while.
+        <a href="https://apps.apple.com/us/app/stainslayer-ai/id6757208835" target="_blank" rel="noopener"><strong>StainSlayer</strong></a>
+        is the one you can grab right now. A phone app that takes a
+        picture of a stain and tells you how to get it out, live on the
+        <a href="https://apps.apple.com/us/app/stainslayer-ai/id6757208835" target="_blank" rel="noopener">App Store</a>
+        and
+        <a href="https://play.google.com/store/apps/details?id=com.mycompany.stainslayerai" target="_blank" rel="noopener">Google Play</a>.
+        A handful of others are in private beta: <strong>Baseline</strong>
+        (political signal across a bunch of AI models at once),
+        <strong>MyKonos</strong> (an AI companion with real memory),
+        and <strong>ChopLight</strong> (motion based utility flashlight).
+        Web3 and crypto work in there too, plus a comics project on the
+        side.
+      </p>
+
+      <p>
+        That AI work shows up in your project whether you asked for
+        it or not. I built my own memory engine that runs on top of
+        Claude, and I use it on every build. So I'm not relearning
+        your business every time we talk. The notes stick. The
+        decisions stick. The same person who took your first call
+        writes your code.
+      </p>
+
+      <p>
+        Winters Code brought all of that home. I've owned small
+        businesses. I know what it's like to drown in software you
+        didn't choose. So I build the kind of tools I wish I'd had,
+        for the kind of businesses I grew up around. Built to last,
+        with somebody local on the other end of it.
+      </p>
+    </div>
+  </section>
+
+  <Divider label="02" />
+
+  <!-- ─────────── Section 02 · How I work ─────────── -->
+  <section class="ab-block" aria-labelledby="ab-how-h">
+    <header class="ab-block-head">
+      <h2 class="ab-block-h" id="ab-how-h">How I work.</h2>
+      <p class="ab-block-sub">Plain rules. I keep them.</p>
+    </header>
+
+    <ul class="ab-how-list">
+      <li>
+        <strong>I show up in person when it matters.</strong>
+        Small towns work on trust. Phone calls don't build it the same way.
+      </li>
+      <li>
+        <strong>I write code that ships fast and doesn't break.</strong>
+        Modern stack, no plugins to babysit, ~95 Lighthouse average across every site.
+      </li>
+      <li>
+        <strong>I answer my texts within a few hours during business days.</strong>
+        541-551-0731. Real human, real response time.
+      </li>
+      <li>
+        <strong>I don't sub work out.</strong>
+        You're hiring me, you get me. Same person every call.
+      </li>
+      <li>
+        <strong>I'm here for the long run.</strong>
+        Bandon's home. The shop isn't going anywhere. The person who built
+        your site is the person who maintains it five years from now.
+      </li>
+      <li>
+        <strong>The site fits your customer, not the other way around.</strong>
+        Sometimes that means a long scrolling story. Sometimes that
+        means a big phone number and a clear way to book. I figure
+        out which one you need, then build that.
+      </li>
+    </ul>
+  </section>
+
+  <Divider label="03" />
+
+  <!-- ─────────── Section 03 · The four laws ─────────── -->
+  <section class="ab-block ab-laws" aria-labelledby="ab-laws-h">
+    <header class="ab-block-head">
+      <h2 class="ab-block-h" id="ab-laws-h">What I believe.</h2>
+      <p class="ab-block-sub">Four rules I won't bend.</p>
+    </header>
+
+    <ol class="ab-laws-list">
+      <li>
+        <span class="ab-law-num">01</span>
+        <div class="ab-law-body">
+          <h3 class="ab-law-h">Speed matters.</h3>
+          <p>Days for sites, weeks for apps. Small businesses on the Oregon coast deserve tools that ship, not quarterly project plans.</p>
+        </div>
+      </li>
+      <li>
+        <span class="ab-law-num">02</span>
+        <div class="ab-law-body">
+          <h3 class="ab-law-h">Quality is non-negotiable.</h3>
+          <p>Speed without quality is reputation death. ~95 Lighthouse average, security defaults, modern stack end to end.</p>
+        </div>
+      </li>
+      <li>
+        <span class="ab-law-num">03</span>
+        <div class="ab-law-body">
+          <h3 class="ab-law-h">I write the actual code.</h3>
+          <p>Not WordPress, not Wix, not a builder. The code under your site is the code I wrote for your site. Loads faster, ranks better, stays secure.</p>
+        </div>
+      </li>
+      <li>
+        <span class="ab-law-num">04</span>
+        <div class="ab-law-body">
+          <h3 class="ab-law-h">Recurring relationships beat one-off projects.</h3>
+          <p>The person who built it is the person who maintains it. Help is just a text away.</p>
+        </div>
+      </li>
+    </ol>
+  </section>
+
+  <Divider label="04" />
+
+  <!-- ─────────── Section 04 · Bandon roots ─────────── -->
+  <section class="ab-block ab-roots" aria-labelledby="ab-roots-h">
+    <header class="ab-block-head">
+      <h2 class="ab-block-h" id="ab-roots-h">Why Bandon.</h2>
+    </header>
+
+    <div class="ab-roots-body">
+      <p>
+        My family has been on the south Oregon coast for six generations.
+        Bandon is where I grew up, where I'm raising my daughters,
+        where I'll be in ten years. The coast is full of family
+        businesses that deserve good tools, and the nearest agency is
+        usually in Portland or further. That's the gap I'm filling.
+      </p>
+      <p>
+        Bandon gets free in-person consults &mdash; I'll meet you at
+        Warehouse Coffee or your shop. Coos and Curry counties get free
+        30-min video. The phone number stays the same year after year.
+        If you've ever called a national agency and gotten a ticket
+        number instead of an answer, you know exactly what I'm the
+        opposite of.
+      </p>
+      <p class="ab-roots-pull">
+        <em>I'm down the road. I pick up the phone.</em>
+      </p>
+    </div>
+  </section>
+
+  <Divider label="05" />
+
+  <!-- ─────────── Section 05 · CTA ─────────── -->
+  <section class="ab-cta" aria-label="Get in touch">
+    <h2 class="ab-cta-h">Let's talk.</h2>
+    <p class="ab-cta-sub">
+      Free consult. No pitch deck. Honest take on what you have,
+      a real number, and a quote on the spot if it's a fit.
+    </p>
+    <div class="ab-cta-actions">
+      <a href="/contact" class="ab-cta-primary">Send a brief →</a>
+      <a href="https://cal.com/preston-winters" target="_blank" rel="noopener" class="ab-cta-secondary">
+        Book on Cal →
+      </a>
+      <a href="sms:5415510731" class="ab-cta-secondary">Text me</a>
+    </div>
+  </section>
+
+  <Divider label="06" />
+
+  <Contact sectionNumber="06" />
+</BaseLayout>
+
+<style>
+  /* ─── Shared block scaffolding ─── */
+  .ab-block {
+    padding: 32px 4px 24px;
+    max-width: 760px;
+    margin: 0 auto;
+  }
+  @media (min-width: 768px) {
+    .ab-block { padding: 48px 4px 32px; }
+  }
+  .ab-block-head { margin: 0 0 18px; }
+  .ab-block-h {
+    font-family: var(--font-serif);
+    font-size: 28px;
+    line-height: 1.15;
+    color: var(--color-ash-100);
+    margin: 0 0 6px;
+    font-weight: 600;
+  }
+  @media (min-width: 768px) { .ab-block-h { font-size: 36px; } }
+  @media (min-width: 1024px) { .ab-block-h { font-size: 42px; } }
+  .ab-block-sub {
+    font-family: var(--font-sans);
+    font-size: 14px;
+    color: var(--color-ash-400);
+    margin: 0;
+  }
+  @media (min-width: 768px) { .ab-block-sub { font-size: 15px; } }
+
+  /* ─── Section 01: photo + prose ─── */
+  .ab-story {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+    padding: 24px 4px 16px;
+    max-width: 960px;
+    margin: 0 auto;
+    align-items: start;
+  }
+  @media (min-width: 768px) {
+    .ab-story { grid-template-columns: 260px 1fr; gap: 32px; padding: 40px 4px 24px; }
+  }
+  @media (min-width: 1024px) {
+    .ab-story { grid-template-columns: 340px 1fr; gap: 48px; padding: 56px 4px 32px; }
+  }
+
+  .ab-photo {
+    margin: 0;
+    max-width: 380px;
+    justify-self: center;
+  }
+  @media (min-width: 768px) { .ab-photo { justify-self: start; } }
+  .ab-photo-img {
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius-card, 10px);
+    border: 1px solid var(--copper-hairline);
+    display: block;
+  }
+  .ab-photo-cap {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    line-height: 1.5;
+    color: var(--color-ash-500);
+    margin: 10px 0 0;
+    letter-spacing: 0.02em;
+  }
+  @media (min-width: 768px) { .ab-photo-cap { font-size: 12px; } }
+
+  .ab-prose { min-width: 0; }
+  .ab-story-h {
+    font-family: var(--font-serif);
+    font-size: 24px;
+    line-height: 1.2;
+    color: var(--color-ash-100);
+    margin: 0 0 16px;
+    font-weight: 600;
+  }
+  @media (min-width: 768px) { .ab-story-h { font-size: 28px; } }
+  @media (min-width: 1024px) { .ab-story-h { font-size: 32px; } }
+
+  .ab-prose p {
+    font-family: var(--font-sans);
+    font-size: 15px;
+    line-height: 1.65;
+    color: var(--color-ash-300);
+    margin: 0 0 14px;
+  }
+  @media (min-width: 768px) { .ab-prose p { font-size: 16px; } }
+  .ab-prose p strong { color: var(--color-ash-100); }
+  .ab-prose p em {
+    color: var(--color-copper-bright);
+    font-style: italic;
+  }
+  .ab-prose p a {
+    color: var(--color-ash-100);
+    text-decoration: underline;
+    text-decoration-color: var(--color-copper);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+    transition: text-decoration-color 0.15s ease, color 0.15s ease;
+  }
+  .ab-prose p a:hover,
+  .ab-prose p a:focus-visible {
+    color: var(--color-copper-bright);
+    text-decoration-color: var(--color-copper-bright);
+    outline: none;
+  }
+  .ab-prose p a strong { color: inherit; }
+
+  /* ─── Section 02: How I work ─── */
+  .ab-how-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 14px;
+  }
+  .ab-how-list li {
+    font-family: var(--font-sans);
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--color-ash-300);
+    padding: 0 0 14px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  }
+  @media (min-width: 768px) { .ab-how-list li { font-size: 15px; } }
+  .ab-how-list li:last-child { border-bottom: 0; }
+  .ab-how-list strong {
+    display: block;
+    color: var(--color-ash-100);
+    font-weight: 600;
+    margin: 0 0 4px;
+  }
+
+  /* ─── Section 03: Four laws ─── */
+  .ab-laws-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 18px;
+  }
+  .ab-laws-list li {
+    display: grid;
+    grid-template-columns: 56px 1fr;
+    gap: 16px;
+    padding: 14px 0;
+    border-top: 1px solid var(--copper-hairline);
+  }
+  .ab-laws-list li:last-child {
+    border-bottom: 1px solid var(--copper-hairline);
+  }
+  @media (min-width: 768px) {
+    .ab-laws-list li { grid-template-columns: 72px 1fr; gap: 20px; padding: 18px 0; }
+  }
+
+  .ab-law-num {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 36px;
+    line-height: 1;
+    color: var(--color-copper);
+    font-weight: 600;
+  }
+  @media (min-width: 768px) { .ab-law-num { font-size: 48px; } }
+  @media (min-width: 1024px) { .ab-law-num { font-size: 56px; } }
+
+  .ab-law-body { min-width: 0; }
+  .ab-law-h {
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 1.3;
+    color: var(--color-ash-100);
+    margin: 0 0 4px;
+    font-weight: 600;
+  }
+  @media (min-width: 768px) { .ab-law-h { font-size: 18px; } }
+  .ab-law-body p {
+    font-family: var(--font-sans);
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--color-ash-400);
+    margin: 0;
+  }
+  @media (min-width: 768px) { .ab-law-body p { font-size: 14px; } }
+
+  /* ─── Section 04: Bandon roots ─── */
+  .ab-roots-body p {
+    font-family: var(--font-sans);
+    font-size: 15px;
+    line-height: 1.65;
+    color: var(--color-ash-300);
+    margin: 0 0 14px;
+  }
+  @media (min-width: 768px) { .ab-roots-body p { font-size: 16px; } }
+  .ab-roots-pull {
+    font-family: var(--font-serif);
+    font-size: 20px !important;
+    line-height: 1.35 !important;
+    color: var(--color-ash-100) !important;
+    border-left: 2px solid var(--color-copper);
+    padding-left: 16px;
+    margin: 24px 0 0 !important;
+  }
+  @media (min-width: 768px) {
+    .ab-roots-pull { font-size: 24px !important; padding-left: 20px; }
+  }
+  .ab-roots-pull em {
+    color: var(--color-copper-bright);
+    font-style: italic;
+  }
+
+  /* ─── Section 05: CTA ─── */
+  .ab-cta {
+    padding: 32px 4px 40px;
+    max-width: 720px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  @media (min-width: 768px) { .ab-cta { padding: 48px 4px 56px; } }
+  .ab-cta-h {
+    font-family: var(--font-serif);
+    font-size: 32px;
+    line-height: 1.15;
+    color: var(--color-ash-100);
+    margin: 0 0 10px;
+    font-weight: 600;
+  }
+  @media (min-width: 768px) { .ab-cta-h { font-size: 44px; } }
+  @media (min-width: 1024px) { .ab-cta-h { font-size: 52px; } }
+  .ab-cta-sub {
+    font-family: var(--font-sans);
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--color-ash-400);
+    margin: 0 0 20px;
+    max-width: 480px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  @media (min-width: 768px) { .ab-cta-sub { font-size: 15px; margin-bottom: 24px; } }
+  .ab-cta-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+  }
+  .ab-cta-primary,
+  .ab-cta-secondary {
+    font-family: var(--font-sans);
+    font-size: 14px;
+    text-decoration: none;
+    border-radius: 6px;
+    padding: 10px 16px;
+    transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  }
+  .ab-cta-primary {
+    background-color: var(--color-wc-green);
+    color: var(--color-bg-deep);
+    font-weight: 600;
+  }
+  .ab-cta-primary:hover,
+  .ab-cta-primary:focus-visible {
+    background-color: var(--color-wc-green-bright, var(--color-wc-green));
+    outline: none;
+  }
+  .ab-cta-secondary {
+    color: var(--color-ash-100);
+    border: 1px solid var(--copper-hairline);
+  }
+  .ab-cta-secondary:hover,
+  .ab-cta-secondary:focus-visible {
+    border-color: var(--color-copper);
+    outline: none;
+  }
+</style>

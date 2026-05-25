@@ -1,0 +1,175 @@
+---
+/**
+ * Stamp: the Winters Code maker's mark.
+ *
+ * Doctrine (brain memory #2586): every WC build ships with this.
+ * It's the signature on the work, not an ad.
+ *
+ * Two variants:
+ * - default ('stripped'): outer ring + W + dots + glow, no wrap text.
+ *   Used on hero, PageHero seal, footer, client-site credits, app
+ *   settings. The standard mark.
+ * - 'full': adds the wrap text WINTERS CODE / BANDON OR / MMXXVI
+ *   around the rim. Reserved for docs, press, og sharecards.
+ *
+ * Sizes via the `size` prop (in pixels, square aspect-ratio):
+ * - hero: ~120-140 (homepage featured)
+ * - seal: ~60-80 (work/services/about PageHero)
+ * - credit: ~24-32 (footer, every page)
+ * - inline: ~20 (compact text-line use, "Built by [stamp] WC")
+ *
+ * Optional `tilt` prop adds a slight rotation (degrees). The hero
+ * stamp tilts ~-4deg like the magazine stamp it replaces.
+ *
+ * Optional `glow` prop controls the drop-shadow strength:
+ * - 'full': bold glow, for hero
+ * - 'soft' (default): subtle glow, for seal + credit
+ * - 'none': no glow, for inline mono-row use
+ *
+ * Optional `linked` prop wraps the stamp in <a href="...">. Used on
+ * client sites pointing back to winterscode.com.
+ */
+export interface Props {
+  size?: number;
+  variant?: 'stripped' | 'full';
+  tilt?: number;
+  glow?: 'full' | 'soft' | 'none';
+  linked?: string;
+  ariaLabel?: string;
+  class?: string;
+}
+
+const {
+  size = 32,
+  variant = 'stripped',
+  tilt = 0,
+  glow = 'soft',
+  linked,
+  ariaLabel = "Winters Code maker's mark",
+  class: className = '',
+} = Astro.props;
+
+const baseName = variant === 'full' ? 'wc-stamp-full' : 'wc-stamp';
+
+// Pick the right size raster. We have 32 / 64 / 128 / 256 / 512 / 1080.
+// 2x-DPR rule: choose the next-size-up raster.
+function pickRaster(targetPx: number) {
+  const sizes = [32, 64, 128, 256, 512, 1080];
+  const target2x = targetPx * 2;
+  for (const s of sizes) if (s >= target2x) return s;
+  return 1080;
+}
+const rasterSize = pickRaster(size);
+
+// "Full" variant only has 64/128/256 + 1080 source, so clamp it.
+const availableForFull = [64, 128, 256, 1080];
+const finalRasterSize = variant === 'full'
+  ? availableForFull.find(s => s >= rasterSize) ?? 1080
+  : rasterSize;
+
+const src = `/${baseName}-${finalRasterSize}.webp`;
+const srcPng = `/${baseName}-${finalRasterSize}.png`;
+
+// Build style string for the wrapper
+const wrapStyle = [
+  `width: ${size}px`,
+  `height: ${size}px`,
+  tilt !== 0 ? `transform: rotate(${tilt}deg)` : '',
+  `display: inline-block`,
+  `flex-shrink: 0`,
+].filter(Boolean).join('; ');
+
+// Glow classes
+const glowClass = glow === 'full' ? 'wcs-glow-full'
+  : glow === 'soft' ? 'wcs-glow-soft'
+  : '';
+---
+
+{linked ? (
+  <a href={linked} class={`wcs-link ${className}`} aria-label={ariaLabel} target={linked.startsWith('http') ? '_blank' : undefined} rel={linked.startsWith('http') ? 'noopener' : undefined}>
+    <span class={`wcs-stamp ${glowClass}`} style={wrapStyle}>
+      <picture>
+        <source srcset={src} type="image/webp" />
+        <img
+          src={srcPng}
+          alt=""
+          width={size}
+          height={size}
+          loading="lazy"
+          decoding="async"
+          class="wcs-img"
+        />
+      </picture>
+    </span>
+  </a>
+) : (
+  <span class={`wcs-stamp ${glowClass} ${className}`} style={wrapStyle} role="img" aria-label={ariaLabel}>
+    <picture>
+      <source srcset={src} type="image/webp" />
+      <img
+        src={srcPng}
+        alt=""
+        width={size}
+        height={size}
+        loading="lazy"
+        decoding="async"
+        class="wcs-img"
+      />
+    </picture>
+  </span>
+)}
+
+<style>
+  .wcs-stamp {
+    line-height: 0;
+    border-radius: 50%;
+    overflow: hidden;
+    user-select: none;
+    -webkit-user-drag: none;
+    pointer-events: none;
+    /* isolate so border-radius properly clips the child picture/img */
+    isolation: isolate;
+  }
+  .wcs-stamp picture {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    overflow: hidden;
+  }
+  .wcs-stamp .wcs-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+  }
+  .wcs-glow-soft {
+    filter: drop-shadow(0 0 8px rgba(200, 128, 74, 0.25));
+  }
+  .wcs-glow-full {
+    filter:
+      drop-shadow(0 0 14px rgba(200, 128, 74, 0.45))
+      drop-shadow(0 0 32px rgba(200, 128, 74, 0.18));
+  }
+
+  .wcs-link {
+    text-decoration: none;
+    color: inherit;
+    display: inline-flex;
+    align-items: center;
+    pointer-events: auto;
+    transition: opacity 0.2s ease-out;
+  }
+  .wcs-link:hover, .wcs-link:focus-visible {
+    opacity: 0.85;
+  }
+  .wcs-link:focus-visible {
+    outline: 2px solid var(--color-copper);
+    outline-offset: 4px;
+    border-radius: 4px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .wcs-glow-soft, .wcs-glow-full { filter: none; }
+  }
+</style>

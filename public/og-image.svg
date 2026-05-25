@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="Winters Code, custom websites and apps for the Oregon coast">
+  <title>Winters Code</title>
+
+  <defs>
+    <radialGradient id="copperGlow" cx="50%" cy="0%" r="70%">
+      <stop offset="0%" stop-color="#c8804a" stop-opacity="0.22"/>
+      <stop offset="100%" stop-color="#c8804a" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="greenGlow" cx="50%" cy="100%" r="60%">
+      <stop offset="0%" stop-color="#4dd8a8" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#4dd8a8" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#4dd8a8"/>
+      <stop offset="100%" stop-color="#c8804a"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Backgrounds -->
+  <rect width="1200" height="630" fill="#0a0d0c"/>
+  <rect width="1200" height="630" fill="url(#copperGlow)"/>
+  <rect width="1200" height="630" fill="url(#greenGlow)"/>
+
+  <!-- Edge registration marks (still on the canvas edges, decorative if visible) -->
+  <g stroke="#c8804a" stroke-opacity="0.4" stroke-width="1.5" fill="none">
+    <path d="M40 60 L40 40 L60 40"/>
+    <path d="M1140 60 L1140 40 L1160 40"/>
+    <path d="M40 570 L40 590 L60 590"/>
+    <path d="M1140 570 L1140 590 L1160 590"/>
+  </g>
+
+  <!-- Top hairline (full width, decorative but safe to crop) -->
+  <line x1="200" y1="115" x2="1000" y2="115" stroke="#c8804a" stroke-opacity="0.4" stroke-width="1"/>
+
+  <!-- W stamp - CENTERED top of canvas -->
+  <g transform="translate(545,30)">
+    <circle cx="55" cy="55" r="50" fill="none" stroke="#c8804a" stroke-opacity="0.95" stroke-width="2"/>
+    <circle cx="55" cy="55" r="40" fill="none" stroke="#c8804a" stroke-opacity="0.55" stroke-width="0.9"/>
+    <text x="55" y="73" font-family="'Fraunces', 'Playfair Display', Georgia, serif" font-size="62" font-weight="600" font-style="italic" text-anchor="middle" fill="#e6ebef" letter-spacing="-1">W</text>
+    <line x1="40" y1="82" x2="70" y2="82" stroke="#c8804a" stroke-opacity="0.6" stroke-width="0.7"/>
+  </g>
+
+  <!-- Eyebrow row, CENTERED -->
+  <text x="600" y="160" font-family="'JetBrains Mono', monospace" font-size="14" font-weight="500" letter-spacing="4" fill="#c8804a" text-anchor="middle">
+    VOL. I  ·  MMXXVI  ·  BANDON, OREGON
+  </text>
+
+  <!-- Main H1, CENTERED, two lines -->
+  <text x="600" y="265" font-family="'Fraunces', Georgia, serif" font-size="74" font-weight="500" fill="#e6ebef" letter-spacing="-2" text-anchor="middle">You didn't go into business</text>
+  <text x="600" y="345" font-family="'Fraunces', Georgia, serif" font-size="74" font-weight="500" fill="#e6ebef" letter-spacing="-2" text-anchor="middle">to manage software.</text>
+
+  <!-- Subhead CENTERED -->
+  <text x="600" y="420" font-family="'IBM Plex Sans', system-ui, sans-serif" font-size="30" font-weight="400" fill="#aab7c1" letter-spacing="-0.3" text-anchor="middle">
+    Custom websites and apps for the Oregon coast.
+  </text>
+
+  <!-- Creed, italic green, CENTERED -->
+  <text x="600" y="470" font-family="'Fraunces', Georgia, serif" font-size="32" font-weight="500" font-style="italic" fill="#4dd8a8" letter-spacing="-0.3" text-anchor="middle">
+    Help is just a text away.
+  </text>
+
+  <!-- Bottom accent bar CENTERED (200px wide) -->
+  <rect x="500" y="540" width="200" height="2" fill="url(#accent)"/>
+
+  <!-- URL CENTERED, mono -->
+  <text x="600" y="580" font-family="'JetBrains Mono', monospace" font-size="22" font-weight="500" letter-spacing="3" fill="#e6ebef" text-anchor="middle">
+    WINTERSCODE.COM
+  </text>
+
+  <!-- Bottom hairline -->
+  <line x1="200" y1="549" x2="1000" y2="549" stroke="#c8804a" stroke-opacity="0.4" stroke-width="1"/>
+</svg>

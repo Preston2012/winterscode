@@ -1,0 +1,228 @@
+---
+/**
+ * About teaser, passes "damn" test #2 (mirror).
+ *
+ * Spec ref: docs/design/S6_PLUS.md Section 8 (~line 762).
+ * Photo: /public/photo/preston-{560,840,1120}.webp (multi-res srcset).
+ * Locked copy below.
+ */
+---
+
+<section class="about-teaser" id="about-teaser" aria-labelledby="at-h">
+  <header class="at-head">
+    <div class="at-eyebrow">
+      <span class="line" aria-hidden="true"></span>
+      <h2 class="at-h" id="at-h">04 · ABOUT</h2>
+      <span class="at-status">who I am</span>
+    </div>
+    <a href="/about" class="at-link">more about me →</a>
+  </header>
+
+  <div class="at-body">
+    <figure class="at-photo">
+      <picture>
+        <source
+          type="image/webp"
+          srcset="/photo/preston-560.webp 560w, /photo/preston-840.webp 840w, /photo/preston-1120.webp 1120w"
+          sizes="(min-width: 1024px) 260px, (min-width: 768px) 200px, 240px"
+        />
+        <img
+          src="/photo/preston-840.webp"
+          alt="Preston Winters with his daughter at the Coquille River Lighthouse, Bandon, Oregon."
+          width="840"
+          height="796"
+          loading="lazy"
+          decoding="async"
+          class="at-photo-img"
+        />
+      </picture>
+    </figure>
+
+    <div class="at-copy">
+      <p class="at-line at-line-name">
+        I'm <strong>Preston Winters</strong>.
+      </p>
+      <p class="at-line">
+        6th generation Bandon. Solo software shop.
+      </p>
+      <p class="at-line at-line-mirror">
+        <em>I've owned small businesses. I know what it's like to drown
+        in software you didn't choose. Now I build the kind of tools I
+        wish I'd had.</em>
+      </p>
+      <a href="/about" class="at-cta">More about me →</a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .about-teaser {
+    padding: 40px 4px 48px;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  @media (min-width: 768px) {
+    .about-teaser { padding: 56px 4px 64px; max-width: 860px; }
+  }
+  @media (min-width: 1024px) {
+    .about-teaser { padding: 72px 0 80px; max-width: 960px; }
+  }
+
+  .at-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--copper-hairline);
+    margin-bottom: 24px;
+  }
+  .at-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .at-eyebrow .line {
+    width: 28px;
+    height: 1px;
+    background: var(--color-copper);
+  }
+  @media (min-width: 1024px) { .at-eyebrow .line { width: 40px; } }
+  .at-h {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    color: var(--color-copper);
+    text-transform: uppercase;
+    margin: 0;
+  }
+  @media (min-width: 1024px) { .at-h { font-size: 13px; } }
+  .at-status {
+    font-family: var(--font-sans);
+    font-size: 11px;
+    color: var(--color-ash-500);
+    font-style: italic;
+  }
+  .at-link {
+    font-family: var(--font-sans);
+    font-size: 12px;
+    color: var(--color-ash-400);
+    transition: color 200ms;
+  }
+  .at-link:hover { color: var(--color-wc-green); }
+
+  /* ─── Body: photo + copy ───
+     Mobile: stacked, photo + text both centered (was left-aligned which
+     looked off when the photo's natural max-width sat at 240px in a
+     wider column. Now justify-items: center on the grid plus text-align
+     on the copy. Tablet+: grid columns side-by-side, alignment center
+     for both. */
+  .at-body {
+    display: grid;
+    gap: 20px;
+    justify-items: center;
+    text-align: center;
+  }
+  @media (min-width: 768px) {
+    .at-body {
+      grid-template-columns: 200px 1fr;
+      gap: 28px;
+      align-items: center;
+      justify-items: start;
+      text-align: left;
+    }
+  }
+  @media (min-width: 1024px) {
+    .at-body { grid-template-columns: 260px 1fr; gap: 40px; }
+  }
+
+  /* Photo: real <picture> srcset */
+  .at-photo {
+    margin: 0;
+    aspect-ratio: 4 / 5;
+    max-width: 240px;
+    width: 100%;
+    border-radius: var(--radius-card);
+    overflow: hidden;
+    border: 1px solid var(--copper-hairline);
+    position: relative;
+  }
+  @media (min-width: 768px) {
+    .at-photo { max-width: 200px; }
+  }
+  @media (min-width: 1024px) {
+    .at-photo { max-width: 260px; }
+  }
+  .at-photo picture,
+  .at-photo-img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+  }
+  /* Subtle copper hairline glow on hover for editorial feel */
+  .at-photo::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius-card);
+    box-shadow: inset 0 0 0 1px rgba(200, 128, 74, 0);
+    transition: box-shadow 300ms;
+    pointer-events: none;
+  }
+  .at-photo:hover::after {
+    box-shadow: inset 0 0 0 1px rgba(240, 160, 110, 0.3);
+  }
+
+  /* Copy */
+  .at-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .at-line {
+    font-family: var(--font-sans);
+    font-size: 15px;
+    color: var(--color-ash-300);
+    line-height: 1.55;
+    margin: 0;
+  }
+  @media (min-width: 1024px) { .at-line { font-size: 16px; line-height: 1.5; } }
+  .at-line-name {
+    font-family: var(--font-serif);
+    font-size: 20px;
+    color: var(--color-ash-100);
+    line-height: 1.25;
+  }
+  @media (min-width: 1024px) { .at-line-name { font-size: 24px; } }
+  .at-line-name strong {
+    font-weight: 600;
+    color: var(--color-ash-100);
+  }
+  .at-line-mirror em {
+    color: var(--color-ash-100);
+    font-style: italic;
+    font-family: var(--font-serif);
+    font-weight: 500;
+  }
+
+  .at-cta {
+    display: inline-block;
+    margin-top: 6px;
+    font-family: var(--font-sans);
+    font-size: 14px;
+    color: var(--color-wc-green);
+    text-decoration: underline;
+    text-decoration-color: rgba(77, 216, 168, 0.4);
+    text-underline-offset: 3px;
+    align-self: flex-start;
+    transition: color 200ms;
+  }
+  .at-cta:hover {
+    color: var(--color-wc-green-bright);
+    text-decoration-color: var(--color-wc-green);
+  }
+</style>

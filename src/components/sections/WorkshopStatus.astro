@@ -1,0 +1,250 @@
+---
+import Explainer from '../ui/Explainer.astro';
+
+/**
+ * WorkshopStatus, the always-visible mini-Wall in the footer of every page.
+ *
+ * Spec ref: docs/design/S6_PLUS.md Section 11b (~line 906).
+ *
+ * 5 rows total. Same data sources as Wall, but more compact + persistent.
+ * Lives in the footer (added to BaseLayout in next step, or wrapped per-page).
+ *
+ * S7 ships with stub data, S10 wires live SSE/polling.
+ */
+
+interface StatusRow {
+  label: string;
+  value: string;
+  meta?: string;
+  href?: string;
+  /** If set, renders an Explainer "?" after the value with this text. */
+  explain?: string;
+}
+
+const ROWS: StatusRow[] = [
+  { label: 'LAST DEPLOY', value: '4m ago', meta: 'winterscode v0.1.0' },
+  {
+    label: 'LIGHTHOUSE',
+    value: '99/100/100/100',
+    meta: 'live',
+    explain:
+      "Google's Lighthouse score, four numbers: speed, accessibility, " +
+      "search-readiness, and best-practice security. 100 is perfect. " +
+      "Most small-business sites score 50-70. Mine measures live, " +
+      "from Google's own tool, every few minutes. Scores shown are " +
+      "mobile (the harder test). Desktop usually runs 2 to 5 points higher.",
+  },
+  { label: 'UPTIME 30D', value: '100%' },
+  { label: 'NEXT AVAILABLE', value: 'Wed 5pm PT', href: '/contact' },
+  { label: 'ACCEPTING', value: 'Bandon · Coos · Curry · Oregon coast & surrounding' },
+];
+---
+
+<section class="ws" aria-labelledby="ws-h">
+  <header class="ws-head">
+    <div class="ws-eyebrow">
+      <span class="line" aria-hidden="true"></span>
+      <h2 class="ws-h" id="ws-h">WORKSHOP STATUS</h2>
+      <span class="ws-status" aria-live="polite">
+        <span class="ws-pulse" aria-hidden="true"></span>
+        live
+      </span>
+    </div>
+  </header>
+
+  <ul class="ws-rows" role="list">
+    {ROWS.map((row) => (
+      <li class="ws-row" role="listitem">
+        <span class="ws-label">{row.label}</span>
+        {row.href ? (
+          <a class="ws-value ws-link" href={row.href}>{row.value}</a>
+        ) : (
+          <span class="ws-value">{row.value}</span>
+        )}
+        {row.explain && <Explainer class="ws-explainer">{row.explain}</Explainer>}
+        {row.meta && <span class="ws-meta">· {row.meta}</span>}
+      </li>
+    ))}
+  </ul>
+</section>
+
+<script is:inline>
+  (function () {
+    // Live data refresh from /api/workshop. Falls back to baked-in stubs.
+    fetch('/api/workshop', { signal: AbortSignal.timeout(4000) })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (d) {
+        if (!d) return;
+        var rows = document.querySelectorAll('.ws-row');
+        function findRow(label) {
+          for (var i = 0; i < rows.length; i++) {
+            var lbl = rows[i].querySelector('.ws-label');
+            if (lbl && lbl.textContent.trim() === label) return rows[i];
+          }
+          return null;
+        }
+        function setValue(row, value, meta) {
+          if (!row) return;
+          var v = row.querySelector('.ws-value');
+          var m = row.querySelector('.ws-meta');
+          if (v && value) v.textContent = value;
+          if (m && meta) m.textContent = '· ' + meta;
+        }
+        if (d.deploys) setValue(findRow('LAST DEPLOY'),
+          d.deploys.last, d.deploys.last_message);
+        if (d.lighthouse && Array.isArray(d.lighthouse.winterscode))
+          setValue(findRow('LIGHTHOUSE'),
+            d.lighthouse.winterscode.join('/'),
+            'measured ' + d.lighthouse.measured);
+        if (d.calendar) setValue(findRow('NEXT AVAILABLE'),
+          d.calendar.next, null);
+      })
+      .catch(function () { /* swallow */ });
+  })();
+</script>
+
+<style>
+  .ws {
+    padding: 28px 4px 0;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  @media (min-width: 768px) {
+    .ws { padding: 36px 4px 0; max-width: 860px; }
+  }
+  @media (min-width: 1024px) {
+    .ws { padding: 48px 0 0; max-width: 960px; }
+  }
+
+  .ws-head {
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--copper-hairline);
+    margin-bottom: 14px;
+  }
+  .ws-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .ws-eyebrow .line {
+    width: 24px;
+    height: 1px;
+    background: var(--color-copper);
+  }
+  .ws-h {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    color: var(--color-copper);
+    text-transform: uppercase;
+    margin: 0;
+  }
+  @media (min-width: 1024px) {
+    .ws-h { font-size: 11px; }
+  }
+  .ws-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--color-ash-500);
+    letter-spacing: 0.04em;
+  }
+  .ws-pulse {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--color-wc-green);
+    box-shadow: 0 0 6px rgba(77, 216, 168, 0.5);
+    animation: ws-pulse 2.4s ease-in-out infinite;
+  }
+  @keyframes ws-pulse {
+    0%, 100% { opacity: 0.6; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.2); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ws-pulse { animation: none; }
+  }
+
+  /* ─── Rows ─── */
+  .ws-rows {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 0;
+  }
+  /* Mobile: stacked rows */
+  .ws-row {
+    display: grid;
+    grid-template-columns: 110px 1fr;
+    column-gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(200, 128, 74, 0.08);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    line-height: 1.4;
+    align-items: baseline;
+  }
+  .ws-row:last-child { border-bottom: 0; }
+  .ws-label {
+    color: var(--color-ash-500);
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+  .ws-value {
+    color: var(--color-ash-100);
+    text-decoration: none;
+  }
+  a.ws-link {
+    color: var(--color-wc-green);
+    text-decoration: underline;
+    text-decoration-color: rgba(77, 216, 168, 0.4);
+    text-underline-offset: 3px;
+  }
+  a.ws-link:hover { color: var(--color-wc-green-bright); }
+  .ws-meta {
+    color: var(--color-ash-500);
+    font-style: italic;
+    margin-left: 4px;
+    font-size: 10px;
+  }
+
+  /* Explainer trigger sits between value and meta. Already styled as
+     a small "(?)" by Explainer.astro itself, but in this dense mono
+     context we want a touch more breathing room before the meta. */
+  .ws-explainer {
+    margin-left: 6px;
+    vertical-align: baseline;
+  }
+
+  /* Tablet: 2-col grid (label / value), already what we have */
+  /* Desktop: 4-col grid, all rows visible at once */
+  @media (min-width: 1024px) {
+    .ws-rows {
+      grid-template-columns: repeat(5, 1fr);
+      gap: 0;
+      border: 1px solid var(--copper-hairline);
+      border-radius: var(--radius-card);
+      overflow: hidden;
+    }
+    .ws-row {
+      grid-template-columns: 1fr;
+      grid-template-rows: auto auto;
+      gap: 4px;
+      padding: 14px 16px;
+      border-bottom: 0;
+      border-right: 1px solid var(--copper-hairline);
+      align-items: start;
+    }
+    .ws-row:last-child { border-right: 0; }
+    .ws-label { font-size: 10px; }
+    .ws-value { font-size: 12px; }
+    .ws-meta { font-size: 10px; margin-left: 0; display: block; }
+  }
+</style>

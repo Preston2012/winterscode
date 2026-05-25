@@ -1,0 +1,213 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const lastUpdated = '2026-05-13';
+---
+
+<BaseLayout
+  title="Terms of Service · Winters Code"
+  description="The rules for using this website and talking to me about a project. Short, plain English, no surprises."
+  canonicalPath="/terms"
+>
+  <article class="legal-page">
+    <div class="legal-eyebrow mono">LEGAL · TERMS OF SERVICE</div>
+    <h1 class="h1 legal-h1">Terms, in plain English.</h1>
+    <p class="legal-tagline">
+      The rules for browsing this site and talking to me about a project.
+      The contract for actual work is a separate signed document.
+    </p>
+    <p class="small legal-updated">Last updated: {lastUpdated}</p>
+
+    <div class="legal-body">
+      <p class="legal-lead">
+        Short version: be cool with the site, free consults aren't a binding contract,
+        the contract that runs the actual project is the Statement of Work we both sign
+        before any code is written. Oregon law applies. Questions? Just ask me.
+      </p>
+
+      <h2 class="h2 legal-h2">Using this site</h2>
+      <p>
+        winterscode.com is here to show you what I do, share my work, and get conversations
+        started. Use it however you like. Read it, share it, run my /audit tool against your
+        own site. Don't try to break it, don't scrape it for resale, don't blast contact forms.
+        Standard stuff.
+      </p>
+
+      <h2 class="h2 legal-h2">Free consults aren't a contract</h2>
+      <p>
+        I do free in-person consults in Bandon and free video consults in Coos and Curry counties.
+        Outside that, there's a travel deposit ($250 within 1.5 hours, $400 within 2.5 hours)
+        that credits back to your project if we work together. None of those conversations
+        create a binding engagement. The contract is the Statement of Work we both sign before
+        I start coding.
+      </p>
+
+      <h2 class="h2 legal-h2">Quotes hold for 14 days</h2>
+      <p>
+        Once I give you a quote, it's good for two weeks. After that I may need to refresh it
+        based on my current backlog or any new scope details. I'd rather requote than scramble
+        a job through.
+      </p>
+
+      <h2 class="h2 legal-h2">Work starts when the SOW is signed and the deposit clears</h2>
+      <p>
+        50% deposit upfront, balance on completion. Standard SOW terms include scope, deliverables,
+        timeline, revision rounds, and what triggers a change order. Inquiries, emails, calls,
+        and consult conversations don't move the clock. The timeline starts when both signatures
+        are on the SOW and the deposit lands.
+      </p>
+
+      <h2 class="h2 legal-h2">What's mine, what's yours</h2>
+      <p>
+        Site content (this design, the copy, the tools I built like /audit) is mine. Portfolio
+        work is shown with client permission and remains the client's property. When you hire me,
+        the SOW spells out IP transfer. Typically you own the deliverables, I keep the right to
+        showcase the work and reuse my own internal tooling on other projects. No surprises.
+      </p>
+
+      <h2 class="h2 legal-h2">No warranty on the site itself</h2>
+      <p>
+        winterscode.com is provided as-is. I try to keep it up, the Lighthouse Wall is real-time,
+        the audit tool runs against live APIs. But if it's down for a minute or a check fails, I'm
+        not liable for whatever you missed. Liability on your actual project is governed by the SOW,
+        not this page.
+      </p>
+
+      <h2 class="h2 legal-h2">Limit on liability for the site</h2>
+      <p>
+        For any claim arising specifically from using this website (not from a contracted project),
+        the most I'd owe you is $100. Real damages from a real engagement are governed by your
+        signed MSA and SOW, which have their own warranty and liability terms negotiated per
+        project.
+      </p>
+
+      <h2 class="h2 legal-h2">Links to other sites</h2>
+      <p>
+        I link out to client sites, GitHub repos, and vendor docs. Those are their own things.
+        I don't control what they say or how they handle your data once you leave winterscode.com.
+      </p>
+
+      <h2 class="h2 legal-h2">Oregon law applies</h2>
+      <p>
+        These terms are governed by Oregon law. Any dispute about this website specifically would
+        be filed in the state or federal courts in Coos County, Oregon. I live here. The courthouse
+        is fifteen minutes from my desk.
+      </p>
+
+      <h2 class="h2 legal-h2">When this changes</h2>
+      <p>
+        If I update these terms, the date at the top moves and the change is in the public
+        <a href="/changelog">/changelog</a>. Everything's on the record.
+      </p>
+
+      <h2 class="h2 legal-h2">Questions</h2>
+      <p>
+        I'm a person. <a href="mailto:preston@winterscode.com">preston@winterscode.com</a>
+        gets me directly. Or text <a href="sms:5415510731">541-551-0731</a>.
+      </p>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .legal-page {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 48px 4px 64px;
+  }
+  @media (min-width: 768px) {
+    .legal-page { padding: 64px 4px 80px; }
+  }
+  @media (min-width: 1024px) {
+    .legal-page { padding: 80px 0 96px; }
+  }
+
+  .legal-eyebrow {
+    color: var(--color-copper);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    font-weight: 600;
+    margin-bottom: 16px;
+  }
+  @media (min-width: 768px) {
+    .legal-eyebrow { font-size: 12px; }
+  }
+
+  .legal-h1 { margin: 0 0 16px; }
+
+  .legal-tagline {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 17px;
+    color: var(--color-ash-300);
+    line-height: 1.55;
+    margin: 0 0 16px;
+    max-width: 600px;
+  }
+  @media (min-width: 1024px) {
+    .legal-tagline { font-size: 19px; }
+  }
+
+  .legal-updated {
+    margin-top: 8px;
+    color: var(--color-ash-500);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+  }
+
+  .legal-body {
+    margin-top: 36px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    color: var(--color-ash-300);
+    font-size: 15px;
+    line-height: 1.65;
+  }
+  @media (min-width: 1024px) {
+    .legal-body { font-size: 16px; }
+  }
+  .legal-body p { margin: 0; }
+
+  .legal-lead {
+    padding: 16px 18px;
+    background: rgba(77, 216, 168, 0.05);
+    border: 1px solid rgba(77, 216, 168, 0.25);
+    border-radius: var(--radius-card);
+    color: var(--color-ash-100);
+    font-style: italic;
+    font-family: var(--font-serif);
+    font-size: 16px !important;
+    line-height: 1.6 !important;
+  }
+  @media (min-width: 1024px) {
+    .legal-lead {
+      font-size: 18px !important;
+      padding: 20px 24px;
+    }
+  }
+
+  .legal-h2 {
+    margin-top: 24px;
+    margin-bottom: 4px;
+  }
+  @media (min-width: 768px) {
+    .legal-h2 { margin-top: 28px; }
+  }
+
+  .legal-body strong {
+    color: var(--color-ash-100);
+    font-weight: 600;
+  }
+  .legal-body a {
+    color: var(--color-copper-bright);
+    text-decoration: underline;
+    text-decoration-color: var(--copper-hairline);
+    text-underline-offset: 3px;
+  }
+  .legal-body a:hover {
+    color: var(--color-wc-green);
+    text-decoration-color: var(--color-wc-green-dim);
+  }
+</style>

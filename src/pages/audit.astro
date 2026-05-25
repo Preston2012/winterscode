@@ -1,0 +1,1152 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/layout/Header.astro';
+import MobileMenu from '../components/layout/MobileMenu.astro';
+import PageHero from '../components/sections/PageHero.astro';
+import Divider from '../components/ui/Divider.astro';
+---
+
+<BaseLayout
+  title="Audit · Free Site Check · Winters Code"
+  description="Plug in a site, see what's broken. Free. No email required. A core set of the checks I use when I build."
+>
+  <Header />
+  <MobileMenu />
+
+  <PageHero
+    eyebrow="Audit · Free Site Check"
+    h1="See what your site is doing right (and what it isn't)."
+    sub="Plug in any site. I'll run it through a core set of the checks I use when I build."
+    sub2="Takes 30 seconds. No email needed."
+    showStamp={false}
+  />
+
+  <Divider label="01" />
+
+  <!-- ─────────── Section 01 · The form ─────────── -->
+  <section class="au-form-wrap" aria-labelledby="au-form-h">
+    <h2 class="au-form-h" id="au-form-h">Run the audit</h2>
+
+    <form class="au-form" id="au-form" data-au-form>
+      <label class="au-form-label" for="au-url">Site URL</label>
+      <div class="au-form-row">
+        <input
+          type="text"
+          id="au-url"
+          name="url"
+          placeholder="example.com or https://example.com"
+          inputmode="url"
+          autocomplete="url"
+          spellcheck="false"
+          autocapitalize="off"
+          required
+          data-au-url
+        />
+        <button type="submit" class="au-form-submit" data-au-submit>
+          Run audit →
+        </button>
+      </div>
+      <p class="au-form-note" data-au-note>
+        You can paste it without https://. Real checks, real numbers, no email.
+      </p>
+      <p class="au-form-error" data-au-error hidden role="alert"></p>
+    </form>
+
+    <div class="au-what">
+      <h3 class="au-what-h">What I check</h3>
+      <ul class="au-what-list">
+        <li>Performance (how fast pages load on a phone)</li>
+        <li>Accessibility (can everyone use the site)</li>
+        <li>SEO basics (can Google find it)</li>
+        <li>Security (HTTPS, security headers, common gotchas)</li>
+        <li>Mobile readiness</li>
+        <li>Structured data (Schema.org)</li>
+        <li>Social sharing tags (Open Graph)</li>
+        <li>Page title + meta description</li>
+        <li>Sitemap + robots.txt presence</li>
+      </ul>
+      <p class="au-what-foot">
+        Real audit, not a pitch. If something looks off, I'll tell you
+        what I'd fix first.
+      </p>
+    </div>
+  </section>
+
+  <Divider label="02" />
+
+  <!-- ─────────── Section 02 · Results ─────────── -->
+  <!-- Always visible: shows an empty-state prompt before an audit runs, real results after. -->
+  <section class="au-results" id="au-results" data-au-results aria-labelledby="au-results-h">
+
+    <!-- Empty state: shown until an audit runs. JS toggles this off when results arrive. -->
+    <div class="au-empty" data-au-empty>
+      <p class="au-empty-text">Run an audit above to see results here.</p>
+      <p class="au-empty-sub">You&apos;ll get a grade, four scores, and a list of fixes in plain English.</p>
+    </div>
+
+    <!-- Real results: hidden in empty state, JS unhides when audit completes. -->
+    <div class="au-results-real" data-au-results-real hidden>
+    <header class="au-results-head">
+      <div>
+        <p class="au-results-eyebrow" data-au-target>Audited:</p>
+        <h2 class="au-results-h" id="au-results-h">
+          <span class="au-results-grade" data-au-grade>…</span>
+          <span class="au-results-label" data-au-label>Running audit…</span>
+        </h2>
+      </div>
+      <p class="au-results-time" data-au-time></p>
+    </header>
+
+    <!-- Lighthouse scores: mobile + desktop side by side. Mobile leads because
+         it's the harder test and what most visitors actually experience. Desktop
+         shown next so prospects with a "but it looks fine on my computer" defense
+         can see the full picture. -->
+    <div class="au-scores-section" data-au-scores>
+
+      <!-- Mobile column -->
+      <div class="au-scores-col">
+        <header class="au-scores-col-head">
+          <span class="au-scores-col-label">Mobile</span>
+          <span class="au-scores-col-note">the harder test</span>
+        </header>
+        <ul class="au-scores-grid">
+          <li><span class="au-score-num" data-au-perf-m>…</span><span class="au-score-label">Perf</span></li>
+          <li><span class="au-score-num" data-au-a11y-m>…</span><span class="au-score-label">A11y</span></li>
+          <li><span class="au-score-num" data-au-bp-m>…</span><span class="au-score-label">Best practices</span></li>
+          <li><span class="au-score-num" data-au-seo-m>…</span><span class="au-score-label">SEO</span></li>
+        </ul>
+      </div>
+
+      <!-- Desktop column -->
+      <div class="au-scores-col">
+        <header class="au-scores-col-head">
+          <span class="au-scores-col-label">Desktop</span>
+          <span class="au-scores-col-note">usually 2-5 points higher</span>
+        </header>
+        <ul class="au-scores-grid">
+          <li><span class="au-score-num" data-au-perf-d>…</span><span class="au-score-label">Perf</span></li>
+          <li><span class="au-score-num" data-au-a11y-d>…</span><span class="au-score-label">A11y</span></li>
+          <li><span class="au-score-num" data-au-bp-d>…</span><span class="au-score-label">Best practices</span></li>
+          <li><span class="au-score-num" data-au-seo-d>…</span><span class="au-score-label">SEO</span></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <!-- Structural-grade banner (only shown when PSI failed and we fell back to structural) -->
+    <aside class="au-banner au-banner-structural" data-au-banner-structural hidden>
+      <strong>Heads up:</strong> Lighthouse couldn&apos;t reach this site, so the grade above is a structural read (HTTPS, mobile, title, meta tags, security headers). Performance and accessibility numbers are missing for this run.
+    </aside>
+
+    <!-- Start here: top 3 highest-impact fixes -->
+    <section class="au-topfixes" data-au-topfixes hidden aria-labelledby="au-topfixes-h">
+      <h3 class="au-topfixes-h" id="au-topfixes-h">Start here.</h3>
+      <p class="au-topfixes-sub">The three biggest things to fix first.</p>
+      <ol class="au-topfixes-list" data-au-topfixes-list></ol>
+    </section>
+
+    <!-- Findings sections -->
+    <div class="au-findings" data-au-findings>
+      <p class="au-findings-loading" id="au-loading-msg">Running checks…</p>
+    </div>
+
+    <!-- Soft CTA, warm not pushy -->
+    <footer class="au-cta" data-au-cta hidden>
+      <p class="au-cta-text">
+        Want help with any of this? I&apos;m down the road.
+      </p>
+      <div class="au-cta-actions">
+        <a href="/contact" class="au-cta-primary">Drop me a line →</a>
+        <a href="sms:5415510731" class="au-cta-secondary">Text me</a>
+      </div>
+      <p class="au-cta-another">
+        <a href="#au-form-h" class="au-cta-another-link" data-au-another>Audit another site →</a>
+      </p>
+    </footer>
+    </div>
+  </section>
+
+  <Divider label="03" />
+
+  <!-- ─────────── Section 03 · The pitch (warm, not pushy) ─────────── -->
+  <section class="au-pitch">
+    <h2 class="au-pitch-h">Why I built this.</h2>
+    <p class="au-pitch-body">
+      I kept seeing the same problems on local business sites. Slow on
+      phones. Broken contact forms. No HTTPS. The site loaded fine when
+      the owner checked it on their desktop, but their customers were
+      mostly on a phone and were bouncing.
+    </p>
+    <p class="au-pitch-body">
+      Most agencies want you to fill out a form to "request a free audit"
+      so they can call you. Mine just runs. No email, no pitch deck, no
+      sales call. <em>Hope it's useful.</em>
+    </p>
+    <p class="au-pitch-sig">
+      Preston Winters<br />
+      <span class="au-pitch-sig-line">Winters Code · Bandon, Oregon</span>
+    </p>
+  </section>
+</BaseLayout>
+
+<script is:inline>
+  (function () {
+    const form = document.querySelector('[data-au-form]');
+    const urlInput = document.querySelector('[data-au-url]');
+    const submitBtn = document.querySelector('[data-au-submit]');
+    const note = document.querySelector('[data-au-note]');
+    const resultsSection = document.querySelector('[data-au-results]');
+    const targetEl = document.querySelector('[data-au-target]');
+    const gradeEl = document.querySelector('[data-au-grade]');
+    const labelEl = document.querySelector('[data-au-label]');
+    const timeEl = document.querySelector('[data-au-time]');
+    const findingsEl = document.querySelector('[data-au-findings]');
+    // Track most recently audited URL so the inline retry buttons on
+    // PSI-timeout findings can re-fire runAudit() without re-parsing the input.
+    let currentUrl = null;
+    const ctaEl = document.querySelector('[data-au-cta]');
+    const scores = {
+      mobile: {
+        perf: document.querySelector('[data-au-perf-m]'),
+        a11y: document.querySelector('[data-au-a11y-m]'),
+        bp: document.querySelector('[data-au-bp-m]'),
+        seo: document.querySelector('[data-au-seo-m]'),
+      },
+      desktop: {
+        perf: document.querySelector('[data-au-perf-d]'),
+        a11y: document.querySelector('[data-au-a11y-d]'),
+        bp: document.querySelector('[data-au-bp-d]'),
+        seo: document.querySelector('[data-au-seo-d]'),
+      },
+    };
+    const bannerStructural = document.querySelector('[data-au-banner-structural]');
+    const topFixesSection = document.querySelector('[data-au-topfixes]');
+    const topFixesList = document.querySelector('[data-au-topfixes-list]');
+    const anotherLink = document.querySelector('[data-au-another]');
+    const urlField = document.querySelector('[data-au-url]');
+    const emptyEl = document.querySelector('[data-au-empty]');
+    const resultsRealEl = document.querySelector('[data-au-results-real]');
+
+    if (!form || !urlInput || !submitBtn) return;
+
+    // "Audit another site": scroll to top, focus the URL input, clear it
+    if (anotherLink) {
+      anotherLink.addEventListener('click', function (e) {
+        e.preventDefault();
+        if (urlField) {
+          urlField.value = '';
+          urlField.focus({ preventScroll: true });
+        }
+        // Reset section 02 to empty-state so the page reads clean again
+        if (emptyEl) emptyEl.hidden = false;
+        if (resultsRealEl) resultsRealEl.hidden = true;
+        const formHeader = document.querySelector('#au-form-h');
+        if (formHeader) formHeader.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    }
+
+    function escapeHtml(s) {
+      return String(s)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    function setScore(el, n) {
+      if (!el) return;
+      if (typeof n !== 'number') {
+        el.textContent = '…';
+        el.className = 'au-score-num';
+        return;
+      }
+      el.textContent = String(n);
+      el.classList.remove('au-score-good', 'au-score-ok', 'au-score-bad');
+      if (n >= 90) el.classList.add('au-score-good');
+      else if (n >= 50) el.classList.add('au-score-ok');
+      else el.classList.add('au-score-bad');
+    }
+
+    function gradeLabel(g, source) {
+      // No grade at all: site was unreachable. Don't bluff a letter.
+      if (g == null) return 'Could not reach this site';
+      const suffix = source === 'structural' ? ' (structural read)' : '';
+      if (g === 'A') return 'Strong site' + suffix;
+      if (g === 'B') return 'Good foundation, a few fixes' + suffix;
+      if (g === 'C') return 'Workable, real gaps' + suffix;
+      if (g === 'D') return 'Holes worth patching' + suffix;
+      if (g === 'F') return 'Needs work' + suffix;
+      return 'Audit complete';
+    }
+
+    function renderTopFixes(topFixes) {
+      if (!topFixesSection || !topFixesList) return;
+      if (!topFixes || topFixes.length === 0) {
+        topFixesSection.hidden = true;
+        return;
+      }
+      let html = '';
+      for (const f of topFixes) {
+        html += '<li class="au-topfix au-topfix-' + f.impact + '">';
+        html += '<span class="au-topfix-impact">' + f.impact + '</span>';
+        html += '<span class="au-topfix-summary">' + escapeHtml(f.summary) + '</span>';
+        html += '</li>';
+      }
+      topFixesList.innerHTML = html;
+      topFixesSection.hidden = false;
+    }
+
+    function renderFindings(findings) {
+      if (!findingsEl) return;
+      if (!findings || findings.length === 0) {
+        findingsEl.innerHTML =
+          '<p class="au-no-findings">No major issues found. The site is in solid shape.</p>';
+        return;
+      }
+      const order = { high: 0, medium: 1, low: 2 };
+      findings.sort((a, b) => order[a.impact] - order[b.impact]);
+      const groups = { high: [], medium: [], low: [] };
+      for (const f of findings) groups[f.impact].push(f);
+
+      const sections = [
+        ['high', 'High impact', 'au-find-high'],
+        ['medium', 'Medium impact', 'au-find-med'],
+        ['low', 'Low impact', 'au-find-low'],
+      ];
+      let html = '';
+      for (const [key, label, cls] of sections) {
+        if (groups[key].length === 0) continue;
+        html += '<section class="au-find-group ' + cls + '">';
+        html += '<h3 class="au-find-group-h">' + label + '</h3>';
+        html += '<ul class="au-find-list">';
+        for (const f of groups[key]) {
+          html += '<li class="au-find">';
+          html += '<div class="au-find-area">' + escapeHtml(f.area) + '</div>';
+          html += '<div class="au-find-summary">' + escapeHtml(f.summary) + '</div>';
+          html += '<div class="au-find-detail">' + escapeHtml(f.detail) + '</div>';
+          html += '<div class="au-find-fix"><strong>Fix:</strong> ' + escapeHtml(f.fix) + '</div>';
+          if (f.retry) {
+            html += '<button type="button" class="au-find-retry" data-au-retry>Retry this scan</button>';
+          }
+          html += '</li>';
+        }
+        html += '</ul></section>';
+      }
+      findingsEl.innerHTML = html;
+      // Wire up retry buttons (PSI-timeout findings). Re-fires the audit on
+      // the currently audited URL. PSI cold-cache timeouts often succeed on
+      // the second try.
+      const retryButtons = findingsEl.querySelectorAll('[data-au-retry]');
+      retryButtons.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          if (!currentUrl) return;
+          runAudit(currentUrl);
+        });
+      });
+    }
+
+    async function runAudit(url) {
+      currentUrl = url;
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Running…';
+      if (note) note.textContent = 'Running checks. Takes about 30 seconds…';
+      // Hide empty state, show real-results container
+      if (emptyEl) emptyEl.hidden = true;
+      if (resultsRealEl) resultsRealEl.hidden = false;
+      if (targetEl) targetEl.textContent = 'Audited: ' + url;
+      if (gradeEl) gradeEl.textContent = '…';
+      if (labelEl) labelEl.textContent = 'Running audit…';
+      if (timeEl) timeEl.textContent = '';
+      if (findingsEl) findingsEl.innerHTML = '<p class="au-findings-loading" id="au-loading-msg">Running checks…</p>';
+      if (ctaEl) ctaEl.hidden = true;
+      if (topFixesSection) topFixesSection.hidden = true;
+      if (bannerStructural) bannerStructural.hidden = true;
+
+      // Progressive hint cycle. PSI is genuinely slow (15-25s typical), so
+      // surface what's happening rather than leave a static spinner.
+      const loadingMsgs = [
+        'Running checks…',
+        'Probing security headers…',
+        'Asking Google Lighthouse to measure your site… (this is the slow part)',
+        'Still measuring Lighthouse… sites that take longest to load are usually the ones that need the most help',
+        'Almost there…',
+      ];
+      const loadingTimeouts = [];
+      [3000, 7000, 14000, 22000].forEach((ms, i) => {
+        const t = setTimeout(() => {
+          const el = document.getElementById('au-loading-msg');
+          if (el) el.textContent = loadingMsgs[i + 1];
+        }, ms);
+        loadingTimeouts.push(t);
+      });
+      // Clear all loading timeouts once the fetch resolves (success or error)
+      window._auClearLoadingTimers = () => {
+        loadingTimeouts.forEach(t => clearTimeout(t));
+      };
+      setScore(scores.mobile.perf, null);
+      setScore(scores.mobile.a11y, null);
+      setScore(scores.mobile.bp, null);
+      setScore(scores.mobile.seo, null);
+      setScore(scores.desktop.perf, null);
+      setScore(scores.desktop.a11y, null);
+      setScore(scores.desktop.bp, null);
+      setScore(scores.desktop.seo, null);
+
+      // Scroll the results into view so users see progress.
+      resultsSection?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+      try {
+        const res = await fetch('/api/audit', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ url }),
+        });
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          // Bubble up the structured error so the catch handler can branch on it
+          throw new Error(err.error || 'audit_failed');
+        }
+        const r = await res.json();
+        if (gradeEl) gradeEl.textContent = r.overall || '-';
+        if (labelEl) labelEl.textContent = gradeLabel(r.overall, r.overallSource);
+        if (timeEl) {
+          const t = new Date(r.ranAt);
+          timeEl.textContent =
+            'Ran ' +
+            t.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+        }
+        // Structural-fallback banner: only when PSI failed and we computed a structural grade
+        if (bannerStructural) {
+          bannerStructural.hidden = !(r.overallSource === 'structural');
+        }
+        const lhM = (r.lighthouse && r.lighthouse.mobile) || {};
+        const lhD = (r.lighthouse && r.lighthouse.desktop) || {};
+        setScore(scores.mobile.perf, lhM.performance);
+        setScore(scores.mobile.a11y, lhM.accessibility);
+        setScore(scores.mobile.bp, lhM.bestPractices);
+        setScore(scores.mobile.seo, lhM.seo);
+        setScore(scores.desktop.perf, lhD.performance);
+        setScore(scores.desktop.a11y, lhD.accessibility);
+        setScore(scores.desktop.bp, lhD.bestPractices);
+        setScore(scores.desktop.seo, lhD.seo);
+        renderTopFixes(r.topFixes);
+        renderFindings(r.findings);
+        if (ctaEl) ctaEl.hidden = false;
+        if (note) note.textContent = 'Done. Scroll down for the findings.';
+      } catch (e) {
+        if (labelEl) labelEl.textContent = 'Audit failed';
+        if (findingsEl) {
+          // Check if this was a rate-limit error and customize the message.
+          const msg = (e && e.message) ? String(e.message) : '';
+          if (msg === 'rate_limit_exceeded') {
+            findingsEl.innerHTML =
+              '<p class="au-no-findings">Audited a lot today (5 per day cap). Try again tomorrow, or text me at 541-551-0731 and I will run it by hand.</p>';
+          } else {
+            findingsEl.innerHTML =
+              '<p class="au-no-findings">Could not run the audit. The site might be blocking checks, or the URL might be wrong. Try again, or text me at 541-551-0731 if you want me to run it by hand.</p>';
+          }
+        }
+        if (note) note.textContent = 'Something went wrong. Try again or text me.';
+        if (topFixesSection) topFixesSection.hidden = true;
+        if (bannerStructural) bannerStructural.hidden = true;
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Run audit →';
+      }
+    }
+
+    function normalizeUrl(raw) {
+      // Mirror of server-side normalizeUrl. Lets us surface inline errors
+      // before round-tripping to the API.
+      if (typeof raw !== 'string') return null;
+      let s = raw.trim();
+      if (!s) return null;
+      // Strip surrounding angle brackets, quotes, whitespace.
+      s = s.replace(/^[<"'\s]+|[>"'\s]+$/g, '');
+      if (!s) return null;
+      // Fix common malformed schemes BEFORE deciding to prepend.
+      s = s.replace(/^https?:\/(?!\/)/i, function (m) { return m + '/'; });
+      s = s.replace(/^(https?)\/\/(?!\/)/i, '$1://');
+      s = s.replace(/^(https?):(?!\/\/)/i, '$1://');
+      if (!/^https?:\/\//i.test(s)) s = 'https://' + s;
+      s = s.replace(/^HTTPS?:\/\//i, function (m) { return m.toLowerCase(); });
+      try {
+        const u = new URL(s);
+        // Hostname must contain at least one dot AND at least one letter.
+        if (!u.hostname.includes('.') || !/[a-z]/i.test(u.hostname)) return null;
+        return u.toString();
+      } catch {
+        return null;
+      }
+    }
+
+    function showError(msg) {
+      const el = document.querySelector('[data-au-error]');
+      if (!el) return;
+      el.textContent = msg;
+      el.hidden = false;
+    }
+
+    function clearError() {
+      const el = document.querySelector('[data-au-error]');
+      if (!el) return;
+      el.textContent = '';
+      el.hidden = true;
+    }
+
+    // Live-clear the error message as the user types.
+    if (urlInput) {
+      urlInput.addEventListener('input', clearError);
+    }
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      const raw = urlInput.value;
+      const v = normalizeUrl(raw);
+      if (!v) {
+        showError('That doesn\'t look like a valid URL. Try something like example.com');
+        return;
+      }
+      // Reflect the normalized URL back to the input so the user sees what we sent.
+      urlInput.value = v;
+      clearError();
+      runAudit(v);
+    });
+  })();
+</script>
+
+<style>
+  /* Error message under the form. Quiet red, not alarmist. */
+  .au-form-error {
+    font-family: var(--font-sans);
+    font-size: 13px;
+    color: #d97565;
+    margin: 8px 0 0;
+    line-height: 1.5;
+  }
+
+  /* ─── The form ─── */
+  .au-form-wrap {
+    padding: 24px 4px 16px;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  @media (min-width: 768px) {
+    .au-form-wrap { padding: 40px 4px 24px; }
+  }
+  .au-form-h {
+    font-family: var(--font-serif);
+    font-size: 22px;
+    color: var(--color-ash-100);
+    margin: 0 0 12px;
+    font-weight: 600;
+  }
+  @media (min-width: 768px) { .au-form-h { font-size: 26px; } }
+
+  .au-form-label {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-copper);
+    margin: 0 0 8px;
+  }
+  .au-form-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  @media (min-width: 600px) {
+    .au-form-row { grid-template-columns: 1fr auto; gap: 10px; }
+  }
+  .au-form-row input {
+    font-family: var(--font-mono);
+    font-size: 15px;
+    color: var(--color-ash-100);
+    background: var(--color-bg-card);
+    border: 1px solid var(--copper-hairline);
+    border-radius: 6px;
+    padding: 12px 14px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .au-form-row input:focus-visible {
+    outline: none;
+    border-color: var(--color-wc-green);
+    box-shadow: 0 0 0 2px rgba(77, 216, 168, 0.15);
+  }
+  .au-form-submit {
+    font-family: var(--font-sans);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-bg-deep);
+    background: var(--color-wc-green);
+    border: 0;
+    border-radius: 6px;
+    padding: 12px 18px;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+  }
+  .au-form-submit:hover,
+  .au-form-submit:focus-visible {
+    background: var(--color-wc-green-bright, var(--color-wc-green));
+    outline: none;
+  }
+  .au-form-submit:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  .au-form-note {
+    font-family: var(--font-sans);
+    font-size: 12px;
+    color: var(--color-ash-500);
+    margin: 10px 0 0;
+    font-style: italic;
+  }
+
+  .au-what { margin-top: 24px; }
+  .au-what-h {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-copper);
+    margin: 0 0 12px;
+  }
+  @media (min-width: 768px) { .au-what-h { font-size: 12px; } }
+  .au-what-list {
+    list-style: none;
+    padding: 0;
+    margin: 14px 0 12px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 6px;
+    font-family: var(--font-sans);
+    font-size: 13px;
+    color: var(--color-ash-300);
+  }
+  @media (min-width: 768px) {
+    .au-what-list { grid-template-columns: 1fr 1fr; column-gap: 24px; }
+  }
+  .au-what-list li {
+    padding-left: 14px;
+    position: relative;
+  }
+  .au-what-list li::before {
+    content: "·";
+    position: absolute;
+    left: 2px;
+    color: var(--color-copper);
+  }
+  .au-what-foot {
+    font-family: var(--font-sans);
+    font-size: 12px;
+    color: var(--color-ash-500);
+    font-style: italic;
+    margin: 8px 0 0;
+  }
+
+  /* ─── Results section ─── */
+  .au-results {
+    padding: 24px 4px 16px;
+    max-width: 920px;
+    margin: 0 auto;
+  }
+  @media (min-width: 768px) { .au-results { padding: 40px 4px 24px; } }
+
+  /* Empty state: shown until an audit runs. Quiet, restrained, signals "this fills in later". */
+  .au-empty {
+    padding: 32px 16px 36px;
+    text-align: center;
+    border: 1px dashed var(--copper-hairline);
+    border-radius: var(--radius-card, 10px);
+    background: rgba(255, 255, 255, 0.01);
+  }
+  @media (min-width: 768px) { .au-empty { padding: 48px 24px 52px; } }
+  .au-empty-text {
+    font-family: var(--font-serif);
+    font-size: 18px;
+    color: var(--color-ash-300);
+    margin: 0 0 8px;
+  }
+  @media (min-width: 768px) { .au-empty-text { font-size: 22px; } }
+  .au-empty-sub {
+    font-family: var(--font-sans);
+    font-size: 13px;
+    color: var(--color-ash-500);
+    margin: 0;
+    line-height: 1.5;
+  }
+  @media (min-width: 768px) { .au-empty-sub { font-size: 14px; } }
+
+  .au-results-head {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 4px;
+    margin-bottom: 18px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--copper-hairline);
+  }
+  @media (min-width: 768px) {
+    .au-results-head { grid-template-columns: 1fr auto; align-items: end; }
+  }
+  .au-results-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--color-ash-500);
+    margin: 0 0 4px;
+    letter-spacing: 0.04em;
+    word-break: break-all;
+  }
+  .au-results-h {
+    font-family: var(--font-serif);
+    font-size: 24px;
+    line-height: 1.2;
+    margin: 0;
+    color: var(--color-ash-100);
+    font-weight: 600;
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  @media (min-width: 768px) { .au-results-h { font-size: 32px; gap: 18px; } }
+  .au-results-grade {
+    font-size: 1.6em;
+    color: var(--color-copper);
+    font-style: italic;
+    line-height: 1;
+  }
+  .au-results-label {
+    font-size: 0.8em;
+    color: var(--color-ash-300);
+    font-style: normal;
+    font-weight: 500;
+  }
+  .au-results-time {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--color-ash-500);
+    margin: 0;
+  }
+
+  /* Scores section: mobile + desktop columns side by side on wide screens,
+     stacked on mobile. Each column has a header + 4-cell grid. */
+  .au-scores-section {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+    margin: 0 0 24px;
+  }
+  @media (min-width: 768px) {
+    .au-scores-section { grid-template-columns: 1fr 1fr; gap: 18px; }
+  }
+  .au-scores-col {
+    background: rgba(255, 255, 255, 0.01);
+    border: 1px solid var(--copper-hairline);
+    border-radius: var(--radius-card, 10px);
+    padding: 14px 12px 12px;
+  }
+  @media (min-width: 768px) { .au-scores-col { padding: 16px 14px 14px; } }
+  .au-scores-col-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+    margin: 0 0 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--copper-hairline);
+  }
+  .au-scores-col-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-copper);
+    font-weight: 500;
+  }
+  @media (min-width: 768px) { .au-scores-col-label { font-size: 12px; } }
+  .au-scores-col-note {
+    font-family: var(--font-sans);
+    font-size: 10px;
+    color: var(--color-ash-500);
+    font-style: italic;
+  }
+  @media (min-width: 768px) { .au-scores-col-note { font-size: 11px; } }
+  .au-scores-grid {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+  }
+  @media (min-width: 768px) { .au-scores-grid { gap: 8px; } }
+  .au-scores-grid li {
+    background: var(--color-bg-card);
+    border: 1px solid var(--copper-hairline);
+    border-radius: 6px;
+    padding: 10px 6px;
+    text-align: center;
+  }
+  @media (min-width: 768px) { .au-scores-grid li { padding: 12px 8px; } }
+  .au-score-num {
+    font-family: var(--font-serif);
+    font-size: 22px;
+    line-height: 1;
+    color: var(--color-ash-100);
+    display: block;
+    margin: 0 0 4px;
+    font-weight: 600;
+  }
+  @media (min-width: 768px) { .au-score-num { font-size: 28px; } }
+  .au-score-good { color: var(--color-wc-green); }
+  .au-score-ok { color: var(--color-amber, #f0b878); }
+  .au-score-bad { color: #d97565; }
+  .au-score-label {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--color-ash-400);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    line-height: 1.2;
+  }
+  @media (min-width: 768px) { .au-score-label { font-size: 10px; } }
+
+  /* Findings groups */
+  .au-findings { margin: 0 0 24px; }
+  .au-findings-loading {
+    font-family: var(--font-sans);
+    font-size: 13px;
+    color: var(--color-ash-400);
+    font-style: italic;
+    text-align: center;
+    padding: 32px 16px;
+    /* Subtle shimmer to signal "still working" during the 15-25s PSI wait.
+       Uses background-clip: text to slide a slightly brighter band across
+       the existing italic text. Pure CSS, GPU-only, no repaint or layout.
+       Falls back to plain ash-400 if prefers-reduced-motion is set. */
+    background: linear-gradient(
+      90deg,
+      var(--color-ash-400) 0%,
+      var(--color-ash-400) 35%,
+      var(--color-ash-200, var(--color-ash-100)) 50%,
+      var(--color-ash-400) 65%,
+      var(--color-ash-400) 100%
+    );
+    background-size: 300% 100%;
+    background-position: 100% 0;
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    animation: au-loading-shimmer 2.4s ease-in-out infinite;
+    will-change: background-position;
+  }
+  @keyframes au-loading-shimmer {
+    0%   { background-position: 100% 0; }
+    100% { background-position: -100% 0; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .au-findings-loading {
+      animation: none;
+      background: none;
+      color: var(--color-ash-400);
+      -webkit-text-fill-color: currentColor;
+    }
+  }
+  .au-no-findings {
+    font-family: var(--font-sans);
+    font-size: 14px;
+    color: var(--color-ash-300);
+    text-align: center;
+    padding: 24px 16px;
+    background: var(--color-bg-card);
+    border: 1px solid var(--copper-hairline);
+    border-radius: var(--radius-card, 10px);
+  }
+  :global(.au-find-group) { margin: 0 0 18px; }
+  :global(.au-find-group-h) {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin: 0 0 10px;
+    color: var(--color-copper);
+  }
+  :global(.au-find-high) :global(.au-find-group-h) { color: #d97565; }
+  :global(.au-find-med) :global(.au-find-group-h) { color: var(--color-amber, #f0b878); }
+  :global(.au-find-list) { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
+  :global(.au-find) {
+    background: var(--color-bg-card);
+    border: 1px solid var(--copper-hairline);
+    border-left: 3px solid var(--color-copper);
+    border-radius: 8px;
+    padding: 14px 16px;
+  }
+  :global(.au-find-high) { border-left-color: #d97565; }
+  :global(.au-find-med) { border-left-color: var(--color-amber, #f0b878); }
+  :global(.au-find-area) {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-ash-500);
+    margin: 0 0 4px;
+  }
+  :global(.au-find-summary) {
+    font-family: var(--font-sans);
+    font-size: 15px;
+    color: var(--color-ash-100);
+    font-weight: 600;
+    margin: 0 0 6px;
+    line-height: 1.35;
+  }
+  @media (min-width: 768px) { :global(.au-find-summary) { font-size: 16px; } }
+  :global(.au-find-detail) {
+    font-family: var(--font-sans);
+    font-size: 13px;
+    color: var(--color-ash-300);
+    line-height: 1.55;
+    margin: 0 0 8px;
+  }
+  @media (min-width: 768px) { :global(.au-find-detail) { font-size: 14px; } }
+  :global(.au-find-fix) {
+    font-family: var(--font-sans);
+    font-size: 13px;
+    color: var(--color-ash-300);
+    line-height: 1.55;
+    padding-top: 8px;
+    border-top: 1px solid rgba(255, 255, 255, 0.04);
+  }
+  :global(.au-find-fix) strong { color: var(--color-wc-green); margin-right: 4px; }
+
+  /* Retry button on PSI-timeout findings. Inline-block under the fix line.
+     Teal outline, fills on hover. PSI cold-cache timeouts often succeed on
+     the second try. */
+  :global(.au-find-retry) {
+    display: inline-block;
+    margin-top: 12px;
+    padding: 8px 14px;
+    font-family: var(--font-sans);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--color-wc-green);
+    background: transparent;
+    border: 1px solid var(--color-wc-green);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 120ms ease, color 120ms ease;
+  }
+  :global(.au-find-retry:hover),
+  :global(.au-find-retry:focus-visible) {
+    background: var(--color-wc-green);
+    color: var(--color-bg);
+    outline: none;
+  }
+  :global(.au-find-retry:disabled) {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  /* CTA at bottom of results */
+  .au-cta {
+    margin-top: 24px;
+    padding: 20px 16px;
+    background: var(--color-bg-card);
+    border: 1px solid var(--copper-hairline);
+    border-radius: var(--radius-card, 10px);
+    text-align: center;
+  }
+  .au-cta-text {
+    font-family: var(--font-serif);
+    font-size: 18px;
+    line-height: 1.35;
+    color: var(--color-ash-100);
+    margin: 0 0 14px;
+  }
+  @media (min-width: 768px) { .au-cta-text { font-size: 22px; } }
+  .au-cta-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .au-cta-primary,
+  .au-cta-secondary {
+    font-family: var(--font-sans);
+    font-size: 14px;
+    text-decoration: none;
+    border-radius: 6px;
+    padding: 10px 16px;
+  }
+  .au-cta-primary {
+    background: var(--color-wc-green);
+    color: var(--color-bg-deep);
+    font-weight: 600;
+  }
+  .au-cta-secondary {
+    color: var(--color-ash-100);
+    border: 1px solid var(--copper-hairline);
+  }
+  .au-cta-another {
+    margin: 14px 0 0;
+    text-align: center;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-ash-500);
+  }
+  @media (min-width: 768px) { .au-cta-another { font-size: 12px; } }
+  .au-cta-another-link {
+    color: var(--color-copper-bright);
+    text-decoration: none;
+    border-bottom: 1px dotted var(--copper-dim);
+    padding-bottom: 1px;
+  }
+  .au-cta-another-link:hover { color: var(--color-copper); border-bottom-color: var(--color-copper); }
+
+  /* ─── Structural-grade fallback banner (only when PSI fails) ─── */
+  .au-banner-structural {
+    margin: 20px 0 16px;
+    padding: 12px 16px;
+    background: rgba(240, 184, 120, 0.06);
+    border: 1px solid rgba(240, 184, 120, 0.22);
+    border-radius: var(--radius-card, 10px);
+    font-family: var(--font-sans);
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--color-ash-300);
+  }
+  @media (min-width: 768px) { .au-banner-structural { font-size: 14px; } }
+  .au-banner-structural strong { color: var(--color-amber); margin-right: 6px; }
+
+  /* ─── Start here · top 3 highest-impact fixes ─── */
+  .au-topfixes {
+    margin: 20px 0 24px;
+    padding: 16px 18px 18px;
+    background: var(--color-bg-card);
+    border: 1px solid var(--copper-hairline);
+    border-radius: var(--radius-card, 10px);
+  }
+  @media (min-width: 768px) { .au-topfixes { padding: 20px 22px 22px; } }
+  .au-topfixes-h {
+    font-family: var(--font-serif);
+    font-size: 18px;
+    color: var(--color-ash-100);
+    margin: 0 0 4px;
+    font-weight: 600;
+  }
+  @media (min-width: 768px) { .au-topfixes-h { font-size: 20px; } }
+  .au-topfixes-sub {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-ash-500);
+    margin: 0 0 12px;
+  }
+  @media (min-width: 768px) { .au-topfixes-sub { font-size: 12px; } }
+  .au-topfixes-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    counter-reset: topfix;
+  }
+  :global(.au-topfix) {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    counter-increment: topfix;
+  }
+  :global(.au-topfix):last-child { border-bottom: 0; }
+  :global(.au-topfix)::before {
+    content: counter(topfix, decimal-leading-zero);
+    flex-shrink: 0;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--color-copper);
+    font-weight: 600;
+    min-width: 22px;
+  }
+  :global(.au-topfix-impact) {
+    flex-shrink: 0;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    border-radius: 3px;
+    line-height: 1.4;
+  }
+  :global(.au-topfix-high) :global(.au-topfix-impact) {
+    background: rgba(232, 92, 92, 0.15);
+    color: #e87878;
+    border: 1px solid rgba(232, 92, 92, 0.3);
+  }
+  :global(.au-topfix-medium) :global(.au-topfix-impact) {
+    background: rgba(240, 184, 120, 0.12);
+    color: var(--color-amber);
+    border: 1px solid rgba(240, 184, 120, 0.3);
+  }
+  :global(.au-topfix-low) :global(.au-topfix-impact) {
+    background: rgba(170, 183, 193, 0.08);
+    color: var(--color-ash-400);
+    border: 1px solid rgba(170, 183, 193, 0.2);
+  }
+  :global(.au-topfix-summary) {
+    flex: 1;
+    font-family: var(--font-sans);
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--color-ash-100);
+  }
+  @media (min-width: 768px) { :global(.au-topfix-summary) { font-size: 15px; } }
+
+  /* ─── Pitch section (the "why I built this") ─── */
+  .au-pitch {
+    padding: 32px 4px 48px;
+    max-width: 640px;
+    margin: 0 auto;
+  }
+  @media (min-width: 768px) { .au-pitch { padding: 48px 4px 64px; } }
+  .au-pitch-h {
+    font-family: var(--font-serif);
+    font-size: 22px;
+    color: var(--color-ash-100);
+    margin: 0 0 14px;
+    font-weight: 600;
+  }
+  @media (min-width: 768px) { .au-pitch-h { font-size: 26px; } }
+  .au-pitch-body {
+    font-family: var(--font-sans);
+    font-size: 15px;
+    line-height: 1.65;
+    color: var(--color-ash-300);
+    margin: 0 0 14px;
+  }
+  @media (min-width: 768px) { .au-pitch-body { font-size: 16px; } }
+  .au-pitch-body em {
+    color: var(--color-copper-bright);
+    font-style: italic;
+  }
+  .au-pitch-sig {
+    font-family: var(--font-serif);
+    font-size: 16px;
+    color: var(--color-ash-100);
+    margin: 20px 0 0;
+    font-style: italic;
+  }
+  .au-pitch-sig-line {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--color-ash-500);
+    font-style: normal;
+    letter-spacing: 0.04em;
+  }
+</style>

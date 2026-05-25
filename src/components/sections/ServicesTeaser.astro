@@ -1,0 +1,208 @@
+---
+/**
+ * Services teaser, 3 columns (Sites / Apps / Add-ons), deep-linked to /services.
+ *
+ * Spec ref: docs/design/S6_PLUS.md Section 7 (~line 731).
+ * No build prices public per CI doctrine. Maintenance $75/mo IS public
+ * but lives on /services, not the teaser.
+ */
+
+const COLUMNS = [
+  {
+    title: 'SITES',
+    href: '/services#sites',
+    timeline: '3-7 days starting',
+    bullets: ['custom code', 'mobile + SEO baked', 'yours to own'],
+  },
+  {
+    title: 'APPS',
+    href: '/services#apps',
+    timeline: '2-4 weeks MVP',
+    bullets: ['cross-platform', 'iOS + Android', 'real backends'],
+  },
+  {
+    title: 'ADD-ONS',
+    href: '/services#addons',
+    timeline: 'Custom scope',
+    bullets: ['Workflow audits', 'Integration builds', 'Help on demand'],
+  },
+];
+---
+
+<section class="services-teaser" id="services-teaser" aria-labelledby="st-h">
+  <header class="st-head">
+    <div class="st-eyebrow">
+      <span class="line" aria-hidden="true"></span>
+      <h2 class="st-h" id="st-h">03 · SERVICES</h2>
+      <span class="st-status">what I'm hired for</span>
+    </div>
+    <a href="/services" class="st-link">see full menu →</a>
+  </header>
+
+  <ul class="st-grid" role="list">
+    {COLUMNS.map((col) => (
+      <li class="st-col-wrap" role="listitem">
+        <a href={col.href} class="st-col">
+          <div class="st-col-head">
+            <span class="st-col-title">{col.title}</span>
+            <span class="st-col-time">{col.timeline}</span>
+          </div>
+          <ul class="st-bullets">
+            {col.bullets.map((b) => <li>{b}</li>)}
+          </ul>
+          <span class="st-go" aria-hidden="true">see →</span>
+        </a>
+      </li>
+    ))}
+  </ul>
+</section>
+
+<style>
+  .services-teaser {
+    padding: 40px 4px 48px;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  @media (min-width: 768px) {
+    .services-teaser { padding: 56px 4px 64px; max-width: 860px; }
+  }
+  @media (min-width: 1024px) {
+    .services-teaser { padding: 72px 0 80px; max-width: 960px; }
+  }
+
+  .st-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--copper-hairline);
+    margin-bottom: 20px;
+  }
+  .st-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .st-eyebrow .line {
+    width: 28px;
+    height: 1px;
+    background: var(--color-copper);
+  }
+  @media (min-width: 1024px) { .st-eyebrow .line { width: 40px; } }
+  .st-h {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    color: var(--color-copper);
+    text-transform: uppercase;
+    margin: 0;
+  }
+  @media (min-width: 1024px) { .st-h { font-size: 13px; } }
+  .st-status {
+    font-family: var(--font-sans);
+    font-size: 11px;
+    color: var(--color-ash-500);
+    font-style: italic;
+  }
+  .st-link {
+    font-family: var(--font-sans);
+    font-size: 12px;
+    color: var(--color-ash-400);
+    transition: color 200ms;
+  }
+  .st-link:hover { color: var(--color-wc-green); }
+
+  .st-grid {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 14px;
+  }
+  @media (min-width: 768px) {
+    .st-grid { grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+  }
+  @media (min-width: 1024px) {
+    .st-grid { gap: 24px; }
+  }
+
+  .st-col {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 18px 18px 16px;
+    background: var(--color-bg-card);
+    border: 1px solid var(--copper-hairline);
+    border-radius: var(--radius-card);
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 200ms, transform 200ms;
+    min-height: 180px;
+  }
+  .st-col:hover,
+  .st-col:focus-visible {
+    border-color: var(--color-copper);
+    transform: translateY(-2px);
+    outline: none;
+  }
+
+  .st-col-head {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--copper-hairline);
+  }
+  .st-col-title {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    color: var(--color-copper);
+    text-transform: uppercase;
+  }
+  @media (min-width: 1024px) { .st-col-title { font-size: 13px; } }
+  .st-col-time {
+    font-family: var(--font-sans);
+    font-size: 12px;
+    color: var(--color-ash-400);
+    font-style: italic;
+  }
+
+  .st-bullets {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    flex: 1;
+  }
+  .st-bullets li {
+    font-family: var(--font-sans);
+    font-size: 13px;
+    color: var(--color-ash-300);
+    line-height: 1.4;
+  }
+  @media (min-width: 1024px) { .st-bullets li { font-size: 14px; } }
+  .st-bullets li::before {
+    content: '·';
+    color: var(--color-copper);
+    margin-right: 8px;
+    font-weight: 600;
+  }
+
+  .st-go {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--color-ash-500);
+    letter-spacing: 0.04em;
+    margin-top: auto;
+    align-self: flex-end;
+    transition: color 200ms;
+  }
+  .st-col:hover .st-go { color: var(--color-wc-green); }
+</style>

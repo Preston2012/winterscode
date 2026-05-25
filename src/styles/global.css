@@ -1,0 +1,364 @@
+/* ═══════════════════════════════════════════════════════════
+   WINTERS CODE · GLOBAL STYLES
+   Tailwind v4 + design tokens extracted from workshop v5.1
+   ═══════════════════════════════════════════════════════════ */
+@import "./fonts.css";
+@import "tailwindcss";
+
+/* ─────────────────────────────────────────────────────────────
+   DESIGN TOKENS (Tailwind v4 @theme, these become utility classes)
+   Naming maps directly to v5.1 CSS variables. Anything available
+   as a Tailwind utility (e.g. bg-bg-deep, text-wc-green) flows from here.
+   ───────────────────────────────────────────────────────────── */
+@theme {
+  /* Backgrounds, deep → raised */
+  --color-bg-deep:    #0a0d0c;
+  --color-bg-stone:   #11151a;
+  --color-bg-card:    #161b1f;
+  --color-bg-raised:  #1d2429;
+
+  /* Ash neutrals, cool gray scale, 100 = lightest text, 700 = dark border */
+  --color-ash-100:    #dde4e6;
+  --color-ash-300:    #aab7ba;
+  --color-ash-400:    #94a0a3;
+  --color-ash-500:    #869396;
+  --color-ash-700:    #3a4549;
+
+  /* Winters Code green, primary brand accent */
+  --color-wc-green:        #4dd8a8;
+  --color-wc-green-bright: #5fe8b5;
+
+  /* Copper, secondary accent, hairlines, framing */
+  --color-copper:        #c8804a;
+  --color-copper-bright: #f0a06f;
+  --color-copper-deep:   #8a5430;
+
+  /* Amber, rare accent (badges, callouts) */
+  --color-amber: #d4a72d;
+
+  /* Type families */
+  --font-serif: 'Fraunces', Georgia, serif;
+  --font-sans:  'IBM Plex Sans', -apple-system, system-ui, 'Segoe UI', Roboto, sans-serif;
+  --font-mono:  'JetBrains Mono', ui-monospace, monospace;
+
+  /* Radii */
+  --radius-card: 12px;
+  --radius-btn:  8px;
+
+  /* Container breakpoints (Tailwind defaults overridden to match v5.1) */
+  --breakpoint-sm: 768px;   /* tablet */
+  --breakpoint-md: 1024px;  /* desktop */
+  --breakpoint-lg: 1280px;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   ALPHA-CHANNEL VARIANTS (not tokens, referenced from custom CSS)
+   ───────────────────────────────────────────────────────────── */
+:root {
+  --wc-green-glow:    rgba(77, 216, 168, 0.35);
+  --wc-green-dim:     rgba(77, 216, 168, 0.12);
+  /* Freshly-annealed copper alpha variants (S10, Bill's call):
+     brighter base hue + slight bump in opacity. Used by section
+     breaks, rivets, divider hairlines, scroll progress, edge marks. */
+  --copper-glow:      rgba(240, 160, 110, 0.45);
+  --copper-dim:       rgba(216, 144, 90, 0.22);
+  --copper-hairline:  rgba(216, 144, 90, 0.32);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   BASE, applies sitewide
+   ───────────────────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--color-bg-deep);
+  color: var(--color-ash-100);
+  font-family: var(--font-sans);
+  line-height: 1.55;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* Wrapping safety net, required by S6+ doctrine. Prevents the
+     most common phone-screen failures: mid-word breaks on long words,
+     orphaned single-word lines on headlines, URL/email overflow. */
+  overflow-wrap: anywhere;
+  hyphens: auto;
+  word-break: normal;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.mono {
+  font-family: var(--font-mono);
+  font-feature-settings: "tnum";
+}
+
+/* ─────────────────────────────────────────────────────────────
+   PATINA + GRAIN, sitewide ambient overlays
+   These can't be expressed as utilities because they're fixed
+   pseudo-elements on the body.
+   ───────────────────────────────────────────────────────────── */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background-image:
+    radial-gradient(ellipse 70% 50% at 50% 0%, rgba(200, 128, 74, 0.04), transparent 70%),
+    radial-gradient(ellipse 60% 40% at 50% 100%, rgba(77, 216, 168, 0.03), transparent 70%);
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.04 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.6;
+  mix-blend-mode: overlay;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   PAGE LOAD SCAN SWEEP, one-shot vertical sweep on first paint
+   ───────────────────────────────────────────────────────────── */
+.load-sweep {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 120px;
+  background: linear-gradient(180deg, transparent 0%, rgba(77, 216, 168, 0.08) 50%, transparent 100%);
+  pointer-events: none;
+  z-index: 99;
+  animation: load-sweep 1.6s ease-out forwards;
+}
+
+@keyframes load-sweep {
+  0%   { transform: translateY(-100%); opacity: 0; }
+  20%  { opacity: 1; }
+  80%  { opacity: 1; }
+  100% { transform: translateY(100vh); opacity: 0; }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   SCROLL PROGRESS BAR, top of viewport, wc-green → copper gradient
+   ───────────────────────────────────────────────────────────── */
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 2px;
+  width: 0%;
+  background: linear-gradient(90deg, var(--color-wc-green), var(--color-copper));
+  z-index: 100;
+  transition: width 100ms;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   RESPONSIVE PAGE CONTAINER
+   mobile  ≤767px : 440px max, 16px padding
+   tablet  ≥768px : 720px max, 24px padding
+   desktop ≥1024px: 1200px max, 40px padding
+   ───────────────────────────────────────────────────────────── */
+.page {
+  max-width: 440px;
+  margin: 0 auto;
+  padding: 0 16px 80px;
+  position: relative;
+  z-index: 2;
+}
+
+@media (min-width: 768px) {
+  .page {
+    max-width: 720px;
+    padding: 0 24px 100px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .page {
+    max-width: 1200px;
+    padding: 0 40px 120px;
+  }
+}
+
+/* main.page does not need 80-120px of trailing padding: the <footer> below
+   already provides its own margin-top: 48px plus padding-top: 24px which is
+   the visual separator. The .page default was adding 80-120px of dead space
+   above the footer border on every page. Shrink main-specific bottom padding
+   to a small breathing buffer. */
+main.page {
+  padding-bottom: 16px;
+}
+@media (min-width: 768px) {
+  main.page { padding-bottom: 20px; }
+}
+@media (min-width: 1024px) {
+  main.page { padding-bottom: 24px; }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   TYPOGRAPHY SCALES, h1/h2/h3 grow at each breakpoint.
+   These are classes (not utilities) because the responsive scale
+   is bespoke and matches v5.1 exactly.
+   ───────────────────────────────────────────────────────────── */
+.h1 {
+  font-family: var(--font-serif);
+  font-size: 42px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.02;
+  margin: 0;
+  font-feature-settings: "ss01";
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+}
+
+.h2 {
+  font-family: var(--font-serif);
+  font-size: 26px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  margin: 0;
+  line-height: 1.15;
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+}
+
+.h3 {
+  font-family: var(--font-serif);
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+  color: var(--color-ash-100);
+  line-height: 1.25;
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+}
+
+.body-text {
+  color: var(--color-ash-300);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.small {
+  color: var(--color-ash-500);
+  font-size: 12px;
+}
+
+@media (min-width: 768px) {
+  .h1 { font-size: 56px; }
+  .h2 { font-size: 32px; }
+  .h3 { font-size: 20px; }
+  .body-text { font-size: 16px; }
+}
+
+@media (min-width: 1024px) {
+  .h1 {
+    font-size: 80px;
+    line-height: 1;
+    letter-spacing: -0.03em;
+  }
+  .h2 { font-size: 42px; }
+  .h3 { font-size: 22px; }
+  .body-text { font-size: 17px; }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   FOCUS RING, accessibility default for keyboard nav
+   ───────────────────────────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--color-wc-green);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   REDUCED MOTION, respect user preference, kill all decorative motion
+   ───────────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .load-sweep,
+  body::before,
+  body::after {
+    display: none;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   SKIP-TO-CONTENT, visually hidden until keyboard-focused.
+   Critical for screen-reader and keyboard-only users.
+   ───────────────────────────────────────────────────────────── */
+.skip-to-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 12px 18px;
+  background: var(--color-wc-green);
+  color: var(--color-bg-deep);
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 14px;
+  border-radius: 0 0 var(--radius-btn) 0;
+  z-index: 200;
+  transform: translateY(-100%);
+  transition: transform 150ms ease-out;
+}
+
+.skip-to-content:focus,
+.skip-to-content:focus-visible {
+  transform: translateY(0);
+  outline: 2px solid var(--color-copper-bright);
+  outline-offset: -2px;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   SR-ONLY, visually hidden but readable by assistive tech.
+   Use sparingly. Most accessibility comes from semantic HTML first.
+   ───────────────────────────────────────────────────────────── */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

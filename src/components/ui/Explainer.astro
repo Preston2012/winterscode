@@ -1,0 +1,232 @@
+---
+/**
+ * Explainer. a small "(?)" icon next to a data point that, on hover
+ * or focus, reveals a plain-English explainer in a tooltip.
+ *
+ * Why: small business owners (the A1 audience) see "Lighthouse 95+" or
+ * "HSTS · CSP" and don't know what those mean. This component shows
+ * the score / number as-is, but lets the curious tap or hover for
+ * "what's that?" without cluttering the line for visitors who already
+ * understand.
+ *
+ * Usage:
+ *   <span class="metric">99/100/100/100 <Explainer label="What's this?">
+ *     Google's Lighthouse measures four things about a website:
+ *     speed, accessibility, security, and how Google can read it.
+ *     100 is perfect. Most sites score 50-70.
+ *   </Explainer></span>
+ *
+ * Or with a slot for the trigger if you want a different visual marker:
+ *   <Explainer label="What's a deploy?">
+ *     A deploy is...
+ *   </Explainer>
+ *
+ * Accessibility:
+ *   - tabindex=0 so keyboard users can reach it
+ *   - role="tooltip" + aria-describedby links the popover to the trigger
+ *   - Tap-to-toggle on touch devices (handled by inline JS)
+ *   - Reduced-motion-safe (no animation if user prefers)
+ */
+
+export interface Props {
+  /** Short visible label on the trigger. Defaults to "?". */
+  label?: string;
+  /** Optional class hook for the wrapper. */
+  class?: string;
+  /** Position above (default) or below the trigger. */
+  placement?: 'top' | 'bottom';
+}
+
+const { label = '?', class: extraClass = '', placement = 'top' } = Astro.props;
+// Unique id per render so multiple Explainers on a page don't share IDs
+const id = `xp-${Math.random().toString(36).slice(2, 9)}`;
+---
+
+<span
+  class:list={['xp', extraClass, placement === 'bottom' && 'xp-bottom']}
+  data-explainer
+  tabindex="0"
+  role="button"
+  aria-label="What does this mean?"
+  aria-describedby={id}
+  aria-expanded="false"
+>
+  <span class="xp-trigger" aria-hidden="true">{label}</span>
+  <span class="xp-pop" id={id} role="tooltip">
+    <slot />
+  </span>
+</span>
+
+<style>
+  /* Trigger sits inline, after the value it explains. Small, low-key. */
+  .xp {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 14px;
+    height: 14px;
+    margin-left: 4px;
+    border: 1px solid var(--copper-hairline);
+    border-radius: 50%;
+    font-family: var(--font-mono);
+    font-size: 9px;
+    font-weight: 600;
+    color: var(--color-ash-500);
+    background: var(--color-bg-deep);
+    cursor: help;
+    position: relative;
+    transition: color 180ms, border-color 180ms;
+    flex-shrink: 0;
+    vertical-align: baseline;
+  }
+  .xp:hover,
+  .xp:focus-visible {
+    color: var(--color-copper-bright);
+    border-color: var(--color-copper);
+    outline: none;
+  }
+  .xp-trigger {
+    line-height: 1;
+    pointer-events: none;
+  }
+
+  /* Popover */
+  .xp-pop {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    width: max-content;
+    max-width: min(280px, 80vw);
+    background: var(--color-bg-card);
+    border: 1px solid var(--copper-hairline);
+    color: var(--color-ash-100);
+    padding: 10px 12px;
+    border-radius: 6px;
+    font-family: var(--font-sans);
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 1.5;
+    letter-spacing: 0;
+    text-transform: none;
+    text-align: left;
+    white-space: normal;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 180ms;
+    z-index: 100;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  }
+  .xp-pop::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-top-color: var(--copper-hairline);
+  }
+
+  /* "bottom" variant flips the popover under the trigger. */
+  .xp-bottom .xp-pop {
+    bottom: auto;
+    top: calc(100% + 8px);
+  }
+  .xp-bottom .xp-pop::after {
+    top: auto;
+    bottom: 100%;
+    border-top-color: transparent;
+    border-bottom-color: var(--copper-hairline);
+  }
+
+  .xp:hover .xp-pop,
+  .xp:focus-visible .xp-pop,
+  .xp.is-open .xp-pop {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* Wide screens: bigger popover, easier to read */
+  @media (min-width: 1024px) {
+    .xp-pop {
+      font-size: 13px;
+      max-width: 320px;
+      padding: 12px 14px;
+    }
+  }
+
+  /* Edge clamps. popover can extend past the viewport on small screens.
+     We use max-width and translate(-50%) which mostly handles it, but
+     we add a safety margin so the arrow alignment doesn't break visually. */
+  @media (max-width: 480px) {
+    .xp-pop {
+      left: 0;
+      transform: none;
+      max-width: calc(100vw - 32px);
+    }
+    .xp-pop::after {
+      left: 12px;
+      transform: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .xp,
+    .xp-pop {
+      transition: none;
+    }
+  }
+</style>
+
+<script is:inline>
+  // Tap-to-toggle on touch devices. CSS handles hover/focus on desktop;
+  // mobile users need an explicit interaction since hover doesn't exist.
+  // Tapping anywhere outside the trigger closes the popover.
+  (function () {
+    function setup() {
+      const triggers = document.querySelectorAll('[data-explainer]');
+      if (!triggers.length) return;
+      triggers.forEach(function (t) {
+        if (t.dataset.xpWired) return;
+        t.dataset.xpWired = '1';
+
+        t.addEventListener('click', function (e) {
+          e.preventDefault();
+          // Close any sibling explainers first
+          document.querySelectorAll('[data-explainer].is-open').forEach(function (other) {
+            if (other !== t) {
+              other.classList.remove('is-open');
+              other.setAttribute('aria-expanded', 'false');
+            }
+          });
+          const isOpen = t.classList.toggle('is-open');
+          t.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        });
+
+        // Esc closes
+        t.addEventListener('keydown', function (e) {
+          if (e.key === 'Escape' && t.classList.contains('is-open')) {
+            t.classList.remove('is-open');
+            t.setAttribute('aria-expanded', 'false');
+          }
+        });
+      });
+
+      // Click outside closes everything
+      document.addEventListener('click', function (e) {
+        document.querySelectorAll('[data-explainer].is-open').forEach(function (open) {
+          if (!open.contains(e.target)) {
+            open.classList.remove('is-open');
+            open.setAttribute('aria-expanded', 'false');
+          }
+        });
+      });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', setup);
+    } else {
+      setup();
+    }
+  })();
+</script>

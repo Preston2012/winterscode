@@ -1,0 +1,175 @@
+---
+/**
+ * Homepage FAQ, Q.01 only ("How much does this cost?").
+ *
+ * Spec ref: docs/design/S6_PLUS.md Section 9 (~line 792).
+ * Locked copy from spec line 198. Anchors against $5k national /
+ * $2.5k freelancer competitor pricing, no public Winters Code price.
+ */
+---
+
+<section class="faq-q1" id="faq" aria-labelledby="faq1-q">
+  <header class="fq-head">
+    <div class="fq-eyebrow">
+      <span class="line" aria-hidden="true"></span>
+      <h2 class="fq-h">05 · QUESTION</h2>
+      <span class="fq-status">the first one everyone asks</span>
+    </div>
+    <a href="/services#faq" class="fq-link">more questions →</a>
+  </header>
+
+  <article class="fq-card">
+    <p class="fq-q-num">Q.01</p>
+    <h3 class="fq-q" id="faq1-q">How much does this cost?</h3>
+    <p class="fq-a">
+      Same modern stack and quality bar agencies use, mid-freelancer
+      pricing. National agencies typically start at
+      <span class="strike">$5,000+</span> and run 6+ weeks. Hourly
+      freelancers often bill <span class="strike">$2,500+</span> over a
+      month. I aim to come in faster than either, at a price that lands
+      between them. <em>Free consult, custom quote. I own it
+      end-to-end.</em>
+    </p>
+    <a href="/contact" class="fq-cta">Free consult →</a>
+  </article>
+</section>
+
+<style>
+  .faq-q1 {
+    padding: 40px 4px 48px;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  @media (min-width: 768px) {
+    .faq-q1 { padding: 56px 4px 64px; }
+  }
+  @media (min-width: 1024px) {
+    .faq-q1 { padding: 72px 0 80px; }
+  }
+
+  .fq-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--copper-hairline);
+    margin-bottom: 24px;
+  }
+  .fq-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .fq-eyebrow .line {
+    width: 28px;
+    height: 1px;
+    background: var(--color-copper);
+  }
+  @media (min-width: 1024px) { .fq-eyebrow .line { width: 40px; } }
+  .fq-h {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    color: var(--color-copper);
+    text-transform: uppercase;
+    margin: 0;
+  }
+  @media (min-width: 1024px) { .fq-h { font-size: 13px; } }
+  .fq-status {
+    font-family: var(--font-sans);
+    font-size: 11px;
+    color: var(--color-ash-500);
+    font-style: italic;
+  }
+  .fq-link {
+    font-family: var(--font-sans);
+    font-size: 12px;
+    color: var(--color-ash-400);
+    transition: color 200ms;
+  }
+  .fq-link:hover { color: var(--color-wc-green); }
+
+  /* ─── Card ─── */
+  .fq-card {
+    background: var(--color-bg-card);
+    border: 1px solid var(--copper-hairline);
+    border-radius: var(--radius-large);
+    padding: 24px 22px 26px;
+    max-width: 720px;
+    margin: 0 auto;
+    position: relative;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  }
+  @media (min-width: 1024px) {
+    .fq-card { padding: 32px 36px 36px; }
+  }
+
+  .fq-q-num {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--color-copper);
+    letter-spacing: 0.12em;
+    margin: 0 0 6px;
+    font-weight: 600;
+  }
+
+  .fq-q {
+    font-family: var(--font-serif);
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--color-ash-100);
+    margin: 0 0 16px;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+  }
+  @media (min-width: 768px) { .fq-q { font-size: 28px; } }
+  @media (min-width: 1024px) { .fq-q { font-size: 32px; margin-bottom: 20px; } }
+
+  .fq-a {
+    font-family: var(--font-sans);
+    font-size: 14px;
+    color: var(--color-ash-300);
+    line-height: 1.65;
+    margin: 0 0 20px;
+    max-width: 65ch;
+  }
+  @media (min-width: 1024px) { .fq-a { font-size: 16px; line-height: 1.6; } }
+
+  .fq-a em {
+    color: var(--color-wc-green);
+    font-style: italic;
+    font-family: var(--font-serif);
+    font-weight: 500;
+  }
+
+  .fq-a .strike {
+    color: var(--color-ash-500);
+    text-decoration: line-through;
+    text-decoration-color: rgba(220, 80, 80, 0.5);
+    text-decoration-thickness: 1.5px;
+    font-weight: 500;
+  }
+
+  .fq-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 11px 18px;
+    background: var(--color-wc-green);
+    color: var(--color-bg-deep);
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 14px;
+    border-radius: var(--radius-btn);
+    text-decoration: none;
+    transition: background 200ms, transform 200ms;
+    min-height: 44px;
+  }
+  .fq-cta:hover {
+    background: var(--color-wc-green-bright);
+    transform: translateY(-1px);
+  }
+</style>

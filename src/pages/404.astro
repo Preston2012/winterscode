@@ -1,0 +1,62 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Page not found · Winters Code"
+  description="The page you were looking for doesn't exist. Head back to winterscode.com."
+  canonicalPath="/404"
+  bare
+>
+  <section class="wc-404">
+    <p class="mono wc-404-eyebrow">404 · NOT FOUND</p>
+    <h1 class="h1 wc-404-headline">Couldn't find that one.</h1>
+    <p class="body-text wc-404-lead">
+      The page you were looking for has moved, was renamed, or never existed.
+      No worries, everything's still where it should be on the homepage.
+    </p>
+    <a href="/" class="wc-404-back">
+      <span aria-hidden="true">←</span>
+      Back to the homepage
+    </a>
+  </section>
+</BaseLayout>
+
+<style>
+  .wc-404 {
+    padding: 96px 0 64px;
+    text-align: center;
+  }
+  .wc-404-eyebrow {
+    color: var(--color-copper);
+    font-size: 14px;
+    letter-spacing: 0.2em;
+    margin: 0;
+  }
+  .wc-404-headline {
+    margin-top: 16px;
+  }
+  .wc-404-lead {
+    margin: 24px auto 0;
+    max-width: 480px;
+  }
+  .wc-404-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 36px;
+    padding: 14px 22px;
+    background: var(--color-wc-green);
+    color: var(--color-bg-deep);
+    border-radius: var(--radius-btn);
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 14px;
+    box-shadow: 0 1px 0 var(--copper-hairline) inset;
+    transition: background 200ms, transform 200ms;
+  }
+  .wc-404-back:hover {
+    background: var(--color-wc-green-bright);
+    transform: translateY(-1px);
+  }
+</style>

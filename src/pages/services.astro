@@ -1,0 +1,795 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/layout/Header.astro';
+import MobileMenu from '../components/layout/MobileMenu.astro';
+import PageHero from '../components/sections/PageHero.astro';
+import Divider from '../components/ui/Divider.astro';
+import Contact from '../components/sections/Contact.astro';
+---
+
+<BaseLayout
+  title="Services · Winters Code"
+  description="Custom websites, custom apps, integrations, and ongoing maintenance starting at $75/mo. Sites live in days, apps in weeks. From questionnaire to launch."
+>
+  <Header />
+  <MobileMenu />
+
+  <PageHero
+    eyebrow="Services · The Menu"
+    h1="What I'm hired for."
+    sub="Custom sites, custom apps, integrations between systems you already use, and ongoing maintenance starting at $75/mo. Every build starts with a free consult and a questionnaire."
+    sub2="Custom code. Direct line to the builder. You own what I build."
+  />
+
+  <Divider label="01" />
+
+  <!-- ─────────── Section 01 · Story-led opener + 3-step ─────────── -->
+  <section class="sv-opener" aria-label="How every build starts">
+    <blockquote class="story-led">
+      <p>
+        Every build starts with a question: what story does this site need
+        to tell? For a charter captain, that might be "here's the boat,
+        here's the dock, book a trip." For an agency, it's a full
+        narrative arc. I figure out which one fits your business, then
+        build to it. <em>Top to bottom, every section earns its place.</em>
+      </p>
+    </blockquote>
+
+    <div class="how-it-goes">
+      <h2 class="hg-heading">How it goes:</h2>
+      <ol class="hg-steps">
+        <li>
+          <span class="step-num">Step 01</span>
+          <span class="step-name">Questionnaire + consult</span>
+          <span class="step-meta">no cost, no pitch deck</span>
+        </li>
+        <li>
+          <span class="step-num">Step 02</span>
+          <span class="step-name">SOW + 50%</span>
+          <span class="step-meta">locks scope, work starts same week</span>
+        </li>
+        <li>
+          <span class="step-num">Step 03</span>
+          <span class="step-name">Live in days</span>
+          <span class="step-meta">final 50% on launch</span>
+        </li>
+      </ol>
+      <p class="hg-tag">
+        No agency runaround. No "we'll get back to you next quarter."
+      </p>
+    </div>
+  </section>
+
+  <Divider label="02" />
+
+  <!-- ─────────── Section 02 · Sites ─────────── -->
+  <section class="sv-block" aria-labelledby="sv-sites-h">
+    <header class="sv-block-head">
+      <h2 class="sv-block-h" id="sv-sites-h">Sites</h2>
+      <p class="sv-block-sub">Custom code. Mobile-first. ~95 Lighthouse average.</p>
+    </header>
+
+    <div class="sv-tier-grid">
+      <article class="sv-tier" id="sites-starter">
+        <h3 class="sv-tier-h">Starter site</h3>
+        <ul class="sv-tier-features">
+          <li>3–5 pages</li>
+          <li>Mobile responsive</li>
+          <li>Contact form</li>
+          <li>SEO basics</li>
+          <li>1 revision round</li>
+        </ul>
+        <p class="sv-tier-timeline">Live in 3–7 business days, typically</p>
+        <a href="/contact?type=site&amp;tier=starter" class="sv-tier-cta">Get a quote →</a>
+      </article>
+
+      <article class="sv-tier" id="sites-pro">
+        <h3 class="sv-tier-h">Pro site</h3>
+        <ul class="sv-tier-features">
+          <li>6–12 pages</li>
+          <li>Custom widget (booking, gallery, calculator)</li>
+          <li>Advanced SEO</li>
+          <li>2 revision rounds</li>
+        </ul>
+        <p class="sv-tier-timeline">Live in 1–2 weeks</p>
+        <a href="/contact?type=site&amp;tier=pro" class="sv-tier-cta">Get a quote →</a>
+      </article>
+
+      <article class="sv-tier" id="sites-custom">
+        <h3 class="sv-tier-h">Custom build</h3>
+        <ul class="sv-tier-features">
+          <li>E-commerce</li>
+          <li>Member portals</li>
+          <li>Custom integrations</li>
+          <li>Complex business logic</li>
+        </ul>
+        <p class="sv-tier-timeline">2–4 weeks typical</p>
+        <a href="/contact?type=site&amp;tier=custom" class="sv-tier-cta">Get a quote →</a>
+      </article>
+    </div>
+  </section>
+
+  <Divider label="03" />
+
+  <!-- ─────────── Section 03 · Apps ─────────── -->
+  <section class="sv-block" aria-labelledby="sv-apps-h">
+    <header class="sv-block-head">
+      <h2 class="sv-block-h" id="sv-apps-h">Apps</h2>
+      <p class="sv-block-sub">Flutter. Cross-platform iOS + Android. One codebase, two stores.</p>
+    </header>
+
+    <div class="sv-tier-grid">
+      <article class="sv-tier" id="apps-mvp">
+        <h3 class="sv-tier-h">MVP</h3>
+        <ul class="sv-tier-features">
+          <li>5–10 screens</li>
+          <li>Cross-platform iOS + Android</li>
+          <li>Auth + basic backend</li>
+        </ul>
+        <p class="sv-tier-timeline">2–4 weeks</p>
+        <a href="/contact?type=app&amp;tier=mvp" class="sv-tier-cta">Get a quote →</a>
+      </article>
+
+      <article class="sv-tier" id="apps-full">
+        <h3 class="sv-tier-h">Full build</h3>
+        <ul class="sv-tier-features">
+          <li>Payments</li>
+          <li>Real-time</li>
+          <li>AI features</li>
+          <li>Complex backend</li>
+          <li>App Store + Play Store</li>
+        </ul>
+        <p class="sv-tier-timeline">4–8 weeks</p>
+        <a href="/contact?type=app&amp;tier=full" class="sv-tier-cta">Get a quote →</a>
+      </article>
+
+      <article class="sv-tier" id="apps-system">
+        <h3 class="sv-tier-h">Custom system</h3>
+        <ul class="sv-tier-features">
+          <li>Multi-tenant or multi-role</li>
+          <li>Payment processing + subscription tiers</li>
+          <li>Enterprise integrations</li>
+          <li>50+ screens / complex workflows</li>
+        </ul>
+        <p class="sv-tier-timeline">8–16 weeks</p>
+        <a href="/contact?type=app&amp;tier=system" class="sv-tier-cta">Get a quote →</a>
+      </article>
+    </div>
+  </section>
+
+  <Divider label="04" />
+
+  <!-- ─────────── Section 04 · Add-ons ─────────── -->
+  <section class="sv-block" aria-labelledby="sv-addons-h">
+    <header class="sv-block-head">
+      <h2 class="sv-block-h" id="sv-addons-h">Add-ons</h2>
+      <p class="sv-block-sub">Smaller pieces. Bolt on to any build.</p>
+    </header>
+
+    <dl class="sv-addons">
+      <div class="sv-addon-row">
+        <dt class="sv-addon-name">Workflow audit</dt>
+        <dd class="sv-addon-desc">
+          90 min walk-through. Free for active clients. Custom quote
+          standalone.
+        </dd>
+      </div>
+      <div class="sv-addon-row">
+        <dt class="sv-addon-name">Integration build</dt>
+        <dd class="sv-addon-desc">
+          Custom scope. Stripe ↔ QuickBooks ↔ your site. Whatever you
+          already use, wired together.
+        </dd>
+      </div>
+      <div class="sv-addon-row">
+        <dt class="sv-addon-name">AI workflow design</dt>
+        <dd class="sv-addon-desc">
+          Automating intake, replies, lead routing. Practical AI, not
+          the buzzword kind.
+        </dd>
+      </div>
+      <div class="sv-addon-row">
+        <dt class="sv-addon-name">Help on demand</dt>
+        <dd class="sv-addon-desc">
+          Text Preston. Real human. <em>Included with maintenance.</em>
+        </dd>
+      </div>
+    </dl>
+  </section>
+
+  <Divider label="05" />
+
+  <!-- ─────────── Section 05 · Maintenance (public prices) ─────────── -->
+  <section class="sv-block" aria-labelledby="sv-maint-h">
+    <header class="sv-block-head">
+      <h2 class="sv-block-h" id="sv-maint-h">Keeping it running</h2>
+      <p class="sv-block-sub">Monthly plans. Cancel anytime. The person who built it is the person who maintains it.</p>
+    </header>
+
+    <div class="sv-tier-grid sv-tier-grid--2">
+      <article class="sv-tier sv-tier--maint" id="maint-basic">
+        <h3 class="sv-tier-h">Basic</h3>
+        <p class="sv-tier-price">
+          starting at <strong>$75</strong><span class="sv-tier-period">/mo</span>
+        </p>
+        <ul class="sv-tier-features">
+          <li>Hosting + SSL</li>
+          <li>Daily backups</li>
+          <li>Security patches</li>
+          <li>2 content edits / month</li>
+          <li>Uptime monitoring</li>
+        </ul>
+        <a href="/contact?type=maintenance&amp;tier=basic" class="sv-tier-cta">Start a plan →</a>
+      </article>
+
+      <article class="sv-tier sv-tier--maint" id="maint-pro">
+        <h3 class="sv-tier-h">Pro</h3>
+        <p class="sv-tier-price">
+          starting at <strong>$250</strong><span class="sv-tier-period">/mo</span>
+        </p>
+        <ul class="sv-tier-features">
+          <li>Everything in Basic</li>
+          <li>Unlimited reasonable edits</li>
+          <li>Monthly performance report</li>
+          <li>Priority response</li>
+          <li>Text Preston direct</li>
+        </ul>
+        <a href="/contact?type=maintenance&amp;tier=pro" class="sv-tier-cta">Start a plan →</a>
+      </article>
+    </div>
+  </section>
+
+  <Divider label="06" />
+
+  <!-- ─────────── Section 06 · What I don't do (anti-scope) ─────────── -->
+  <section class="sv-block sv-anti" aria-labelledby="sv-dont-h">
+    <header class="sv-block-head">
+      <h2 class="sv-block-h" id="sv-dont-h">What I don't do</h2>
+      <p class="sv-block-sub">Honest about scope. Saves us both time.</p>
+    </header>
+
+    <ul class="sv-dont-list">
+      <li>Paid ads (Google / Meta / etc.)</li>
+      <li>Long-term SEO content strategy</li>
+      <li>Blog writing</li>
+      <li>Photography or videography</li>
+      <li>Social media management</li>
+      <li>Logo design <span class="sv-dont-note">(sometimes, ask)</span></li>
+    </ul>
+
+    <p class="sv-dont-foot">
+      I'll refer you to someone good for these if you need them.
+    </p>
+  </section>
+
+  <Divider label="07" />
+
+  <!-- ─────────── Section 07 · FAQ ─────────── -->
+  <section class="sv-faq" id="faq" aria-labelledby="sv-faq-h">
+    <header class="sv-block-head">
+      <h2 class="sv-block-h" id="sv-faq-h">Questions</h2>
+      <p class="sv-block-sub">The ones everyone asks.</p>
+    </header>
+
+    <div class="sv-faq-list">
+      <!-- Q.01 open by default, the gatekeeper -->
+      <details class="sv-faq-item" open>
+        <summary class="sv-faq-q">
+          <span class="sv-faq-num">Q.01</span>
+          <span class="sv-faq-q-text">How much does this cost?</span>
+          <span class="sv-faq-toggle" aria-hidden="true">+</span>
+        </summary>
+        <div class="sv-faq-a">
+          <p>
+            Same modern stack and quality bar agencies use,
+            mid-freelancer pricing. National agencies typically start at
+            <span class="strike">$5,000+</span> and run 6+ weeks. Hourly
+            freelancers often bill <span class="strike">$2,500+</span>
+            over a month. I aim to come in faster than either, at a
+            price that lands between them.
+          </p>
+          <p><em>Free consult, custom quote. I own it end-to-end.</em></p>
+        </div>
+      </details>
+
+      <details class="sv-faq-item">
+        <summary class="sv-faq-q">
+          <span class="sv-faq-num">Q.02</span>
+          <span class="sv-faq-q-text">Why no WordPress?</span>
+          <span class="sv-faq-toggle" aria-hidden="true">+</span>
+        </summary>
+        <div class="sv-faq-a">
+          <p>
+            WordPress is mass-produced software with plugins stacked on top. <em>Slow.
+            Plugin-dependent. Breaks at 2 AM when something auto-updates.</em>
+            I write the actual code. <strong>Loads faster. Ranks better.
+            Stays secure.</strong> ~95 Lighthouse average across every page I ship. No plugins to babysit, no "the dashboard is broken
+            again" calls.
+          </p>
+        </div>
+      </details>
+
+      <details class="sv-faq-item">
+        <summary class="sv-faq-q">
+          <span class="sv-faq-num">Q.03</span>
+          <span class="sv-faq-q-text">Do you maintain it after?</span>
+          <span class="sv-faq-toggle" aria-hidden="true">+</span>
+        </summary>
+        <div class="sv-faq-a">
+          <p>
+            Yes. Monthly plans <strong>starting at $75/mo</strong>.
+            Hosting, SSL, daily backups, security patches, content edits.
+            The site stays alive, the phone number stays the same, the
+            person who built it is the person who maintains it.
+            <em>No "ticket has been escalated" emails.</em>
+          </p>
+        </div>
+      </details>
+
+      <details class="sv-faq-item">
+        <summary class="sv-faq-q">
+          <span class="sv-faq-num">Q.04</span>
+          <span class="sv-faq-q-text">What if I don't have content yet?</span>
+          <span class="sv-faq-toggle" aria-hidden="true">+</span>
+        </summary>
+        <div class="sv-faq-a">
+          <p>
+            I do most of the lift. Usually <strong>80/20 your way</strong>.
+            Step one is a 2-page questionnaire. Business, audience,
+            services, goals, content you have, content you need.
+            <a href="/questionnaire.pdf">One-tap download</a>, fill it
+            out, ship it back. <strong>Completed questionnaire is
+            required before the first meeting.</strong> Keeps the consult
+            sharp. No photos or copy yet? Note
+            it on the form. I draft, you edit.
+          </p>
+        </div>
+      </details>
+
+      <details class="sv-faq-item">
+        <summary class="sv-faq-q">
+          <span class="sv-faq-num">Q.05</span>
+          <span class="sv-faq-q-text">How are you this fast?</span>
+          <span class="sv-faq-toggle" aria-hidden="true">+</span>
+        </summary>
+        <div class="sv-faq-a">
+          <p>
+            Modern stack (Astro, React, Flutter) and AI tooling I built
+            myself. <strong>Demiurge</strong> is a memory engine that
+            remembers every project's patterns and decisions, so I'm not
+            relearning the same lessons on each new build. Three of my
+            live products are AI: <strong>StainSlayer</strong> does
+            vision AI stain analysis, live on App Store and Play Store.
+            <strong>Baseline</strong> runs multi-model political
+            intelligence across 4 providers. <strong>MyKonos</strong> is
+            an AI companion running on Demiurge. The code is mine. The
+            speed is real.
+          </p>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <Divider label="08" />
+
+  <Contact sectionNumber="08" />
+</BaseLayout>
+
+<style>
+  /* ─── Section 01: story opener (kept verbatim from previous version) ─── */
+  .sv-opener {
+    padding: 24px 4px 16px;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  @media (min-width: 768px) {
+    .sv-opener { padding: 40px 4px 24px; }
+  }
+  .story-led { border: 0; padding: 0; margin: 0 0 36px; }
+  .story-led p {
+    font-family: var(--font-serif);
+    font-size: 17px;
+    line-height: 1.6;
+    color: var(--color-ash-200, var(--color-ash-100));
+    margin: 0;
+  }
+  @media (min-width: 768px) { .story-led p { font-size: 19px; line-height: 1.55; } }
+  @media (min-width: 1024px) { .story-led p { font-size: 21px; } }
+  .story-led em {
+    color: var(--color-copper-bright);
+    font-style: italic;
+    font-weight: 500;
+  }
+
+  .how-it-goes {
+    padding: 24px 0 0;
+    border-top: 1px solid var(--copper-hairline);
+  }
+  .hg-heading {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    color: var(--color-copper);
+    text-transform: uppercase;
+    margin: 0 0 18px;
+    font-weight: 600;
+  }
+  .hg-steps {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 18px;
+    display: grid;
+    gap: 14px;
+  }
+  .hg-steps li {
+    display: grid;
+    grid-template-columns: 70px 1fr;
+    grid-template-rows: auto auto;
+    column-gap: 14px;
+    row-gap: 2px;
+    align-items: baseline;
+    padding-bottom: 14px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  }
+  .hg-steps li:last-child { border-bottom: 0; }
+  .step-num {
+    grid-row: 1 / span 2;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--color-copper);
+    letter-spacing: 0.08em;
+    align-self: center;
+  }
+  .step-name {
+    font-family: var(--font-sans);
+    font-size: 15px;
+    color: var(--color-ash-100);
+    font-weight: 600;
+  }
+  .step-meta {
+    font-family: var(--font-sans);
+    font-size: 12px;
+    color: var(--color-ash-400);
+    font-style: italic;
+  }
+  @media (min-width: 768px) {
+    .hg-steps li { grid-template-columns: 90px 1fr auto; grid-template-rows: auto; }
+    .step-num { grid-row: 1; }
+    .step-meta { text-align: right; }
+  }
+  .hg-tag {
+    font-family: var(--font-sans);
+    font-size: 13px;
+    color: var(--color-ash-400);
+    font-style: italic;
+    margin: 0;
+  }
+
+  /* ─── Shared block scaffolding ─── */
+  .sv-block {
+    padding: 32px 4px 24px;
+    max-width: 960px;
+    margin: 0 auto;
+  }
+  @media (min-width: 768px) {
+    .sv-block { padding: 48px 4px 32px; }
+  }
+  .sv-block-head {
+    margin: 0 0 20px;
+  }
+  .sv-block-h {
+    font-family: var(--font-serif);
+    font-size: 28px;
+    line-height: 1.15;
+    margin: 0 0 6px;
+    color: var(--color-ash-100);
+    font-weight: 600;
+  }
+  @media (min-width: 768px) { .sv-block-h { font-size: 36px; } }
+  @media (min-width: 1024px) { .sv-block-h { font-size: 42px; } }
+  .sv-block-sub {
+    font-family: var(--font-sans);
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--color-ash-400);
+    margin: 0;
+    max-width: 540px;
+  }
+  @media (min-width: 768px) { .sv-block-sub { font-size: 15px; } }
+
+  /* ─── Tier cards (Sites + Apps + Maintenance share .sv-tier) ─── */
+  .sv-tier-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+    margin: 18px 0 0;
+  }
+  @media (min-width: 768px) {
+    .sv-tier-grid { grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .sv-tier-grid--2 { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  .sv-tier {
+    position: relative;
+    background: var(--color-bg-card);
+    border: 1px solid var(--copper-hairline);
+    border-radius: var(--radius-card, 10px);
+    padding: 18px 16px 16px;
+    display: flex;
+    flex-direction: column;
+  }
+  .sv-tier-h {
+    font-family: var(--font-serif);
+    font-size: 20px;
+    margin: 0 0 8px;
+    color: var(--color-ash-100);
+    font-weight: 600;
+  }
+  @media (min-width: 768px) { .sv-tier-h { font-size: 22px; } }
+
+  .sv-tier-features {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 12px;
+    font-family: var(--font-sans);
+    font-size: 13px;
+    color: var(--color-ash-300);
+    line-height: 1.6;
+    flex: 1 1 auto;
+  }
+  @media (min-width: 768px) { .sv-tier-features { font-size: 14px; } }
+  .sv-tier-features li {
+    padding: 3px 0 3px 14px;
+    position: relative;
+  }
+  .sv-tier-features li::before {
+    content: "·";
+    position: absolute;
+    left: 2px;
+    top: 1px;
+    color: var(--color-copper);
+    font-weight: 700;
+  }
+
+  .sv-tier-timeline {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--color-copper);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin: 0 0 14px;
+  }
+  @media (min-width: 768px) { .sv-tier-timeline { font-size: 12px; } }
+
+  .sv-tier-cta {
+    display: inline-block;
+    font-family: var(--font-sans);
+    font-size: 13px;
+    color: var(--color-wc-green);
+    text-decoration: none;
+    border: 1px solid var(--color-wc-green-dim, rgba(77, 216, 168, 0.4));
+    border-radius: 6px;
+    padding: 8px 12px;
+    transition: background-color 0.15s ease, color 0.15s ease;
+    align-self: flex-start;
+  }
+  .sv-tier-cta:hover,
+  .sv-tier-cta:focus-visible {
+    background-color: var(--color-wc-green);
+    color: var(--color-bg-deep);
+    outline: none;
+  }
+
+  /* Maintenance tier price treatment */
+  .sv-tier--maint .sv-tier-price {
+    font-family: var(--font-sans);
+    font-size: 13px;
+    color: var(--color-ash-400);
+    margin: 0 0 14px;
+  }
+  .sv-tier--maint .sv-tier-price strong {
+    font-family: var(--font-serif);
+    font-size: 32px;
+    color: var(--color-wc-green);
+    font-weight: 600;
+    margin: 0 2px;
+  }
+  @media (min-width: 768px) {
+    .sv-tier--maint .sv-tier-price strong { font-size: 38px; }
+  }
+  .sv-tier--maint .sv-tier-period {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--color-ash-400);
+    letter-spacing: 0.04em;
+  }
+
+  /* ─── Add-ons (definition list) ─── */
+  .sv-addons {
+    margin: 18px 0 0;
+    padding: 0;
+    display: grid;
+    gap: 0;
+  }
+  .sv-addon-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 4px;
+    padding: 14px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  }
+  .sv-addon-row:first-child { padding-top: 4px; }
+  .sv-addon-row:last-child { border-bottom: 0; }
+  @media (min-width: 768px) {
+    .sv-addon-row { grid-template-columns: 200px 1fr; gap: 16px; align-items: baseline; }
+  }
+  @media (min-width: 1024px) {
+    .sv-addon-row { grid-template-columns: 240px 1fr; }
+  }
+
+  .sv-addon-name {
+    font-family: var(--font-sans);
+    font-size: 14px;
+    color: var(--color-ash-100);
+    font-weight: 600;
+    margin: 0;
+  }
+  @media (min-width: 768px) { .sv-addon-name { font-size: 15px; } }
+  .sv-addon-desc {
+    font-family: var(--font-sans);
+    font-size: 13px;
+    color: var(--color-ash-400);
+    line-height: 1.55;
+    margin: 0;
+  }
+  @media (min-width: 768px) { .sv-addon-desc { font-size: 14px; } }
+  .sv-addon-desc em {
+    color: var(--color-copper-bright);
+    font-style: italic;
+  }
+
+  /* ─── Anti-scope ("What I don't do") ─── */
+  .sv-anti {
+    border-top: 1px solid var(--copper-hairline);
+    padding-top: 32px;
+  }
+  @media (min-width: 768px) { .sv-anti { padding-top: 48px; } }
+
+  .sv-dont-list {
+    list-style: none;
+    padding: 0;
+    margin: 18px 0 16px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 6px;
+    font-family: var(--font-sans);
+    font-size: 14px;
+    color: var(--color-ash-300);
+  }
+  @media (min-width: 768px) {
+    .sv-dont-list {
+      grid-template-columns: repeat(2, 1fr);
+      column-gap: 32px;
+      row-gap: 8px;
+      font-size: 15px;
+    }
+  }
+  .sv-dont-list li {
+    padding: 4px 0 4px 18px;
+    position: relative;
+  }
+  .sv-dont-list li::before {
+    content: "×";
+    position: absolute;
+    left: 2px;
+    top: 3px;
+    color: var(--color-ash-700, var(--color-ash-500));
+    font-weight: 400;
+  }
+  .sv-dont-note {
+    color: var(--color-ash-500);
+    font-style: italic;
+    font-size: 0.92em;
+  }
+  .sv-dont-foot {
+    font-family: var(--font-sans);
+    font-size: 13px;
+    color: var(--color-ash-400);
+    font-style: italic;
+    margin: 12px 0 0;
+    max-width: 540px;
+  }
+  @media (min-width: 768px) { .sv-dont-foot { font-size: 14px; } }
+
+  /* ─── FAQ accordion ─── */
+  .sv-faq {
+    padding: 32px 4px 24px;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  @media (min-width: 768px) { .sv-faq { padding: 48px 4px 32px; } }
+
+  .sv-faq-list {
+    margin: 18px 0 0;
+    display: grid;
+    gap: 8px;
+  }
+  .sv-faq-item {
+    background: var(--color-bg-card);
+    border: 1px solid var(--copper-hairline);
+    border-radius: var(--radius-card, 10px);
+    overflow: hidden;
+  }
+  .sv-faq-item[open] {
+    border-color: var(--copper-dim, rgba(240, 160, 110, 0.5));
+  }
+
+  .sv-faq-q {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 12px;
+    align-items: center;
+    padding: 14px 16px;
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+  }
+  .sv-faq-q::-webkit-details-marker { display: none; }
+  .sv-faq-q:hover,
+  .sv-faq-q:focus-visible {
+    background-color: rgba(200, 128, 74, 0.04);
+    outline: none;
+  }
+
+  .sv-faq-num {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--color-copper);
+    letter-spacing: 0.08em;
+  }
+  .sv-faq-q-text {
+    font-family: var(--font-sans);
+    font-size: 15px;
+    color: var(--color-ash-100);
+    font-weight: 600;
+    line-height: 1.35;
+  }
+  @media (min-width: 768px) { .sv-faq-q-text { font-size: 17px; } }
+
+  .sv-faq-toggle {
+    font-family: var(--font-mono);
+    font-size: 18px;
+    color: var(--color-copper);
+    width: 20px;
+    text-align: center;
+    transition: transform 0.15s ease;
+  }
+  .sv-faq-item[open] .sv-faq-toggle {
+    transform: rotate(45deg);
+  }
+
+  .sv-faq-a {
+    padding: 0 16px 16px 16px;
+    font-family: var(--font-sans);
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--color-ash-300);
+    border-top: 1px solid rgba(255, 255, 255, 0.04);
+  }
+  @media (min-width: 768px) { .sv-faq-a { font-size: 15px; } }
+  .sv-faq-a p { margin: 12px 0 0; }
+  .sv-faq-a p:first-child { margin-top: 14px; }
+  .sv-faq-a strong { color: var(--color-ash-100); }
+  .sv-faq-a em { color: var(--color-copper-bright); font-style: italic; }
+  .sv-faq-a a {
+    color: var(--color-wc-green);
+    text-decoration: underline;
+    text-decoration-color: rgba(77, 216, 168, 0.4);
+    text-underline-offset: 3px;
+  }
+  .sv-faq-a .strike {
+    text-decoration: line-through;
+    text-decoration-color: rgba(240, 160, 110, 0.5);
+    color: var(--color-ash-500);
+  }
+</style>

@@ -1,0 +1,564 @@
+---
+/**
+ * Wall, compressed homepage version (4 rows). Live workshop broadcast.
+ *
+ * Spec ref: docs/design/S6_PLUS.md Section 4 (~line 567).
+ *
+ * S7 ships with last-known-good stub data per spec curation rules:
+ *   "If a data source fails, show last-known-good with a small timestamp,
+ *    never blank."
+ *
+ * Real data sources land when Preston provisions:
+ *   - PageSpeed Insights API key (Google Cloud Console, free tier), for LIGHTHOUSE row
+ *   - Cal.com API key (free account), for CALENDAR row
+ *   - Cloudflare Worker endpoint reading Demiurge brain count from VPS, for ENGINE row
+ *   - GitHub API /users/Preston2012/events with PAT, for DEPLOYS row (Option B privacy)
+ *
+ * SSE refresh wiring lands S10 (per design doc).
+ *
+ * Curation rules:
+ *   - No weekly stats. 30-day rolling only.
+ *   - Every shown number has a floor that's still impressive on worst day.
+ *   - Numbers never go to 0 visibly.
+ */
+
+import Explainer from '../ui/Explainer.astro';
+
+interface WallRow {
+  glyph: string;
+  label: string;
+  primary: string;
+  secondary?: string;
+  tertiary?: string;
+  meta?: string;
+  featured?: boolean;
+  /** API source key used to look up live/cached/fallback state. */
+  sourceKey: 'deploys' | 'lighthouse' | 'engine' | 'calendar';
+  /** Plain-English explainer shown when visitor hovers the "?". */
+  explain: string;
+}
+
+// Stub data, last-known-good values. Replace via /api/wall SSE endpoint at S10.
+const ROWS: WallRow[] = [
+  {
+    glyph: '⚡',
+    label: 'DEPLOYS',
+    sourceKey: 'deploys',
+    primary: '30 in past 30 days',
+    secondary: '4 repos',
+    meta: 'last: 4m ago',
+    explain:
+      'Every time I push a code change to a website or app it counts as a deploy. The shop is active when this number is moving.',
+  },
+  {
+    glyph: '▲',
+    label: 'LIGHTHOUSE',
+    sourceKey: 'lighthouse',
+    primary: 'winterscode 97/100/100/100',
+    secondary: 'sogn 99/100/100/100',
+    tertiary: 'baseline 95/100/100/100',
+    explain:
+      'Google\'s scorecard for any website. Four numbers, 0 to 100 each: speed, accessibility, security, and how well Google can read the page. 100 is perfect. Most small-business sites score 50-70. Scores shown are mobile (the harder test). Desktop usually runs 2 to 5 points higher.',
+  },
+  {
+    glyph: '◉',
+    label: 'ENGINE',
+    sourceKey: 'engine',
+    primary: 'Demiurge brain · 2.5k+ memories',
+    tertiary: '+50 in last 7d · 30d uptime 100%',
+    explain:
+      'Demiurge is the memory system I built so the AI tools I work with retain patterns and lessons across builds. The count grows as I work. Uptime is how often it has been online over the last 30 days.',
+  },
+  {
+    glyph: '⌖',
+    label: 'CALENDAR',
+    sourceKey: 'calendar',
+    primary: 'next consult: Wed 5pm PT',
+    meta: 'book →',
+    featured: true,
+    explain:
+      'Pulled live from my booking calendar. If you book a consult, that slot disappears here.',
+  },
+];
+---
+
+<section class="wall" id="wall" aria-labelledby="wall-h">
+  <header class="wall-head">
+    <div class="wall-eyebrow">
+      <span class="line" aria-hidden="true"></span>
+      <h2 class="wall-h" id="wall-h">THE WORKSHOP</h2>
+      <span class="wall-status" aria-live="polite">
+        <span class="pulse" aria-hidden="true"></span>
+        live · sample
+      </span>
+    </div>
+    <a href="/wall" class="wall-link">see the full wall →</a>
+  </header>
+
+  <ul class="wall-rows" role="list">
+    {ROWS.map((row, i) => (
+      <li
+        class:list={['wall-row', row.featured && 'wall-row-featured']}
+        role="listitem"
+        data-source-key={row.sourceKey}
+      >
+        <span class="row-glyph" aria-hidden="true">{row.glyph}</span>
+        <span class="row-label">{row.label}</span>
+        <span class="row-badge" data-row-badge data-source="fallback" aria-label={`${row.label} data source`}>fallback</span>
+        <Explainer label="?">{row.explain}</Explainer>
+        <span class="row-content">
+          <span class="row-primary">{row.primary}</span>
+          {row.secondary && row.tertiary && <span class="row-secondary row-secondary-block">{row.secondary}</span>}
+          {row.secondary && !row.tertiary && <span class="row-secondary"> · {row.secondary}</span>}
+          {row.tertiary && <span class="row-tertiary">{row.tertiary}</span>}
+        </span>
+        {row.meta && <span class="row-meta">{row.meta}</span>}
+      </li>
+    ))}
+  </ul>
+
+</section>
+
+<script is:inline>
+  // Live data fetch from /api/workshop. Falls back to baked-in stubs
+  // silently on any failure (network, parse, missing fields, 404).
+  // Init is deferred until the Wall section is about to enter the
+  // viewport; on desktop the Wall is above the fold and triggers
+  // immediately, on mobile it triggers as the user scrolls. This
+  // keeps the fetch off the critical TBT path of initial paint.
+  (function () {
+    function init() {
+    const wall = document.getElementById('wall');
+    const statusEl = wall && wall.querySelector('.wall-status');
+    if (!wall) return;
+
+    function setRowSource(sourceKey, source) {
+      if (!source) return;
+      var row = wall.querySelector('[data-source-key="' + sourceKey + '"]');
+      if (!row) return;
+      var badge = row.querySelector('[data-row-badge]');
+      if (!badge) return;
+      badge.setAttribute('data-source', source);
+      badge.textContent = source;
+    }
+
+    function setRow(label, primary, secondary, meta, tertiary) {
+      const rows = wall.querySelectorAll('.wall-row');
+      rows.forEach(function (row) {
+        const lbl = row.querySelector('.row-label');
+        if (!lbl || lbl.textContent.trim() !== label) return;
+        const prim = row.querySelector('.row-primary');
+        const sec = row.querySelector('.row-secondary');
+        const met = row.querySelector('.row-meta');
+        if (prim && primary) prim.textContent = primary;
+        var ter = row.querySelector('.row-tertiary');
+        if (sec && secondary) {
+          // Block mode (own line, no \u00b7 prefix) when tertiary line follows.
+          // Inline mode (\u00b7 prefix after primary) when secondary is the only
+          // detail line on the row (e.g. DEPLOYS' "12 \u00b7 4 repos").
+          if (tertiary) {
+            sec.textContent = secondary;
+            sec.classList.add('row-secondary-block');
+          } else {
+            sec.textContent = ' \u00b7 ' + secondary;
+            sec.classList.remove('row-secondary-block');
+          }
+        }
+        if (met && meta) met.textContent = meta;
+        if (ter && tertiary) ter.textContent = tertiary;
+      });
+    }
+
+    function fmtLh(arr) {
+      if (!Array.isArray(arr) || arr.length !== 4) return null;
+      return arr.join('/');
+    }
+
+    fetch('/api/workshop', { signal: AbortSignal.timeout(4000) })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (d) {
+        if (!d) return;
+
+        // Update per-row source badges (live / cached / fallback). Mirrors
+        // the /wall page pattern. SSR bakes 'fallback' initially; this
+        // patches each row's badge to reflect actual current upstream state.
+        if (d.deploys) setRowSource('deploys', d.deploys.source);
+        if (d.lighthouse) setRowSource('lighthouse', d.lighthouse.source);
+        if (d.engine) setRowSource('engine', d.engine.source);
+        if (d.calendar) setRowSource('calendar', d.calendar.source);
+
+        if (d.deploys) {
+          setRow('DEPLOYS',
+            d.deploys.count_30d + ' in past 30 days',
+            d.deploys.repo_count + ' repos',
+            'last: ' + d.deploys.last);
+        }
+        if (d.lighthouse) {
+          var wc = fmtLh(d.lighthouse.winterscode);
+          var sogn = fmtLh(d.lighthouse.sogn);
+          var base = fmtLh(d.lighthouse.baseline);
+          // Each site on its own line. setRow signature: (label, primary, secondary, meta).
+          // Use meta slot for baseline (third line position).
+          if (wc && sogn && base) {
+            // 3 sites on 3 lines. tertiary slot for baseline, meta unused.
+            setRow('LIGHTHOUSE', 'winterscode ' + wc, 'sogn ' + sogn, null, 'baseline ' + base);
+          } else if (wc && sogn) {
+            // Baseline failed PSI, keep wc + sogn live.
+            setRow('LIGHTHOUSE', 'winterscode ' + wc, 'sogn ' + sogn, null);
+          }
+        }
+        if (d.engine) {
+          var memStr = d.engine.memories >= 1000
+            ? (d.engine.memories / 1000).toFixed(1) + 'k'
+            : d.engine.memories;
+          var weekStr = (d.engine.added_last_7d != null && d.engine.added_last_7d > 0)
+            ? '+' + d.engine.added_last_7d + ' in last 7d'
+            : null;
+          var uptimeStr = '30d uptime ' + d.engine.uptime_30d_pct + '%';
+          // Combine "+N in last 7d \u00b7 30d uptime X%" into a single tertiary line.
+          var ter = weekStr ? (weekStr + ' \u00b7 ' + uptimeStr) : uptimeStr;
+          setRow('ENGINE',
+            'Demiurge brain · ' + memStr + ' memories',
+            null,
+            null,
+            ter);
+        }
+        if (d.calendar) {
+          setRow('CALENDAR', 'next consult: ' + d.calendar.next, null, 'book →');
+        }
+        if (statusEl) {
+          // Three states: all upstreams live (best), any cached (KV-fresh
+          // within last 12h, still real data), or any fallback (static stubs).
+          var sources = [d.deploys.source, d.lighthouse.source, d.security.source];
+          var anyFallback = sources.indexOf('fallback') !== -1;
+          var anyCached = sources.indexOf('cached') !== -1;
+          statusEl.lastChild.textContent = anyFallback
+            ? ' live · partial'
+            : (anyCached ? ' live · cached' : ' live · refreshed just now');
+        }
+      })
+      .catch(function () { /* swallow, stubs already rendered */ });
+    }
+    const section = document.getElementById('wall');
+    if (!section || typeof IntersectionObserver === 'undefined') {
+      init();
+      return;
+    }
+    const io = new IntersectionObserver(function (entries) {
+      for (const e of entries) {
+        if (e.isIntersecting) {
+          io.disconnect();
+          init();
+          break;
+        }
+      }
+    }, { rootMargin: '600px 0px' });
+    io.observe(section);
+  })();
+</script>
+
+<style>
+  .wall {
+    padding: 40px 4px 48px;
+    position: relative;
+    background:
+      linear-gradient(180deg, transparent 0%, rgba(200, 128, 74, 0.02) 50%, transparent 100%);
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  @media (min-width: 768px) {
+    .wall { padding: 56px 4px 64px; max-width: 860px; }
+  }
+  @media (min-width: 1024px) {
+    .wall { padding: 72px 0 80px; max-width: 960px; }
+  }
+
+  /* Subtle scanlines top + bottom (desktop only) */
+  @media (min-width: 1024px) {
+    .wall::before,
+    .wall::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 40px;
+      background:
+        repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 3px,
+          rgba(200, 128, 74, 0.04) 3px,
+          rgba(200, 128, 74, 0.04) 4px
+        );
+      pointer-events: none;
+    }
+    .wall::before { top: 0; }
+    .wall::after { bottom: 0; transform: scaleY(-1); }
+  }
+
+  /* ─── Header ─── */
+  .wall-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--copper-hairline);
+    margin-bottom: 16px;
+  }
+  @media (min-width: 1024px) {
+    .wall-head { padding-bottom: 20px; margin-bottom: 20px; }
+  }
+
+  .wall-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .wall-eyebrow .line {
+    width: 28px;
+    height: 1px;
+    background: var(--color-copper);
+  }
+  @media (min-width: 1024px) {
+    .wall-eyebrow .line { width: 40px; }
+  }
+  .wall-h {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    color: var(--color-copper);
+    text-transform: uppercase;
+    margin: 0;
+  }
+  @media (min-width: 1024px) {
+    .wall-h { font-size: 13px; }
+  }
+  .wall-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--color-ash-500);
+    letter-spacing: 0.04em;
+  }
+  .pulse {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color-wc-green);
+    box-shadow: 0 0 8px rgba(77, 216, 168, 0.5);
+    animation: wall-pulse 2.4s ease-in-out infinite;
+  }
+  @keyframes wall-pulse {
+    0%, 100% { opacity: 0.6; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.2); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .pulse { animation: none; }
+  }
+  .wall-link {
+    font-family: var(--font-sans);
+    font-size: 12px;
+    color: var(--color-ash-400);
+    text-decoration: none;
+    letter-spacing: 0.02em;
+    transition: color 200ms;
+  }
+  .wall-link:hover { color: var(--color-wc-green); }
+
+  /* ─── Rows ─── */
+  .wall-rows {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 10px;
+  }
+  /* Mobile: each row is a discrete card (~80px tall) per spec line 595-599 */
+  .wall-row {
+    display: grid;
+    grid-template-columns: 20px 1fr;
+    column-gap: 10px;
+    row-gap: 4px;
+    align-items: baseline;
+    padding: 14px 14px;
+    min-height: 76px;
+    grid-template-rows: auto auto auto;
+    border: 1px solid var(--copper-hairline);
+    border-radius: var(--radius-card);
+    background: rgba(200, 128, 74, 0.02);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--color-ash-300);
+    line-height: 1.4;
+    position: relative;
+  }
+  /* Tablet+: flatten back to rows with hairlines, no card chrome */
+  @media (min-width: 768px) {
+    .wall-rows { gap: 0; }
+    .wall-row {
+      grid-template-columns: 20px 110px 1fr;
+      grid-template-rows: auto;
+      column-gap: 12px;
+      padding: 12px 36px 12px 0;
+      border: 0;
+      border-bottom: 1px solid var(--copper-hairline);
+      border-radius: 0;
+      background: transparent;
+      min-height: auto;
+      /* position: relative inherited from base .wall-row */
+    }
+    .wall-row:last-child { border-bottom: 0; }
+  }
+  @media (min-width: 1024px) {
+    .wall-row {
+      grid-template-columns: 24px 110px 1fr auto;
+      font-size: 12px;
+      padding: 14px 0;
+    }
+  }
+  .row-glyph {
+    color: var(--color-copper);
+    font-size: 13px;
+    line-height: 1;
+  }
+  .row-label {
+    color: var(--color-ash-500);
+    letter-spacing: 0.1em;
+    font-size: 10px;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+  @media (min-width: 1024px) {
+    .row-label { font-size: 11px; }
+  }
+
+  /* Per-row source badge: live / cached / fallback. Mirrors /wall page. */
+  .row-badge {
+    /* Absolute positioning so badge sits top-right of each row card
+       without participating in the grid flow that holds glyph/label/content. */
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-family: var(--font-mono);
+    font-size: 8px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 2px 6px;
+    border: 1px solid var(--copper-hairline);
+    border-radius: 3px;
+    background: var(--color-bg-deep);
+    color: var(--color-ash-500);
+    line-height: 1;
+    white-space: nowrap;
+    z-index: 1;
+  }
+  @media (min-width: 768px) {
+    /* Tablet: badge moves slightly to clear hairline-only rows (no card padding).
+       Was align-self:center inside the grid; now absolute, so tune top/right
+       to match the new flatter row geometry. */
+    .row-badge { font-size: 9px; padding: 2px 7px; top: 14px; right: 4px; }
+  }
+  @media (min-width: 1024px) {
+    /* Desktop: row top-right corner with no padding pull. */
+    .row-badge { top: 16px; right: 0; }
+  }
+  .row-badge[data-source="live"] {
+    color: var(--color-wc-green);
+    border-color: rgba(77, 216, 168, 0.3);
+  }
+  .row-badge[data-source="cached"] {
+    color: var(--color-copper-bright);
+    border-color: rgba(200, 128, 74, 0.4);
+  }
+  .row-badge[data-source="fallback"] {
+    color: var(--color-amber);
+    border-color: rgba(240, 184, 120, 0.3);
+  }
+
+  .row-content {
+    color: var(--color-ash-100);
+    overflow-wrap: anywhere;
+    /* Mobile: explicit placement into col 2 row 2 so content doesn't land in the 20px glyph column */
+    grid-column: 2;
+    grid-row: 2;
+    min-width: 0;
+  }
+  @media (min-width: 768px) {
+    .row-content {
+      grid-column: 3;
+      grid-row: auto;
+    }
+  }
+  @media (min-width: 1024px) {
+    .row-content {
+      grid-column: 3;
+    }
+  }
+  .row-secondary {
+    color: var(--color-ash-400);
+  }
+  .row-tertiary {
+    color: var(--color-ash-400);
+    display: block;
+    margin-top: 2px;
+  }
+  .row-secondary-block {
+    display: block;
+    margin-top: 2px;
+  }
+
+  .row-meta {
+    color: var(--color-ash-500);
+    font-size: 10px;
+    grid-column: 2;
+    grid-row: 3;
+    margin-top: 0;
+    font-style: italic;
+  }
+  @media (min-width: 768px) {
+    .row-meta {
+      grid-column: 3;
+      grid-row: auto;
+    }
+  }
+  @media (min-width: 1024px) {
+    .row-meta {
+      grid-column: 4;
+      margin-top: 0;
+      font-style: normal;
+      text-align: right;
+      font-size: 11px;
+    }
+  }
+
+  /* Featured calendar row, green dot, brighter copper border, book CTA emphasized */
+  .wall-row-featured {
+    border-color: rgba(77, 216, 168, 0.35);
+    background: rgba(77, 216, 168, 0.04);
+  }
+  .wall-row-featured .row-glyph {
+    color: var(--color-wc-green);
+  }
+  .wall-row-featured .row-label {
+    color: var(--color-wc-green);
+  }
+  .wall-row-featured .row-meta {
+    color: var(--color-wc-green);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-style: normal;
+    font-size: 11px;
+  }
+  @media (min-width: 768px) {
+    .wall-row-featured {
+      border-bottom-color: rgba(77, 216, 168, 0.35);
+    }
+  }
+</style>

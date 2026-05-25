@@ -1,0 +1,405 @@
+---
+/**
+ * Contact (section 04), final CTA, no form.
+ *
+ * Design intent: filter for serious prospects rather than collect form
+ * submissions from tire-kickers. Four direct contact paths each filter
+ * differently:
+ *   - Cal.com → wants a scheduled call (highest intent)
+ *   - Call    → wants to talk now (intent + urgency)
+ *   - Text    → wants async (still intent, lower urgency)
+ *   - Email   → wants to think it through (lowest urgency, detailed scope)
+ *
+ * Consult policy is published so prospects self-qualify on geography +
+ * travel before they reach out. The $250 deposit gate filters out anyone
+ * who isn't serious about Bandon's service area.
+ */
+import SectionHead from '../ui/SectionHead.astro';
+
+// Props:
+//   sectionNumber: numeral above the kicker+title. Homepage is the 7th
+//     major section so default is '07'. On /work this is the 4th section
+//     (callers pass '04'). On /contact this is the 1st section ('01').
+//   centered: when true, drops the SectionHead numeral-indent on the body
+//     text and stacks content centered. Use on dedicated pages where the
+//     PageHero already establishes context and the numeral-anchored layout
+//     looks off-center. Homepage and /work keep the default (false).
+export interface Props {
+  sectionNumber?: string;
+  centered?: boolean;
+  /**
+   * suppressHeader: when true, drops the SectionHead block entirely.
+   * Use on /contact where PageHero already does the work. avoids a
+   * redundant "Reach out / Ready to build?" stacking under the page H1
+   * "Let's build something." Caller should also drop the Divider that
+   * normally precedes Contact on that page so the numbering reads
+   * cleanly (01 Brief form vs 02 Send a brief duplication).
+   */
+  suppressHeader?: boolean;
+  /**
+   * headerTitle / headerKicker: override the SectionHead text when
+   * suppressHeader is false. Default: kicker "Reach out", title
+   * "Ready to build?". /contact uses suppressHeader instead, but
+   * other pages may want contextual variants.
+   */
+  headerKicker?: string;
+  headerTitle?: string;
+}
+const {
+  sectionNumber = '07',
+  centered = false,
+  suppressHeader = false,
+  headerKicker = 'Reach out',
+  headerTitle = 'Ready to build?',
+} = Astro.props;
+
+const phone = '5415510731';
+const phoneDisplay = '541-551-0731';
+const email = 'preston@winterscode.com';
+const cal = 'https://cal.com/preston-winters';
+---
+
+<section class={`terminus${centered ? " terminus-centered" : ""}`} id="contact">
+  <!-- Rivets at each corner, magazine binding feel -->
+  <div class="rivet tl" aria-hidden="true"></div>
+  <div class="rivet tr" aria-hidden="true"></div>
+  <div class="rivet bl" aria-hidden="true"></div>
+  <div class="rivet br" aria-hidden="true"></div>
+
+  <div class="terminus-left">
+    {!suppressHeader && (
+      <SectionHead number={sectionNumber} kicker={headerKicker} title={headerTitle} />
+    )}
+
+    <p class="body-text terminus-body">
+      Custom websites and apps for Oregon coast businesses.
+      Modern stack. Days for sites, weeks for apps. Free consult to scope your project.
+    </p>
+
+    <div class="consult-policy">
+      <div class="consult-policy-title mono">Consult Policy</div>
+      <ul>
+        <li><strong>Bandon:</strong> free in-person or video</li>
+        <li><strong>Coos & Curry counties:</strong> free 30-min video</li>
+        <li><strong>In-person up to 1.5 hours away:</strong> $250 deposit, credits to project on signing</li>
+        <li><strong>In-person up to 2.5 hours away:</strong> $400 deposit, credits to project on signing</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="terminus-right">
+    <div class="contact-action-row">
+      <a
+        href={cal}
+        target="_blank"
+        rel="noopener"
+        class="contact-action-btn"
+      >
+        <div class="contact-stack">
+          <span class="contact-label">Book Preston</span>
+          <span class="contact-sub mono">Cal.com · 30 min</span>
+        </div>
+      </a>
+
+      <a href={`tel:${phone}`} class="contact-action-btn">
+        <div class="contact-stack">
+          <span class="contact-label">Call Preston</span>
+          <span class="contact-sub mono">{phoneDisplay}</span>
+        </div>
+      </a>
+
+      <a href={`sms:${phone}`} class="contact-action-btn">
+        <div class="contact-stack">
+          <span class="contact-label">Text Preston</span>
+          <span class="contact-sub mono">{phoneDisplay}</span>
+        </div>
+      </a>
+
+      <a
+        href={`mailto:${email}?subject=Winters%20Code%20consult%20request`}
+        class="contact-action-btn"
+      >
+        <div class="contact-stack">
+          <span class="contact-label">Email Preston</span>
+          <span class="contact-sub contact-sub-email mono">{email}</span>
+        </div>
+      </a>
+    </div>
+
+    <div class="contact-cta-row">
+      <a class="btn btn-primary" href={cal} target="_blank" rel="noopener">
+        Book free consult →
+      </a>
+      <a class="btn btn-secondary" href={`mailto:${email}?subject=Winters%20Code%20consult%20request`}>
+        Or email instead
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* ─── Terminus card ─── */
+  .terminus {
+    position: relative;
+    padding: 36px 16px 32px;
+    margin-top: 24px;
+    background: var(--color-bg-card);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius-card);
+    text-align: left;
+    overflow: hidden;
+    scroll-margin-top: 24px;
+  }
+  .terminus::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border: 1px solid var(--copper-hairline);
+    border-radius: var(--radius-card);
+    pointer-events: none;
+  }
+  @media (min-width: 768px) {
+    .terminus { padding: 48px 32px 40px; margin-top: 32px; }
+  }
+  @media (min-width: 1024px) {
+    .terminus {
+      padding: 60px 48px 48px;
+      margin-top: 48px;
+      display: grid;
+      grid-template-columns: 1.3fr 1fr;
+      gap: 48px;
+      align-items: start;
+    }
+  }
+
+  .terminus-left,
+  .terminus-right {
+    position: relative;
+    z-index: 2;
+  }
+
+  /* Body copy under section head, indented to match numeral width */
+  .terminus-body {
+    margin: 0 0 22px;
+    max-width: 340px;
+    padding-left: 62px;
+  }
+  @media (min-width: 768px) {
+    .terminus-body { padding-left: 84px; max-width: 560px; }
+  }
+  @media (min-width: 1024px) {
+    .terminus-body { padding-left: 116px; max-width: none; }
+  }
+
+  /* ─── Corner rivets ─── */
+  .rivet {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, var(--color-copper-bright), var(--color-copper-deep));
+    z-index: 3;
+    pointer-events: none;
+    box-shadow: 0 0 4px rgba(240, 160, 110, 0.4);
+  }
+  .rivet.tl { top: 7px; left: 7px; }
+  .rivet.tr { top: 7px; right: 7px; }
+  .rivet.bl { bottom: 7px; left: 7px; }
+  .rivet.br { bottom: 7px; right: 7px; }
+
+  /* ─── Consult policy block ─── */
+  .consult-policy {
+    margin-top: 8px;
+    padding: 14px 14px 12px;
+    background: var(--color-bg-deep);
+    border: 1px solid var(--copper-hairline);
+    border-radius: 8px;
+    position: relative;
+  }
+  @media (min-width: 768px) {
+    .consult-policy { padding: 18px 18px 16px; }
+  }
+  .consult-policy-title {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    color: var(--color-copper);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .consult-policy ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: 13px;
+    color: var(--color-ash-300);
+    line-height: 1.7;
+  }
+  @media (min-width: 768px) {
+    .consult-policy ul { font-size: 14px; }
+  }
+  .consult-policy li {
+    padding-left: 14px;
+    position: relative;
+    transition: color 200ms;
+  }
+  .consult-policy li:hover { color: var(--color-ash-100); }
+  .consult-policy li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 11px;
+    width: 7px;
+    height: 1px;
+    background: var(--color-copper);
+    transition: width 200ms;
+  }
+  .consult-policy li:hover::before {
+    width: 11px;
+    background: var(--color-wc-green);
+  }
+  .consult-policy li strong {
+    color: var(--color-ash-100);
+    font-weight: 600;
+  }
+
+  /* ─── Contact action grid ─── */
+  .contact-action-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 18px;
+  }
+  @media (min-width: 1024px) {
+    .contact-action-row {
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin-top: 0;
+    }
+  }
+  .contact-action-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 14px 12px;
+    border-radius: 8px;
+    background: var(--color-bg-deep);
+    border: 1px solid var(--copper-hairline);
+    color: var(--color-ash-100);
+    transition: all 200ms;
+    cursor: pointer;
+    text-decoration: none;
+    gap: 4px;
+  }
+  @media (min-width: 1024px) {
+    .contact-action-btn {
+      flex-direction: row;
+      padding: 16px 18px;
+      gap: 14px;
+      justify-content: flex-start;
+    }
+  }
+  .contact-action-btn:hover {
+    border-color: var(--color-wc-green);
+    transform: translateY(-1px);
+  }
+
+  .contact-stack {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+  }
+  @media (min-width: 1024px) {
+    .contact-stack { align-items: flex-start; }
+  }
+
+  .contact-label {
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--color-ash-100);
+  }
+  @media (min-width: 1024px) {
+    .contact-label { font-size: 14px; }
+  }
+  .contact-sub {
+    font-size: 9px;
+    color: var(--color-ash-500);
+    letter-spacing: 0.08em;
+  }
+  /* Email is 22 chars. gets tighter tracking + smaller min size so it
+     never wraps to a second line in the 2x2 button grid on narrow phones.
+     Phone numbers (12 chars) keep the default tracking for readability. */
+  .contact-sub-email {
+    font-size: 8.5px;
+    letter-spacing: 0.02em;
+  }
+  @media (min-width: 768px) {
+    .contact-sub-email {
+      font-size: 9.5px;
+      letter-spacing: 0.04em;
+    }
+  }
+  @media (min-width: 1024px) {
+    .contact-sub { font-size: 10px; }
+    .contact-sub-email { font-size: 10px; letter-spacing: 0.06em; }
+  }
+
+  /* ─── Bottom CTA row ─── */
+  .contact-cta-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 20px;
+  }
+  @media (min-width: 768px) {
+    .contact-cta-row { gap: 12px; }
+  }
+
+  /* ─── Centered mode (dedicated pages like /contact) ─────────────────
+     Drops the numeral-anchored body indent and centers all content. Used
+     when the surrounding page already provides context via PageHero, so
+     the off-center-looking left indent reads as a layout bug instead of
+     a homepage rhythm beat. */
+  .terminus-centered .terminus-body {
+    padding-left: 0;
+    max-width: 620px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+  }
+  .terminus-centered .consult-policy {
+    max-width: 560px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .terminus-centered .contact-action-row {
+    max-width: 560px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .terminus-centered .contact-cta-row {
+    max-width: 560px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  @media (min-width: 1024px) {
+    /* Disable the 2-column grid in centered mode so everything stacks
+       and centers as a single column. The desktop side-by-side layout
+       is a homepage-only rhythm; on /contact it pushes content right. */
+    .terminus-centered {
+      display: block;
+      max-width: 760px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .terminus-centered .terminus-left,
+    .terminus-centered .terminus-right {
+      max-width: 620px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+  }
+</style>

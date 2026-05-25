@@ -1,0 +1,694 @@
+---
+/**
+ * Tangle, THE centerpiece. Passes "damn" tests #2 (mirrors pain) + #5
+ * (breaks "more software solves more problems" convention).
+ *
+ * Spec ref: docs/design/S6_PLUS.md Section 3 (~line 440).
+ *
+ * Three stages:
+ *   1. The mess, 14 chaotic cards (8 replaced as pills, 6 kept as rounded
+ *      squares) with red dashed / orange solid / gray faded connection lines.
+ *   2. Interaction (desktop + tablet portrait only), tap cards to highlight
+ *      "the ones YOU actually use." Mobile auto-plays after 3s in viewport.
+ *   3. Untangle, button click animates cards into clean tree formation,
+ *      kept cards settle around WC mark with green sync lines, replaced
+ *      cards fade with "→ built in" label.
+ *
+ * Accessibility:
+ *   - prefers-reduced-motion: skip animation, jump to untangled state
+ *   - kept vs replaced uses SHAPE not color (rounded square vs pill)
+ *   - aria-live region announces state changes to screen readers
+ *   - keyboard: untangle button reachable via Tab + Enter/Space
+ *
+ * Performance:
+ *   - Cards are absolute-positioned divs, hardware-accelerated transforms
+ *   - SVG lines are pre-drawn paths, animated via stroke-dashoffset
+ *   - Target: 60fps on iPhone SE
+ */
+
+// 14 cards, locked inventory from spec.
+// type: 'kept' = rounded square (integrate). 'replaced' = pill (build in).
+// badge: status snippet shown on card.
+const CARDS = [
+  // 8 replaced (pill, fade out in untangle) + 8 kept (rounded, orbit
+  // the WC mark in untangled state). Total 16. design doc S6+ revision
+  // expanded from original 14 for richer pain coverage. Replaced =
+  // client cancels that subscription after we ship. Kept = client keeps
+  // the tool, we integrate it cleanly into the new site.
+  //
+  // Truncation budget on mobile card (~96px wide, 11px mono): under 14
+  // chars safe on one line, 15+ wraps. 'Constant Contact' (16) accepts
+  // mobile wrap intentionally. recognition is worth the visual cost.
+  // 'GCal' + 'Google Biz' abbreviated to fit cleanly.
+  { id: 'wix',        name: 'Wix',              badge: 'expired plan',          type: 'replaced' },
+  { id: 'squarespace', name: 'Squarespace',     badge: 'trial ending',          type: 'replaced' },
+  { id: 'godaddy',    name: 'GoDaddy',          badge: 'auto-renew wrong card', type: 'replaced' },
+  { id: 'mailchimp',  name: 'Mailchimp',        badge: 'forgot password',       type: 'replaced' },
+  { id: 'constant',   name: 'Constant Contact', badge: "haven't logged in",     type: 'replaced' },
+  { id: 'calendly',   name: 'Calendly',         badge: 'calendar conflict',     type: 'replaced' },
+  { id: 'hootsuite',  name: 'Hootsuite',        badge: '$49/mo billing',        type: 'replaced' },
+  { id: 'hospitable', name: 'Hospitable',       badge: '3 conflicting calendars', type: 'replaced' },
+  { id: 'square',     name: 'Square',           badge: '3 unread',              type: 'kept' },
+  { id: 'quickbooks', name: 'QuickBooks',       badge: 'needs login',           type: 'kept' },
+  { id: 'stripe',     name: 'Stripe',           badge: '2 chargebacks',         type: 'kept' },
+  { id: 'gmail',      name: 'Gmail',            badge: '47 unread',             type: 'kept' },
+  { id: 'gcal',       name: 'GCal',             badge: 'double-booked',         type: 'kept' },
+  { id: 'facebook',   name: 'Facebook',         badge: '2FA loop again',        type: 'kept' },
+  { id: 'gbiz',       name: 'Google Biz',       badge: 'needs verification',    type: 'kept' },
+  { id: 'yelp',       name: 'Yelp',             badge: 'managed by ex-employee', type: 'kept' },
+] as const;
+
+// Chaotic positions for mess state, semi-random but deterministic so
+// the layout is the same on every page load (not jarring on reload).
+// Coords are percentages of the visual field.
+// Picked by eye to feel "messy desk" not "uniform grid."
+const MESS_POSITIONS = {
+  // Deliberately chaotic. Clusters at top-left, mid-right, bottom-center.
+  // Sparse zones top-right and bottom-left. Rotations -22 to +22 deg.
+  // Overlapping edges intentional. Reads as 'messy desk' not 'tidy grid'.
+  wix:         { x: 18, y: 11, rot: -14 },
+  mailchimp:   { x: 36, y: 17, rot: 18  },
+  square:      { x: 62, y: 9,  rot: -8  },
+  quickbooks:  { x: 81, y: 19, rot: 22  },
+  squarespace: { x: 12, y: 32, rot: 11  },
+  calendly:    { x: 44, y: 30, rot: -19 },
+  hootsuite:   { x: 70, y: 36, rot: 7   },
+  gmail:       { x: 89, y: 41, rot: -15 },
+  facebook:    { x: 22, y: 52, rot: 16  },
+  godaddy:     { x: 50, y: 49, rot: -6  },
+  constant:    { x: 67, y: 60, rot: 20  },
+  stripe:      { x: 86, y: 64, rot: -12 },
+  yelp:        { x: 14, y: 72, rot: 8   },
+  gcal:        { x: 39, y: 78, rot: -17 },
+  gbiz:        { x: 60, y: 84, rot: 14  },
+  hospitable:  { x: 83, y: 87, rot: -9  },
+} as const;
+
+// Connection lines for mess state. Locked subset of card pairs.
+// type: 'red' = doesn't sync (most). 'orange' = manual workaround. 'gray' = abandoned.
+const CONNECTIONS = [
+  // red: doesn't sync (the most common pain)
+  { from: 'mailchimp',   to: 'square',      type: 'red'    },
+  { from: 'square',      to: 'quickbooks',  type: 'red'    },
+  { from: 'stripe',      to: 'quickbooks',  type: 'red'    },
+  { from: 'gmail',       to: 'yelp',        type: 'red'    },
+  { from: 'hospitable',  to: 'gcal',        type: 'red'    },
+  { from: 'facebook',    to: 'gbiz',        type: 'red'    },
+  // orange: manual workaround
+  { from: 'wix',         to: 'quickbooks',  type: 'orange' },
+  { from: 'godaddy',     to: 'wix',         type: 'orange' },
+  { from: 'gcal',        to: 'calendly',    type: 'orange' },
+  { from: 'gbiz',        to: 'yelp',        type: 'orange' },
+  // gray: abandoned / duplicate
+  { from: 'constant',    to: 'mailchimp',   type: 'gray'   },
+  { from: 'hootsuite',   to: 'facebook',    type: 'gray'   },
+  { from: 'squarespace', to: 'wix',         type: 'gray'   },
+] as const;
+
+// Tree positions for after-state. Kept cards arranged around center.
+// Replaced cards fade out so we only need positions for kept.
+const TREE_POSITIONS: Record<string, { x: number; y: number }> = {
+  // 8 kept cards arranged in a symmetric ring around the WC mark at
+  // (50, 50). Two-card top, two-card bottom, two-card each side. The
+  // ring spaces evenly at roughly 45° intervals so the after-state
+  // reads as a clean integrated hub, not a list.
+  //
+  // Replaced cards fade out so we only need positions for kept.
+  // 'Google Biz' uses id 'gbiz' for the abbreviated card name that
+  // avoids the 'Google Busin…' truncation that killed the original
+  // 14-card layout. Same logic for 'GCal'.
+  square:     { x: 30, y: 18 },  // top-left
+  quickbooks: { x: 70, y: 18 },  // top-right
+  yelp:       { x: 16, y: 38 },  // upper-left side
+  gmail:      { x: 84, y: 38 },  // upper-right side
+  facebook:   { x: 16, y: 62 },  // lower-left side
+  gbiz:       { x: 84, y: 62 },  // lower-right side
+  stripe:     { x: 30, y: 82 },  // bottom-left
+  gcal:       { x: 70, y: 82 },  // bottom-right
+};
+---
+
+<section class="tangle" id="tangle" data-stage="mess" aria-labelledby="tangle-h2">
+  <header class="tangle-head">
+    <h2 class="tangle-h2" id="tangle-h2">
+      <span class="state-mess">You didn't go into business<br />to manage software.</span>
+      <span class="state-untangled">One site. One login.<br />One person you can count on.</span>
+    </h2>
+    <p class="tangle-sub">
+      <span class="state-mess">
+        Most small businesses in Coos County run on 10 to 20 disconnected
+        systems. Each one was supposed to make things simpler.
+      </span>
+      <span class="state-untangled">
+        I'll set it up. I'll connect what you keep. I'll replace what you
+        don't need. <em>I'm down the road. I pick up the phone.</em>
+      </span>
+    </p>
+  </header>
+
+  <!-- Live region announces state changes for screen readers -->
+  <div class="sr-only" aria-live="polite" aria-atomic="true" id="tangle-announce">
+    A chaotic field of 16 disconnected business tools.
+  </div>
+
+  <!--
+    Visual field. SVG lines underneath, absolute-positioned cards on top.
+    Cards have inline styles for chaotic positions (mess) and snap to
+    tree-positions via CSS class on the section.
+  -->
+  <div class="tangle-stage">
+    <svg class="tangle-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
+      {CONNECTIONS.map((c) => {
+        const from = MESS_POSITIONS[c.from as keyof typeof MESS_POSITIONS];
+        const to = MESS_POSITIONS[c.to as keyof typeof MESS_POSITIONS];
+        return (
+          <line
+            class={`conn conn-${c.type}`}
+            data-from={c.from}
+            data-to={c.to}
+            x1={from.x}
+            y1={from.y}
+            x2={to.x}
+            y2={to.y}
+          />
+        );
+      })}
+      <!-- Green sync lines for after-state. Drawn from center to each kept card. -->
+      {Object.entries(TREE_POSITIONS).map(([id, pos]) => (
+        <line
+          class="conn conn-sync"
+          x1={50}
+          y1={50}
+          x2={pos.x}
+          y2={pos.y}
+        />
+      ))}
+    </svg>
+
+    <!-- WC mark in center, scales in during untangle -->
+    <div class="tangle-mark" aria-hidden="true">
+      <span>WC</span>
+    </div>
+
+    <!-- 16 cards -->
+    {CARDS.map((card) => {
+      const mess = MESS_POSITIONS[card.id as keyof typeof MESS_POSITIONS];
+      const tree = TREE_POSITIONS[card.id];
+      return (
+        <button
+          type="button"
+          class={`card card-${card.type}`}
+          data-card-id={card.id}
+          data-card-type={card.type}
+          style={`
+            --mess-x: ${mess.x}%;
+            --mess-y: ${mess.y}%;
+            --mess-rot: ${mess.rot}deg;
+            ${tree ? `--tree-x: ${tree.x}%; --tree-y: ${tree.y}%;` : ''}
+          `}
+          aria-pressed="false"
+          aria-label={`${card.name}, ${card.badge}. ${card.type === 'kept' ? 'Will integrate' : 'Will replace'}.`}
+        >
+          <span class="card-name">{card.name}</span>
+          <span class="card-badge">{card.badge}</span>
+          {card.type === 'replaced' && (
+            <span class="card-built-in" aria-hidden="true">→ built in</span>
+          )}
+        </button>
+      );
+    })}
+  </div>
+
+  <p class="tangle-prompt state-mess" aria-hidden="true">
+    <em>Click the ones YOU actually use →</em>
+  </p>
+
+  <div class="tangle-cta">
+    <button
+      type="button"
+      class="btn btn-primary tangle-untangle"
+      id="tangle-untangle"
+      data-tangle-action="untangle"
+      aria-controls="tangle"
+    >
+      <span class="state-mess">Untangle this →</span>
+      <span class="state-untangled">See how it works →</span>
+    </button>
+  </div>
+</section>
+
+<script is:inline>
+  (function () {
+    const section = document.getElementById('tangle');
+    const button = document.getElementById('tangle-untangle');
+    const announce = document.getElementById('tangle-announce');
+    if (!section || !button || !announce) return;
+
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const isTouch = window.matchMedia('(hover: none)').matches;
+    const isMobile = window.matchMedia('(max-width: 767px)').matches;
+
+    // If reduced motion: jump straight to untangled on load.
+    if (reduceMotion) {
+      section.dataset.stage = 'untangled';
+      announce.textContent = 'Tools organized: 6 integrated, 8 replaced by Winters Code.';
+      return;
+    }
+
+    let untangled = false;
+
+    function untangle() {
+      if (untangled) {
+        // Second click on the CTA in untangled state = go to /services
+        window.location.href = '/services';
+        return;
+      }
+      untangled = true;
+      section.dataset.stage = 'untangled';
+      announce.textContent = 'Tools organized: 6 integrated, 8 replaced by Winters Code.';
+    }
+
+    button.addEventListener('click', untangle);
+
+    // Auto-untangle on ALL breakpoints (mobile, tablet, desktop) after
+    // a delay long enough to actually read the chaos. Preston: 4s was
+    // too fast to read the cards. Bumped to 7500ms. Desktop now also
+    // triggers (was previously only mobile/tablet-landscape) so PC
+    // visitors who don't click 'Untangle' still see the transition.
+    // Use IntersectionObserver: timer starts when section visible.
+    {
+      let timer = null;
+      const observer = new IntersectionObserver(
+        function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting && !untangled && !timer) {
+              timer = setTimeout(function () {
+                if (!untangled) untangle();
+              }, 5000);
+            } else if (!entry.isIntersecting && timer && !untangled) {
+              clearTimeout(timer);
+              timer = null;
+            }
+          });
+        },
+        { threshold: 0.4 }
+      );
+      observer.observe(section);
+    }
+
+    // Desktop + tablet-portrait: tap cards to highlight ("YOU actually use")
+    // Only enable when NOT in untangled state.
+    if (!isMobile) {
+      const cards = section.querySelectorAll('.card');
+      function syncHasActive() {
+        const anyActive = !!section.querySelector('.card-active');
+        section.dataset.hasActive = anyActive ? 'true' : 'false';
+      }
+      cards.forEach(function (card) {
+        card.addEventListener('click', function () {
+          if (untangled) return;
+          const pressed = card.getAttribute('aria-pressed') === 'true';
+          card.setAttribute('aria-pressed', String(!pressed));
+          card.classList.toggle('card-active', !pressed);
+          syncHasActive();
+        });
+      });
+    }
+  })();
+</script>
+
+<style>
+  .tangle {
+    padding: 48px 4px 56px;
+    position: relative;
+    overflow: hidden;
+    /* Lock layout reflow inside this section. Auto-untangle animation
+       (4s after viewport entry on mobile) reshuffles cards + swaps copy
+       between mess/untangled states. contain:layout prevents internal
+       changes from affecting the rest of the page layout. Eliminates
+       0.179 CLS shift caught by Lighthouse. */
+    contain: layout;
+  }
+  @media (min-width: 768px) {
+    .tangle { padding: 72px 4px 80px; }
+  }
+  @media (min-width: 1024px) {
+    .tangle { padding: 96px 0 104px; }
+  }
+
+  /* ─── Header copy ─── */
+  .tangle-head {
+    text-align: center;
+    max-width: 640px;
+    margin: 0 auto 32px;
+    padding: 0 8px;
+  }
+  @media (min-width: 1024px) {
+    .tangle-head { margin-bottom: 48px; max-width: 720px; }
+  }
+
+  .tangle-h2 {
+    font-family: var(--font-serif);
+    font-weight: 500;
+    font-size: 24px;
+    line-height: 1.15;
+    color: var(--color-ash-100);
+    margin: 0;
+    text-wrap: balance;
+    letter-spacing: -0.01em;
+  }
+  @media (min-width: 768px) {
+    .tangle-h2 { font-size: 32px; line-height: 1.12; }
+  }
+  @media (min-width: 1024px) {
+    .tangle-h2 { font-size: 40px; line-height: 1.1; }
+  }
+
+  .tangle-sub {
+    font-family: var(--font-sans);
+    font-size: 14px;
+    color: var(--color-ash-300);
+    line-height: 1.55;
+    margin: 14px 0 0;
+  }
+  .tangle-sub em {
+    color: var(--color-wc-green);
+    font-style: italic;
+    font-family: var(--font-serif);
+    font-weight: 500;
+  }
+  @media (min-width: 768px) {
+    .tangle-sub { font-size: 15px; margin-top: 18px; }
+  }
+  @media (min-width: 1024px) {
+    .tangle-sub { font-size: 17px; margin-top: 20px; }
+  }
+
+  /* ─── State visibility toggles ─── */
+  /* In mess state, untangled spans hidden. In untangled state, mess hidden. */
+  .state-mess,
+  .state-untangled {
+    transition: opacity 400ms ease-out;
+  }
+  .tangle[data-stage='mess'] .state-untangled,
+  .tangle[data-stage='untangled'] .state-mess {
+    display: none;
+  }
+
+  /* Header H2 + sub use a smooth fade since they share space */
+  .tangle-h2 .state-mess,
+  .tangle-h2 .state-untangled,
+  .tangle-sub .state-mess,
+  .tangle-sub .state-untangled {
+    display: inline;
+  }
+
+  /* ─── Stage (the visual field) ─── */
+  .tangle-stage {
+    position: relative;
+    width: 100%;
+    max-width: 720px;
+    margin: 0 auto;
+    height: 420px;
+  }
+  @media (min-width: 768px) {
+    .tangle-stage { height: 520px; max-width: 860px; }
+  }
+  @media (min-width: 1024px) {
+    .tangle-stage { height: 600px; max-width: 960px; }
+  }
+
+  /* SVG behind cards */
+  .tangle-svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: visible;
+  }
+  .conn {
+    stroke-width: 0.4;
+    vector-effect: non-scaling-stroke;
+    transition: opacity 500ms ease-out, stroke 500ms;
+  }
+  .conn-red {
+    stroke: rgba(220, 80, 80, 0.55);
+    stroke-dasharray: 1.2 1.2;
+  }
+  .conn-orange {
+    stroke: rgba(240, 184, 120, 0.7);
+  }
+  .conn-gray {
+    stroke: rgba(180, 180, 180, 0.18);
+    stroke-dasharray: 0.6 1.6;
+  }
+  .conn-sync {
+    stroke: rgba(77, 216, 168, 0.55);
+    stroke-width: 0.45;
+    vector-effect: non-scaling-stroke;
+    opacity: 0;
+    transition: opacity 800ms ease-out 400ms;
+  }
+  .tangle[data-stage='untangled'] .conn-red,
+  .tangle[data-stage='untangled'] .conn-orange,
+  .tangle[data-stage='untangled'] .conn-gray {
+    opacity: 0;
+  }
+  .tangle[data-stage='untangled'] .conn-sync {
+    opacity: 1;
+  }
+
+  /* ─── WC mark (center, scales in during untangle) ─── */
+  .tangle-mark {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    border: 1.5px solid var(--color-copper);
+    background: var(--color-bg-deep);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0;
+    transition: transform 400ms ease-out 600ms, opacity 400ms ease-out 600ms;
+    z-index: 3;
+    box-shadow: 0 0 24px rgba(240, 160, 110, 0.3);
+  }
+  .tangle-mark span {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    color: var(--color-copper);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+  }
+  .tangle-mark::before {
+    content: '';
+    position: absolute;
+    inset: 4px;
+    border-radius: 50%;
+    border: 1px dashed var(--copper-dim);
+  }
+  .tangle[data-stage='untangled'] .tangle-mark {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+  @media (min-width: 1024px) {
+    .tangle-mark { width: 72px; height: 72px; }
+    .tangle-mark span { font-size: 18px; }
+  }
+
+  /* ─── Cards ─── */
+  .card {
+    position: absolute;
+    left: var(--mess-x);
+    top: var(--mess-y);
+    transform: translate(-50%, -50%) rotate(var(--mess-rot));
+    width: 108px;
+    min-height: 54px;
+    padding: 8px 10px;
+    background: var(--color-bg-card);
+    border: 1px solid var(--copper-hairline);
+    color: var(--color-ash-100);
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 2px;
+    font-family: var(--font-mono);
+    text-align: left;
+    transition:
+      left 800ms cubic-bezier(0.4, 0, 0.2, 1),
+      top 800ms cubic-bezier(0.4, 0, 0.2, 1),
+      transform 800ms cubic-bezier(0.4, 0, 0.2, 1),
+      opacity 600ms ease-out,
+      border-color 300ms,
+      box-shadow 300ms;
+    animation: card-wobble 6s ease-in-out infinite;
+  }
+  @media (min-width: 1024px) {
+    .card {
+      width: 120px;
+      min-height: 60px;
+      padding: 10px 12px;
+    }
+  }
+  .card-name {
+    font-size: 10.5px;
+    font-weight: 600;
+    color: var(--color-ash-100);
+    line-height: 1.15;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    letter-spacing: -0.01em;
+  }
+  @media (min-width: 1024px) {
+    .card-name { font-size: 12px; }
+  }
+  .card-badge {
+    font-size: 9px;
+    color: var(--color-ash-500);
+    line-height: 1.2;
+    font-style: italic;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  @media (min-width: 1024px) {
+    .card-badge { font-size: 10px; }
+  }
+  .card-built-in {
+    display: none;
+    font-size: 9px;
+    color: var(--color-wc-green);
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+
+  /* Kept = rounded square (will integrate) */
+  .card-kept {
+    border-radius: 6px;
+  }
+  /* Replaced = pill (will be built in) */
+  .card-replaced {
+    border-radius: 24px;
+  }
+
+  .card:hover,
+  .card:focus-visible,
+  .card-active {
+    border-color: var(--color-copper);
+    box-shadow: 0 0 16px rgba(240, 160, 110, 0.25);
+    outline: none;
+    z-index: 2;
+  }
+  .card-active {
+    background: rgba(200, 128, 74, 0.08);
+  }
+
+  /* When any card is tapped, untapped cards fade further so the
+     "YOU actually use" subset stands out. Spec line 493. */
+  .tangle[data-has-active='true'] .card:not(.card-active) {
+    opacity: 0.35;
+    filter: saturate(0.6);
+  }
+  .tangle[data-has-active='true'] .card:not(.card-active):hover,
+  .tangle[data-has-active='true'] .card:not(.card-active):focus-visible {
+    opacity: 0.7;
+    filter: saturate(0.85);
+  }
+
+  /* ─── Wobble (subtle chaos animation) ─── */
+  @keyframes card-wobble {
+    0%, 100% { transform: translate(-50%, -50%) rotate(var(--mess-rot)); }
+    50% { transform: translate(-50%, -50%) rotate(calc(var(--mess-rot) + 1.5deg)); }
+  }
+
+  /* ─── Untangled state: cards move to tree positions ─── */
+  .tangle[data-stage='untangled'] .card-kept {
+    left: var(--tree-x);
+    top: var(--tree-y);
+    transform: translate(-50%, -50%) rotate(0);
+    animation: none;
+    border-color: var(--color-wc-green);
+    box-shadow: 0 0 16px rgba(77, 216, 168, 0.2);
+  }
+  .tangle[data-stage='untangled'] .card-kept .card-name {
+    color: var(--color-ash-100);
+  }
+  .tangle[data-stage='untangled'] .card-kept .card-badge {
+    color: var(--color-wc-green);
+    font-style: normal;
+    font-size: 8px;
+  }
+  /* Badge text changes in untangled state via override */
+  .tangle[data-stage='untangled'] .card-kept .card-badge {
+    visibility: hidden;
+    position: relative;
+  }
+  .tangle[data-stage='untangled'] .card-kept .card-badge::before {
+    content: 'synced';
+    visibility: visible;
+    position: absolute;
+    left: 0;
+    color: var(--color-wc-green);
+  }
+
+  .tangle[data-stage='untangled'] .card-replaced {
+    opacity: 0;
+    transition-delay: 600ms;
+    pointer-events: none;
+    animation: none;
+  }
+  .tangle[data-stage='untangled'] .card-replaced .card-built-in {
+    display: block;
+  }
+
+  /* ─── Prompt + CTA ─── */
+  .tangle-prompt {
+    text-align: center;
+    font-family: var(--font-sans);
+    font-size: 12px;
+    color: var(--color-ash-400);
+    margin: 20px 0 0;
+    font-style: italic;
+  }
+  /* Mobile + tablet-landscape: hide prompt (autoplay handles it) */
+  @media (max-width: 767px) {
+    .tangle-prompt { display: none; }
+  }
+  @media (min-width: 768px) and (orientation: landscape) and (max-width: 1023px) {
+    .tangle-prompt { display: none; }
+  }
+
+  /* Reserve button width so the state-mess -> state-untangled span
+     swap (different label lengths) doesn't reflow the CTA bounding box. */
+  .tangle-untangle {
+    min-width: 220px;
+  }
+  .tangle-cta {
+    text-align: center;
+    margin-top: 24px;
+  }
+  @media (min-width: 1024px) {
+    .tangle-cta { margin-top: 32px; }
+  }
+  .tangle-untangle {
+    min-width: 220px;
+  }
+
+  /* Reduced motion: instant state change, no animation */
+  @media (prefers-reduced-motion: reduce) {
+    .card,
+    .conn,
+    .conn-sync,
+    .tangle-mark {
+      transition: none !important;
+      animation: none !important;
+    }
+  }
+</style>

@@ -1,0 +1,899 @@
+---
+/**
+ * Instrument: live chat against the Demiurge memory engine.
+ *
+ * Embed-ready widget. Drop into any container; the section/header
+ * chrome is gone, so the parent (e.g. a /work card slot) provides
+ * its own framing. The chat surface + memory panel + composer +
+ * reset row + footer is all that renders.
+ *
+ * Spec ref: docs/design/S6_PLUS.md Section 6 (~line 668).
+ *
+ * Architecture:
+ * - Browser hits /api/chat (Astro server endpoint on CF Worker)
+ * - Worker proxies to demi-api at /api/v1/wc-demo with WC_DEMO_TOKEN
+ * - demi-api scopes memory to wc-demo:<sha(ip + utc-date)>, persists via Demiurge
+ * - Memory side panel calls /api/memories after each `done` SSE event
+ *
+ * Rate limit: 5 messages per IP per UTC day (enforced upstream)
+ *
+ * SSE client follows the MyKonos pattern (brain memory #1734):
+ *   - fetch + ReadableStream, NOT EventSource
+ *   - Parse SSE frames split by blank line, dispatch event handlers
+ *   - Throttled rendering at ~66 chars/sec via setInterval flushChunk()
+ *     CHARS_PER_TICK=4, TICK_MS=60. Drain 4x on done so cursor does not blink.
+ */
+---
+
+<div class="in-grid">
+      <!-- Chat surface -->
+      <div class="in-window">
+        <div class="in-titlebar">
+          <span class="in-dot in-dot-r" aria-hidden="true"></span>
+          <span class="in-dot in-dot-y" aria-hidden="true"></span>
+          <span class="in-dot in-dot-g" aria-hidden="true"></span>
+          <span class="in-title">~/demiurge · chat</span>
+        </div>
+        <div
+          class="in-thread"
+          id="in-thread"
+          role="log"
+          aria-live="polite"
+          aria-atomic="false"
+        >
+          <div class="in-empty" data-empty>
+            <p class="in-empty-lead">
+              Try saying: <em data-empty-fact>my dog's name is Max</em>
+            </p>
+            <p class="in-empty-sub" data-empty-ask>
+              Then hit reset chat below. Ask the question again. The memory survives.
+            </p>
+          </div>
+        </div>
+        <form class="in-composer" id="in-composer" autocomplete="off">
+          <label for="in-input" class="visually-hidden">
+            Type a message
+          </label>
+          <input
+            type="text"
+            id="in-input"
+            name="message"
+            placeholder="say something..."
+            maxlength="4000"
+            autocomplete="off"
+            spellcheck="true"
+          />
+          <button type="submit" id="in-send" aria-label="Send message">
+            send
+          </button>
+        </form>
+        <div class="in-reset-row">
+          <button
+            type="button"
+            id="in-reset"
+            class="in-reset-btn"
+            aria-label="Clear chat history. Memory survives."
+          >
+            <span class="in-reset-icon" aria-hidden="true">↺</span>
+            <span>reset chat</span>
+          </button>
+          <span class="in-reset-hint">memory survives the reset</span>
+        </div>
+        <p class="in-foot">
+          <span data-limit-text>5 messages per day</span>
+          <span class="in-foot-sep" aria-hidden="true">·</span>
+          <span>memory wipes at midnight UTC</span>
+        </p>
+      </div>
+
+      <!-- Memory side panel -->
+      <aside class="in-memory" aria-label="Memory captured this session">
+        <header class="in-mem-head">
+          <span class="in-mem-label">MEMORY</span>
+          <span class="in-mem-count" data-mem-count>0</span>
+        </header>
+        <ul class="in-mem-list" id="in-mem-list" role="list">
+          <li class="in-mem-empty" data-mem-empty>
+            <p>Memories form here as you talk.</p>
+          </li>
+        </ul>
+      </aside>
+    </div>
+
+<script is:inline>
+  (function () {
+    // Defer setup until the Instrument section is about to enter the
+    // viewport. Cuts a long task (~100ms+) off initial page load on
+    // desktop. The chat widget is below the fold on every viewport,
+    // so this is invisible to the user and recovers TBT for Lighthouse.
+    function init() {
+    const thread = document.getElementById('in-thread');
+    const form = document.getElementById('in-composer');
+    const input = document.getElementById('in-input');
+    const sendBtn = document.getElementById('in-send');
+    const memList = document.getElementById('in-mem-list');
+    const memCount = document.querySelector('[data-mem-count]');
+    const memEmpty = document.querySelector('[data-mem-empty]');
+    const empty = document.querySelector('[data-empty]');
+    const statusText = document.querySelector('[data-status-text]');
+    const limitText = document.querySelector('[data-limit-text]');
+
+    if (!thread || !form || !input || !sendBtn || !memList) return;
+
+    // ── Empty-state hint variants. Random pick on init. Each pair must
+    // be a fact + matching ask. Kept generic (no real businesses or
+    // real people named).
+    var HINTS = [
+      { fact: "my dog's name is Max",        ask: 'Then hit reset chat below. Ask what your dog\'s name is. The memory survives.' },
+      { fact: 'I drive a 1998 Toyota 4Runner', ask: 'Then hit reset chat below. Ask what I drive. The memory survives.' },
+      { fact: "I'm allergic to shellfish",   ask: 'Then hit reset chat below. Ask what I\'m allergic to. The memory survives.' },
+      { fact: "my kid's name is Riley",      ask: 'Then hit reset chat below. Ask who Riley is. The memory survives.' }
+    ];
+    function pickHint() {
+      var factEl = document.querySelector('[data-empty-fact]');
+      var askEl = document.querySelector('[data-empty-ask]');
+      if (!factEl || !askEl) return;
+      var h = HINTS[Math.floor(Math.random() * HINTS.length)];
+      factEl.textContent = h.fact;
+      askEl.textContent = h.ask;
+    }
+    pickHint();
+
+    // ── Reset chat button. Clears thread DOM and re-renders the empty
+    // state with a fresh hint. Does NOT clear memory panel. That's the
+    // whole demo. Does NOT touch the server-side daily message limit.
+    var resetBtn = document.getElementById('in-reset');
+    if (resetBtn) {
+      resetBtn.addEventListener('click', function () {
+        // Strip every chat message from the thread
+        Array.from(thread.querySelectorAll('.in-msg')).forEach(function (n) {
+          n.parentNode && n.parentNode.removeChild(n);
+        });
+        // Re-insert the empty-state node fresh (it was removed by hideEmpty)
+        var existing = thread.querySelector('[data-empty]');
+        if (!existing) {
+          var div = document.createElement('div');
+          div.className = 'in-empty';
+          div.setAttribute('data-empty', '');
+          var lead = document.createElement('p');
+          lead.className = 'in-empty-lead';
+          lead.appendChild(document.createTextNode('Try saying: '));
+          var em = document.createElement('em');
+          em.setAttribute('data-empty-fact', '');
+          lead.appendChild(em);
+          var sub = document.createElement('p');
+          sub.className = 'in-empty-sub';
+          sub.setAttribute('data-empty-ask', '');
+          div.appendChild(lead);
+          div.appendChild(sub);
+          thread.appendChild(div);
+        }
+        // Pick a fresh hint (pickHint queries the DOM directly so
+        // it picks up the freshly-inserted element).
+        pickHint();
+        // Keep focus in input so they can keep typing
+        input.focus();
+      });
+    }
+
+    // Throttled streaming render config (per memory #1734).
+    const CHARS_PER_TICK = 4;
+    const TICK_MS = 60;
+    const DRAIN_MULT = 4; // 4x speed on done event
+
+    let pending = '';        // chars not yet rendered
+    let renderTimer = null;
+    let activeBotEl = null;
+    let activeCursor = null;
+    let isStreaming = false;
+    let drainMode = false;
+
+    function flushChunk() {
+      if (!activeBotEl) return;
+      const take = drainMode ? CHARS_PER_TICK * DRAIN_MULT : CHARS_PER_TICK;
+      if (pending.length === 0) {
+        if (drainMode) {
+          stopRender();
+          finalizeBotMessage();
+        }
+        return;
+      }
+      const slice = pending.slice(0, take);
+      pending = pending.slice(take);
+      // Append text BEFORE the cursor span so cursor stays at end.
+      if (activeCursor && activeCursor.parentNode === activeBotEl) {
+        activeBotEl.insertBefore(document.createTextNode(slice), activeCursor);
+      } else {
+        activeBotEl.appendChild(document.createTextNode(slice));
+      }
+      thread.scrollTop = thread.scrollHeight;
+    }
+
+    function startRender() {
+      if (renderTimer !== null) return;
+      renderTimer = setInterval(flushChunk, TICK_MS);
+    }
+
+    function stopRender() {
+      if (renderTimer !== null) {
+        clearInterval(renderTimer);
+        renderTimer = null;
+      }
+    }
+
+    function finalizeBotMessage() {
+      if (activeCursor && activeCursor.parentNode) {
+        activeCursor.parentNode.removeChild(activeCursor);
+      }
+      activeBotEl = null;
+      activeCursor = null;
+      isStreaming = false;
+      drainMode = false;
+      sendBtn.disabled = false;
+      input.disabled = false;
+      input.focus();
+    }
+
+    function hideEmpty() {
+      if (empty && empty.parentNode) empty.parentNode.removeChild(empty);
+    }
+
+    function addUserMessage(text) {
+      hideEmpty();
+      const li = document.createElement('div');
+      li.className = 'in-msg in-msg-user';
+      const author = document.createElement('span');
+      author.className = 'in-msg-author';
+      author.textContent = 'you';
+      const p = document.createElement('p');
+      p.textContent = text;
+      li.appendChild(author);
+      li.appendChild(p);
+      thread.appendChild(li);
+      thread.scrollTop = thread.scrollHeight;
+    }
+
+    function addBotMessage() {
+      const li = document.createElement('div');
+      li.className = 'in-msg in-msg-bot in-msg-streaming';
+      const author = document.createElement('span');
+      author.className = 'in-msg-author';
+      author.textContent = 'demiurge';
+      const p = document.createElement('p');
+      const cursor = document.createElement('span');
+      cursor.className = 'in-cursor';
+      cursor.setAttribute('aria-hidden', 'true');
+      p.appendChild(cursor);
+      li.appendChild(author);
+      li.appendChild(p);
+      thread.appendChild(li);
+      thread.scrollTop = thread.scrollHeight;
+      activeBotEl = p;
+      activeCursor = cursor;
+    }
+
+    function addSystemError(text) {
+      hideEmpty();
+      const li = document.createElement('div');
+      li.className = 'in-msg in-msg-system';
+      const p = document.createElement('p');
+      p.textContent = text;
+      li.appendChild(p);
+      thread.appendChild(li);
+      thread.scrollTop = thread.scrollHeight;
+    }
+
+    async function loadLimit() {
+      // Fetch the current visitor's daily count BEFORE they send anything,
+      // so the "N messages left today" label reflects the real upstream
+      // counter on page load. Without this the label stays at the static
+      // "5 messages per day" text until the first send refreshes it from
+      // the SSE metadata frame, which lies to anyone who refreshes mid-day.
+      try {
+        const res = await fetch('/api/limit', { method: 'GET' });
+        if (!res.ok) return;
+        const j = await res.json();
+        const count = Number(j.dailyCount ?? 0);
+        const limit = Number(j.dailyLimit ?? 5);
+        const left = Math.max(0, limit - count);
+        if (limitText) {
+          limitText.textContent =
+            left === 0
+              ? "0 left today"
+              : left === 1
+                ? '1 message left today'
+                : left + ' messages left today';
+        }
+        if (left === 0 && input) {
+          input.disabled = true;
+          input.placeholder = "0 messages left. Resets midnight UTC.";
+        }
+      } catch {
+        // Silent fallback to the static label. Not worth alerting the user
+        // about a metadata fetch failure.
+      }
+    }
+
+    async function loadMemories() {
+      try {
+        const res = await fetch('/api/memories', {
+          headers: { accept: 'application/json' },
+        });
+        if (!res.ok) return;
+        const data = await res.json();
+        const memories = Array.isArray(data.memories) ? data.memories : [];
+        memCount.textContent = String(memories.length);
+        if (memories.length === 0) {
+          if (memEmpty) memEmpty.style.display = '';
+          return;
+        }
+        if (memEmpty) memEmpty.style.display = 'none';
+        // Replace list contents to avoid duplicate animations.
+        const existingIds = new Set(
+          Array.from(memList.querySelectorAll('[data-id]')).map(
+            (el) => el.getAttribute('data-id'),
+          ),
+        );
+        const fresh = memories.filter((m) => !existingIds.has(m.id));
+        // Remove cards no longer in the list (rare but possible).
+        const newIds = new Set(memories.map((m) => m.id));
+        Array.from(memList.querySelectorAll('[data-id]')).forEach((el) => {
+          const id = el.getAttribute('data-id');
+          if (!newIds.has(id)) el.remove();
+        });
+        // Prepend fresh in reverse so newest is on top.
+        for (const m of fresh.reverse()) {
+          const li = document.createElement('li');
+          li.className = 'in-mem-card';
+          li.setAttribute('data-id', m.id);
+          const subj = document.createElement('span');
+          subj.className = 'in-mem-subj';
+          subj.textContent = m.subject;
+          const claim = document.createElement('p');
+          claim.className = 'in-mem-claim';
+          claim.textContent = m.claim;
+          li.appendChild(subj);
+          li.appendChild(claim);
+          memList.insertBefore(li, memList.firstChild);
+        }
+      } catch (err) {
+        // Silent fail. Memory panel is non-critical.
+      }
+    }
+
+    async function sendMessage(text) {
+      addUserMessage(text);
+      addBotMessage();
+      isStreaming = true;
+      startRender();
+
+      try {
+        const res = await fetch('/api/chat', {
+          method: 'POST',
+          headers: {
+            'content-type': 'application/json',
+            accept: 'text/event-stream',
+          },
+          body: JSON.stringify({ message: text }),
+        });
+
+        if (res.status === 429) {
+          // Rate limited. Surface friendly message.
+          drainMode = true;
+          pending = '';
+          stopRender();
+          finalizeBotMessage();
+          // Replace the empty bot bubble with a system note.
+          const lastBot = thread.querySelector('.in-msg-bot:last-child');
+          if (lastBot) lastBot.remove();
+          addSystemError(
+            "You're at the demo limit for today (5 messages). It resets at midnight UTC. Want to chat for real? Send Preston a text.",
+          );
+          if (limitText) limitText.textContent = "0 left today";
+          return;
+        }
+
+        if (!res.ok || !res.body) {
+          drainMode = true;
+          pending = '';
+          stopRender();
+          finalizeBotMessage();
+          const lastBot = thread.querySelector('.in-msg-bot:last-child');
+          if (lastBot) lastBot.remove();
+          addSystemError(
+            'Something went sideways. Try again in a moment.',
+          );
+          return;
+        }
+
+        // Parse SSE: frames separated by double-newline, each frame has
+        // event: <name>\ndata: <json>
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder();
+        let buf = '';
+        let metaCount = 0;
+        let metaLimit = 5;
+
+        while (true) {
+          const { value, done } = await reader.read();
+          if (done) break;
+          buf += decoder.decode(value, { stream: true });
+          let idx;
+          while ((idx = buf.indexOf('\n\n')) !== -1) {
+            const frame = buf.slice(0, idx);
+            buf = buf.slice(idx + 2);
+            if (frame.trim().length === 0) continue;
+            const lines = frame.split('\n');
+            let event = 'message';
+            let data = '';
+            for (const line of lines) {
+              if (line.startsWith('event:')) event = line.slice(6).trim();
+              else if (line.startsWith('data:')) data += line.slice(5).trim();
+            }
+            if (!data) continue;
+            let parsed;
+            try { parsed = JSON.parse(data); } catch { continue; }
+            if (event === 'metadata') {
+              metaCount = Number(parsed.dailyCount ?? 0);
+              metaLimit = Number(parsed.dailyLimit ?? 5);
+              const left = Math.max(0, metaLimit - metaCount);
+              if (limitText) {
+                limitText.textContent =
+                  left === 1
+                    ? '1 message left today'
+                    : left + ' messages left today';
+              }
+            } else if (event === 'delta') {
+              if (typeof parsed.content === 'string') pending += parsed.content;
+            } else if (event === 'done') {
+              drainMode = true;
+            } else if (event === 'error') {
+              drainMode = true;
+              pending = '';
+              stopRender();
+              finalizeBotMessage();
+              const lastBot = thread.querySelector('.in-msg-bot:last-child');
+              if (lastBot) lastBot.remove();
+              addSystemError('Stream interrupted. Try again.');
+              return;
+            }
+          }
+        }
+
+        // Final drain: ensure all pending characters render before we stop.
+        await new Promise((resolve) => {
+          const guard = setInterval(() => {
+            if (pending.length === 0) {
+              clearInterval(guard);
+              resolve();
+            }
+          }, TICK_MS);
+        });
+        stopRender();
+        finalizeBotMessage();
+        // Refresh memory panel after the turn settles. Small delay so
+        // the upstream memory-extractor has time to write.
+        setTimeout(loadMemories, 1500);
+      } catch (err) {
+        drainMode = true;
+        pending = '';
+        stopRender();
+        finalizeBotMessage();
+        const lastBot = thread.querySelector('.in-msg-bot:last-child');
+        if (lastBot) lastBot.remove();
+        addSystemError('Connection lost. Try again.');
+      }
+    }
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (isStreaming) return;
+      const text = (input.value ?? '').trim();
+      if (!text) return;
+      input.value = '';
+      sendBtn.disabled = true;
+      input.disabled = true;
+      sendMessage(text);
+    });
+
+    // On mount, fetch real daily-count from upstream and any existing
+    // memories captured earlier today on the same IP. Page-reload then
+    // shows accurate state instead of the static initial label.
+    loadLimit();
+    loadMemories();
+    }
+    // Find the Instrument section and lazy-init on intersect. Falls
+    // back to immediate init() if IntersectionObserver isn't available
+    // or the section isn't in the DOM (defensive).
+    const section =
+      document.getElementById('in-thread')?.closest('section') ||
+      document.querySelector('[aria-labelledby="instrument-h"]');
+    if (!section || typeof IntersectionObserver === 'undefined') {
+      init();
+      return;
+    }
+    const io = new IntersectionObserver(function (entries) {
+      for (const e of entries) {
+        if (e.isIntersecting) {
+          io.disconnect();
+          init();
+          break;
+        }
+      }
+    }, { rootMargin: '400px 0px' });
+    io.observe(section);
+  })();
+</script>
+
+<style>
+  @media (min-width: 768px) {
+  }
+  @media (min-width: 1024px) {
+  }
+
+  /* Header */
+  /* Card */
+  .in-desc em {
+    font-family: var(--font-serif);
+    font-style: italic;
+    color: var(--color-ash-100);
+  }
+
+  /* Grid: chat left, memory right on desktop. On mobile + tablet,
+     single column. We don't cap max-width: the widget fills its parent
+     slot (wk-preview at /work). The previous 640px cap was making the
+     chat read as a narrow mobile-sized card floating in a wide card slot,
+     which Preston flagged. Now the chat fills naturally at every width. */
+  .in-grid {
+    display: grid;
+    gap: 16px;
+    width: 100%;
+  }
+  @media (min-width: 1024px) {
+    .in-grid {
+      grid-template-columns: 1fr 240px;
+      gap: 20px;
+      align-items: stretch;
+    }
+  }
+
+  /* Chat window */
+  .in-window {
+    background: var(--color-bg-raised);
+    border: 1px solid var(--copper-hairline);
+    border-radius: var(--radius-btn);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: 360px;
+  }
+  @media (min-width: 1024px) { .in-window { min-height: 420px; } }
+  .in-titlebar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    background: var(--color-bg-card);
+    border-bottom: 1px solid var(--copper-hairline);
+  }
+  .in-dot {
+    display: inline-block;
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    opacity: 0.6;
+  }
+  .in-dot-r { background: #d96b5e; }
+  .in-dot-y { background: #e0a44a; }
+  .in-dot-g { background: var(--color-wc-green); }
+  .in-title {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--color-ash-500);
+    margin-left: 6px;
+    letter-spacing: 0.04em;
+  }
+
+  .in-thread {
+    flex: 1;
+    overflow-y: auto;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-height: 220px;
+    max-height: 360px;
+  }
+  @media (min-width: 1024px) { .in-thread { max-height: 420px; } }
+
+  .in-empty {
+    margin: auto;
+    text-align: center;
+    color: var(--color-ash-500);
+    font-family: var(--font-sans);
+    font-size: 13px;
+    line-height: 1.6;
+    max-width: 280px;
+  }
+  .in-empty-lead em {
+    font-family: var(--font-serif);
+    font-style: italic;
+    color: var(--color-ash-300);
+  }
+  .in-empty-sub {
+    margin-top: 6px;
+    font-size: 12px;
+    color: var(--color-ash-500);
+  }
+
+  .in-msg {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    font-family: var(--font-sans);
+  }
+  .in-msg-author {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--color-ash-500);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+  .in-msg p {
+    font-size: 14px;
+    color: var(--color-ash-100);
+    line-height: 1.5;
+    margin: 0;
+    padding: 8px 12px;
+    border-radius: 8px;
+    max-width: 90%;
+    overflow-wrap: anywhere;
+  }
+  .in-msg-user { align-items: flex-end; }
+  .in-msg-user p {
+    background: rgba(200, 128, 74, 0.10);
+    border: 1px solid var(--copper-hairline);
+    color: var(--color-ash-100);
+  }
+  .in-msg-bot p {
+    background: rgba(77, 216, 168, 0.06);
+    border: 1px solid rgba(77, 216, 168, 0.18);
+  }
+  .in-msg-system p {
+    background: transparent;
+    border: 1px dashed var(--copper-hairline);
+    color: var(--color-ash-400);
+    font-style: italic;
+    font-size: 13px;
+    max-width: 100%;
+  }
+  .in-cursor {
+    display: inline-block;
+    width: 7px;
+    height: 14px;
+    background: var(--color-wc-green);
+    margin-left: 2px;
+    vertical-align: text-bottom;
+    animation: in-cursor-blink 1s steps(2) infinite;
+  }
+  @keyframes in-cursor-blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+  .in-composer {
+    display: flex;
+    gap: 8px;
+    padding: 10px;
+    border-top: 1px solid var(--copper-hairline);
+    background: var(--color-bg-card);
+  }
+  .in-composer input {
+    flex: 1;
+    background: var(--color-bg-deep);
+    border: 1px solid var(--copper-hairline);
+    border-radius: var(--radius-btn);
+    padding: 10px 14px;
+    color: var(--color-ash-100);
+    font-family: var(--font-sans);
+    font-size: 14px;
+    min-height: 40px;
+  }
+  .in-composer input:focus {
+    outline: none;
+    border-color: var(--color-wc-green);
+    box-shadow: 0 0 0 1px rgba(77, 216, 168, 0.35);
+  }
+  .in-composer button {
+    background: var(--color-wc-green);
+    border: 1px solid var(--color-wc-green);
+    color: var(--color-bg-deep);
+    border-radius: var(--radius-btn);
+    padding: 0 16px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 600;
+    cursor: pointer;
+    min-height: 40px;
+    min-width: 64px;
+    transition: background 200ms, color 200ms;
+  }
+  .in-composer button:hover:not(:disabled) {
+    background: var(--color-wc-green);
+    color: var(--color-bg-deep);
+  }
+  .in-composer button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  /* Reset-chat row sits between composer and footer.
+     Memory survives the reset. That's the whole demo. */
+  .in-reset-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 8px 10px 4px;
+    background: var(--color-bg-card);
+    border-top: 1px solid var(--copper-hairline);
+  }
+  .in-reset-btn {
+    appearance: none;
+    background: transparent;
+    border: 1px solid var(--copper-hairline);
+    border-radius: var(--radius-btn);
+    color: var(--color-ash-300);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    padding: 5px 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    transition: color 120ms ease, border-color 120ms ease, background 120ms ease;
+  }
+  .in-reset-btn:hover,
+  .in-reset-btn:focus-visible {
+    color: var(--color-copper);
+    border-color: var(--color-copper);
+    background: rgba(200, 128, 74, 0.06);
+    outline: none;
+  }
+  .in-reset-btn:active {
+    transform: translateY(1px);
+  }
+  .in-reset-icon {
+    font-size: 13px;
+    line-height: 1;
+    display: inline-block;
+    transform: translateY(-1px);
+  }
+  .in-reset-hint {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--color-ash-500);
+    letter-spacing: 0.05em;
+    font-style: italic;
+  }
+  @media (max-width: 480px) {
+    .in-reset-row { padding: 8px 8px 4px; }
+    .in-reset-hint { display: none; }
+  }
+
+  .in-foot {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--color-ash-500);
+    text-align: center;
+    padding: 6px 10px 8px;
+    margin: 0;
+    background: var(--color-bg-card);
+    letter-spacing: 0.06em;
+  }
+  .in-foot-sep { margin: 0 6px; color: var(--color-ash-500); }
+
+  /* Memory side panel */
+  .in-memory {
+    background: var(--color-bg-raised);
+    border: 1px solid var(--copper-hairline);
+    border-radius: var(--radius-btn);
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 220px;
+    overflow-y: auto;
+  }
+  @media (min-width: 1024px) {
+    .in-memory { max-height: none; }
+  }
+  .in-mem-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--copper-hairline);
+    padding-bottom: 8px;
+  }
+  .in-mem-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--color-copper);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+  .in-mem-count {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--color-ash-500);
+    background: var(--color-bg-deep);
+    padding: 2px 8px;
+    border-radius: 10px;
+    border: 1px solid var(--copper-hairline);
+    min-width: 24px;
+    text-align: center;
+  }
+  .in-mem-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .in-mem-card {
+    background: var(--color-bg-card);
+    border: 1px solid var(--copper-hairline);
+    border-radius: 6px;
+    padding: 8px 10px;
+    animation: in-mem-pop 360ms ease-out;
+  }
+  @keyframes in-mem-pop {
+    0% { opacity: 0; transform: translateY(-4px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  .in-mem-subj {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--color-copper-bright);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 3px;
+  }
+  .in-mem-claim {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-size: 12px;
+    color: var(--color-ash-300);
+    line-height: 1.4;
+  }
+  .in-mem-empty {
+    list-style: none;
+    color: var(--color-ash-500);
+    font-family: var(--font-sans);
+    font-size: 12px;
+    font-style: italic;
+    text-align: center;
+    padding: 16px 4px;
+  }
+  .in-mem-empty p { margin: 0; }
+
+  .visually-hidden {
+    position: absolute !important;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .in-pulse,
+    .in-cursor,
+    .in-mem-card { animation: none; }
+  }
+</style>

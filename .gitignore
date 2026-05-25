@@ -1,0 +1,37 @@
+# build output
+dist/
+# generated types
+.astro/
+
+# dependencies
+node_modules/
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+
+# environment variables
+.env
+.env.production
+
+# macOS-specific files
+.DS_Store
+
+# jetbrains setting folder
+.idea/
+
+# Cloudflare adapter local state (miniflare cache, KV/D1/R2 sandbox data)
+.wrangler/
+
+# Build artifacts and types (already covered above but listed for clarity)
+
+# Cloudflare Pages local secrets (never commit)
+.dev.vars
+.dev.vars.*
+
+# Internal/operational docs - private, see winterscode-internal repo
+docs/*
+!docs/screenshots/

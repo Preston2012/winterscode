@@ -1,0 +1,786 @@
+---
+import Explainer from '../ui/Explainer.astro';
+import Stamp from '../ui/Stamp.astro';
+
+/**
+ * Hero, S7 ceiling pass (replaces S6 floor).
+ *
+ * Spec ref: docs/design/S6_PLUS.md Section 2 (~line 393).
+ *
+ * Critical change from S6 floor: H1 is now the emotional anchor
+ * ("You didn't go into business to manage software."). The morph
+ * line moves BELOW the sub as a small secondary line.
+ *
+ * Layout:
+ *   mobile  (<768)  : single col. Eyebrow → H1 → sub → morph → CTAs → trust
+ *   tablet (768-1023): single col, larger type
+ *   desktop  (≥1024): 2-col grid 1.2fr / 1fr, text left + Workshop preview card right
+ *
+ * Trust tooltips:
+ *   - Stub data for S7 ("last-known-good" pattern per Wall curation rules)
+ *   - Real PSI/internal-tracker wiring lands when Preston rotates keys + PSI is provisioned
+ *   - Mobile: tap to toggle. Desktop: hover.
+ *
+ * Morph line: vanilla JS (~700 bytes). Cycles every 3.5s automatically.
+ * Click/Enter/Space advances manually, auto-resumes after 5s.
+ */
+
+const PHRASES = [
+  // Ordered by Coos/Curry priority (data-anchored from Coos Co. top
+  // employment sectors + Curry tourism/fishing/ag). At runtime the array
+  // is Fisher-Yates shuffled on page load so no two visitors see the
+  // same cycle order. kills the loop pattern, makes each visit feel
+  // freshly curated. Source order preserved for sane future edits.
+  'sites for restaurants',
+  'sites for contractors',
+  'apps for fishing charters',
+  'sites for vacation rentals',
+  'tools for property managers',
+  'sites for lodging',
+  'tools for marinas',
+  'apps for tour guides',
+  'sites for breweries',
+  'sites for real estate agents',
+  'sites for salons',
+  'tools for landscapers',
+  'apps for food trucks',
+  'sites for retail shops',
+  'sites for photographers',
+  'tools for bookkeepers',
+  'apps for auto shops',
+  'sites for farms',
+  'sites for dispensaries',
+  'tools for cranberry growers',
+];
+
+// Stub "last-known-good" data for trust tooltips. Replace with live
+// data sources (PSI API, internal build tracker, securityheaders.com)
+// once Preston rotates leaked keys and provisions PSI. Wire-up: S10.
+const TRUST_TIPS = {
+  speed:
+    'Site builds typically go live in 3 to 7 business days from the day you sign. App builds run 2 to 4 weeks for an MVP, 4 to 8 weeks for a full build. Compare to 6 to 8 weeks just for a site at most agencies.',
+  lighthouse:
+    'Google\'s Lighthouse scores any website 0 to 100 on speed, accessibility, security, and SEO. 100 is perfect. Most small-business sites score 50 to 70. Mine sit around a 95 average across every page (some checks dip a few points on heavy interactive pages, but the rolling average holds). Scores shown are mobile (the harder test). Desktop usually runs 2 to 5 points higher.',
+  security:
+    'Every site I ship has the standard browser security headers turned on (HSTS, CSP, X-Frame-Options, Referrer-Policy, Permissions-Policy) and scores B+ or higher on Mozilla Observatory. Client sites typically score A+ since they\'re simpler.',
+};
+
+// Workshop preview card stub (desktop right column). 4 lines, sampled
+// from the full Wall. Real data lands when Wall component wires SSE
+// to /api/wall endpoint via Cloudflare Worker. For S7: honest static.
+const WORKSHOP_PREVIEW = [
+  { glyph: '⚡', label: 'DEPLOYS', value: '12 in past 30d' },
+  { glyph: '▲', label: 'LIGHTHOUSE', value: '95+ avg · 4 categories' },
+  { glyph: '◉', label: 'ENGINE', value: 'Demiurge · 2.5k+ memories' },
+  { glyph: '⌖', label: 'CALENDAR', value: 'Next: Wed 5pm PT' },
+];
+---
+
+<section class="hero" id="hero">
+  <!-- Maker's stamp, top-right of hero. Replaces the magazine volume
+       stamp. Doctrine: brain memory #2586. -->
+  <div class="hero-mark" aria-hidden="false">
+    <Stamp size={140} glow="full" ariaLabel="Winters Code" />
+  </div>
+
+  <div class="hero-text">
+    <div class="hero-eyebrow">
+      <span class="line" aria-hidden="true"></span>
+      <span class="text">Bandon · Oregon</span>
+    </div>
+
+    <h1 class="hero-h1">
+      You didn't go into business<br class="desktop-break" />
+      <span class="hero-h1-line2"> to manage software.</span>
+    </h1>
+
+    <p class="hero-sub">
+      Custom sites, apps, and tools for the Oregon coast.<br />
+      <em>Help is just a text away.</em>
+    </p>
+
+    <p class="hero-morph-line" aria-live="polite">
+      I can build{' '}
+      <span
+        class="morph"
+        id="morph-phrase"
+        role="button"
+        tabindex="0"
+        aria-label={`Industry: ${PHRASES[0]}. Click to see another.`}
+      >{PHRASES[0]}</span>.
+    </p>
+
+    <div class="hero-cta">
+      <a href="/contact" class="btn btn-primary">Free consult →</a>
+      <a href="/work" class="btn btn-secondary">See the work →</a>
+    </div>
+
+    <div class="hero-trust">
+      <span class="trust-item" tabindex="0" data-tip>
+        <span class="dot" aria-hidden="true"></span>
+        Starts at 3 business days
+        <span class="tip" role="tooltip">{TRUST_TIPS.speed}</span>
+      </span>
+      <span class="trust-item" tabindex="0" data-tip>
+        <span class="dot" aria-hidden="true"></span>
+        ~95 Lighthouse avg
+        <span class="tip" role="tooltip">{TRUST_TIPS.lighthouse}</span>
+      </span>
+      <span class="trust-item" tabindex="0" data-tip>
+        <span class="dot" aria-hidden="true"></span>
+        Security defaults
+        <span class="tip" role="tooltip">{TRUST_TIPS.security}</span>
+      </span>
+    </div>
+  </div>
+
+  <!--
+    Desktop-only right column: Workshop preview card. 4 lines sampled
+    from the Wall. Light load, proves liveness without being heavy.
+    Real data when Wall wires SSE (S10).
+  -->
+  <aside class="workshop-preview" aria-label="Workshop status preview">
+    <div class="wp-header">
+      <span class="wp-eyebrow">
+        THE WORKSHOP
+        <Explainer label="?" placement="bottom">
+          A small live snapshot of what's happening in my shop: how many deploys I've pushed in the last 30 days, the Lighthouse scores on my own sites, how many memories my AI engine is keeping, and when the next free consult slot is. The full picture lives at /wall.
+        </Explainer>
+      </span>
+      <a href="/wall" class="wp-link">see the workshop →</a>
+    </div>
+    <ul class="wp-rows">
+      {WORKSHOP_PREVIEW.map((row) => (
+        <li class="wp-row">
+          <span class="wp-glyph" aria-hidden="true">{row.glyph}</span>
+          <span class="wp-label">{row.label}</span>
+          <span class="wp-value">{row.value}</span>
+        </li>
+      ))}
+    </ul>
+    <div class="wp-footer">
+      <span class="wp-pulse" aria-hidden="true"></span>
+      <span class="wp-status">live · sample · refreshes on /wall</span>
+    </div>
+  </aside>
+</section>
+
+<script
+  is:inline
+  type="application/json"
+  id="morph-data"
+  set:html={JSON.stringify(PHRASES)}
+></script>
+
+<script is:inline>
+  (function () {
+    const el = document.getElementById('morph-phrase');
+    const data = document.getElementById('morph-data');
+    if (!el || !data) return;
+
+    let phrases;
+    try { phrases = JSON.parse(data.textContent || '[]'); } catch { return; }
+    if (!Array.isArray(phrases) || phrases.length < 2) return;
+
+    // Fisher-Yates shuffle on every page load. Each visit gets a fresh
+    // industry order so the cycle doesn't reveal a loop pattern. We
+    // copy the array first so the source order in DOM is preserved
+    // for any external readers (screen-readers, scrapers).
+    phrases = phrases.slice();
+    for (var i = phrases.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = phrases[i]; phrases[i] = phrases[j]; phrases[j] = tmp;
+    }
+    // Set the initial phrase to index 0 of the shuffled order so the
+    // first thing the visitor sees isn't always the first source phrase.
+    el.textContent = phrases[0];
+    el.setAttribute('aria-label', 'Industry: ' + phrases[0] + '. Click to see another.');
+
+    const FADE_MS = 400;
+    const AUTO_MS = 3500;
+    const RESUME_MS = 5000;
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    let idx = 0;
+    let autoTimer = null;
+    let resumeTimer = null;
+
+    function advance() {
+      el.style.opacity = '0';
+      setTimeout(function () {
+        idx = (idx + 1) % phrases.length;
+        el.textContent = phrases[idx];
+        el.setAttribute('aria-label', 'Industry: ' + phrases[idx] + '. Click to see another.');
+        el.style.opacity = '1';
+      }, FADE_MS);
+    }
+
+    function startAuto() {
+      if (reduceMotion) return;
+      if (autoTimer) clearInterval(autoTimer);
+      autoTimer = setInterval(advance, AUTO_MS);
+    }
+
+    function handleClick() {
+      if (autoTimer) clearInterval(autoTimer);
+      if (resumeTimer) clearTimeout(resumeTimer);
+      advance();
+      resumeTimer = setTimeout(startAuto, RESUME_MS);
+    }
+
+    el.addEventListener('click', handleClick);
+    el.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        handleClick();
+      }
+    });
+
+    el.style.transition = 'opacity ' + FADE_MS + 'ms ease-out, text-shadow ' + FADE_MS + 'ms ease-out';
+    startAuto();
+  })();
+
+  // Trust tooltip: hover on desktop, tap-toggle on touch.
+  // Closes on outside tap or another tooltip opening.
+  (function () {
+    const items = document.querySelectorAll('[data-tip]');
+    if (!items.length) return;
+    const isTouch = window.matchMedia('(hover: none)').matches;
+    if (!isTouch) return; // hover handled by CSS, no JS needed
+
+    let openItem = null;
+    items.forEach(function (item) {
+      item.addEventListener('click', function (e) {
+        e.stopPropagation();
+        if (openItem === item) {
+          item.classList.remove('tip-open');
+          openItem = null;
+          return;
+        }
+        if (openItem) openItem.classList.remove('tip-open');
+        item.classList.add('tip-open');
+        openItem = item;
+      });
+    });
+    document.addEventListener('click', function () {
+      if (openItem) {
+        openItem.classList.remove('tip-open');
+        openItem = null;
+      }
+    });
+  })();
+
+  // Live data fetch from /api/workshop for trust tooltips + Workshop preview.
+  // Falls back to baked-in last-known-good silently.
+  (function () {
+    fetch('/api/workshop', { signal: AbortSignal.timeout(4000) })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (d) {
+        if (!d) return;
+        // Trust tooltips
+        var items = document.querySelectorAll('.trust-item');
+        if (items.length >= 3) {
+          var tip0 = items[0].querySelector('.tip');
+          var tip1 = items[1].querySelector('.tip');
+          var tip2 = items[2].querySelector('.tip');
+          // Tooltips already render plain-English explainers from the
+          // Astro template. Live data appends a small "current value"
+          // line so the tip stays informative AND grounded in real
+          // measurements. Plain text first, mono data after a divider.
+          if (tip0 && d.speed && d.speed.last_three) {
+            tip0.insertAdjacentHTML('beforeend',
+              '<span class="tip-live">last 3 builds: ' +
+              d.speed.last_three + '</span>');
+          }
+          if (tip1 && d.lighthouse && Array.isArray(d.lighthouse.winterscode)) {
+            tip1.insertAdjacentHTML('beforeend',
+              '<span class="tip-live">winterscode.com today: ' +
+              d.lighthouse.winterscode.join('/') + '</span>');
+          }
+          if (tip2 && d.security && d.security.grade) {
+            tip2.insertAdjacentHTML('beforeend',
+              '<span class="tip-live">current grade: ' +
+              d.security.grade + '</span>');
+          }
+        }
+        // Workshop preview card (desktop)
+        var rows = document.querySelectorAll('.wp-row');
+        if (rows.length >= 4) {
+          if (d.deploys && rows[0]) {
+            var v0 = rows[0].querySelector('.wp-value');
+            if (v0) v0.textContent = d.deploys.count_30d + ' in past 30d';
+          }
+          if (d.lighthouse && rows[1]) {
+            var v1 = rows[1].querySelector('.wp-value');
+            if (v1 && Array.isArray(d.lighthouse.winterscode))
+              v1.textContent = d.lighthouse.winterscode.join(' / ');
+          }
+          if (d.engine && rows[2]) {
+            var v2 = rows[2].querySelector('.wp-value');
+            if (v2) {
+              var mem = d.engine.memories >= 1000
+                ? (d.engine.memories / 1000).toFixed(1) + 'k'
+                : d.engine.memories;
+              v2.textContent = 'Demiurge · ' + mem + ' memories';
+            }
+          }
+          if (d.calendar && rows[3]) {
+            var v3 = rows[3].querySelector('.wp-value');
+            if (v3) v3.textContent = 'Next: ' + d.calendar.next;
+          }
+        }
+        var wpStatus = document.querySelector('.wp-status');
+        if (wpStatus) wpStatus.textContent = 'live · refreshed just now';
+      })
+      .catch(function () { /* swallow, stubs already rendered */ });
+  })();
+</script>
+
+<style>
+  /* ─── Hero shell ─── */
+  .hero {
+    padding: 36px 4px 28px;
+    position: relative;
+  }
+  @media (min-width: 768px) {
+    /* Reserve right-side space on tablet so the 110px stamp doesn't
+       overlap the H1. The stamp is fixed top-right inside .hero, so
+       hero-text needs its own right-pad on this breakpoint only. */
+    .hero { padding: 56px 4px 40px; }
+    .hero-text { padding-right: 130px; }
+  }
+  @media (min-width: 1024px) {
+    .hero {
+      padding: 80px 0 60px;
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 60px;
+      align-items: center;
+    }
+  }
+
+  .hero-text { position: relative; }
+
+  /* ─── Eyebrow (line + locale) ─── */
+  .hero-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+  .hero-eyebrow .line {
+    width: 32px;
+    height: 1px;
+    background: var(--color-copper);
+  }
+  .hero-eyebrow .text {
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--color-copper);
+  }
+  @media (min-width: 1024px) {
+    .hero-eyebrow .line { width: 48px; }
+    .hero-eyebrow .text { font-size: 13px; }
+  }
+
+  /* ─── H1 (emotional anchor) ─── */
+  .hero-h1 {
+    font-family: var(--font-serif);
+    font-weight: 500;
+    font-size: 32px;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: var(--color-ash-100);
+    margin: 0;
+    text-wrap: balance;
+    overflow-wrap: anywhere;
+    hyphens: auto;
+    word-break: normal;
+  }
+  .hero-h1-line2 {
+    font-style: italic;
+    color: var(--color-ash-300);
+  }
+  .desktop-break { display: none; }
+  @media (min-width: 768px) {
+    .hero-h1 {
+      font-size: 44px;
+      line-height: 1.08;
+    }
+  }
+  @media (min-width: 1024px) {
+    .hero-h1 {
+      font-size: 56px;
+      line-height: 1.05;
+    }
+    .desktop-break { display: inline; }
+  }
+
+  /* ─── Sub ─── */
+  .hero-sub {
+    margin: 18px 0 0;
+    max-width: 540px;
+    font-size: 14px;
+    color: var(--color-ash-300);
+    line-height: 1.55;
+  }
+  .hero-sub em {
+    color: var(--color-ash-100);
+    font-style: italic;
+    font-family: var(--font-serif);
+    font-weight: 500;
+  }
+  @media (min-width: 768px) {
+    .hero-sub { font-size: 15px; margin-top: 20px; }
+  }
+  @media (min-width: 1024px) {
+    .hero-sub {
+      font-size: 17px;
+      max-width: 560px;
+      line-height: 1.5;
+      margin-top: 24px;
+    }
+  }
+
+  /* ─── Morph line (small secondary line BELOW sub) ─── */
+  .hero-morph-line {
+    margin: 14px 0 0;
+    font-family: var(--font-sans);
+    font-size: 13px;
+    color: var(--color-ash-400);
+    line-height: 1.5;
+    font-weight: 400;
+    letter-spacing: 0;
+  }
+  @media (min-width: 768px) {
+    .hero-morph-line { font-size: 14px; }
+  }
+  @media (min-width: 1024px) {
+    .hero-morph-line { font-size: 15px; margin-top: 18px; }
+  }
+  .morph {
+    display: inline-block;
+    color: var(--color-wc-green);
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 500;
+    cursor: pointer;
+    user-select: none;
+    border-bottom: 1px dashed rgba(77, 216, 168, 0.3);
+    padding-bottom: 1px;
+  }
+  .morph:hover {
+    border-bottom-color: var(--color-wc-green);
+  }
+  .morph:focus-visible {
+    outline: 2px solid var(--color-wc-green);
+    outline-offset: 4px;
+    border-radius: 2px;
+  }
+
+  /* ─── CTAs ─── */
+  .hero-cta {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 26px;
+  }
+  @media (min-width: 768px) {
+    .hero-cta {
+      gap: 12px;
+      max-width: 480px;
+      margin-top: 32px;
+    }
+  }
+
+  /* Shared button base, used by hero + 404 + future CTAs */
+  :global(.btn) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 13px 18px;
+    border-radius: var(--radius-btn);
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 0.01em;
+    text-align: center;
+    cursor: pointer;
+    transition: all 200ms;
+    border: 1.5px solid transparent;
+    white-space: nowrap;
+    min-height: 44px;
+  }
+  :global(.btn-primary) {
+    background: var(--color-wc-green);
+    color: var(--color-bg-deep);
+    box-shadow: 0 1px 0 rgba(240, 160, 110, 0.3) inset;
+  }
+  :global(.btn-primary:hover) {
+    background: var(--color-wc-green-bright);
+    transform: translateY(-1px);
+  }
+  :global(.btn-secondary) {
+    background: transparent;
+    color: var(--color-ash-100);
+    border-color: var(--copper-hairline);
+  }
+  :global(.btn-secondary:hover) {
+    border-color: var(--color-copper);
+    color: var(--color-copper-bright);
+  }
+  @media (min-width: 768px) {
+    :global(.btn) { padding: 15px 22px; font-size: 15px; }
+  }
+
+  /* ─── Trust signals ─── */
+  .hero-trust {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 14px;
+    margin-top: 22px;
+    padding-top: 18px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+  }
+  @media (min-width: 768px) {
+    .hero-trust { gap: 12px 22px; margin-top: 32px; padding-top: 24px; }
+  }
+  .trust-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-sans);
+    font-size: 11px;
+    color: var(--color-ash-400);
+    font-weight: 500;
+    cursor: help;
+    position: relative;
+    border-bottom: 1px dashed rgba(255, 255, 255, 0.08);
+    padding-bottom: 1px;
+  }
+  @media (min-width: 768px) {
+    .trust-item { font-size: 13px; }
+  }
+  .trust-item .dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--color-wc-green);
+  }
+  .trust-item:hover,
+  .trust-item:focus-visible {
+    color: var(--color-ash-100);
+    border-bottom-color: var(--color-wc-green);
+    outline: none;
+  }
+  .trust-item .tip {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--color-bg-card);
+    border: 1px solid var(--copper-hairline);
+    color: var(--color-ash-100);
+    padding: 10px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    line-height: 1.45;
+    width: max-content;
+    max-width: min(300px, 80vw);
+    white-space: normal;
+    text-align: left;
+    font-weight: 400;
+    letter-spacing: 0;
+    text-transform: none;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 200ms;
+    z-index: 10;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    font-family: var(--font-sans);
+  }
+  /* Live-data line appended after plain text by the workshop fetch. */
+  .trust-item .tip .tip-live {
+    display: block;
+    margin-top: 6px;
+    padding-top: 6px;
+    border-top: 1px dashed var(--copper-hairline);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--color-copper-bright);
+    letter-spacing: 0.02em;
+  }
+  /* Small viewports: clamp to viewport edge */
+  @media (max-width: 480px) {
+    .trust-item .tip {
+      left: 0;
+      transform: none;
+      max-width: calc(100vw - 32px);
+    }
+    .trust-item .tip::after {
+      left: 16px;
+      transform: none;
+    }
+  }
+  .trust-item .tip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: var(--copper-hairline);
+  }
+  .trust-item:hover .tip,
+  .trust-item:focus-visible .tip,
+  .trust-item.tip-open .tip {
+    opacity: 1;
+  }
+
+  /* ─── Maker's mark (top-right of hero) ─── */
+  /* The Stamp component renders at 140px. Wrapper handles position,
+     rotation (desktop only), and responsive scaling. Rotation goes on
+     the wrapper not the Stamp so it doesn't fight the inline transform
+     the component emits for its size prop. */
+  .hero-mark {
+    position: absolute;
+    top: 16px;
+    right: 4px;
+    z-index: 5;
+    pointer-events: none;
+    transform: scale(calc(90 / 140));
+    transform-origin: top right;
+  }
+  @media (min-width: 768px) {
+    .hero-mark {
+      top: 20px;
+      right: 14px;
+      transform: scale(calc(110 / 140)) rotate(-3deg);
+    }
+  }
+  @media (min-width: 1024px) {
+    .hero-mark {
+      top: 24px;
+      right: 28px;
+      transform: rotate(-4deg);
+    }
+  }
+
+  /* ─── Workshop preview card (desktop right column) ─── */
+  .workshop-preview {
+    display: none;
+  }
+  @media (min-width: 1024px) {
+    .workshop-preview {
+      display: block;
+      background: var(--color-bg-card);
+      border: 1px solid var(--copper-hairline);
+      border-radius: var(--radius-card);
+      padding: 18px 20px;
+      position: relative;
+    }
+    .workshop-preview::before {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      border-radius: var(--radius-card);
+      pointer-events: none;
+      box-shadow: 0 0 0 1px rgba(200, 128, 74, 0.05);
+    }
+    .wp-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--copper-hairline);
+      margin-bottom: 12px;
+    }
+    .wp-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      color: var(--color-copper);
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+    .wp-link {
+      font-family: var(--font-sans);
+      font-size: 11px;
+      color: var(--color-ash-400);
+      text-decoration: none;
+      letter-spacing: 0.02em;
+      transition: color 200ms;
+    }
+    .wp-link:hover {
+      color: var(--color-wc-green);
+    }
+    .wp-rows {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      gap: 9px;
+    }
+    .wp-row {
+      display: grid;
+      grid-template-columns: 16px 90px 1fr;
+      gap: 10px;
+      align-items: baseline;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--color-ash-300);
+      line-height: 1.4;
+    }
+    .wp-glyph {
+      color: var(--color-copper);
+      font-size: 12px;
+      line-height: 1;
+    }
+    .wp-label {
+      color: var(--color-ash-500);
+      letter-spacing: 0.08em;
+      font-size: 10px;
+      text-transform: uppercase;
+    }
+    .wp-value {
+      color: var(--color-ash-100);
+      font-size: 11px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .wp-footer {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding-top: 12px;
+      margin-top: 12px;
+      border-top: 1px solid var(--copper-hairline);
+    }
+    .wp-pulse {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--color-wc-green);
+      box-shadow: 0 0 8px rgba(77, 216, 168, 0.5);
+      animation: wp-pulse 2.4s ease-in-out infinite;
+    }
+    .wp-status {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--color-ash-500);
+      letter-spacing: 0.04em;
+    }
+    @keyframes wp-pulse {
+      0%, 100% { opacity: 0.6; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .wp-pulse { animation: none; }
+    }
+  }
+</style>

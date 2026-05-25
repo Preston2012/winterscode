@@ -1,0 +1,239 @@
+---
+import '../styles/global.css';
+// Import the LCP-critical fonts as assets so Astro emits hashed URLs we can
+// preload. Browsers fetch preloaded fonts in parallel with HTML/CSS instead
+// of waiting for CSS parse to discover @font-face. Kills 200-400ms off LCP
+// on slow lab benches (PSI variance hardening).
+import fraunceseNormal from '@fontsource-variable/fraunces/files/fraunces-latin-opsz-normal.woff2?url';
+// IBM Plex weights no longer preloaded (they paint after LCP, removing them
+// from critical chain saves ~200-400ms on desktop traces). Kept available
+// via @font-face import in src/styles/fonts.css with font-display: swap.
+import KeyboardShortcuts from '../components/layout/KeyboardShortcuts.astro';
+import Stamp from '../components/ui/Stamp.astro';
+// Print stylesheet. loaded with media="print" so the browser parses it
+// at lowest priority and NEVER blocks screen paint. Saves ~1KB off the
+// render-blocking BaseLayout CSS chunk.
+import printCssUrl from '../styles/print.css?url';
+
+export interface Props {
+  /** Page title, appears in <title>, og:title, twitter:title. */
+  title: string;
+  /** Meta description, 150-160 chars. */
+  description: string;
+  /** Canonical URL path (e.g. '/privacy'). Defaults to current URL. */
+  canonicalPath?: string;
+  /**
+   * OG image path (relative to site root) or null to suppress OG image tags.
+   * Defaults to '/og-image.png' which renders reliably on Facebook, LinkedIn, Twitter/X, iMessage (SVG previews are unreliable across social platforms. we keep the .svg around as the design source but ship the .png).
+   */
+  ogImage?: string | null;
+  /** Suppress sitewide chrome (footer etc.), used by /404. */
+  bare?: boolean;
+}
+
+const {
+  title,
+  description,
+  canonicalPath,
+  ogImage = '/og-image.png?v=2',
+  bare = false,
+} = Astro.props;
+
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? 'https://winterscode.com';
+// Canonical URL derivation. With build.format:'file', Astro.url.pathname returns
+// '/index.html' for the home page and '/services.html' for /services. Strip
+// the '.html' suffix and convert '/index.html' to '/' so canonicals match
+// the public URL shape (which has no extension).
+const rawPath = Astro.url.pathname;
+const cleanPath = rawPath === '/index.html'
+  ? '/'
+  : rawPath.replace(/\.html$/, '').replace(/\/$/, '');
+const canonical = canonicalPath
+  ? `${siteUrl}${canonicalPath}`
+  : `${siteUrl}${cleanPath || '/'}`;
+const ogImageUrl =
+  ogImage === null ? null : ogImage.startsWith('http') ? ogImage : `${siteUrl}${ogImage}`;
+
+// Schema.org LocalBusiness, required for Bandon SEO targeting.
+// Phone + email left unset until Preston confirms (STATE.md open questions).
+const localBusinessSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'LocalBusiness',
+  '@id': `${siteUrl}/#business`,
+  name: 'Winters Code',
+  description:
+    'Custom React, Astro, and Flutter for Oregon coast businesses. Modern stack. Days, not weeks.',
+  url: siteUrl,
+  ...(ogImageUrl ? { image: ogImageUrl } : {}),
+  priceRange: '$$',
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: 'Bandon',
+    addressRegion: 'OR',
+    addressCountry: 'US',
+  },
+  areaServed: [
+    { '@type': 'AdministrativeArea', name: 'Coos County, Oregon' },
+    { '@type': 'AdministrativeArea', name: 'Curry County, Oregon' },
+  ],
+  founder: {
+    '@type': 'Person',
+    name: 'Preston Winters',
+  },
+};
+---
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+  <meta name="generator" content={Astro.generator} />
+
+  <!-- Primary meta -->
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <link rel="canonical" href={canonical} />
+
+  <!-- Theme + favicons. The favicon-w SVG is the canonical favicon (W only, legible at 16px)
+       (works at any size, color-scheme aware via styled <style> inside it).
+       favicon.ico kept as legacy fallback. brandmark.svg (full W stamp with ring text) used for apple-touch-icon at larger size. -->
+  <meta name="theme-color" content="#0a0d0c" />
+  <link rel="icon" type="image/svg+xml" href="/favicon-w.svg" />
+  <link rel="icon" href="/favicon.ico" sizes="any" />
+  <link rel="apple-touch-icon" href="/brandmark.svg" />
+  <link rel="mask-icon" href="/brandmark.svg" color="#4dd8a8" />
+
+  <!-- OpenGraph (Facebook, LinkedIn, iMessage). Omitted entirely when ogImage=null. -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content={canonical} />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:site_name" content="Winters Code" />
+  <meta property="og:locale" content="en_US" />
+  {ogImageUrl && (
+    <>
+      <meta property="og:image" content={ogImageUrl} />
+      <meta property="og:image:type" content="image/png" />
+      <meta property="og:image:width" content="1200" />
+      <meta property="og:image:height" content="630" />
+      <meta property="og:image:alt" content={`${title}, winterscode.com`} />
+    </>
+  )}
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content={ogImageUrl ? 'summary_large_image' : 'summary'} />
+  <meta name="twitter:url" content={canonical} />
+  <meta name="twitter:title" content={title} />
+  <meta name="twitter:description" content={description} />
+  {ogImageUrl && <meta name="twitter:image" content={ogImageUrl} />}
+
+  <!-- Sitemap discovery -->
+  <link rel="sitemap" href="/sitemap-index.xml" />
+
+  <!-- Font preloads. ONLY the LCP-critical face (Fraunces, used by the
+       homepage H1). IBM Plex weights paint after LCP; preloading them
+       extended the critical path chain to 4.2s in Lighthouse desktop trace.
+       They still load promptly via @font-face during CSS parse with
+       font-display: swap, so body text never blocks paint. -->
+  <link rel="preload" as="font" type="font/woff2" href={fraunceseNormal} crossorigin />
+
+  <!-- Print stylesheet, loaded non-render-blocking via media="print". -->
+  <link rel="stylesheet" media="print" href={printCssUrl} />
+
+  <!-- Fonts: self-hosted via @fontsource, latin subset only.
+       @font-face rules are inlined into the critical CSS by Astro
+       (see src/styles/fonts.css imported from global.css).
+       No external fonts.googleapis.com request: kills the cross-origin
+       TLS handshake and render-blocking round-trip on mobile.
+       font-display: swap renders text immediately with fallbacks. -->
+
+  <!-- Schema.org LocalBusiness -->
+  <script type="application/ld+json" set:html={JSON.stringify(localBusinessSchema)} />
+
+  <!-- Slot for per-page <head> additions (extra schemas, page-scoped styles) -->
+  <slot name="head" />
+</head>
+
+<body>
+  <!-- Skip-to-content link. Visually hidden until focused (accessibility). -->
+  <a href="#main" class="skip-to-content">Skip to content</a>
+
+  <!-- One-shot scan sweep on first paint. Decorative; respects reduced-motion. -->
+  <div class="load-sweep" aria-hidden="true"></div>
+
+  <!-- Scroll progress bar. Width updated by tiny inline script below. -->
+  <div class="scroll-progress" id="scroll-progress" aria-hidden="true"></div>
+
+  <!--
+    No-script fallback. Astro emits zero JS by default; this only fires
+    if a user-agent disables JS AND we've shipped JS to it. Currently the
+    site works fully without JS, this is informational only.
+  -->
+  <noscript>
+    <style>
+      .scroll-progress, .load-sweep { display: none !important; }
+    </style>
+  </noscript><main id="main" class="page">
+    <slot />
+  </main>
+
+  <!-- Sitewide keybindings + cheat sheet (?-toggle). Single-instance component,
+       emits its own dialog + script. No-op until first keydown. -->
+  <KeyboardShortcuts />
+
+  {!bare && (
+    <footer class="page small" style="border-top:1px solid var(--copper-hairline); padding-top:24px; margin-top:48px;">
+      <div style="display:flex; flex-direction:column; gap:14px;">
+        <p style="margin:0; font-family:var(--font-serif); font-style:italic; font-size:12px; color:var(--color-ash-300); display:flex; align-items:center; gap:10px;">
+          <Stamp size={28} glow="soft" ariaLabel="Winters Code" />
+          <span>I build it. I own it. I ship it. I maintain it.</span>
+        </p>
+        <nav aria-label="More" style="display:flex; gap:18px; flex-wrap:wrap; font-size:12px;">
+          <a href="/wall" style="color:var(--color-copper-bright); text-decoration:none;">The Wall</a>
+          <a href="/audit" style="color:var(--color-copper-bright); text-decoration:none;">Free site audit</a>
+          <a href="/changelog" style="color:var(--color-copper-bright); text-decoration:none;">Changelog</a>
+        </nav>
+        <div style="display:flex; flex-wrap:wrap; gap:20px; align-items:center; justify-content:space-between;">
+          <div>
+            &copy; {new Date().getFullYear()} Winters Code · Bandon, Oregon
+          </div>
+          <nav aria-label="Legal" style="display:flex; gap:16px; flex-wrap:wrap;">
+            <a href="/privacy" style="color:var(--color-ash-400);">Privacy</a>
+            <a href="/terms" style="color:var(--color-ash-400);">Terms</a>
+            <a href="https://github.com/Preston2012" rel="noopener" target="_blank" style="color:var(--color-ash-400);">GitHub</a>
+          </nav>
+        </div>
+        <p style="margin:8px 0 0; font-size:11px; color:var(--color-ash-500); line-height:1.5; max-width:640px;">
+          All product names, logos, and brands are property of their
+          respective owners. References here are nominative and do not imply
+          endorsement, affiliation, or sponsorship by any third party.
+        </p>
+      </div>
+    </footer>
+  )}
+
+  <!-- Inline scroll-progress updater. ~250 bytes, no framework cost. -->
+  <script is:inline>
+    (function () {
+      const bar = document.getElementById('scroll-progress');
+      if (!bar) return;
+      let ticking = false;
+      function update() {
+        const h = document.documentElement;
+        const scrolled = h.scrollTop / Math.max(1, h.scrollHeight - h.clientHeight);
+        bar.style.width = Math.min(100, Math.max(0, scrolled * 100)) + '%';
+        ticking = false;
+      }
+      function onScroll() {
+        if (!ticking) {
+          window.requestAnimationFrame(update);
+          ticking = true;
+        }
+      }
+      document.addEventListener('scroll', onScroll, { passive: true });
+      update();
+    })();
+  </script>
+</body>
+</html>

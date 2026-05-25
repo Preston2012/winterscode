@@ -1,0 +1,228 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const lastUpdated = '2026-05-13';
+---
+
+<BaseLayout
+  title="Privacy Policy · Winters Code"
+  description="What I collect, why, and how I keep it safe. Plain English. No tracking pixels. No data sales. No surprises."
+  canonicalPath="/privacy"
+>
+  <article class="legal-page">
+    <div class="legal-eyebrow mono">LEGAL · PRIVACY POLICY</div>
+    <h1 class="h1 legal-h1">Privacy, in plain English.</h1>
+    <p class="legal-tagline">
+      I built this site because I was tired of small businesses getting fleeced by software
+      they didn't ask for. So I'm not going to do that to you either.
+    </p>
+    <p class="small legal-updated">Last updated: {lastUpdated}</p>
+
+    <div class="legal-body">
+      <p class="legal-lead">
+        Short version: I collect what you give me, I use it to do the work you hired me for,
+        I don't sell it, I don't track you across the web, and I delete it if you ask.
+      </p>
+
+      <h2 class="h2 legal-h2">What I collect</h2>
+      <p>
+        <strong>When you contact me:</strong> name, email, phone if you share it, business name,
+        and whatever project details you write in the brief. That's it. No hidden fields.
+      </p>
+      <p>
+        <strong>When you visit the site:</strong> Cloudflare (my host) logs standard server stuff
+        like IP address, browser, and referrer. No Google Analytics. No Facebook Pixel. No
+        third-party advertising trackers. No cross-site cookies. The site is built to be
+        watchable without watching you.
+      </p>
+
+      <h2 class="h2 legal-h2">What I do with it</h2>
+      <p>
+        I answer your message, scope your project, prepare a quote, deliver the work, and
+        keep in touch on active builds. That's the whole list. I don't sell, rent, share,
+        or trade client information with marketing companies, data brokers, or anyone else.
+      </p>
+
+      <h2 class="h2 legal-h2">Where it lives</h2>
+      <p>
+        Client emails sit in standard business inboxes. Project code sits in private GitHub
+        repos I control. Anything I build for you that handles your customers' data uses
+        encryption in transit (HTTPS), row-level security on the database, and patched
+        dependencies. I treat your data like I'd want mine treated.
+      </p>
+
+      <h2 class="h2 legal-h2">Third parties I rely on</h2>
+      <p>
+        Cloudflare hosts the site and DNS. Stripe processes payments (cards never touch my
+        servers). Supabase or similar managed backends run client apps when contracted.
+        Each one has its own privacy policy. They're the giants doing the heavy lifting.
+        Same names a Fortune 500 would use, same protections.
+      </p>
+
+      <h2 class="h2 legal-h2">Your rights</h2>
+      <p>
+        Email <a href="mailto:preston@winterscode.com">preston@winterscode.com</a> and ask
+        for any of these:
+      </p>
+      <ul class="legal-list">
+        <li>A copy of what I have on you</li>
+        <li>Corrections to anything that's wrong</li>
+        <li>Full deletion, no questions asked</li>
+        <li>To opt out of any future contact from me</li>
+      </ul>
+      <p>I'll honor it within a week. Usually same-day.</p>
+
+      <h2 class="h2 legal-h2">Children</h2>
+      <p>
+        This is a business-to-business service. Nothing here is aimed at children under 13,
+        and I don't knowingly collect information from minors.
+      </p>
+
+      <h2 class="h2 legal-h2">When this changes</h2>
+      <p>
+        If I update this policy in any meaningful way, the date at the top moves and the
+        change shows up in the site's public git history (<a href="/changelog">/changelog</a>).
+        Everything is on the record.
+      </p>
+
+      <h2 class="h2 legal-h2">Questions</h2>
+      <p>
+        I'm a person. <a href="mailto:preston@winterscode.com">preston@winterscode.com</a>
+        gets me directly. Or text <a href="sms:5415510731">541-551-0731</a>. Or just stop me
+        on the street in Bandon.
+      </p>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .legal-page {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 48px 4px 64px;
+  }
+  @media (min-width: 768px) {
+    .legal-page {
+      padding: 64px 4px 80px;
+    }
+  }
+  @media (min-width: 1024px) {
+    .legal-page {
+      padding: 80px 0 96px;
+    }
+  }
+
+  .legal-eyebrow {
+    color: var(--color-copper);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    font-weight: 600;
+    margin-bottom: 16px;
+  }
+  @media (min-width: 768px) {
+    .legal-eyebrow { font-size: 12px; }
+  }
+
+  .legal-h1 {
+    margin: 0 0 16px;
+  }
+
+  .legal-tagline {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 17px;
+    color: var(--color-ash-300);
+    line-height: 1.55;
+    margin: 0 0 16px;
+    max-width: 600px;
+  }
+  @media (min-width: 1024px) {
+    .legal-tagline { font-size: 19px; }
+  }
+
+  .legal-updated {
+    margin-top: 8px;
+    color: var(--color-ash-500);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+  }
+
+  .legal-body {
+    margin-top: 36px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    color: var(--color-ash-300);
+    font-size: 15px;
+    line-height: 1.65;
+  }
+  @media (min-width: 1024px) {
+    .legal-body { font-size: 16px; }
+  }
+  .legal-body p {
+    margin: 0;
+  }
+
+  .legal-lead {
+    padding: 16px 18px;
+    background: rgba(77, 216, 168, 0.05);
+    border: 1px solid rgba(77, 216, 168, 0.25);
+    border-radius: var(--radius-card);
+    color: var(--color-ash-100);
+    font-style: italic;
+    font-family: var(--font-serif);
+    font-size: 16px !important;
+    line-height: 1.6 !important;
+  }
+  @media (min-width: 1024px) {
+    .legal-lead {
+      font-size: 18px !important;
+      padding: 20px 24px;
+    }
+  }
+
+  .legal-h2 {
+    margin-top: 24px;
+    margin-bottom: 4px;
+  }
+  @media (min-width: 768px) {
+    .legal-h2 { margin-top: 28px; }
+  }
+
+  .legal-body strong {
+    color: var(--color-ash-100);
+    font-weight: 600;
+  }
+  .legal-body a {
+    color: var(--color-copper-bright);
+    text-decoration: underline;
+    text-decoration-color: var(--copper-hairline);
+    text-underline-offset: 3px;
+  }
+  .legal-body a:hover {
+    color: var(--color-wc-green);
+    text-decoration-color: var(--color-wc-green-dim);
+  }
+
+  .legal-list {
+    margin: 4px 0 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .legal-list li {
+    padding-left: 18px;
+    position: relative;
+  }
+  .legal-list li::before {
+    content: '·';
+    position: absolute;
+    left: 4px;
+    top: 0;
+    color: var(--color-copper);
+    font-weight: 700;
+  }
+</style>

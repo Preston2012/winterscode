@@ -1,0 +1,375 @@
+---
+/**
+ * /changelog : auto-generated from git log at build time.
+ *
+ * Runs `git log` in Astro frontmatter (build-time only, never client-side).
+ * Filters out non-substantive commits (wip:, lint:, fmt:, chore:, typo:,
+ * style:, ci:, deps:). Keeps everything else. feat, fix, S5/S6/S7+ work,
+ * doc updates, design lock-ins, infra changes. The page rebuilds whenever
+ * we push, so the changelog is always current with main.
+ *
+ * Audience: technical evaluators (A3 per design doc). Most visitors never
+ * land here. The few who do are looking for craft signal. recent activity,
+ * meaningful commit messages, real velocity. The design stays sparse and
+ * the data does the work.
+ *
+ * Note: in the Cloudflare Pages build environment, `git log` works because
+ * Pages clones the repo. If we ever switch to a build cache that strips
+ * .git, we'd need to dump the log to a JSON file in a pre-build step instead.
+ */
+import { execSync } from 'node:child_process';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/layout/Header.astro';
+import MobileMenu from '../components/layout/MobileMenu.astro';
+import PageHero from '../components/sections/PageHero.astro';
+import Divider from '../components/ui/Divider.astro';
+import Contact from '../components/sections/Contact.astro';
+
+interface Commit {
+  sha: string;
+  date: string;        // YYYY-MM-DD
+  type: string;        // first colon-prefixed tag, e.g. "fix", "S7", "docs"
+  message: string;     // the rest of the subject line
+  isMilestone: boolean; // S\d+ commits get a copper accent
+}
+
+// Filter rules: skip prefixes that are noise to outside readers.
+const SKIP_PREFIXES = ['wip:', 'lint:', 'fmt:', 'chore:', 'typo:', 'style:', 'ci:', 'deps:', 'merge', 'Merge'];
+
+let commits: Commit[] = [];
+let buildError: string | null = null;
+
+try {
+  // Pull last 500 commits. plenty of headroom. format is sha|date|subject
+  const raw = execSync(
+    "git log --pretty=format:'%h|%ad|%s' --date=short -n 500",
+    { cwd: process.cwd(), encoding: 'utf8' }
+  );
+
+  commits = raw
+    .split('\n')
+    .filter(Boolean)
+    .map((line: string): Commit | null => {
+      const parts = line.split('|');
+      if (parts.length < 3) return null;
+      const [sha, date, ...rest] = parts;
+      // W-1 compliance: strip em/en-dashes from historical commit messages.
+      // Older commits (pre-2026-05-14 lock) contain em-dashes that violate W-1.
+      // Render-time strip keeps git history honest, public display W-1 clean.
+      const message = rest.join('|').trim().replace(/\s*[\u2014\u2013]\s*/g, '. ');
+      if (!message) return null;
+      // Skip noise prefixes
+      const lower = message.toLowerCase();
+      for (const skip of SKIP_PREFIXES) {
+        if (lower.startsWith(skip.toLowerCase())) return null;
+      }
+      // Detect the type prefix (everything before first ':')
+      const colonIdx = message.indexOf(':');
+      let type = '';
+      let rest_msg = message;
+      if (colonIdx > 0 && colonIdx < 24) {
+        type = message.slice(0, colonIdx).trim();
+        rest_msg = message.slice(colonIdx + 1).trim();
+      }
+      // Milestone? S5, S6, S7, S7+ etc. phase commits get visual emphasis
+      const isMilestone = /^S\d+\+?$/.test(type) || rest_msg.match(/^S\d+\b/) !== null;
+      return { sha, date, type, message: rest_msg, isMilestone };
+    })
+    .filter((c): c is Commit => c !== null);
+} catch (err) {
+  buildError = err instanceof Error ? err.message : 'git log failed';
+  commits = [];
+}
+
+// Group by date for visual rhythm
+const byDate = new Map<string, Commit[]>();
+for (const c of commits) {
+  if (!byDate.has(c.date)) byDate.set(c.date, []);
+  byDate.get(c.date)!.push(c);
+}
+const dateGroups = Array.from(byDate.entries());
+
+const totalCommits = commits.length;
+const milestoneCount = commits.filter(c => c.isMilestone).length;
+const firstDate = commits[commits.length - 1]?.date || '';
+const lastDate = commits[0]?.date || '';
+---
+
+<BaseLayout
+  title="Changelog · What I've shipped · Winters Code"
+  description="Auto-generated from git log. Every public commit to the Winters Code site, in chronological order."
+>
+  <Header />
+  <MobileMenu />
+
+  <PageHero
+    eyebrow="Changelog · Git log"
+    h1="What I've shipped."
+    sub={`${totalCommits} substantive commits since ${firstDate}. Auto-built from git, newest first.`}
+    sub2="No marketing wrap. The repo is the source of truth."
+    showStamp={false}
+  />
+
+  <Divider label="01" />
+
+  {buildError && (
+    <section class="cl-error">
+      <p>Changelog generator hit an error: <code>{buildError}</code>. The repo is at <a href="https://github.com/Preston2012/winterscode" target="_blank" rel="noopener">github.com/Preston2012/winterscode</a>.</p>
+    </section>
+  )}
+
+  {!buildError && commits.length === 0 && (
+    <section class="cl-error">
+      <p>No commits found. Either git log is empty or filtered everything out.</p>
+    </section>
+  )}
+
+  {!buildError && commits.length > 0 && (
+    <section class="cl-feed" aria-labelledby="cl-feed-h">
+      <h2 id="cl-feed-h" class="visually-hidden">Commits</h2>
+      <ul class="cl-list">
+        {dateGroups.map(([date, dateCommits]) => (
+          <li class="cl-day">
+            <time class="cl-date" datetime={date}>{date}</time>
+            <ul class="cl-day-list">
+              {dateCommits.map((c) => (
+                <li class={`cl-commit ${c.isMilestone ? 'cl-commit-milestone' : ''}`}>
+                  <span class="cl-sha" aria-label="Short commit hash">{c.sha}</span>
+                  {c.type && <span class="cl-type">{c.type}</span>}
+                  <span class="cl-msg">{c.message}</span>
+                </li>
+              ))}
+            </ul>
+          </li>
+        ))}
+      </ul>
+
+      <p class="cl-foot">
+        <span class="cl-foot-num">{totalCommits}</span> commits ·
+        <span class="cl-foot-num">{milestoneCount}</span> milestones ·
+        From <span class="cl-foot-num">{firstDate}</span> to <span class="cl-foot-num">{lastDate}</span>
+        <br />
+        Full history: <a href="https://github.com/Preston2012/winterscode" target="_blank" rel="noopener">github.com/Preston2012/winterscode</a>
+      </p>
+    </section>
+  )}
+
+  <Divider label="02" />
+
+  <Contact sectionNumber="02" />
+</BaseLayout>
+
+<style>
+  .cl-feed {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 12px 4px 24px;
+  }
+
+  .cl-error {
+    max-width: 720px;
+    margin: 24px auto;
+    padding: 16px 18px;
+    background: var(--color-bg-card);
+    border: 1px solid var(--copper-hairline);
+    border-radius: var(--radius-card);
+    font-family: var(--font-sans);
+    font-size: 14px;
+    color: var(--color-ash-300);
+    line-height: 1.55;
+  }
+  .cl-error code {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--color-amber);
+    background: rgba(240, 184, 120, 0.08);
+    padding: 1px 6px;
+    border-radius: 3px;
+  }
+  .cl-error a {
+    color: var(--color-copper-bright);
+    text-decoration: underline;
+    text-decoration-color: var(--copper-hairline);
+    text-underline-offset: 3px;
+  }
+
+  .cl-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .cl-day {
+    margin-bottom: 28px;
+    padding-bottom: 0;
+    border-left: 1px solid var(--copper-hairline);
+    padding-left: 14px;
+    position: relative;
+  }
+  @media (min-width: 768px) {
+    .cl-day {
+      padding-left: 18px;
+      margin-bottom: 36px;
+    }
+  }
+  .cl-day::before {
+    content: '';
+    position: absolute;
+    left: -4px;
+    top: 6px;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--color-copper);
+    box-shadow: 0 0 0 2px var(--color-bg-deep);
+  }
+
+  .cl-date {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    color: var(--color-copper);
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  @media (min-width: 768px) {
+    .cl-date {
+      font-size: 12px;
+      margin-bottom: 12px;
+    }
+  }
+
+  .cl-day-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  @media (min-width: 768px) {
+    .cl-day-list {
+      gap: 10px;
+    }
+  }
+
+  .cl-commit {
+    display: grid;
+    grid-template-columns: 56px auto 1fr;
+    gap: 10px;
+    align-items: baseline;
+    font-family: var(--font-sans);
+    font-size: 13px;
+    line-height: 1.5;
+    padding: 6px 0;
+    border-bottom: 1px dashed transparent;
+    transition: border-color 0.2s;
+  }
+  .cl-commit:hover {
+    border-bottom-color: var(--copper-hairline);
+  }
+  @media (min-width: 768px) {
+    .cl-commit {
+      grid-template-columns: 64px auto 1fr;
+      gap: 14px;
+      font-size: 14px;
+    }
+  }
+
+  .cl-sha {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--color-ash-500);
+    letter-spacing: 0.02em;
+    font-weight: 500;
+    background: var(--color-bg-card);
+    padding: 1px 6px;
+    border-radius: 3px;
+    border: 1px solid var(--copper-hairline);
+    text-align: center;
+    white-space: nowrap;
+  }
+  @media (min-width: 768px) {
+    .cl-sha {
+      font-size: 12px;
+    }
+  }
+
+  .cl-type {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--color-ash-400);
+    text-transform: lowercase;
+    letter-spacing: 0.04em;
+    font-weight: 600;
+    white-space: nowrap;
+    padding-right: 4px;
+  }
+  @media (min-width: 768px) {
+    .cl-type {
+      font-size: 11px;
+    }
+  }
+
+  .cl-msg {
+    color: var(--color-ash-200, var(--color-ash-100));
+    word-break: break-word;
+    overflow-wrap: anywhere;
+  }
+
+  .cl-commit-milestone .cl-sha {
+    color: var(--color-copper-bright);
+    border-color: var(--color-copper);
+    background: rgba(216, 144, 90, 0.08);
+  }
+  .cl-commit-milestone .cl-type {
+    color: var(--color-copper-bright);
+  }
+  .cl-commit-milestone .cl-msg {
+    color: var(--color-ash-100);
+    font-weight: 500;
+  }
+
+  .cl-foot {
+    margin: 36px 0 0;
+    padding: 18px 0 0;
+    border-top: 1px solid var(--copper-hairline);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--color-ash-500);
+    line-height: 1.7;
+    letter-spacing: 0.04em;
+  }
+  @media (min-width: 768px) {
+    .cl-foot {
+      font-size: 12px;
+    }
+  }
+  .cl-foot-num {
+    color: var(--color-copper-bright);
+    font-weight: 600;
+  }
+  .cl-foot a {
+    color: var(--color-wc-green);
+    text-decoration: underline;
+    text-decoration-color: rgba(77, 216, 168, 0.4);
+    text-underline-offset: 3px;
+  }
+  .cl-foot a:hover {
+    color: var(--color-wc-green-bright);
+  }
+
+  .visually-hidden {
+    position: absolute !important;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+</style>

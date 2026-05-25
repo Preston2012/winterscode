@@ -1,0 +1,389 @@
+---
+/**
+ * Header / top mark, sitewide chrome above every page.
+ *
+ * Three responsive modes:
+ *   mobile  (<768px)  : brand left, hamburger right
+ *   tablet  (768-1023): same as mobile, slightly larger
+ *   desktop (≥1024px) : brand left, nav center, contact cluster right
+ *
+ * The mobile slide-out panel lives in <MobileMenu />; this file emits
+ * just the bar and the trigger button.
+ */
+
+export interface Props {
+  /** When true, nav items use scroll-to-section anchors (homepage).
+   *  When false, they link to /#section (other pages back to home). */
+  homepage?: boolean;
+}
+
+const { homepage = false } = Astro.props;
+
+// Primary nav points to the 5 main pages (locked S6+ doctrine).
+// Order matches the homepage emotional arc.
+const navItems = [
+  { href: '/work',     label: 'Work',     num: '01' },
+  { href: '/services', label: 'Services', num: '02' },
+  { href: '/about',    label: 'About',    num: '03' },
+  { href: '/contact',  label: 'Contact',  num: '04' },
+];
+---
+
+<header class="topmark" role="banner">
+  <a
+    href={homepage ? '#hero' : '/'}
+    class="topmark-brand"
+  >
+    <span class="name">Winters Code</span>
+    <span class="est mono">EST. 2026</span>
+    <span class="creed" aria-hidden="true">Help is just a text away.</span>
+  </a>
+
+  <!-- Workshop status pill. live deploy timestamp, fetched client-side post-FCP.
+       Mobile shows compact "● {N}{unit}" form. Desktop shows full label. -->
+  <div
+    class="workshop-pill"
+    data-workshop-pill
+    aria-live="polite"
+    aria-label="Last deploy timestamp"
+    title="Last deploy to a Winters Code repo. Refreshes when this tab is focused."
+  >
+    <span class="workshop-pill-dot" aria-hidden="true"></span>
+    <span class="workshop-pill-label">
+      <span class="workshop-pill-prefix">LAST DEPLOY ·</span>
+      <span class="workshop-pill-value" data-workshop-pill-value>…</span>
+    </span>
+  </div>
+
+  <!-- Desktop horizontal nav, hidden on mobile/tablet -->
+  <nav class="topnav-links" aria-label="Primary">
+    {navItems.map(({ href, label }) => (
+      <a href={href}>{label}</a>
+    ))}
+  </nav>
+
+  <!-- Desktop contact cluster, hidden on mobile/tablet -->
+  <div class="topnav-contact">
+    <a href="https://cal.com/preston-winters" target="_blank" rel="noopener" class="book">
+      Book consult
+    </a>
+    <a href="tel:5415510731">Call</a>
+    <a
+      href="mailto:preston@winterscode.com?subject=Winters%20Code%20consult%20request"
+      class="primary"
+    >
+      Free consult →
+    </a>
+  </div>
+
+  <!-- Mobile/tablet menu button, hidden on desktop. Wired by inline script in MobileMenu. -->
+  <button
+    type="button"
+    class="topmark-menu-btn"
+    aria-label="Open menu"
+    aria-controls="mobile-menu"
+    aria-expanded="false"
+    data-menu-open
+  >
+    <span class="bars" aria-hidden="true">
+      <span></span><span></span><span></span>
+    </span>
+    <span>Menu</span>
+  </button>
+</header>
+
+<style>
+  /* ─── Top mark ─── */
+  .topmark {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 0 16px;
+    border-bottom: 1px solid var(--copper-hairline);
+    position: relative;
+    gap: 16px;
+  }
+  .topmark::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -2px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--copper-dim) 30%, var(--copper-dim) 70%, transparent);
+  }
+
+  /* Brand */
+  .topmark-brand {
+    display: grid;
+    grid-template-columns: auto auto;
+    grid-template-rows: auto auto;
+    column-gap: 10px;
+    align-items: baseline;
+    cursor: pointer;
+    transition: opacity 200ms;
+    flex-shrink: 0;
+  }
+  .topmark-brand:hover { opacity: 0.85; }
+  .topmark-brand .name {
+    font-family: var(--font-serif);
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--color-ash-100);
+  }
+  .topmark-brand .est {
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    color: var(--color-copper);
+    text-transform: uppercase;
+  }
+  @media (min-width: 768px) {
+    .topmark-brand .name { font-size: 22px; }
+    .topmark-brand .est { font-size: 10px; }
+  }
+  /* Sitewide creed under brand wordmark, desktop only (saves
+     vertical pixels for menu trigger on mobile per spec line 381). */
+  .topmark-brand .creed {
+    display: none;
+    grid-column: 1 / -1;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 11px;
+    color: var(--color-ash-400);
+    margin-top: 1px;
+    letter-spacing: 0.01em;
+  }
+  @media (min-width: 1024px) {
+    .topmark-brand .creed { display: inline; font-size: 12px; }
+  }
+
+  /* Desktop horizontal nav */
+  .topnav-links { display: none; }
+  @media (min-width: 1024px) {
+    .topnav-links {
+      display: flex;
+      gap: 24px;
+      align-items: center;
+      flex: 1;
+      justify-content: center;
+    }
+    .topnav-links a {
+      font-family: var(--font-sans);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--color-ash-300);
+      cursor: pointer;
+      transition: color 200ms;
+      position: relative;
+      padding: 8px 0;
+    }
+    .topnav-links a:hover { color: var(--color-wc-green); }
+    .topnav-links a::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: var(--color-wc-green);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 200ms;
+    }
+    .topnav-links a:hover::after { transform: scaleX(1); }
+  }
+
+  /* Desktop contact cluster */
+  .topnav-contact { display: none; }
+  @media (min-width: 1024px) {
+    .topnav-contact {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    .topnav-contact a {
+      padding: 8px 14px;
+      border: 1px solid var(--copper-hairline);
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--color-ash-300);
+      transition: all 200ms;
+      font-family: var(--font-sans);
+    }
+    .topnav-contact a.primary {
+      background: var(--color-wc-green);
+      color: var(--color-bg-deep);
+      border-color: var(--color-wc-green);
+      font-weight: 600;
+    }
+    .topnav-contact a:hover {
+      border-color: var(--color-copper);
+      color: var(--color-copper-bright);
+    }
+    .topnav-contact a.primary:hover {
+      background: var(--color-wc-green-bright);
+      color: var(--color-bg-deep);
+      border-color: var(--color-wc-green-bright);
+    }
+  }
+
+  /* Mobile menu button */
+  .topmark-menu-btn {
+    font-family: var(--font-sans);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--color-ash-400);
+    cursor: pointer;
+    background: none;
+    border: 1px solid var(--copper-hairline);
+    padding: 8px 12px;
+    border-radius: 6px;
+    transition: all 200ms;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+  .topmark-menu-btn:hover {
+    border-color: var(--color-copper);
+    color: var(--color-copper-bright);
+  }
+  .topmark-menu-btn .bars {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  .topmark-menu-btn .bars span {
+    width: 12px;
+    height: 1.5px;
+    background: currentColor;
+  }
+  @media (min-width: 1024px) {
+    .topmark-menu-btn { display: none; }
+  }
+
+  /* ─── Workshop status pill ─── */
+  /* Live deploy timestamp fetched after FCP. Renders as a tiny copper-
+     bordered chip near the brand. Mobile shows dot + minutes only; desktop
+     adds the "LAST DEPLOY ·" prefix. Doesn't block the brand cluster from
+     collapsing on small screens. the pill itself just shrinks. */
+  .workshop-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 8px;
+    border: 1px solid var(--copper-hairline);
+    border-radius: 999px;
+    background: var(--color-bg-deep);
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.08em;
+    color: var(--color-ash-400);
+    text-transform: uppercase;
+    flex-shrink: 0;
+    transition: border-color 200ms, color 200ms, opacity 300ms;
+    opacity: 0;
+    /* Hide entirely until the JS finishes its first fetch (no placeholder
+       em-dash flash). Class flipped by inline script below. */
+  }
+  .workshop-pill.is-ready { opacity: 1; }
+  .workshop-pill:hover {
+    border-color: var(--color-copper);
+    color: var(--color-ash-100);
+  }
+  .workshop-pill-dot {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color-wc-green);
+    box-shadow: 0 0 6px rgba(77, 216, 168, 0.6);
+    animation: workshop-pulse 2.4s ease-in-out infinite;
+    flex-shrink: 0;
+  }
+  @keyframes workshop-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .workshop-pill-dot { animation: none; }
+  }
+  .workshop-pill-prefix {
+    display: none;
+  }
+  /* Tablet+ shows the prefix; mobile is dot + value only. */
+  @media (min-width: 768px) {
+    .workshop-pill {
+      font-size: 10px;
+      padding: 5px 10px;
+    }
+    .workshop-pill-prefix { display: inline; margin-right: 2px; }
+  }
+  @media (min-width: 1024px) {
+    .workshop-pill { font-size: 11px; }
+  }
+  .workshop-pill-value {
+    color: var(--color-copper-bright);
+    font-weight: 600;
+  }
+</style>
+
+
+<script is:inline>
+  // Workshop status pill. fetches /api/workshop after FCP, fills in the
+  // "LAST DEPLOY · {N}m ago" timestamp. Uses requestIdleCallback when
+  // available so we don't compete with critical-path work; falls back to
+  // setTimeout for Safari. Refreshes on tab focus so the pill stays
+  // accurate without polling.
+  (function () {
+    const pill = document.querySelector('[data-workshop-pill]');
+    if (!pill) return;
+    const valueEl = pill.querySelector('[data-workshop-pill-value]');
+    if (!valueEl) return;
+
+    let aborted = false;
+
+    async function refresh() {
+      if (aborted) return;
+      try {
+        const r = await fetch('/api/workshop', { cache: 'no-store' });
+        if (!r.ok) return;
+        const data = await r.json();
+        const last = data && data.deploys && data.deploys.last;
+        if (typeof last !== 'string' || !last.length) return;
+        // Trim the trailing " ago" to keep the pill tight; API returns
+        // strings like "3m ago" / "2h ago" / "5d ago".
+        const tight = last.replace(/\s*ago\s*$/i, '');
+        valueEl.textContent = tight + ' ago';
+        pill.classList.add('is-ready');
+      } catch (_) {
+        // Network blip. silently keep the previous value, try again on focus.
+      }
+    }
+
+    // Schedule first fetch off the critical path.
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(refresh, { timeout: 1200 });
+    } else {
+      setTimeout(refresh, 600);
+    }
+
+    // Refresh when tab regains focus (common pattern: user comes back, wants
+    // the pill to be current). Throttled to once every 30s.
+    let lastFocusRefresh = 0;
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState !== 'visible') return;
+      const now = Date.now();
+      if (now - lastFocusRefresh < 30_000) return;
+      lastFocusRefresh = now;
+      refresh();
+    });
+
+    // Clean up if the page unloads mid-fetch (BFCache-friendly).
+    window.addEventListener('pagehide', () => { aborted = true; });
+  })();
+</script>

@@ -1,0 +1,684 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/layout/Header.astro';
+import MobileMenu from '../components/layout/MobileMenu.astro';
+import PageHero from '../components/sections/PageHero.astro';
+import Divider from '../components/ui/Divider.astro';
+import Contact from '../components/sections/Contact.astro';
+---
+
+<BaseLayout
+  title="Contact · Winters Code"
+  description="Free consult. No pitch deck. Bandon-based, serving Coos and Curry counties. Send a brief, book on Cal, call, or text."
+>
+  <Header />
+  <MobileMenu />
+
+  <PageHero
+    eyebrow="Contact · Get In Touch"
+    h1="Let's build something."
+    sub="Four ways to reach me below. Book a consult, call, text, or send a brief. Every one of them goes straight to me. No assistants, no triage layer, no contact-form black hole."
+    sub2="I read every brief. Most replies go out within a few hours during business days."
+    showStamp={false}
+  />
+
+  <Divider label="01" />
+
+  <Contact sectionNumber="01" centered={true} suppressHeader={true} />
+
+  <Divider label="02" />
+
+  <!-- ─────────── Section 02 · The brief form ─────────── -->
+  <section class="ct-form-wrap" aria-labelledby="ct-form-h">
+    <header class="ct-form-head">
+      <h2 class="ct-form-h" id="ct-form-h">Send a brief.</h2>
+      <p class="ct-form-sub">
+        The more you tell me up front, the sharper the consult. Skip
+        anything that doesn't fit.
+      </p>
+    </header>
+
+    <form class="ct-form" id="ct-form" data-ct-form novalidate>
+      <!-- Honeypot field, hidden from humans, bots fill it -->
+      <div class="ct-honey" aria-hidden="true">
+        <label>Don't fill this in
+          <input type="text" name="company_extra" tabindex="-1" autocomplete="off" />
+        </label>
+      </div>
+
+      <div class="ct-form-grid">
+        <div class="ct-field">
+          <label class="ct-label" for="ct-name">Name <span class="ct-req">*</span></label>
+          <input type="text" id="ct-name" name="name" required maxlength="200" autocomplete="name" />
+        </div>
+
+        <div class="ct-field">
+          <label class="ct-label" for="ct-email">Email <span class="ct-req">*</span></label>
+          <input type="email" id="ct-email" name="email" required maxlength="200" autocomplete="email" inputmode="email" />
+        </div>
+
+        <div class="ct-field">
+          <label class="ct-label" for="ct-phone">Phone <span class="ct-opt">(optional)</span></label>
+          <input type="tel" id="ct-phone" name="phone" maxlength="40" autocomplete="tel" inputmode="tel" />
+        </div>
+
+        <div class="ct-field">
+          <label class="ct-label" for="ct-business">Business name</label>
+          <input type="text" id="ct-business" name="business" maxlength="200" autocomplete="organization" />
+        </div>
+
+        <div class="ct-field">
+          <label class="ct-label" for="ct-city">What city / town?</label>
+          <input type="text" id="ct-city" name="city" maxlength="120" autocomplete="address-level2" placeholder="e.g. Bandon" />
+        </div>
+
+        <div class="ct-field">
+          <label class="ct-label" for="ct-industry">Industry</label>
+          <select id="ct-industry" name="industry">
+            <option value="">Pick one</option>
+            <option>Contractor / construction</option>
+            <option>Restaurant / food</option>
+            <option>Lodging / vacation rental</option>
+            <option>Fishing charter / marina</option>
+            <option>Salon / personal services</option>
+            <option>Real estate / property mgmt</option>
+            <option>Healthcare / wellness</option>
+            <option>Retail / e-commerce</option>
+            <option>Tourism / outdoor guides</option>
+            <option>Brewery / winery / distillery</option>
+            <option>Professional services (legal, accounting, etc.)</option>
+            <option>Other</option>
+          </select>
+        </div>
+
+        <div class="ct-field">
+          <label class="ct-label" for="ct-project">Project type</label>
+          <select id="ct-project" name="projectType">
+            <option value="">Pick one</option>
+            <option>Website (new build)</option>
+            <option>Website (redo of existing)</option>
+            <option>Mobile app</option>
+            <option>Integration / automation</option>
+            <option>Site audit</option>
+            <option>Maintenance plan</option>
+            <option>Not sure yet</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="ct-field ct-field-full">
+        <label class="ct-label" for="ct-notes">What's broken? Or what are you trying to build?</label>
+        <textarea
+          id="ct-notes"
+          name="notes"
+          rows="5"
+          maxlength="4000"
+          placeholder="No wrong answer. I read every one."
+        ></textarea>
+      </div>
+
+      <div class="ct-actions">
+        <button type="submit" class="ct-submit" data-ct-submit>Send brief →</button>
+        <span class="ct-actions-note" data-ct-note></span>
+      </div>
+
+      <p class="ct-form-trust">
+        Goes straight to my inbox at preston@winterscode.com.
+        No mailing list, no third parties, no auto-replies.
+      </p>
+    </form>
+
+    <div class="ct-thanks" data-ct-thanks hidden>
+      <h3 class="ct-thanks-h">Got it. Thanks for the brief.</h3>
+      <p class="ct-thanks-body">
+        I read every one. You'll hear back from me at the email you
+        provided within a few hours during business days. If it's
+        urgent, text me at <a href="sms:5415510731">541-551-0731</a>.
+      </p>
+    </div>
+  </section>
+
+  <Divider label="03" />
+
+  <!-- ─────────── Section 03 · Consult policy (geo-aware) ─────────── -->
+  <section class="ct-policy" aria-labelledby="ct-policy-h">
+    <header class="ct-block-head">
+      <h2 class="ct-block-h" id="ct-policy-h">Consult policy.</h2>
+      <p class="ct-block-sub">Where I show up, what it costs, why it works that way.</p>
+    </header>
+
+    <ul class="ct-policy-list" data-ct-policy>
+      <li class="ct-policy-row" data-tier="bandon">
+        <div class="ct-policy-area">
+          <span class="ct-policy-num">01</span>
+          <span class="ct-policy-name">Bandon</span>
+        </div>
+        <div class="ct-policy-rule">
+          Free in-person or video consult. I'll come to you, or we can
+          meet at Warehouse Coffee, Bandon Coffee, Broken Anchor, or
+          Bandon Brewing.
+        </div>
+      </li>
+      <li class="ct-policy-row" data-tier="coos-curry">
+        <div class="ct-policy-area">
+          <span class="ct-policy-num">02</span>
+          <span class="ct-policy-name">Coos &amp; Curry counties</span>
+        </div>
+        <div class="ct-policy-rule">
+          Free 30-min video consult.
+        </div>
+      </li>
+      <li class="ct-policy-row" data-tier="in-person-90">
+        <div class="ct-policy-area">
+          <span class="ct-policy-num">03</span>
+          <span class="ct-policy-name">In-person, up to 1.5 hours away</span>
+        </div>
+        <div class="ct-policy-rule">
+          $250 travel deposit, credits to the project on signing.
+          Covers most of Coos and Curry counties plus Roseburg, Brookings,
+          and the south coast.
+        </div>
+      </li>
+      <li class="ct-policy-row" data-tier="in-person-150">
+        <div class="ct-policy-area">
+          <span class="ct-policy-num">04</span>
+          <span class="ct-policy-name">In-person, up to 2.5 hours away</span>
+        </div>
+        <div class="ct-policy-rule">
+          $400 travel deposit, credits to the project on signing.
+          Covers Eugene, the central Oregon coast, and parts of
+          northern California.
+        </div>
+      </li>
+      <li class="ct-policy-row" data-tier="outside">
+        <div class="ct-policy-area">
+          <span class="ct-policy-num">05</span>
+          <span class="ct-policy-name">Outside the drive zones</span>
+        </div>
+        <div class="ct-policy-rule">
+          Video consults work for anyone. I work with anyone whose
+          business fits the stack, but the Oregon coast is the focus.
+        </div>
+      </li>
+    </ul>
+
+    <p class="ct-policy-foot">
+      <span class="ct-policy-foot-label">Why the deposit:</span>
+      Covers gas and time. The full amount credits to your project on
+      signing &mdash; not lost money, just front-loaded. Why in-person matters:
+      small towns work on trust. Phone calls don't build it the same way.
+    </p>
+
+    <p class="ct-policy-geo" data-ct-geo hidden>
+      <span class="ct-policy-geo-dot" aria-hidden="true"></span>
+      <span data-ct-geo-text></span>
+    </p>
+  </section>
+
+  <Divider label="04" />
+
+  <!-- ─────────── Section 04 · Quick FAQ ─────────── -->
+  <section class="ct-faq" aria-labelledby="ct-faq-h">
+    <header class="ct-block-head">
+      <h2 class="ct-block-h" id="ct-faq-h">Before you ask.</h2>
+    </header>
+
+    <dl class="ct-faq-list">
+      <div class="ct-faq-item">
+        <dt class="ct-faq-q">How long until you can start?</dt>
+        <dd class="ct-faq-a">
+          Usually next week if I have an opening, otherwise within 2-3
+          weeks. I cap at 3 active builds in parallel so timelines stay
+          honest.
+        </dd>
+      </div>
+      <div class="ct-faq-item">
+        <dt class="ct-faq-q">Do you require a contract?</dt>
+        <dd class="ct-faq-a">
+          Yes. Every build has a written SOW listing exactly what's
+          included. Protects both of us. 50% deposit on signing, 50% on
+          launch.
+        </dd>
+      </div>
+      <div class="ct-faq-item">
+        <dt class="ct-faq-q">What if I don't know what I need yet?</dt>
+        <dd class="ct-faq-a">
+          That's what the consult is for. Tell me what's broken or what
+          you're trying to do, and I'll tell you what would actually fix
+          it. No charge.
+        </dd>
+      </div>
+      <div class="ct-faq-item">
+        <dt class="ct-faq-q">Are you taking new clients?</dt>
+        <dd class="ct-faq-a">
+          Yes, with the 3-build parallel cap. If I'm full, you'll get a
+          real waitlist date, not a vague "we'll get back to you."
+        </dd>
+      </div>
+    </dl>
+  </section>
+</BaseLayout>
+
+<script is:inline>
+  (function () {
+    // ─── Brief form submission ───
+    const form = document.querySelector('[data-ct-form]');
+    const note = document.querySelector('[data-ct-note]');
+    const submit = document.querySelector('[data-ct-submit]');
+    const thanks = document.querySelector('[data-ct-thanks]');
+
+    if (form && submit) {
+      form.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        if (note) { note.textContent = ''; note.classList.remove('ct-note-err'); }
+        const fd = new FormData(form);
+        const body = Object.fromEntries(fd.entries());
+        submit.disabled = true;
+        submit.textContent = 'Sending…';
+        try {
+          const res = await fetch('/api/brief', {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify(body),
+          });
+          const j = await res.json().catch(() => ({}));
+          if (!res.ok) throw new Error(j.error || 'failed');
+          form.hidden = true;
+          if (thanks) thanks.hidden = false;
+          thanks?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } catch (err) {
+          if (note) {
+            note.textContent =
+              'Brief didn\'t send. Email me directly at preston@winterscode.com or text 541-551-0731.';
+            note.classList.add('ct-note-err');
+          }
+          submit.disabled = false;
+          submit.textContent = 'Send brief →';
+        }
+      });
+    }
+
+    // ─── Geo-aware policy highlighting ───
+    // Uses /api/workshop? No, simpler: check the visitor's country via
+    // CF headers exposed by /cdn-cgi/trace. If Oregon (state=OR) highlight
+    // the appropriate tier. Coos/Curry detection requires reverse geocoding
+    // which we don't do client-side, so fall back to "Oregon" tier and let
+    // visitors self-identify in the form.
+    fetch('/cdn-cgi/trace', { cache: 'no-store' })
+      .then((r) => r.text())
+      .then((text) => {
+        const lines = text.trim().split('\n');
+        const map = {};
+        for (const line of lines) {
+          const idx = line.indexOf('=');
+          if (idx > 0) map[line.slice(0, idx)] = line.slice(idx + 1);
+        }
+        const country = (map.loc || '').toUpperCase();
+        const geoEl = document.querySelector('[data-ct-geo]');
+        const geoText = document.querySelector('[data-ct-geo-text]');
+        const rows = document.querySelectorAll('[data-tier]');
+
+        let tier = 'outside';
+        if (country === 'US') {
+          // We can't get state from cdn-cgi/trace, but Cloudflare's CF-IPCity
+          // header would tell us. Lacking that on client, default to
+          // "elsewhere in Oregon or outside Oregon", we err toward the
+          // "Elsewhere in Oregon" tier for US visitors since most prospects
+          // here will be Oregon-coast locals visiting the site.
+          tier = 'oregon';
+        }
+        rows.forEach((r) => {
+          if (r.getAttribute('data-tier') === tier) r.classList.add('ct-policy-row--active');
+        });
+        if (geoEl && geoText) {
+          if (country === 'US') {
+            geoText.textContent =
+              'Looks like you\'re visiting from the US. If you\'re in Bandon, that\'s a free in-person consult. Coos/Curry counties get a free 30-min video. Note your city above.';
+          } else if (country) {
+            geoText.textContent =
+              'Visiting from ' + country + '. Video consults work fine from anywhere. The Oregon coast is my home base.';
+          }
+          geoEl.hidden = false;
+        }
+      })
+      .catch(function () {
+        // Silent. The page still works without geo highlighting.
+      });
+  })();
+</script>
+
+<style>
+  /* ─── Shared block heads ─── */
+  .ct-block-head { margin: 0 0 18px; }
+  .ct-block-h {
+    font-family: var(--font-serif);
+    font-size: 26px;
+    line-height: 1.15;
+    color: var(--color-ash-100);
+    margin: 0 0 6px;
+    font-weight: 600;
+  }
+  @media (min-width: 768px) { .ct-block-h { font-size: 34px; } }
+  @media (min-width: 1024px) { .ct-block-h { font-size: 40px; } }
+  .ct-block-sub {
+    font-family: var(--font-sans);
+    font-size: 14px;
+    color: var(--color-ash-400);
+    margin: 0;
+  }
+  @media (min-width: 768px) { .ct-block-sub { font-size: 15px; } }
+
+  /* ─── Section 02: Brief form ─── */
+  .ct-form-wrap {
+    padding: 32px 4px 24px;
+    max-width: 760px;
+    margin: 0 auto;
+  }
+  @media (min-width: 768px) { .ct-form-wrap { padding: 48px 4px 32px; } }
+  .ct-form-head { margin: 0 0 20px; }
+  .ct-form-h {
+    font-family: var(--font-serif);
+    font-size: 26px;
+    color: var(--color-ash-100);
+    margin: 0 0 6px;
+    font-weight: 600;
+  }
+  @media (min-width: 768px) { .ct-form-h { font-size: 34px; } }
+  .ct-form-sub {
+    font-family: var(--font-sans);
+    font-size: 14px;
+    color: var(--color-ash-400);
+    margin: 0;
+  }
+
+  .ct-honey {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  .ct-form-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+    margin: 0 0 14px;
+  }
+  @media (min-width: 600px) { .ct-form-grid { grid-template-columns: 1fr 1fr; gap: 16px; } }
+
+  .ct-field { display: flex; flex-direction: column; }
+  .ct-field-full { grid-column: 1 / -1; margin: 0 0 16px; }
+  .ct-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-copper);
+    margin: 0 0 6px;
+  }
+  .ct-req { color: var(--color-wc-green); }
+  .ct-opt { color: var(--color-ash-500); font-weight: 400; }
+
+  .ct-form input,
+  .ct-form select,
+  .ct-form textarea {
+    font-family: var(--font-sans);
+    font-size: 15px;
+    color: var(--color-ash-100);
+    background: var(--color-bg-card);
+    border: 1px solid var(--copper-hairline);
+    border-radius: 6px;
+    padding: 10px 12px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .ct-form textarea {
+    font-family: var(--font-sans);
+    line-height: 1.55;
+    resize: vertical;
+    min-height: 120px;
+  }
+  .ct-form input:focus-visible,
+  .ct-form select:focus-visible,
+  .ct-form textarea:focus-visible {
+    outline: none;
+    border-color: var(--color-wc-green);
+    box-shadow: 0 0 0 2px rgba(77, 216, 168, 0.15);
+  }
+  .ct-form select {
+    appearance: none;
+    background-image: linear-gradient(
+      45deg,
+      transparent 50%,
+      var(--color-copper) 50%
+    ),
+    linear-gradient(135deg, var(--color-copper) 50%, transparent 50%);
+    background-position: calc(100% - 18px) 50%, calc(100% - 13px) 50%;
+    background-size: 5px 5px;
+    background-repeat: no-repeat;
+    padding-right: 32px;
+  }
+
+  .ct-actions {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  .ct-submit {
+    font-family: var(--font-sans);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-bg-deep);
+    background: var(--color-wc-green);
+    border: 0;
+    border-radius: 6px;
+    padding: 12px 20px;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+  }
+  .ct-submit:hover,
+  .ct-submit:focus-visible {
+    background: var(--color-wc-green-bright, var(--color-wc-green));
+    outline: none;
+  }
+  .ct-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+  .ct-actions-note {
+    font-family: var(--font-sans);
+    font-size: 13px;
+    color: var(--color-ash-400);
+    font-style: italic;
+  }
+  .ct-note-err { color: #d97565 !important; font-style: normal !important; }
+
+  .ct-form-trust {
+    margin: 14px 0 0;
+    font-family: var(--font-sans);
+    font-size: 12.5px;
+    line-height: 1.55;
+    color: var(--color-ash-500);
+  }
+  @media (min-width: 768px) {
+    .ct-form-trust { font-size: 13px; }
+  }
+
+  /* Thanks state */
+  .ct-thanks {
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-wc-green-dim, rgba(77, 216, 168, 0.4));
+    border-left: 3px solid var(--color-wc-green);
+    border-radius: var(--radius-card, 10px);
+    padding: 20px 18px;
+    margin: 14px 0 0;
+  }
+  .ct-thanks-h {
+    font-family: var(--font-serif);
+    font-size: 20px;
+    color: var(--color-ash-100);
+    margin: 0 0 8px;
+    font-weight: 600;
+  }
+  @media (min-width: 768px) { .ct-thanks-h { font-size: 24px; } }
+  .ct-thanks-body {
+    font-family: var(--font-sans);
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--color-ash-300);
+    margin: 0;
+  }
+  @media (min-width: 768px) { .ct-thanks-body { font-size: 15px; } }
+  .ct-thanks-body a {
+    color: var(--color-wc-green);
+    text-decoration: underline;
+    text-decoration-color: rgba(77, 216, 168, 0.4);
+  }
+
+  /* ─── Section 03: Consult policy ─── */
+  .ct-policy {
+    padding: 32px 4px 24px;
+    max-width: 760px;
+    margin: 0 auto;
+  }
+  @media (min-width: 768px) { .ct-policy { padding: 48px 4px 32px; } }
+
+  .ct-policy-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 18px;
+    display: grid;
+    gap: 0;
+  }
+  .ct-policy-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 6px;
+    padding: 14px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  }
+  .ct-policy-row:first-child { padding-top: 4px; }
+  .ct-policy-row:last-child { border-bottom: 0; }
+  @media (min-width: 768px) {
+    .ct-policy-row {
+      grid-template-columns: 220px 1fr;
+      gap: 18px;
+      align-items: baseline;
+      padding: 18px 0;
+    }
+  }
+  .ct-policy-row--active {
+    background: linear-gradient(
+      90deg,
+      rgba(77, 216, 168, 0.06) 0%,
+      transparent 70%
+    );
+    border-left: 2px solid var(--color-wc-green);
+    padding-left: 10px;
+  }
+  .ct-policy-area {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+  }
+  .ct-policy-num {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--color-copper);
+  }
+  .ct-policy-name {
+    font-family: var(--font-sans);
+    font-size: 15px;
+    color: var(--color-ash-100);
+    font-weight: 600;
+  }
+  @media (min-width: 768px) { .ct-policy-name { font-size: 16px; } }
+  .ct-policy-rule {
+    font-family: var(--font-sans);
+    font-size: 13px;
+    color: var(--color-ash-400);
+    line-height: 1.55;
+  }
+  @media (min-width: 768px) { .ct-policy-rule { font-size: 14px; } }
+
+  .ct-policy-foot {
+    font-family: var(--font-sans);
+    font-size: 13px;
+    color: var(--color-ash-400);
+    line-height: 1.6;
+    margin: 18px 0 0;
+    padding: 14px 0 0;
+    border-top: 1px solid var(--copper-hairline);
+    font-style: italic;
+  }
+  .ct-policy-foot-label {
+    font-style: normal;
+    color: var(--color-copper);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-right: 4px;
+  }
+
+  .ct-policy-geo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 14px 0 0;
+    padding: 12px 14px;
+    background: var(--color-bg-card);
+    border: 1px solid var(--copper-hairline);
+    border-radius: 6px;
+    font-family: var(--font-sans);
+    font-size: 13px;
+    color: var(--color-ash-300);
+    line-height: 1.5;
+  }
+  .ct-policy-geo-dot {
+    flex: 0 0 8px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--color-wc-green);
+    box-shadow: 0 0 0 3px rgba(77, 216, 168, 0.15);
+  }
+
+  /* ─── Section 04: Quick FAQ ─── */
+  .ct-faq {
+    padding: 32px 4px 48px;
+    max-width: 760px;
+    margin: 0 auto;
+  }
+  @media (min-width: 768px) { .ct-faq { padding: 48px 4px 64px; } }
+
+  .ct-faq-list {
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0;
+  }
+  .ct-faq-item {
+    padding: 14px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  }
+  .ct-faq-item:first-child { padding-top: 4px; }
+  .ct-faq-item:last-child { border-bottom: 0; }
+  .ct-faq-q {
+    font-family: var(--font-sans);
+    font-size: 15px;
+    color: var(--color-ash-100);
+    font-weight: 600;
+    margin: 0 0 6px;
+    line-height: 1.35;
+  }
+  @media (min-width: 768px) { .ct-faq-q { font-size: 17px; } }
+  .ct-faq-a {
+    font-family: var(--font-sans);
+    font-size: 14px;
+    color: var(--color-ash-300);
+    line-height: 1.6;
+    margin: 0;
+  }
+  @media (min-width: 768px) { .ct-faq-a { font-size: 15px; } }
+</style>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200" role="img" aria-label="Winters Code">
+  <title>Winters Code</title>
+
+  <!-- Outer ring, thicker so it survives at 16px -->
+  <circle cx="100" cy="100" r="92" fill="none" stroke="currentColor" stroke-width="3" opacity="0.95" />
+
+  <!-- Inner medallion ring -->
+  <circle cx="100" cy="100" r="74" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.55" />
+
+  <!-- Central Fraunces italic W -->
+  <text x="100" y="130"
+        font-family="'Fraunces', 'Playfair Display', Georgia, serif"
+        font-size="110"
+        font-weight="600"
+        font-style="italic"
+        text-anchor="middle"
+        fill="currentColor"
+        letter-spacing="-0.02em">W</text>
+
+  <!-- Tiny rule under the W (letterpress detail) -->
+  <line x1="72" y1="146" x2="128" y2="146" stroke="currentColor" stroke-width="1.2" opacity="0.6" />
+</svg>

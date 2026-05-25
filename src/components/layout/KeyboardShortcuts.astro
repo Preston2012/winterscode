@@ -1,0 +1,383 @@
+---
+/**
+ * KeyboardShortcuts. sitewide keybindings + on-demand cheat sheet.
+ *
+ * Bindings (locked S6+ doctrine):
+ *   g h   → home
+ *   g w   → /work
+ *   g s   → /services
+ *   g a   → /about
+ *   g c   → /contact
+ *   /     → focus the terminal (if present on page; opens contact otherwise)
+ *   ?     → toggle this cheat sheet
+ *   Esc   → close cheat sheet
+ *
+ * Implementation notes:
+ * - "g {key}" is a two-key chord with a 1.2s timeout between presses.
+ * - Bindings ignore keypresses while focus is inside <input>, <textarea>,
+ *   <select>, or anything with [contenteditable]. that means typing "g h"
+ *   in the chat composer doesn't navigate you off the page.
+ * - The cheat sheet is floated bottom-right on desktop, full-width sheet
+ *   on mobile, dismissable via Esc, click outside, or the X button.
+ * - Pure CSS + vanilla JS, no client framework. Astro emits zero JS by
+ *   default; this is the explicit, scoped exception.
+ * - Respects prefers-reduced-motion (no slide-in animation).
+ *
+ * Renders ONCE per page, lives in BaseLayout.astro.
+ */
+---
+
+<!-- The cheat sheet panel. Hidden by default, revealed when JS toggles .is-open. -->
+<div
+  class="kbd-sheet"
+  data-kbd-sheet
+  role="dialog"
+  aria-modal="false"
+  aria-labelledby="kbd-sheet-title"
+  hidden
+>
+  <div class="kbd-sheet-card">
+    <header class="kbd-sheet-head">
+      <h2 id="kbd-sheet-title" class="kbd-sheet-title">Keyboard shortcuts</h2>
+      <button
+        type="button"
+        class="kbd-sheet-close"
+        aria-label="Close keyboard shortcuts"
+        data-kbd-sheet-close
+      >×</button>
+    </header>
+
+    <dl class="kbd-list">
+      <div class="kbd-row">
+        <dt><kbd>g</kbd><kbd>h</kbd></dt>
+        <dd>Home</dd>
+      </div>
+      <div class="kbd-row">
+        <dt><kbd>g</kbd><kbd>w</kbd></dt>
+        <dd>Work</dd>
+      </div>
+      <div class="kbd-row">
+        <dt><kbd>g</kbd><kbd>s</kbd></dt>
+        <dd>Services</dd>
+      </div>
+      <div class="kbd-row">
+        <dt><kbd>g</kbd><kbd>a</kbd></dt>
+        <dd>About</dd>
+      </div>
+      <div class="kbd-row">
+        <dt><kbd>g</kbd><kbd>c</kbd></dt>
+        <dd>Contact</dd>
+      </div>
+      <div class="kbd-row kbd-row-divider">
+        <dt><kbd>/</kbd></dt>
+        <dd>Focus search · jump to contact</dd>
+      </div>
+      <div class="kbd-row">
+        <dt><kbd>?</kbd></dt>
+        <dd>Toggle this panel</dd>
+      </div>
+      <div class="kbd-row">
+        <dt><kbd>Esc</kbd></dt>
+        <dd>Close this panel</dd>
+      </div>
+    </dl>
+
+    <footer class="kbd-sheet-foot">
+      <span class="kbd-sheet-foot-text">
+        Press <kbd>?</kbd> any time to open this.
+      </span>
+    </footer>
+  </div>
+</div>
+
+<style>
+  /* ─── Cheat sheet card ─── */
+  .kbd-sheet {
+    position: fixed;
+    inset: 0;
+    z-index: 300;
+    display: none;
+    align-items: flex-end;
+    justify-content: center;
+    padding: 16px;
+    background: rgba(10, 13, 12, 0.62);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+  }
+  .kbd-sheet.is-open {
+    display: flex;
+  }
+  @media (min-width: 1024px) {
+    .kbd-sheet {
+      align-items: flex-end;
+      justify-content: flex-end;
+      padding: 0 24px 24px 0;
+      background: transparent;
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+      pointer-events: none;
+    }
+    .kbd-sheet.is-open .kbd-sheet-card { pointer-events: auto; }
+  }
+
+  .kbd-sheet-card {
+    width: 100%;
+    max-width: 360px;
+    background: var(--color-bg-card);
+    border: 1px solid var(--copper-hairline);
+    border-radius: 12px;
+    padding: 18px 18px 14px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+    animation: kbd-rise 200ms ease-out;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .kbd-sheet-card { animation: none; }
+  }
+  @keyframes kbd-rise {
+    from { transform: translateY(12px); opacity: 0; }
+    to   { transform: translateY(0);    opacity: 1; }
+  }
+
+  .kbd-sheet-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 14px;
+    padding-bottom: 10px;
+    border-bottom: 1px dashed var(--copper-hairline);
+  }
+  .kbd-sheet-title {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-size: 15px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    color: var(--color-ash-100);
+  }
+  .kbd-sheet-close {
+    background: none;
+    border: none;
+    padding: 0;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    color: var(--color-ash-400);
+    font-size: 22px;
+    line-height: 1;
+    cursor: pointer;
+    transition: color 200ms, background 200ms;
+  }
+  .kbd-sheet-close:hover {
+    color: var(--color-copper-bright);
+    background: var(--color-bg-raised);
+  }
+  .kbd-sheet-close:focus-visible {
+    outline: 2px solid var(--color-copper);
+    outline-offset: 2px;
+  }
+
+  .kbd-list {
+    margin: 0;
+    padding: 0;
+  }
+  .kbd-row {
+    display: grid;
+    grid-template-columns: 92px 1fr;
+    align-items: center;
+    gap: 12px;
+    padding: 6px 0;
+  }
+  .kbd-row-divider {
+    border-top: 1px dashed var(--copper-hairline);
+    margin-top: 4px;
+    padding-top: 10px;
+  }
+  .kbd-row dt {
+    margin: 0;
+    display: flex;
+    gap: 4px;
+    align-items: center;
+  }
+  .kbd-row dd {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-size: 12px;
+    color: var(--color-ash-300);
+  }
+
+  /* Inline <kbd> chip */
+  .kbd-row kbd {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 22px;
+    height: 22px;
+    padding: 0 6px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--color-copper-bright);
+    background: var(--color-bg-deep);
+    border: 1px solid var(--copper-hairline);
+    border-radius: 4px;
+    box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.3);
+  }
+
+  .kbd-sheet-foot {
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px dashed var(--copper-hairline);
+  }
+  .kbd-sheet-foot-text {
+    font-family: var(--font-sans);
+    font-size: 11px;
+    color: var(--color-ash-500);
+    letter-spacing: 0.02em;
+  }
+  .kbd-sheet-foot-text kbd {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 4px;
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--color-copper-bright);
+    background: var(--color-bg-deep);
+    border: 1px solid var(--copper-hairline);
+    border-radius: 3px;
+    vertical-align: baseline;
+  }
+</style>
+
+<script is:inline>
+  // Vanilla keybindings for the 5-page nav + ? + Esc + /.
+  // No framework, no dependencies. ~1.5 KB minified.
+  //
+  // Design rules:
+  //   - "g {key}" is a chord with a 1.2s timeout
+  //   - never fires inside text inputs / contenteditable
+  //   - "/" focuses a terminal input if one exists on the page,
+  //     otherwise scrolls to the contact section / falls through
+  //   - "?" toggles the cheat sheet
+  //   - "Esc" closes the cheat sheet only (doesn't interfere with
+  //     other Esc-listening UI like the mobile menu)
+  (function () {
+    const sheet = document.querySelector('[data-kbd-sheet]');
+    const closeBtn = document.querySelector('[data-kbd-sheet-close]');
+    if (!sheet || !closeBtn) return;
+
+    let chordPrimed = false;
+    let chordTimer = null;
+
+    function openSheet() {
+      sheet.hidden = false;
+      sheet.classList.add('is-open');
+      // Move focus to the close button so screen readers announce the dialog.
+      closeBtn.focus();
+    }
+    function closeSheet() {
+      sheet.classList.remove('is-open');
+      sheet.hidden = true;
+    }
+    function toggleSheet() {
+      if (sheet.classList.contains('is-open')) closeSheet();
+      else openSheet();
+    }
+
+    closeBtn.addEventListener('click', closeSheet);
+    // Click on the backdrop (outside the card) also closes.
+    sheet.addEventListener('click', (e) => {
+      if (e.target === sheet) closeSheet();
+    });
+
+    function isTypingTarget(el) {
+      if (!el) return false;
+      const tag = el.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return true;
+      if (el.isContentEditable) return true;
+      return false;
+    }
+
+    function clearChord() {
+      chordPrimed = false;
+      if (chordTimer) {
+        clearTimeout(chordTimer);
+        chordTimer = null;
+      }
+    }
+
+    document.addEventListener('keydown', (e) => {
+      // Always allow Esc on the sheet, regardless of typing target.
+      if (e.key === 'Escape') {
+        if (sheet.classList.contains('is-open')) {
+          e.preventDefault();
+          closeSheet();
+        }
+        return;
+      }
+
+      // All other shortcuts: ignore if typing.
+      if (isTypingTarget(e.target)) return;
+      // Ignore modifier-key chords (Ctrl+W, etc).
+      if (e.ctrlKey || e.metaKey || e.altKey) return;
+
+      const key = e.key;
+
+      // "?" toggles the cheat sheet. On most layouts ? requires Shift, so
+      // we read both Shift+/ and the literal "?" character.
+      if (key === '?' || (e.shiftKey && key === '/')) {
+        e.preventDefault();
+        toggleSheet();
+        return;
+      }
+
+      // "/". if a terminal/search input exists on the page, focus it.
+      // Otherwise scroll the contact section into view. Either way, don't
+      // navigate away.
+      if (key === '/' && !e.shiftKey) {
+        const term = document.querySelector('[data-terminal-input], #terminal-input');
+        if (term && term.focus) {
+          e.preventDefault();
+          term.focus();
+          return;
+        }
+        const contact = document.querySelector('#contact, [data-contact-section]');
+        if (contact && contact.scrollIntoView) {
+          e.preventDefault();
+          contact.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+        return;
+      }
+
+      // "g {key}" chord.
+      if (chordPrimed) {
+        const map = {
+          h: '/',
+          w: '/work',
+          s: '/services',
+          a: '/about',
+          c: '/contact',
+        };
+        const dest = map[key];
+        clearChord();
+        if (dest) {
+          e.preventDefault();
+          window.location.assign(dest);
+        }
+        return;
+      }
+
+      if (key === 'g') {
+        chordPrimed = true;
+        chordTimer = setTimeout(clearChord, 1200);
+      }
+    });
+  })();
+</script>

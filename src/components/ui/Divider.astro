@@ -1,0 +1,139 @@
+---
+/**
+ * Divider, copper-gradient hairline with center bezel, drops between every
+ * major homepage section. Reusable. Replaces v5.1's inline divider pattern.
+ *
+ * Props:
+ *   label?: string , text inside the bezel (default "WC"). Use "01"-"07"
+ *                     for section numbering, "?" for FAQ, "+" for process.
+ *   onClick scrolls to top of page smoothly. Hover rotates bezel 60deg.
+ *
+ * Spec ref: docs/design/S6_PLUS.md "Section dividers" (~ line 946).
+ *
+ * No JS framework. The click handler is a 1-line vanilla script,
+ * tree-shaken when label is unset (still scrolls to top, useful pattern).
+ */
+
+interface Props {
+  label?: string;
+  ariaLabel?: string;
+}
+
+const { label = 'WC', ariaLabel } = Astro.props;
+---
+
+<div
+  class="divider"
+  role="button"
+  tabindex="0"
+  aria-label={ariaLabel ?? `Section ${label}, return to top`}
+  data-divider
+>
+  <div class="divider-line" aria-hidden="true"></div>
+  <div class="divider-mark" aria-hidden="true">
+    <span>{label}</span>
+  </div>
+  <div class="divider-line" aria-hidden="true"></div>
+</div>
+
+<style>
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 28px 0;
+    margin: 0;
+    cursor: pointer;
+    background: transparent;
+    border: 0;
+    width: 100%;
+  }
+  @media (min-width: 768px) {
+    .divider { padding: 36px 0; gap: 16px; }
+  }
+  @media (min-width: 1024px) {
+    .divider { padding: 48px 0; gap: 20px; }
+  }
+  .divider-line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      var(--copper-dim) 20%,
+      var(--color-copper) 50%,
+      var(--copper-dim) 80%,
+      transparent
+    );
+  }
+  .divider-mark {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 1px solid var(--color-copper);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-bg-deep);
+    position: relative;
+    transition: transform 400ms ease-out, box-shadow 400ms ease-out;
+  }
+  @media (min-width: 1024px) {
+    .divider-mark { width: 36px; height: 36px; }
+  }
+  .divider:hover .divider-mark,
+  .divider:focus-visible .divider-mark {
+    transform: rotate(60deg);
+    box-shadow: 0 0 24px rgba(240, 160, 110, 0.4);
+  }
+  .divider:focus-visible {
+    outline: 2px solid var(--color-copper-bright);
+    outline-offset: 8px;
+    border-radius: 4px;
+  }
+  .divider-mark::before {
+    content: '';
+    position: absolute;
+    inset: 3px;
+    border-radius: 50%;
+    border: 1px dashed var(--copper-dim);
+  }
+  .divider-mark span {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--color-copper);
+    font-weight: 500;
+    letter-spacing: 0.05em;
+  }
+  @media (min-width: 1024px) {
+    .divider-mark span { font-size: 11px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .divider-mark { transition: none; }
+    .divider:hover .divider-mark { transform: none; }
+  }
+</style>
+
+<script>
+  // Smooth scroll-to-top on click or Enter/Space, page-wide.
+  // Selector is page-scoped (querySelectorAll) so multiple dividers all work.
+  const dividers = document.querySelectorAll('[data-divider]');
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches
+        ? 'auto'
+        : 'smooth',
+    });
+  };
+  dividers.forEach((d) => {
+    d.addEventListener('click', scrollToTop);
+    d.addEventListener('keydown', (e) => {
+      const ke = e as KeyboardEvent;
+      if (ke.key === 'Enter' || ke.key === ' ') {
+        ke.preventDefault();
+        scrollToTop();
+      }
+    });
+  });
+</script>
