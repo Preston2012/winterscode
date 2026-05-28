@@ -26,7 +26,6 @@ import Contact from '../components/sections/Contact.astro';
 import { sites, apps } from '../lib/portfolio.ts';
 import Explainer from '../components/ui/Explainer.astro';
 import Instrument from '../components/sections/Instrument.astro';
-import SognContact from '../components/sections/SognContact.astro';
 ---
 
 <BaseLayout
@@ -184,13 +183,7 @@ import SognContact from '../components/sections/SognContact.astro';
             class="wk-card wk-card-site"
             data-slug={p.slug}
             data-status={p.status}
-            data-widget={p.slug === 'sogn-contracting' ? 'true' : undefined}
           >
-            {p.slug === 'sogn-contracting' && (
-              <div class="wk-preview" aria-hidden="false">
-                <SognContact />
-              </div>
-            )}
             <div class="wk-body">
               <div class="wk-title-row">
                 <h3 class="wk-title">{p.name}</h3>

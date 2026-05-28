@@ -155,18 +155,30 @@ const id = `xp-${Math.random().toString(36).slice(2, 9)}`;
     }
   }
 
-  /* Edge clamps. popover can extend past the viewport on small screens.
-     We use max-width and translate(-50%) which mostly handles it, but
-     we add a safety margin so the arrow alignment doesn't break visually. */
+  /* On small screens the popover detaches from the trigger and pins to
+     the bottom of the viewport as a sheet. Pure absolute positioning
+     can't clamp horizontally because the trigger sits mid-line and the
+     popover's parent has position: relative, so we switch to fixed and
+     anchor to viewport edges. Arrow is hidden because it can no longer
+     point at the trigger meaningfully. */
   @media (max-width: 480px) {
     .xp-pop {
-      left: 0;
+      position: fixed;
+      left: 16px;
+      right: 16px;
+      bottom: 24px;
+      top: auto;
+      width: auto;
+      max-width: none;
       transform: none;
-      max-width: calc(100vw - 32px);
     }
     .xp-pop::after {
-      left: 12px;
-      transform: none;
+      display: none;
+    }
+    /* "bottom" placement variant doesn't apply on mobile since we always
+       pin to viewport bottom regardless of original placement intent. */
+    .xp-bottom .xp-pop {
+      top: auto;
     }
   }
 
