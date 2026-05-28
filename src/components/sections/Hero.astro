@@ -347,7 +347,7 @@ const WORKSHOP_PREVIEW = [
        overlap the H1. The stamp is fixed top-right inside .hero, so
        hero-text needs its own right-pad on this breakpoint only. */
     .hero { padding: 56px 4px 40px; }
-    .hero-text { padding-right: 130px; }
+    .hero-text { padding-right: 170px; }
   }
   @media (min-width: 1024px) {
     .hero {
@@ -410,13 +410,16 @@ const WORKSHOP_PREVIEW = [
       font-size: 44px;
       line-height: 1.08;
     }
+    /* Force the line break at tablet too so line 1 ("...into business")
+       ends before the maker's-mark zone top-right. Without this the H1
+       runs full width and collides with the stamp. */
+    .desktop-break { display: inline; }
   }
   @media (min-width: 1024px) {
     .hero-h1 {
       font-size: 56px;
       line-height: 1.05;
     }
-    .desktop-break { display: inline; }
   }
 
   /* ─── Sub ─── */
