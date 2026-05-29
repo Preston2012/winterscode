@@ -158,10 +158,11 @@ async function fetchGitHub(
   // results for 5min so the wall doesn't flicker between live/fallback as
   // edge conditions vary. Short TTL because deploys data changes every push.
   const CACHE_KEY = 'workshop:gh:v1';
-  // 6h TTL. GH rate limit window is 1h (5000/hr authenticated). If quota
-  // exhausts during a busy session, cache must outlast the rate-limit window
-  // so 'cached' stays visible until next successful refresh, never 'fallback'.
-  const CACHE_TTL = 60 * 60 * 6;
+  // 30d TTL. Retention is decoupled from freshness: REFRESH_AFTER_SEC (5min)
+  // below decides when to re-fetch; this TTL only decides how long the last
+  // good value survives. A long retention means a multi-day GitHub outage
+  // keeps showing 'cached' real numbers instead of dropping to 'fallback'.
+  const CACHE_TTL = 60 * 60 * 24 * 30;
   // Pre-read cache so non-throwing failure paths can return 'cached' too.
   // The previous structure only used cache in the catch block, which meant
   // rate-limit hits (!r.ok -> break -> empty array -> return FALLBACK) never
@@ -280,14 +281,18 @@ async function fetchPSI(
   // call fails (Lighthouse internal 500s are common on Baseline today),
   // we keep the other sites' live scores and fall back ONLY the failed
   // one. This protects the homepage from "all-or-nothing" PSI outages.
-  const auditSite = async (url: string, fallback: [number, number, number, number]): Promise<[number, number, number, number]> => {
+  // PSI mobile lab perf is noisy run-to-run (cold-cache + throttling jitter
+  // can swing perf several points). Lighthouse's own guidance is to take the
+  // median of multiple runs. We sample each site 3 times and report the
+  // per-category median so a single low sample never sticks for the cache TTL.
+  const RUNS = 3;
+  const singleRun = async (url: string): Promise<[number, number, number, number] | null> => {
     try {
       const psiUrl = `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${encodeURIComponent(url)}&category=performance&category=accessibility&category=seo&category=best-practices&strategy=mobile&key=${key}`;
-      const r = await fetch(psiUrl, { signal: AbortSignal.timeout(28000) });
-      if (!r.ok) return fallback;
+      const r = await fetch(psiUrl, { signal: AbortSignal.timeout(22000) });
+      if (!r.ok) return null;
       const data: any = await r.json();
-      // PSI returns 200 with embedded runtimeError for Lighthouse-side failures
-      if (data.lighthouseResult?.runtimeError) return fallback;
+      if (data.lighthouseResult?.runtimeError) return null;
       const cats = data.lighthouseResult?.categories ?? {};
       const score = (k: string) => Math.round((cats[k]?.score ?? 0) * 100);
       const result: [number, number, number, number] = [
@@ -296,13 +301,28 @@ async function fetchPSI(
         score('seo'),
         score('best-practices'),
       ];
-      // Sanity check: if any score is 0, treat as failure (PSI sometimes
-      // returns valid JSON with zeroed categories on partial failures).
-      if (result.some(n => n === 0)) return fallback;
+      // Zeroed categories signal a partial PSI failure; drop this run.
+      if (result.some(n => n === 0)) return null;
       return result;
     } catch {
-      return fallback;
+      return null;
     }
+  };
+  const median = (nums: number[]): number => {
+    const a = [...nums].sort((x, y) => x - y);
+    const m = Math.floor(a.length / 2);
+    return a.length % 2 ? a[m] : Math.round((a[m - 1] + a[m]) / 2);
+  };
+  const auditSite = async (url: string, fallback: [number, number, number, number]): Promise<[number, number, number, number]> => {
+    const runs = (await Promise.all(Array.from({ length: RUNS }, () => singleRun(url))))
+      .filter((x): x is [number, number, number, number] => x !== null);
+    if (!runs.length) return fallback;
+    return [
+      median(runs.map(r => r[0])),
+      median(runs.map(r => r[1])),
+      median(runs.map(r => r[2])),
+      median(runs.map(r => r[3])),
+    ];
   };
   // PSI fails consistently on www.baseline.marketing (Lighthouse 500).
   // Bare baseline.marketing 301s to www but PSI handles the redirect cleanly.
