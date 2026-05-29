@@ -186,6 +186,8 @@ body::after {
    tablet  ≥768px : 720px max, 24px padding
    desktop ≥1024px: 1200px max, 40px padding
    ───────────────────────────────────────────────────────────── */
+html { scroll-padding-top: 80px; }
+
 .page {
   max-width: 440px;
   margin: 0 auto;
@@ -215,6 +217,7 @@ body::after {
    to a small breathing buffer. */
 main.page {
   padding-bottom: 16px;
+  z-index: 3;
 }
 @media (min-width: 768px) {
   main.page { padding-bottom: 20px; }
