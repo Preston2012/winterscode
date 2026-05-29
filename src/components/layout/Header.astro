@@ -148,6 +148,7 @@ const navItems = [
     color: var(--color-ash-100);
   }
   .topmark-brand .est {
+    display: none;
     font-size: 9px;
     letter-spacing: 0.14em;
     color: var(--color-copper);
@@ -155,7 +156,7 @@ const navItems = [
   }
   @media (min-width: 768px) {
     .topmark-brand .name { font-size: 22px; }
-    .topmark-brand .est { font-size: 10px; }
+    .topmark-brand .est { display: inline; font-size: 10px; }
   }
   /* Sitewide creed under brand wordmark, desktop only (saves
      vertical pixels for menu trigger on mobile per spec line 381). */
@@ -277,6 +278,10 @@ const navItems = [
     height: 1.5px;
     background: currentColor;
   }
+  .topmark-menu-btn > span:not(.bars) { display: none; }
+  @media (min-width: 768px) {
+    .topmark-menu-btn > span:not(.bars) { display: inline; }
+  }
   @media (min-width: 1024px) {
     .topmark-menu-btn { display: none; }
   }
@@ -287,7 +292,7 @@ const navItems = [
      adds the "LAST DEPLOY ·" prefix. Doesn't block the brand cluster from
      collapsing on small screens. the pill itself just shrinks. */
   .workshop-pill {
-    display: inline-flex;
+    display: none;
     align-items: center;
     gap: 6px;
     padding: 4px 8px;
@@ -333,6 +338,7 @@ const navItems = [
   /* Tablet+ shows the prefix; mobile is dot + value only. */
   @media (min-width: 768px) {
     .workshop-pill {
+      display: inline-flex;
       font-size: 10px;
       padding: 5px 10px;
     }
