@@ -9,7 +9,6 @@ import fraunceseNormal from '@fontsource-variable/fraunces/files/fraunces-latin-
 // from critical chain saves ~200-400ms on desktop traces). Kept available
 // via @font-face import in src/styles/fonts.css with font-display: swap.
 import KeyboardShortcuts from '../components/layout/KeyboardShortcuts.astro';
-import Stamp from '../components/ui/Stamp.astro';
 // Print stylesheet. loaded with media="print" so the browser parses it
 // at lowest priority and NEVER blocks screen paint. Saves ~1KB off the
 // render-blocking BaseLayout CSS chunk.
@@ -186,7 +185,7 @@ const localBusinessSchema = {
     <footer class="page small" style="border-top:1px solid var(--copper-hairline); padding-top:24px; margin-top:48px;">
       <div style="display:flex; flex-direction:column; gap:14px;">
         <p style="margin:0; font-family:var(--font-serif); font-style:italic; font-size:12px; color:var(--color-ash-300); display:flex; align-items:center; gap:10px;">
-          <Stamp size={28} glow="soft" ariaLabel="Winters Code" />
+          <img src="/wc-logo-256.webp" width="34" height="34" decoding="async" alt="" aria-hidden="true" style="display:block; flex:0 0 auto;" />
           <span>I build it. I own it. I ship it. I maintain it.</span>
         </p>
         <nav aria-label="More" style="display:flex; gap:18px; flex-wrap:wrap; font-size:12px;">
