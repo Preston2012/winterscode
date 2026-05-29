@@ -338,13 +338,13 @@ async function fetchPSI(
       median(runs.map(r => r[3])),
     ];
   };
-  // PSI fails consistently on www.baseline.marketing (Lighthouse 500).
-  // Bare baseline.marketing 301s to www but PSI handles the redirect cleanly.
-  // Use bare URL for Baseline PSI audits.
+  // Measure the canonical www directly. The old PSI Lighthouse-500 on www is
+  // resolved (verified May 2026, www PSI ~96). Measuring the bare apex paid the
+  // 301 to www redirect penalty (~92 vs ~96 on www); www matches the sogn entry.
   const [wc, sogn, baseline] = await Promise.all([
     auditSite('https://winterscode.com', FALLBACK.lighthouse.winterscode),
     auditSite('https://www.sogncontracting.com', FALLBACK.lighthouse.sogn),
-    auditSite('https://baseline.marketing', FALLBACK.lighthouse.baseline),
+    auditSite('https://www.baseline.marketing', FALLBACK.lighthouse.baseline),
   ]);
   // Source flag is 'live' if any site returned non-fallback data.
   // UI shows "live · partial" when not all 3 succeeded.
