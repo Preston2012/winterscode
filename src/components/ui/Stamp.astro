@@ -35,6 +35,7 @@ export interface Props {
   tilt?: number;
   glow?: 'full' | 'soft' | 'none';
   linked?: string;
+  priority?: boolean;
   ariaLabel?: string;
   class?: string;
 }
@@ -45,6 +46,7 @@ const {
   tilt = 0,
   glow = 'soft',
   linked,
+  priority = false,
   ariaLabel = "Winters Code maker's mark",
   class: className = '',
 } = Astro.props;
@@ -55,7 +57,7 @@ const baseName = variant === 'full' ? 'wc-stamp-full' : 'wc-stamp';
 // 2x-DPR rule: choose the next-size-up raster.
 function pickRaster(targetPx: number) {
   const sizes = [32, 64, 128, 256, 512, 1080];
-  const target2x = targetPx * 2;
+  const target2x = targetPx * 1.5; // 1.5x DPR: geometric logo stays crisp, smaller LCP raster
   for (const s of sizes) if (s >= target2x) return s;
   return 1080;
 }
@@ -95,7 +97,7 @@ const glowClass = glow === 'full' ? 'wcs-glow-full'
           alt=""
           width={size}
           height={size}
-          loading="lazy"
+          loading={priority ? 'eager' : 'lazy'} fetchpriority={priority ? 'high' : undefined}
           decoding="async"
           class="wcs-img"
         />
@@ -111,7 +113,7 @@ const glowClass = glow === 'full' ? 'wcs-glow-full'
         alt=""
         width={size}
         height={size}
-        loading="lazy"
+        loading={priority ? 'eager' : 'lazy'} fetchpriority={priority ? 'high' : undefined}
         decoding="async"
         class="wcs-img"
       />

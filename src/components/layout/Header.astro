@@ -111,14 +111,28 @@ const navItems = [
     -webkit-backdrop-filter: blur(12px);
     gap: 16px;
   }
+  /* Double-hairline seam + centered teal registration dot (business-card motif). */
   .topmark::after {
     content: "";
     position: absolute;
     left: 0;
     right: 0;
-    bottom: -2px;
+    bottom: -3px;
     height: 1px;
-    background: linear-gradient(90deg, transparent, var(--copper-dim) 30%, var(--copper-dim) 70%, transparent);
+    background: linear-gradient(90deg, transparent, var(--copper-dim) 18%, var(--color-copper) 50%, var(--copper-dim) 82%, transparent);
+  }
+  .topmark::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: -5px;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--accent-teal);
+    box-shadow: 0 0 6px rgba(53, 214, 196, 0.55), 0 0 0 3px var(--color-bg-deep);
+    transform: translateX(-50%);
+    z-index: 1;
   }
 
   /* Brand */

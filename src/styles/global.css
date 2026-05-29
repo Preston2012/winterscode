@@ -20,8 +20,8 @@
   /* Ash neutrals, cool gray scale, 100 = lightest text, 700 = dark border */
   --color-ash-100:    #dde4e6;
   --color-ash-300:    #aab7ba;
-  --color-ash-400:    #94a0a3;
-  --color-ash-500:    #869396;
+  --color-ash-400:    #a6b1b4;
+  --color-ash-500:    #97a3a6;
   --color-ash-700:    #3a4549;
 
   /* Winters Code green, primary brand accent */
@@ -29,16 +29,16 @@
   --color-wc-green-bright: #5fe8b5;
 
   /* Copper, secondary accent, hairlines, framing */
-  --color-copper:        #c8804a;
-  --color-copper-bright: #f0a06f;
+  --color-copper:        #d3823c;
+  --color-copper-bright: #f4a874;
   --color-copper-deep:   #8a5430;
 
   /* Amber, rare accent (badges, callouts) */
   --color-amber: #d4a72d;
 
   /* Type families */
-  --font-serif: 'Fraunces', Georgia, serif;
-  --font-sans:  'IBM Plex Sans', -apple-system, system-ui, 'Segoe UI', Roboto, sans-serif;
+  --font-serif: 'Fraunces', 'Fraunces fallback', Georgia, serif;
+  --font-sans:  'IBM Plex Sans', 'IBM Plex fallback', -apple-system, system-ui, 'Segoe UI', Roboto, sans-serif;
   --font-mono:  'JetBrains Mono', ui-monospace, monospace;
 
   /* Radii */
@@ -61,8 +61,9 @@
      brighter base hue + slight bump in opacity. Used by section
      breaks, rivets, divider hairlines, scroll progress, edge marks. */
   --copper-glow:      rgba(240, 160, 110, 0.45);
-  --copper-dim:       rgba(216, 144, 90, 0.22);
-  --copper-hairline:  rgba(216, 144, 90, 0.32);
+  --copper-dim:       rgba(216, 144, 90, 0.26);
+  --copper-hairline:  rgba(216, 144, 90, 0.36);
+  --accent-teal:      #35d6c4;
 }
 
 /* ─────────────────────────────────────────────────────────────
@@ -86,7 +87,7 @@ body {
   color: var(--color-ash-100);
   font-family: var(--font-sans);
   line-height: 1.55;
-  overflow-x: hidden;
+  overflow-x: clip;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   /* Wrapping safety net, required by S6+ doctrine. Prevents the

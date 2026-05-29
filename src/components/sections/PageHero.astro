@@ -26,13 +26,29 @@ interface Props {
   h1: string;
   sub: string;
   sub2?: string;
+  sub3?: string;
   showStamp?: boolean;
+  bgImage?: string;
+  bgOpacity?: number;
+  bgPosition?: string;
 }
 
-const { eyebrow, h1, sub, sub2, showStamp = false } = Astro.props;
+const { eyebrow, h1, sub, sub2, sub3, showStamp = false, bgImage, bgOpacity = 0.3, bgPosition = 'center' } = Astro.props;
 ---
 
 <section class="page-hero" aria-labelledby="page-hero-h1">
+  {bgImage && (
+    <div class="ph-wash" aria-hidden="true" style={`--ph-wash-opacity:${bgOpacity}; --ph-wash-pos:${bgPosition}`}>
+      <img
+        src={`${bgImage}-1600.webp`}
+        srcset={`${bgImage}-768.webp 768w, ${bgImage}-1600.webp 1600w`}
+        sizes="100vw"
+        alt=""
+        decoding="async"
+        fetchpriority="low"
+      />
+    </div>
+  )}
   <div class="ph-row">
     <div class="ph-text">
       <div class="ph-eyebrow">
@@ -53,6 +69,7 @@ const { eyebrow, h1, sub, sub2, showStamp = false } = Astro.props;
   <p class="ph-sub">
     {sub}
     {sub2 && <><br /><em>{sub2}</em></>}
+    {sub3 && <><br /><em>{sub3}</em></>}
   </p>
 </section>
 
@@ -157,4 +174,10 @@ const { eyebrow, h1, sub, sub2, showStamp = false } = Astro.props;
   @media (min-width: 1024px) {
     .ph-sub { font-size: 17px; line-height: 1.5; margin-top: 24px; }
   }
+
+  /* Optional decorative wash behind the page hero (faint local photo). */
+  .ph-wash { position: absolute; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+  .ph-wash img { width: 100%; height: 100%; object-fit: cover; object-position: var(--ph-wash-pos, center); opacity: var(--ph-wash-opacity, 0.08); display: block; }
+  .ph-wash::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(10, 13, 12, 0.2), rgba(10, 13, 12, 0.54) 78%, rgba(10, 13, 12, 0.66)); }
+  .ph-row, .ph-sub { position: relative; z-index: 1; }
 </style>

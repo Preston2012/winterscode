@@ -18,7 +18,10 @@ import Contact from '../components/sections/Contact.astro';
     eyebrow="Services · The Menu"
     h1="What I'm hired for."
     sub="Custom sites, custom apps, integrations between systems you already use, and ongoing maintenance starting at $75/mo."
-    sub2="Custom code. Direct line to the builder. You own what I build."
+    sub2="Custom code. Direct line to the builder."
+    sub3="You own what I build."
+    bgImage="/photo/local/services-coast-wash"
+    bgOpacity={0.4}
   />
 
   <Divider label="01" />
@@ -26,13 +29,9 @@ import Contact from '../components/sections/Contact.astro';
   <!-- ─────────── Section 01 · Story-led opener + 3-step ─────────── -->
   <section class="sv-opener" aria-label="How every build starts">
     <blockquote class="story-led">
-      <p>
-        Every build starts with a question: what story does this site need
-        to tell? For a charter captain, that might be "here's the boat,
-        here's the dock, book a trip." For an agency, it's a full
-        narrative arc. I figure out which one fits your business, then
-        build to it. <em>Top to bottom, every section earns its place.</em>
-      </p>
+      <p class="sl-lead">Every build starts with a question: <span class="sl-q">what story does this site need to tell?</span></p>
+      <p class="sl-body">For a <span class="sl-mark sl-copper">charter captain</span>, that might be "here's the boat, here's the dock, book a trip." For an <span class="sl-mark sl-green">agency</span>, it's a full narrative arc. I figure out which one fits your business, then build to it.</p>
+      <p class="sl-close">Top to bottom, every section earns its place.</p>
     </blockquote>
 
     <div class="how-it-goes">
@@ -398,19 +397,46 @@ import Contact from '../components/sections/Contact.astro';
     .sv-opener { padding: 40px 4px 24px; }
   }
   .story-led { border: 0; padding: 0; margin: 0 0 36px; }
-  .story-led p {
+  .story-led p { margin: 0; }
+  .sl-lead {
     font-family: var(--font-serif);
-    font-size: 17px;
-    line-height: 1.6;
-    color: var(--color-ash-200, var(--color-ash-100));
-    margin: 0;
+    font-weight: 500;
+    font-size: 22px;
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+    color: var(--color-ash-100);
   }
-  @media (min-width: 768px) { .story-led p { font-size: 19px; line-height: 1.55; } }
-  @media (min-width: 1024px) { .story-led p { font-size: 21px; } }
-  .story-led em {
-    color: var(--color-copper-bright);
+  .sl-lead .sl-q { color: var(--color-copper-bright); font-style: italic; }
+  .sl-body {
+    font-family: var(--font-sans);
+    font-size: 15px;
+    line-height: 1.65;
+    color: var(--color-ash-300);
+    margin-top: 16px;
+    max-width: 60ch;
+  }
+  .sl-mark { font-weight: 600; }
+  .sl-copper { color: var(--color-copper-bright); }
+  .sl-green { color: var(--color-wc-green); }
+  .sl-close {
+    font-family: var(--font-serif);
     font-style: italic;
     font-weight: 500;
+    font-size: 19px;
+    line-height: 1.35;
+    color: var(--color-copper-bright);
+    margin-top: 22px;
+    padding-top: 18px;
+    border-top: 1px solid var(--copper-hairline);
+  }
+  @media (min-width: 768px) {
+    .sl-lead { font-size: 27px; }
+    .sl-body { font-size: 16px; }
+    .sl-close { font-size: 22px; }
+  }
+  @media (min-width: 1024px) {
+    .sl-lead { font-size: 31px; }
+    .sl-close { font-size: 24px; }
   }
 
   .how-it-goes {

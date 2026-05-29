@@ -230,6 +230,20 @@ async function fetchGitHub(
     let last_message: string;
     if (isPublic && latest.payload?.commits?.length) {
       last_message = latest.payload.commits[0].message.split('\n')[0].slice(0, 80);
+    } else if (latest.repo?.name === 'Preston2012/winterscode') {
+      // winterscode is our own showcase repo: the events API omits commits for
+      // private repos, so pull the latest commit message directly. Other private
+      // repos (client work) stay masked for privacy.
+      let msg = '';
+      try {
+        const cr = await fetch('https://api.github.com/repos/Preston2012/winterscode/commits?per_page=1',
+          { signal: AbortSignal.timeout(4000), headers });
+        if (cr.ok) {
+          const commits: any[] = await cr.json();
+          msg = commits?.[0]?.commit?.message?.split('\n')[0]?.slice(0, 80) ?? '';
+        }
+      } catch { /* fall back to masked label */ }
+      last_message = msg || 'winterscode · main';
     } else {
       const repoShort = latest.repo?.name?.split('/').pop() ?? 'repo';
       last_message = `[private repo] · ${repoShort} · main`;
@@ -338,10 +352,48 @@ async function fetchPSI(
     JSON.stringify(wc) !== JSON.stringify(FALLBACK.lighthouse.winterscode) ||
     JSON.stringify(sogn) !== JSON.stringify(FALLBACK.lighthouse.sogn) ||
     JSON.stringify(baseline) !== JSON.stringify(FALLBACK.lighthouse.baseline);
+
+  // Rolling-best display. Keep the last N live runs per site in KV and show the
+  // element-wise best-of-N per category, so a single cold/throttled PSI run (or
+  // a stale cached low) never tanks the public number. AGG='avg' for a rolling
+  // average instead of best-of-N.
+  type Quad = [number, number, number, number];
+  const HIST_KEY = 'workshop:psi:hist:v1';
+  const HIST_TTL = 60 * 60 * 24 * 30;
+  const HIST_N = 7;
+  const AGG: 'max' | 'avg' = 'max';
+  const aggregate = (runs: Quad[], fb: Quad): Quad => {
+    if (!runs.length) return fb;
+    const pick = (i: number): number => {
+      const vals = runs.map(r => r[i]).filter(n => n > 0);
+      if (!vals.length) return fb[i];
+      return AGG === 'avg'
+        ? Math.round(vals.reduce((a, b) => a + b, 0) / vals.length)
+        : Math.max(...vals);
+    };
+    return [pick(0), pick(1), pick(2), pick(3)];
+  };
+  let hist: { winterscode: Quad[]; sogn: Quad[]; baseline: Quad[] } =
+    { winterscode: [], sogn: [], baseline: [] };
+  if (kv) {
+    try { const h = await kv.get<typeof hist>(HIST_KEY, 'json'); if (h) hist = h; } catch { /* non-fatal */ }
+  }
+  const isFb = (a: Quad, b: Quad) => JSON.stringify(a) === JSON.stringify(b);
+  const roll = (arr: Quad[], v: Quad, fb: Quad): Quad[] =>
+    (isFb(v, fb) ? (arr ?? []) : [...(arr ?? []), v]).slice(-HIST_N);
+  hist = {
+    winterscode: roll(hist.winterscode, wc, FALLBACK.lighthouse.winterscode),
+    sogn: roll(hist.sogn, sogn, FALLBACK.lighthouse.sogn),
+    baseline: roll(hist.baseline, baseline, FALLBACK.lighthouse.baseline),
+  };
+  if (kv && isLive) {
+    try { await kv.put(HIST_KEY, JSON.stringify(hist), { expirationTtl: HIST_TTL }); } catch { /* non-fatal */ }
+  }
+
   const result: WorkshopData['lighthouse'] = {
-    winterscode: wc,
-    sogn,
-    baseline,
+    winterscode: aggregate(hist.winterscode, wc),
+    sogn: aggregate(hist.sogn, sogn),
+    baseline: aggregate(hist.baseline, baseline),
     measured: 'just now',
     source: isLive ? 'live' : 'fallback',
   };

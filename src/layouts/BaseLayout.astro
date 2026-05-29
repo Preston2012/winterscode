@@ -182,18 +182,23 @@ const localBusinessSchema = {
   <KeyboardShortcuts />
 
   {!bare && (
-    <footer class="page small" style="border-top:1px solid var(--copper-hairline); padding-top:24px; margin-top:48px;">
-      <div style="display:flex; flex-direction:column; gap:14px;">
-        <p style="margin:0; font-family:var(--font-serif); font-style:italic; font-size:12px; color:var(--color-ash-300); display:flex; align-items:center; gap:10px;">
+    <footer class="page small wc-foot" style="position:relative; border-top:1px solid var(--copper-hairline); padding-top:34px; padding-bottom:24px; margin-top:32px;">
+      <div class="wc-foot-wash" aria-hidden="true"><img srcset="/photo/local/beach-pebbles-480.webp 480w, /photo/local/beach-pebbles-800.webp 800w" src="/photo/local/beach-pebbles-800.webp" sizes="100vw" alt="" width="800" height="600" loading="lazy" decoding="async" /></div>
+      <span class="wc-foot-corner tl" aria-hidden="true"></span>
+      <span class="wc-foot-corner tr" aria-hidden="true"></span>
+      <span class="wc-foot-corner bl" aria-hidden="true"></span>
+      <span class="wc-foot-corner br" aria-hidden="true"></span>
+      <div style="position:relative; z-index:1; display:flex; flex-direction:column; align-items:center; text-align:center; gap:13px;">
+        <p style="margin:0; font-family:var(--font-serif); font-style:italic; font-size:12px; color:var(--color-ash-300); display:flex; align-items:center; justify-content:center; gap:10px;">
           <img src="/wc-logo-256.webp" width="34" height="34" decoding="async" alt="" aria-hidden="true" style="display:block; flex:0 0 auto;" />
           <span>I build it. I ship it. I maintain it.</span>
         </p>
-        <nav aria-label="More" style="display:flex; gap:18px; flex-wrap:wrap; font-size:12px;">
+        <nav aria-label="More" style="display:flex; gap:18px; flex-wrap:wrap; justify-content:center; font-size:12px;">
           <a href="/wall" style="color:var(--color-copper-bright); text-decoration:none;">The Wall</a>
           <a href="/audit" style="color:var(--color-copper-bright); text-decoration:none;">Free site audit</a>
           <a href="/changelog" style="color:var(--color-copper-bright); text-decoration:none;">Changelog</a>
         </nav>
-        <div style="display:flex; flex-wrap:wrap; gap:20px; align-items:center; justify-content:space-between;">
+        <div style="display:flex; flex-wrap:wrap; gap:20px; align-items:center; justify-content:center;">
           <div>
             &copy; {new Date().getFullYear()} Winters Code · Bandon, Oregon
           </div>
@@ -203,7 +208,7 @@ const localBusinessSchema = {
             <a href="https://github.com/Preston2012" rel="noopener" target="_blank" style="color:var(--color-ash-400);">GitHub</a>
           </nav>
         </div>
-        <p style="margin:8px 0 0; font-size:11px; color:var(--color-ash-500); line-height:1.5; max-width:640px;">
+        <p style="margin:8px auto 0; font-size:11px; color:var(--color-ash-500); line-height:1.5; max-width:640px;">
           All product names, logos, and brands are property of their
           respective owners. References here are nominative and do not imply
           endorsement, affiliation, or sponsorship by any third party.
@@ -211,6 +216,30 @@ const localBusinessSchema = {
       </div>
     </footer>
   )}
+
+  <style>
+    /* Footer chrome: double-hairline top + centered teal dot + corner brackets
+       (business-card motif). Decorative, fills the lower footer. */
+    .wc-foot::before {
+      content: ""; position: absolute; z-index: 2; left: 0; right: 0; top: 3px; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--copper-dim) 20%, var(--copper-dim) 80%, transparent);
+      pointer-events: none;
+    }
+    .wc-foot::after {
+      content: ""; position: absolute; z-index: 2; left: 50%; top: -3px; width: 5px; height: 5px;
+      border-radius: 50%; background: var(--accent-teal); transform: translateX(-50%);
+      box-shadow: 0 0 6px rgba(53, 214, 196, 0.5), 0 0 0 3px var(--color-bg-deep);
+      pointer-events: none;
+    }
+    .wc-foot-corner { position: absolute; z-index: 2; width: 14px; height: 14px; border-color: var(--copper-dim); pointer-events: none; }
+    .wc-foot-corner.tl { top: 8px;  left: 0;  border-top: 1px solid; border-left: 1px solid; }
+    .wc-foot-corner.tr { top: 8px;  right: 0; border-top: 1px solid; border-right: 1px solid; }
+    .wc-foot-corner.bl { bottom: 0; left: 0;  border-bottom: 1px solid; border-left: 1px solid; }
+    .wc-foot-corner.br { bottom: 0; right: 0; border-bottom: 1px solid; border-right: 1px solid; }
+    .wc-foot-wash { position: absolute; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+    .wc-foot-wash img { width: 100%; height: 100%; object-fit: cover; object-position: center 62%; opacity: 0.42; display: block; -webkit-mask-image: linear-gradient(to top, #000 16%, transparent 90%); mask-image: linear-gradient(to top, #000 16%, transparent 90%); }
+    .wc-foot-wash::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgba(10,13,12,0.18), rgba(10,13,12,0.5) 58%, var(--color-bg-deep)); }
+  </style>
 
   <!-- Inline scroll-progress updater. ~250 bytes, no framework cost. -->
   <script is:inline>
