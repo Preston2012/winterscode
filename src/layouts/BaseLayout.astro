@@ -4,7 +4,6 @@ import '../styles/global.css';
 // preload. Browsers fetch preloaded fonts in parallel with HTML/CSS instead
 // of waiting for CSS parse to discover @font-face. Kills 200-400ms off LCP
 // on slow lab benches (PSI variance hardening).
-import fraunceseNormal from '@fontsource-variable/fraunces/files/fraunces-latin-opsz-normal.woff2?url';
 // IBM Plex weights no longer preloaded (they paint after LCP, removing them
 // from critical chain saves ~200-400ms on desktop traces). Kept available
 // via @font-face import in src/styles/fonts.css with font-display: swap.
@@ -135,7 +134,7 @@ const localBusinessSchema = {
        extended the critical path chain to 4.2s in Lighthouse desktop trace.
        They still load promptly via @font-face during CSS parse with
        font-display: swap, so body text never blocks paint. -->
-  <link rel="preload" as="font" type="font/woff2" href={fraunceseNormal} crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href="/_fonts/fraunces-normal.woff2" crossorigin />
 
   <!-- Print stylesheet, loaded non-render-blocking via media="print". -->
   <link rel="stylesheet" media="print" href={printCssUrl} />
