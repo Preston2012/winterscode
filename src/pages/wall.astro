@@ -107,6 +107,7 @@ const updatedAt = initialData?.updated_at ?? new Date().toISOString();
       <header class="wall-mod-head">
         <span class="wall-mod-num">01</span>
         <h2 class="wall-mod-title">DEPLOYS</h2>
+        <a class="wall-mod-source" href="https://github.com/Preston2012" target="_blank" rel="noopener">github ↗</a>
         <span class="wall-mod-badge" data-mod-source={deploys.source}>{deploys.source}</span>
       </header>
       <div class="wall-mod-body">
@@ -133,6 +134,7 @@ const updatedAt = initialData?.updated_at ?? new Date().toISOString();
       <header class="wall-mod-head">
         <span class="wall-mod-num">02</span>
         <h2 class="wall-mod-title">LIGHTHOUSE</h2>
+        <a class="wall-mod-source" href="https://pagespeed.web.dev/" target="_blank" rel="noopener">pagespeed ↗</a>
         <span class="wall-mod-badge" data-mod-source={lighthouse.source}>{lighthouse.source}</span>
       </header>
       <div class="wall-mod-body">
@@ -183,6 +185,7 @@ const updatedAt = initialData?.updated_at ?? new Date().toISOString();
       <header class="wall-mod-head">
         <span class="wall-mod-num">03</span>
         <h2 class="wall-mod-title">SECURITY</h2>
+        <a class="wall-mod-source" href="https://developer.mozilla.org/en-US/observatory/analyze?host=winterscode.com" target="_blank" rel="noopener">observatory ↗</a>
         <span class="wall-mod-badge" data-mod-source={security.source}>{security.source}</span>
       </header>
       <div class="wall-mod-body">
@@ -203,6 +206,7 @@ const updatedAt = initialData?.updated_at ?? new Date().toISOString();
       <header class="wall-mod-head">
         <span class="wall-mod-num">04</span>
         <h2 class="wall-mod-title">ENGINE</h2>
+        <a class="wall-mod-source" href="https://github.com/Preston2012/demi" target="_blank" rel="noopener">demi repo ↗</a>
         <span class="wall-mod-badge" data-mod-source={engine.source}>{engine.source}</span>
       </header>
       <div class="wall-mod-body">
@@ -299,7 +303,7 @@ const updatedAt = initialData?.updated_at ?? new Date().toISOString();
       <div class="wall-mod-body">
         <div class="wall-stat-big">
           <span class="wall-stat-num" data-speed-last>{speed.last_three}</span>
-          <span class="wall-stat-label">first client build · Sogn Contracting</span>
+          <span class="wall-stat-label">first client build · <a class="wall-mod-sogn" href="https://sogncontracting.com" target="_blank" rel="noopener">Sogn Contracting</a></span>
         </div>
         <p class="wall-mod-detail">Contract to live, in business days. Sogn Contracting (May 2026) shipped in 3 days. Starter sites typically 3-7 days. Pro sites 1-2 weeks. App MVP 2-4 weeks. Custom builds quoted in consult.</p>
       </div>
@@ -543,6 +547,34 @@ const updatedAt = initialData?.updated_at ?? new Date().toISOString();
     color: var(--color-copper);
     letter-spacing: 0.12em;
     font-weight: 600;
+  }
+
+  /* Source links: each module links out to its real provenance. */
+  .wall-mod-source {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.06em;
+    color: var(--color-copper);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: color 0.15s ease;
+  }
+  .wall-mod-source:hover,
+  .wall-mod-source:focus-visible {
+    color: var(--color-copper-bright);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .wall-mod-sogn {
+    color: var(--color-wc-green);
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .wall-mod-sogn:hover,
+  .wall-mod-sogn:focus-visible {
+    color: var(--color-wc-green-bright);
+    text-decoration: underline;
+    text-underline-offset: 2px;
   }
   .wall-mod-title {
     font-family: var(--font-mono);

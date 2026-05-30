@@ -28,11 +28,16 @@ import Contact from '../components/sections/Contact.astro';
 
   <!-- ─────────── Section 01 · Story-led opener + 3-step ─────────── -->
   <section class="sv-opener" aria-label="How every build starts">
-    <blockquote class="story-led">
-      <p class="sl-lead">Every build starts with a question: <span class="sl-q">what story does this site need to tell?</span></p>
+    <div class="sv-story">
+      <p class="sl-leadin">Every build starts with a question.</p>
+      <p class="sl-q">What story does this site need to tell?</p>
       <p class="sl-body">For a <span class="sl-mark sl-copper">charter captain</span>, that might be "here's the boat, here's the dock, book a trip." For an <span class="sl-mark sl-green">agency</span>, it's a full narrative arc. I figure out which one fits your business, then build to it.</p>
-      <p class="sl-close">Top to bottom, every section earns its place.</p>
-    </blockquote>
+      <div class="sl-thesis">
+        <div class="sl-rule"><i class="l"></i><b></b><i class="r"></i></div>
+        <p class="sl-close">Top to bottom, every section <span class="sl-em">earns its place.</span></p>
+        <div class="sl-rule"><i class="l"></i><b></b><i class="r"></i></div>
+      </div>
+    </div>
 
     <div class="how-it-goes">
       <h2 class="hg-heading">How it goes:</h2>
@@ -396,53 +401,81 @@ import Contact from '../components/sections/Contact.astro';
   @media (min-width: 768px) {
     .sv-opener { padding: 40px 4px 24px; }
   }
-  .story-led { border: 0; padding: 0; margin: 0 0 36px; }
-  .story-led p { margin: 0; }
-  .sl-lead {
+  .sv-story { margin: 0 0 8px; }
+  .sv-story p { margin: 0; }
+  .sl-leadin {
     font-family: var(--font-serif);
-    font-weight: 500;
-    font-size: 22px;
-    line-height: 1.3;
-    letter-spacing: -0.01em;
-    color: var(--color-ash-100);
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 1.4;
+    letter-spacing: 0.005em;
+    color: var(--color-ash-400);
+    margin-bottom: 6px;
   }
-  .sl-lead .sl-q { color: var(--color-copper-bright); font-style: italic; }
+  .sl-q {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 500;
+    font-size: 33px;
+    line-height: 1.12;
+    letter-spacing: -0.018em;
+    color: var(--color-copper-bright);
+    max-width: 18ch;
+    text-wrap: balance;
+  }
   .sl-body {
     font-family: var(--font-sans);
-    font-size: 15px;
-    line-height: 1.65;
+    font-size: 15.5px;
+    line-height: 1.68;
     color: var(--color-ash-300);
-    margin-top: 16px;
-    max-width: 60ch;
+    margin-top: 26px;
+    max-width: 58ch;
   }
   .sl-mark { font-weight: 600; }
   .sl-copper { color: var(--color-copper-bright); }
   .sl-green { color: var(--color-wc-green); }
+  .sl-thesis { margin-top: 44px; }
+  .sl-rule { display: flex; align-items: center; justify-content: center; }
+  .sl-rule i { height: 1px; width: 108px; display: block; }
+  .sl-rule i.l { background: linear-gradient(90deg, transparent, var(--color-copper-bright)); }
+  .sl-rule i.r { background: linear-gradient(90deg, var(--color-copper-bright), transparent); }
+  .sl-rule b {
+    width: 4px; height: 4px; border-radius: 50%;
+    background: var(--color-copper-bright);
+    box-shadow: 0 0 8px rgba(224, 150, 101, 0.75);
+    margin: 0 11px; display: block;
+  }
   .sl-close {
     font-family: var(--font-serif);
     font-style: italic;
-    font-weight: 500;
-    font-size: 19px;
-    line-height: 1.35;
-    color: var(--color-copper-bright);
-    margin-top: 22px;
-    padding-top: 18px;
-    border-top: 1px solid var(--copper-hairline);
+    font-weight: 400;
+    font-size: 25px;
+    line-height: 1.28;
+    letter-spacing: -0.01em;
+    color: var(--color-ash-100);
+    text-align: center;
+    margin: 22px auto;
+    max-width: 20ch;
+    text-wrap: balance;
   }
+  .sl-close .sl-em { color: var(--color-copper-bright); font-weight: 500; }
   @media (min-width: 768px) {
-    .sl-lead { font-size: 27px; }
-    .sl-body { font-size: 16px; }
-    .sl-close { font-size: 22px; }
+    .sl-leadin { font-size: 18px; }
+    .sl-q { font-size: 46px; }
+    .sl-body { font-size: 16.5px; margin-top: 30px; }
+    .sl-thesis { margin-top: 56px; }
+    .sl-close { font-size: 32px; margin: 26px auto; }
   }
   @media (min-width: 1024px) {
-    .sl-lead { font-size: 31px; }
-    .sl-close { font-size: 24px; }
+    .sl-q { font-size: 52px; }
+    .sl-close { font-size: 36px; }
   }
 
   .how-it-goes {
-    padding: 24px 0 0;
-    border-top: 1px solid var(--copper-hairline);
+    margin-top: 54px;
+    padding: 0;
   }
+  @media (min-width: 768px) { .how-it-goes { margin-top: 62px; } }
   .hg-heading {
     font-family: var(--font-mono);
     font-size: 11px;

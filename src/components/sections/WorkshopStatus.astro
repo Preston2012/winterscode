@@ -213,6 +213,16 @@ const ROWS: StatusRow[] = [
     font-style: italic;
     margin-left: 4px;
     font-size: 10px;
+    /* Commit subject can be long; keep it to one truncated line on its own row
+       (full width on mobile, the column width in the desktop dashboard) so it
+       never overflows the narrow status columns. API caps length at 56 too. */
+    display: block;
+    grid-column: 1 / -1;
+    min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   /* Explainer trigger sits between value and meta. Already styled as

@@ -19,6 +19,12 @@ import Divider from '../components/ui/Divider.astro';
   title="Winters Code · Custom websites and apps for the Oregon coast"
   description="Custom sites, apps, and tools for the Oregon coast. Help is just a text away. Bandon-based. Days for sites, weeks for apps. Real workshop, broadcasting live."
 >
+  <Fragment slot="head">
+    <!-- Preload the hero stamp (homepage LCP element). Fetching during HTML
+         parse instead of after the picture element pulls LCP toward FCP on mobile. -->
+    <link rel="preload" as="image" href="/wc-stamp-256.webp" type="image/webp" fetchpriority="high" />
+  </Fragment>
+
   <Header homepage />
   <MobileMenu />
 

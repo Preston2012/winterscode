@@ -9,8 +9,8 @@
 
 # Hashed fonts in same directory get the same treatment via the wildcard above.
 
-# Brand assets (favicon, brandmark, og-image) get long cache too — they
-# rarely change but aren't content-hashed, so use a shorter lifetime that
+# Brand assets (favicon, brandmark, og-image) get long cache too. They
+# rarely change but are not content-hashed, so use a shorter lifetime that
 # we can purge if we ever do change them.
 /brandmark.svg
   Cache-Control: public, max-age=86400, must-revalidate
@@ -20,3 +20,32 @@
 
 /favicon.ico
   Cache-Control: public, max-age=86400, must-revalidate
+
+# HTML documents render a built shell plus live client-fetched data (workshop
+# wall, availability). The document must never be held by the browser, the
+# back-forward cache, or the edge, or a stale shell survives a deploy. no-store
+# forces a fresh fetch every navigation. Static sub-resources above keep their
+# long cache, so this costs nothing on the Lighthouse cache audit (it inspects
+# sub-resources, not the document).
+/
+  Cache-Control: no-store
+/work
+  Cache-Control: no-store
+/services
+  Cache-Control: no-store
+/about
+  Cache-Control: no-store
+/contact
+  Cache-Control: no-store
+/wall
+  Cache-Control: no-store
+/audit
+  Cache-Control: no-store
+/changelog
+  Cache-Control: no-store
+/privacy
+  Cache-Control: no-store
+/terms
+  Cache-Control: no-store
+/404
+  Cache-Control: no-store

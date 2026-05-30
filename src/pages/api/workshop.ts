@@ -222,30 +222,38 @@ async function fetchGitHub(
     if (!allEvents.length) return cachedOrFallback();
     const pushEvents = allEvents.filter(e => e.type === 'PushEvent');
     if (!pushEvents.length) return cachedOrFallback();
-    const latest = pushEvents[0];
-    const last = relativeTime(latest.created_at);
-    // Private repo? GitHub events for private repos omit payload.commits.
-    // Public repos include commit messages; private show only the repo name.
-    const isPublic = latest.public === true;
+    // Headline deploy = most recent SHOWABLE push: a public repo with commits,
+    // or winterscode itself (private showcase, message pulled directly). Other
+    // private repos (client work) still count in the 30-day totals below but
+    // never surface here, so no client repo name or commit text leaks. Tracks
+    // all public repos, masks private. firstLine caps length; the status chrome
+    // adds a CSS ellipsis so long subjects never overflow the pill or card.
+    const firstLine = (m: string, max = 56): string => {
+      const ln = (m || '').split('\n')[0].trim();
+      return ln.length > max ? ln.slice(0, max).trimEnd() : ln;
+    };
+    const WC_REPO = 'Preston2012/winterscode';
+    const showable = pushEvents.find(
+      e => (e.public === true && e.payload?.commits?.length) || e.repo?.name === WC_REPO,
+    ) ?? pushEvents[0];
+    const last = relativeTime(showable.created_at);
     let last_message: string;
-    if (isPublic && latest.payload?.commits?.length) {
-      last_message = latest.payload.commits[0].message.split('\n')[0].slice(0, 80);
-    } else if (latest.repo?.name === 'Preston2012/winterscode') {
-      // winterscode is our own showcase repo: the events API omits commits for
-      // private repos, so pull the latest commit message directly. Other private
-      // repos (client work) stay masked for privacy.
+    if (showable.public === true && showable.payload?.commits?.length) {
+      last_message = firstLine(showable.payload.commits[0].message);
+    } else if (showable.repo?.name === WC_REPO) {
+      // events API omits commits for private repos; pull winterscode's directly
       let msg = '';
       try {
         const cr = await fetch('https://api.github.com/repos/Preston2012/winterscode/commits?per_page=1',
           { signal: AbortSignal.timeout(4000), headers });
         if (cr.ok) {
           const commits: any[] = await cr.json();
-          msg = commits?.[0]?.commit?.message?.split('\n')[0]?.slice(0, 80) ?? '';
+          msg = firstLine(commits?.[0]?.commit?.message ?? '');
         }
       } catch { /* fall back to masked label */ }
       last_message = msg || 'winterscode · main';
     } else {
-      const repoShort = latest.repo?.name?.split('/').pop() ?? 'repo';
+      const repoShort = showable.repo?.name?.split('/').pop() ?? 'repo';
       last_message = `[private repo] · ${repoShort} · main`;
     }
     // 30-day rolling count of push events
@@ -276,6 +284,7 @@ async function fetchGitHub(
 async function fetchPSI(
   key: string | undefined,
   kv?: KVNamespace,
+  skipCache = false,
 ): Promise<WorkshopData['lighthouse']> {
   if (!key) return FALLBACK.lighthouse;
   // KV cache: PSI runs take 10-30s, well outside per-request budget.
@@ -284,7 +293,7 @@ async function fetchPSI(
   const CACHE_KEY = 'workshop:psi:v1';
   const CACHE_TTL = 60 * 60 * 12;
 
-  if (kv) {
+  if (kv && !skipCache) {
     try {
       const cached = await kv.get<WorkshopData['lighthouse']>(CACHE_KEY, 'json');
       if (cached) return { ...cached, source: 'cached' };
@@ -317,6 +326,11 @@ async function fetchPSI(
       ];
       // Zeroed categories signal a partial PSI failure; drop this run.
       if (result.some(n => n === 0)) return null;
+      // Challenge/error-page guard: every monitored site scores accessibility
+      // ~100. A run far below that is PSI's crawler hitting a Cloudflare
+      // bot-challenge / interstitial (scores a11y ~54), not the real page.
+      // Drop it so a challenge sample never reaches the median or the cache.
+      if (result[1] < 80) return null;
       return result;
     } catch {
       return null;
@@ -621,8 +635,11 @@ async function refreshPSIBackground(
   const CACHE_KEY = 'workshop:psi:v1';
   const CACHE_TTL = 60 * 60 * 12;
   try {
-    // Force live PSI by calling fetchPSI WITHOUT kv (so it skips cache).
-    const fresh = await fetchPSI(key, undefined);
+    // Force live PSI (skipCache) but KEEP kv so the rolling-best history
+    // (HIST_KEY) reads + writes. Without kv the per-category max never engages
+    // and a single low or stale run sticks for the whole cache TTL, which is
+    // what made a one-off best-practices dip show on the public wall.
+    const fresh = await fetchPSI(key, kv, true);
     if (fresh.source === 'live') {
       await kv.put(CACHE_KEY, JSON.stringify(fresh), { expirationTtl: CACHE_TTL });
     }

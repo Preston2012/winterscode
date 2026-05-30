@@ -56,15 +56,17 @@ const { label = 'WC', ariaLabel } = Astro.props;
   }
   .divider-line {
     flex: 1;
-    height: 1px;
-    background: linear-gradient(
-      90deg,
-      transparent,
-      var(--copper-dim) 20%,
-      var(--color-copper) 50%,
-      var(--copper-dim) 80%,
-      transparent
-    );
+    height: 4px;
+    /* Double-hairline, matching the header/footer seam (business-card motif):
+       two 1px copper-gradient lines 3px apart. No teal here. Teal stays a
+       sparse special marker (the masthead seam dot, highlight cards), never on
+       the six repeating dividers. */
+    background-image:
+      linear-gradient(90deg, transparent, var(--copper-dim) 18%, var(--color-copper) 50%, var(--copper-dim) 82%, transparent),
+      linear-gradient(90deg, transparent, var(--copper-dim) 18%, var(--color-copper) 50%, var(--copper-dim) 82%, transparent);
+    background-size: 100% 1px, 100% 1px;
+    background-position: 0 0, 0 3px;
+    background-repeat: no-repeat;
   }
   .divider-mark {
     width: 28px;

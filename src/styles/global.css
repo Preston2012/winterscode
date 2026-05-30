@@ -41,6 +41,15 @@
   --font-sans:  'IBM Plex Sans', 'IBM Plex fallback', -apple-system, system-ui, 'Segoe UI', Roboto, sans-serif;
   --font-mono:  'JetBrains Mono', ui-monospace, monospace;
 
+  /* Type scale tokens (canonical; stepped at 768/1024 to match v5.1). */
+  --fs-h1: 42px;
+  --fs-h2: 26px;
+  --fs-h3: 18px;
+  --fs-body: 15px;
+  --fs-caption: 12px;
+  --fs-eyebrow: 11px;
+  --fs-mono: 11px;
+
   /* Radii */
   --radius-card: 12px;
   --radius-btn:  8px;
@@ -234,7 +243,7 @@ main.page {
    ───────────────────────────────────────────────────────────── */
 .h1 {
   font-family: var(--font-serif);
-  font-size: 42px;
+  font-size: var(--fs-h1);
   font-weight: 600;
   letter-spacing: -0.02em;
   line-height: 1.02;
@@ -246,7 +255,7 @@ main.page {
 
 .h2 {
   font-family: var(--font-serif);
-  font-size: 26px;
+  font-size: var(--fs-h2);
   font-weight: 600;
   letter-spacing: -0.015em;
   margin: 0;
@@ -257,7 +266,7 @@ main.page {
 
 .h3 {
   font-family: var(--font-serif);
-  font-size: 18px;
+  font-size: var(--fs-h3);
   font-weight: 600;
   margin: 0;
   color: var(--color-ash-100);
@@ -268,31 +277,70 @@ main.page {
 
 .body-text {
   color: var(--color-ash-300);
-  font-size: 15px;
+  font-size: var(--fs-body);
   line-height: 1.6;
 }
 
 .small {
   color: var(--color-ash-500);
-  font-size: 12px;
+  font-size: var(--fs-caption);
+}
+
+/* Edge registration marks (print-chrome motif), desktop gutters only.
+   Sparse copper "+" ticks just outside the content column; teal is the
+   rare special accent. Hidden on narrow screens (no gutter room). */
+.edge-tick { display: none; }
+@media (min-width: 1024px) {
+  .edge-tick {
+    display: block;
+    position: absolute;
+    top: 50%;
+    width: 12px;
+    height: 1px;
+    background-color: var(--copper-dim);
+    transform: translateY(-50%);
+    pointer-events: none;
+    z-index: 1;
+  }
+  .edge-tick.left  { left: -18px; }
+  .edge-tick.right { right: -18px; }
+  .edge-tick.teal  { background-color: var(--accent-teal); }
+  .edge-tick::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 1px;
+    height: 8px;
+    background-color: inherit;
+    transform: translate(-50%, -50%);
+  }
 }
 
 @media (min-width: 768px) {
-  .h1 { font-size: 56px; }
-  .h2 { font-size: 32px; }
-  .h3 { font-size: 20px; }
-  .body-text { font-size: 16px; }
+  :root {
+    --fs-h1: 56px;
+    --fs-h2: 32px;
+    --fs-h3: 20px;
+    --fs-body: 16px;
+    --fs-eyebrow: 12px;
+    --fs-mono: 12px;
+  }
 }
 
 @media (min-width: 1024px) {
+  :root {
+    --fs-h1: 80px;
+    --fs-h2: 42px;
+    --fs-h3: 22px;
+    --fs-body: 17px;
+    --fs-eyebrow: 13px;
+    --fs-mono: 13px;
+  }
   .h1 {
-    font-size: 80px;
     line-height: 1;
     letter-spacing: -0.03em;
   }
-  .h2 { font-size: 42px; }
-  .h3 { font-size: 22px; }
-  .body-text { font-size: 17px; }
 }
 
 /* ─────────────────────────────────────────────────────────────

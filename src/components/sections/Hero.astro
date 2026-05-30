@@ -394,7 +394,7 @@ const WORKSHOP_PREVIEW = [
     line-height: 1.1;
     letter-spacing: -0.02em;
     color: var(--color-ash-100);
-    margin: 0;
+    margin: 32px 0 0;
     text-wrap: balance;
     overflow-wrap: anywhere;
     hyphens: auto;
@@ -409,6 +409,7 @@ const WORKSHOP_PREVIEW = [
     .hero-h1 {
       font-size: 44px;
       line-height: 1.08;
+      margin-top: 0;
     }
     /* Force the line break at tablet too so line 1 ("...into business")
        ends before the maker's-mark zone top-right. Without this the H1
@@ -651,11 +652,11 @@ const WORKSHOP_PREVIEW = [
      the component emits for its size prop. */
   .hero-mark {
     position: absolute;
-    top: 16px;
+    top: 10px;
     right: 4px;
     z-index: 5;
     pointer-events: none;
-    transform: scale(calc(90 / 140));
+    transform: scale(calc(64 / 140));
     transform-origin: top right;
   }
   @media (min-width: 768px) {
