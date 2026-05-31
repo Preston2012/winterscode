@@ -134,6 +134,7 @@ const localBusinessSchema = {
        extended the critical path chain to 4.2s in Lighthouse desktop trace.
        They still load promptly via @font-face during CSS parse with
        font-display: swap, so body text never blocks paint. -->
+    <link rel="preload" href="/_fonts/fraunces-normal.woff2" as="font" type="font/woff2" crossorigin />
 
   <!-- Print stylesheet, loaded non-render-blocking via media="print". -->
   <link rel="stylesheet" media="print" href={printCssUrl} />
