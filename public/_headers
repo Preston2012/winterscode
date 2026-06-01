@@ -1,17 +1,11 @@
 # Hashed assets (Astro emits content-addressed paths under /_astro/) are
 # immutable: a content change yields a new path. Cache aggressively at the
-# edge AND in browsers. Both perf signals from Lighthouse improve:
-#   - "Use efficient cache lifetimes" passes
-#   - Repeat visits get bytes from cache, not network
-
+# edge AND in browsers.
 /_astro/*
   Cache-Control: public, max-age=31536000, immutable
 
-# Hashed fonts in same directory get the same treatment via the wildcard above.
-
-# Brand assets (favicon, brandmark, og-image) get long cache too. They
-# rarely change but are not content-hashed, so use a shorter lifetime that
-# we can purge if we ever do change them.
+# Brand assets (favicon, brandmark, og-image) get long cache. They rarely
+# change but are not content-hashed, so use a lifetime we can purge.
 /brandmark.svg
   Cache-Control: public, max-age=86400, must-revalidate
 
@@ -21,31 +15,34 @@
 /favicon.ico
   Cache-Control: public, max-age=86400, must-revalidate
 
+/favicon-w.svg
+  Cache-Control: public, max-age=86400, must-revalidate
+
 # HTML documents render a built shell plus live client-fetched data (workshop
-# wall, availability). The document must never be held by the browser, the
-# back-forward cache, or the edge, or a stale shell survives a deploy. no-store
-# forces a fresh fetch every navigation. Static sub-resources above keep their
-# long cache, so this costs nothing on the Lighthouse cache audit (it inspects
-# sub-resources, not the document).
+# wall, availability). Strategy: edge-cache the shell (s-maxage=600) so cold
+# POPs serve a fast TTFB, but force the BROWSER to revalidate every navigation
+# (max-age=0, must-revalidate) so a visitor never holds a stale shell. The
+# deploy step purges the edge, so a cached shell can never outlive a deploy.
+# The /api/* routes set their own no-store and are never cached here.
 /
-  Cache-Control: no-store
+  Cache-Control: public, max-age=0, must-revalidate, s-maxage=600
 /work
-  Cache-Control: no-store
+  Cache-Control: public, max-age=0, must-revalidate, s-maxage=600
 /services
-  Cache-Control: no-store
+  Cache-Control: public, max-age=0, must-revalidate, s-maxage=600
 /about
-  Cache-Control: no-store
+  Cache-Control: public, max-age=0, must-revalidate, s-maxage=600
 /contact
-  Cache-Control: no-store
+  Cache-Control: public, max-age=0, must-revalidate, s-maxage=600
 /wall
-  Cache-Control: no-store
+  Cache-Control: public, max-age=0, must-revalidate, s-maxage=600
 /audit
-  Cache-Control: no-store
+  Cache-Control: public, max-age=0, must-revalidate, s-maxage=600
 /changelog
-  Cache-Control: no-store
+  Cache-Control: public, max-age=0, must-revalidate, s-maxage=600
 /privacy
-  Cache-Control: no-store
+  Cache-Control: public, max-age=0, must-revalidate, s-maxage=600
 /terms
-  Cache-Control: no-store
+  Cache-Control: public, max-age=0, must-revalidate, s-maxage=600
 /404
-  Cache-Control: no-store
+  Cache-Control: public, max-age=0, must-revalidate, s-maxage=600

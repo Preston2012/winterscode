@@ -93,13 +93,18 @@ const localBusinessSchema = {
   <meta name="description" content={description} />
   <link rel="canonical" href={canonical} />
 
-  <!-- Theme + favicons. The favicon-w SVG is the canonical favicon (W only, legible at 16px)
-       (works at any size, color-scheme aware via styled <style> inside it).
-       favicon.ico kept as legacy fallback. brandmark.svg (full W stamp with ring text) used for apple-touch-icon at larger size. -->
+  <!-- Theme + favicons. The color seal (wc-stamp PNGs) is the canonical favicon:
+       it matches the Google Business Profile mark, reads at tab size, and the
+       ring text reads as decorative chrome when small. Multiple sizes let the
+       browser pick the best; favicon.ico is the legacy fallback; mask-icon
+       (Safari pinned tab) stays the monochrome brandmark. -->
   <meta name="theme-color" content="#0a0d0c" />
-  <link rel="icon" type="image/svg+xml" href="/favicon-w.svg" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/wc-stamp-32.png" />
+  <link rel="icon" type="image/png" sizes="64x64" href="/wc-stamp-64.png" />
+  <link rel="icon" type="image/png" sizes="128x128" href="/wc-stamp-128.png" />
+  <link rel="icon" type="image/png" sizes="256x256" href="/wc-stamp-256.png" />
   <link rel="icon" href="/favicon.ico" sizes="any" />
-  <link rel="apple-touch-icon" href="/brandmark.svg" />
+  <link rel="apple-touch-icon" href="/wc-stamp-256.png" />
   <link rel="mask-icon" href="/brandmark.svg" color="#4dd8a8" />
 
   <!-- OpenGraph (Facebook, LinkedIn, iMessage). Omitted entirely when ogImage=null. -->
