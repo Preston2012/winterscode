@@ -18,6 +18,15 @@
 /favicon-w.svg
   Cache-Control: public, max-age=86400, must-revalidate
 
+/wc-stamp-*
+  Cache-Control: public, max-age=86400, must-revalidate
+
+/wordmark.svg
+  Cache-Control: public, max-age=86400, must-revalidate
+
+/og-image.png
+  Cache-Control: public, max-age=86400, must-revalidate
+
 # HTML documents render a built shell plus live client-fetched data (workshop
 # wall, availability). Strategy: edge-cache the shell (s-maxage=600) so cold
 # POPs serve a fast TTFB, but force the BROWSER to revalidate every navigation
