@@ -1,0 +1,63 @@
+---
+import ServiceLayout from '../components/templates/ServiceLayout.astro';
+import type { ServiceEntry } from '../lib/business';
+const service: ServiceEntry = {
+  slug: 'logo-design',
+  name: 'Logo & Brand Design',
+  shortLabel: 'Logo & Brand Design',
+  blurb: 'Custom logos and brand identity for Oregon coast businesses.',
+  serviceType: 'Logo and brand identity design',
+};
+---
+<ServiceLayout
+  service={service}
+  path="/logo-design"
+  breadcrumb={[
+    { name: 'Home', path: '/' },
+    { name: 'Logo & Brand Design', path: '/logo-design' },
+  ]}
+  title="Logo & Brand Design · Oregon Coast · Winters Code"
+  description="Custom logo and brand design for Oregon coast businesses. Real marks made for your business, not clip art. Pairs with the site I build to launch it on."
+  eyebrow="Services · Logo & Brand"
+  h1="A mark made for your business."
+  sub="Custom logos and brand identity for Oregon coast businesses. Real design, drawn for you, ready to launch on the site I build."
+  bgImage="/photo/local/services-coast-wash"
+  intro={[
+    "Your logo is the first thing people remember and the last thing you should buy off a template. A custom mark, with the colors and type that go with it, makes a small business look like it means business, on the sign, the truck, and the website.",
+    "I design the brand and build the site it lives on, so the two actually match. No handing your new logo to a separate web person and hoping it survives.",
+  ]}
+  figure={{
+    src: '/work/graphic-work-800.webp',
+    srcLarge: '/work/graphic-work-1200.webp',
+    width: 1448,
+    height: 1086,
+    alt: 'A grid of selected logo and brand work by Winters Code, including wordmarks, emblems, and full brand marks for a range of businesses.',
+    caption: 'Selected graphic work.',
+  }}
+  includesTitle="What you get"
+  includes={[
+    { h: 'Custom logo', body: 'A primary mark drawn for your business, with the variations you need for signs, screens, and small sizes.' },
+    { h: 'Color and type', body: 'A palette and typefaces that work together, so everything you make looks like it belongs to the same business.' },
+    { h: 'Brand kit', body: 'The files and rules in one place: full color, single color, light and dark, the formats a printer and a website both need.' },
+    { h: 'Ready for the web', body: 'Optimized so it loads sharp and fast on the site, not a giant file that slows the page.' },
+    { h: 'Print-ready', body: 'Vector files that scale clean from a business card to a truck wrap without going fuzzy.' },
+    { h: 'Yours to own', body: 'You own the artwork outright, in the formats you will actually use.' },
+  ]}
+  whyTitle="Design and build, from one shop"
+  why={[
+    "Most businesses buy a logo from one place and a website from another, and the brand falls apart in the gap. I do both, so your mark, your colors, and your site are one consistent thing from day one.",
+    "<em>Real design, made for your business.</em> Brand and logo work pairs naturally with a build, and it is also available on its own.",
+  ]}
+  faq={[
+    { q: 'Can you do just a logo, without a website?', a: 'Yes. Logo and brand design is available on its own, quoted per project. It also pairs naturally with a site build, since I can launch the new brand on the new site at the same time.' },
+    { q: 'Do I own the logo?', a: 'Yes, outright, in the formats you will actually use: vector files for print, optimized files for the web, full color and single color, light and dark.' },
+    { q: 'Will it work on a sign and a phone screen?', a: 'Yes. I design for the range, from a tiny app icon to a truck wrap, with variations that stay clear at every size.' },
+    { q: 'What if I already have a logo?', a: 'Then we build the rest of the brand around it, or refine it if it needs it, and make sure it lives well on your site. No need to start from scratch if what you have works.' },
+  ]}
+  relatedTitle="Related"
+  relatedLinks={[
+    { href: '/services/web-design', label: 'Web Design', sub: 'Launch the brand' },
+    { href: '/work', label: 'See the work', sub: 'Projects + builds' },
+    { href: '/contact', label: 'Start a project', sub: 'Free consult' },
+  ]}
+/>
