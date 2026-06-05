@@ -1,13 +1,11 @@
 ---
 /**
- * Footer, extracted verbatim from BaseLayout (markup + chrome styles) and
- * expanded with an additive column nav for IA + internal linking.
- *
- * The original centered chrome is preserved exactly: beach-pebble wash,
- * corner brackets, pulsing teal dot, "I build it. I ship it. I maintain it.",
- * copyright, and the nominative-use fine print. The column grid is new, sits
- * above the chrome, and sources its links from the business data module so
- * Services + Locations stay in sync.
+ * Footer — one centered composition: a brand masthead (seal + tagline) on top,
+ * a delicate 3x2 IA column nav in the middle, and the legal line at the base,
+ * all on a shared centre axis. Keeps the original chrome: beach-pebble wash,
+ * corner brackets, pulsing teal dot, the "I build it…" tagline, and the
+ * nominative-use fine print. Column links source from the business data module
+ * so Services + Locations stay in sync.
  */
 import { services, towns, business } from '../../lib/business';
 
@@ -63,61 +61,105 @@ const columns: { title: string; links: { label: string; href: string; external?:
 ];
 ---
 
-<footer class="page small wc-foot" style="position:relative; border-top:1px solid rgba(77, 216, 168, 0.18); padding-top:34px; padding-bottom:24px; margin-top:32px;">
+<footer class="page small wc-foot" style="position:relative; border-top:1px solid rgba(77, 216, 168, 0.18); padding-top:46px; padding-bottom:26px; margin-top:32px;">
   <div class="wc-foot-wash" aria-hidden="true"><img srcset="/photo/local/beach-pebbles-480.webp 480w, /photo/local/beach-pebbles-800.webp 800w" src="/photo/local/beach-pebbles-800.webp" sizes="100vw" alt="" width="800" height="600" loading="lazy" decoding="async" /></div>
   <span class="wc-foot-corner tl" aria-hidden="true"></span>
   <span class="wc-foot-corner tr" aria-hidden="true"></span>
   <span class="wc-foot-corner bl" aria-hidden="true"></span>
   <span class="wc-foot-corner br" aria-hidden="true"></span>
 
-  <!-- Additive IA columns -->
-  <nav class="wc-foot-cols" aria-label="Footer" style="position:relative; z-index:1;">
-    {columns.map((col) => (
-      <div class="wc-foot-col">
-        <h2 class="wc-foot-col-h">{col.title}</h2>
-        <ul>
-          {col.links.map((l) => (
-            <li>
-              {l.external
-                ? <a href={l.href} rel="noopener" target="_blank">{l.label}</a>
-                : <a href={l.href}>{l.label}</a>}
-            </li>
-          ))}
-        </ul>
-      </div>
-    ))}
-  </nav>
-
-  <!-- Preserved centered chrome -->
-  <div class="wc-foot-chrome" style="position:relative; z-index:1; display:flex; flex-direction:column; align-items:center; text-align:center; gap:13px;">
-    <p style="margin:0; font-family:var(--font-serif); font-style:italic; font-size:12px; color:var(--color-ash-300); display:flex; align-items:center; justify-content:center; gap:10px;">
-      <img src="/wc-logo-256.webp" width="34" height="34" decoding="async" alt="" aria-hidden="true" style="display:block; flex:0 0 auto;" />
-      <span>I build it. I ship it. I maintain it.</span>
-    </p>
-    <div>
-      &copy; {year} Winters Code · Bandon, Oregon
+  <div class="wc-foot-inner">
+    <!-- Masthead -->
+    <div class="wc-foot-mast">
+      <img src="/wc-logo-256.webp" width="46" height="46" decoding="async" alt="" aria-hidden="true" class="wc-foot-seal" />
+      <p class="wc-foot-tag">I build it. I ship it. I maintain it.</p>
+      <p class="wc-foot-sub">Custom websites &amp; apps · Oregon Coast</p>
     </div>
-    <p style="margin:8px auto 0; font-size:11px; color:var(--color-ash-500); line-height:1.5; max-width:640px;">
-      All product names, logos, and brands are property of their
-      respective owners. References here are nominative and do not imply
-      endorsement, affiliation, or sponsorship by any third party.
-    </p>
+
+    <span class="wc-foot-rule" aria-hidden="true"></span>
+
+    <!-- IA columns -->
+    <nav class="wc-foot-cols" aria-label="Footer">
+      {columns.map((col) => (
+        <div class="wc-foot-col">
+          <h2 class="wc-foot-col-h">{col.title}</h2>
+          <ul>
+            {col.links.map((l) => (
+              <li>
+                {l.external
+                  ? <a href={l.href} rel="noopener" target="_blank">{l.label}</a>
+                  : <a href={l.href}>{l.label}</a>}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </nav>
+
+    <span class="wc-foot-rule" aria-hidden="true"></span>
+
+    <!-- Legal -->
+    <div class="wc-foot-chrome">
+      <div class="wc-foot-copy">&copy; {year} Winters Code · Bandon, Oregon</div>
+      <p class="wc-foot-fine">
+        All product names, logos, and brands are property of their
+        respective owners. References here are nominative and do not imply
+        endorsement, affiliation, or sponsorship by any third party.
+      </p>
+    </div>
   </div>
 </footer>
 
 <style>
-  /* ── Additive column grid ── */
+  /* ── Centered composition ── */
+  .wc-foot-inner {
+    position: relative;
+    z-index: 1;
+    max-width: 760px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  /* Masthead */
+  .wc-foot-mast { display: flex; flex-direction: column; align-items: center; gap: 9px; }
+  .wc-foot-seal { display: block; opacity: 0.95; }
+  .wc-foot-tag {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 17px;
+    line-height: 1.25;
+    color: var(--color-ash-200, var(--color-ash-100));
+  }
+  @media (min-width: 768px) { .wc-foot-tag { font-size: 20px; } }
+  .wc-foot-sub {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-ash-500);
+  }
+
+  /* Hairline rules (match the chrome's teal gradient) */
+  .wc-foot-rule {
+    display: block;
+    height: 1px;
+    width: min(72%, 440px);
+    margin: 26px auto;
+    background: linear-gradient(90deg, transparent, rgba(77, 216, 168, 0.22) 25%, rgba(77, 216, 168, 0.22) 75%, transparent);
+  }
+
+  /* IA columns — delicate, centered, 3 wide x 2 tall */
   .wc-foot-cols {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 26px 14px;
-    max-width: 680px;
-    margin: 0 auto 30px;
-    text-align: left;
-    padding-bottom: 26px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    align-items: start;
+    gap: 28px 16px;
+    max-width: 580px;
+    margin: 0 auto;
   }
-  @media (min-width: 768px) { .wc-foot-cols { gap: 30px 28px; max-width: 800px; } }
+  @media (min-width: 768px) { .wc-foot-cols { gap: 34px 28px; max-width: 600px; } }
   .wc-foot-col-h {
     font-family: var(--font-mono);
     font-size: 10px;
@@ -125,20 +167,39 @@ const columns: { title: string; links: { label: string; href: string; external?:
     letter-spacing: 0.16em;
     text-transform: uppercase;
     color: var(--color-copper);
-    margin: 0 0 10px;
+    margin: 0 0 12px;
   }
-  .wc-foot-col ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 7px; }
+  .wc-foot-col-h::after {
+    content: "";
+    display: block;
+    width: 14px;
+    height: 1px;
+    margin: 7px auto 0;
+    background: var(--color-copper);
+    opacity: 0.45;
+  }
+  .wc-foot-col ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
   .wc-foot-col a {
     font-family: var(--font-sans);
     font-size: 12px;
+    line-height: 1.35;
     color: var(--color-ash-400);
     text-decoration: none;
     transition: color 0.15s ease;
-    line-height: 1.35;
-    display: inline-block;
   }
   @media (min-width: 768px) { .wc-foot-col a { font-size: 13px; } }
   .wc-foot-col a:hover, .wc-foot-col a:focus-visible { color: var(--color-wc-green); outline: none; }
+
+  /* Legal */
+  .wc-foot-chrome { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+  .wc-foot-copy { font-size: 12px; color: var(--color-ash-300); }
+  .wc-foot-fine {
+    margin: 0 auto;
+    max-width: 600px;
+    font-size: 11px;
+    line-height: 1.55;
+    color: var(--color-ash-500);
+  }
 
   /* ── Preserved footer chrome (verbatim from BaseLayout) ── */
   .wc-foot::before {
