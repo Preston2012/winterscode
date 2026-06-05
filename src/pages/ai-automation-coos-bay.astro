@@ -1,0 +1,54 @@
+---
+import ServiceLayout from '../components/templates/ServiceLayout.astro';
+import { serviceBySlug } from '../lib/business';
+const service = serviceBySlug('ai-automation')!;
+---
+<ServiceLayout
+  service={service}
+  path="/ai-automation-coos-bay"
+  schemaName="AI Automation in Coos Bay, Oregon"
+  areaName="Coos Bay"
+  breadcrumb={[
+    { name: 'Home', path: '/' },
+    { name: 'AI Automation', path: '/services/ai-automation' },
+    { name: 'AI Automation in Coos Bay', path: '/ai-automation-coos-bay' },
+  ]}
+  title="AI Automation in Coos Bay, OR · Winters Code"
+  description="AI automation for Coos Bay businesses. Automate intake, replies, and lead routing for busy clinics, shops, and trades. Built by a shop that ships real AI."
+  eyebrow="Coos Bay · AI Automation"
+  h1="AI automation for Coos Bay businesses."
+  sub="Coos Bay is the busiest market on the south coast. Automation is how a small team keeps up without hiring for the busywork."
+  sub2="Practical AI, not the buzzword kind."
+  bgImage="/photo/local/home-coast-wash"
+  intro={[
+    "Coos Bay businesses run on volume: a clinic fielding calls, a shop answering the same questions all day, a contractor buried in quote requests. That volume is exactly where automation pays. The goal is not to replace your people, it is to stop making them do the work a system should.",
+    "I start with the one task eating the most time in your operation, automate it, prove the hours it saves, and only then move to the next. No giant rip-and-replace.",
+  ]}
+  includesTitle="What I automate"
+  includes={[
+    { h: 'Front-desk intake', body: 'Calls, forms, and emails turned into clean, sorted records, so nothing falls through on a busy day in a busy town.' },
+    { h: 'Lead routing', body: 'New inquiries triaged and sent to the right person automatically, instead of sitting unanswered while you are on a job.' },
+    { h: 'Drafted replies', body: 'First-draft answers to the questions every Coos Bay customer asks, in your voice, ready to send in a glance.' },
+    { h: 'Tool integration', body: 'Your booking tool, inbox, CRM, and payment system wired together so data moves once and stays in sync.' },
+    { h: 'Document and photo AI', body: 'Vision and language models that read intake forms or analyze a photo, the same tech behind my live StainSlayer app.' },
+    { h: 'Owned, auditable', body: 'Automation you control and can inspect, not a black box you rent and cannot see into.' },
+  ]}
+  whyTitle="Why hire a builder, not a reseller"
+  why={[
+    "Most AI vendors resell someone else's tool. I build the real thing. <strong>StainSlayer AI</strong> runs vision models and is live on both app stores. <strong>Baseline</strong> runs multiple AI models in parallel. <strong>MyKonos</strong> runs on Demiurge, a memory engine I wrote.",
+    "For a Coos Bay business that means automation built by the person who actually understands it, sitting 30 minutes down Highway 101, not a support queue three time zones away. <em>The code is mine. The hours it saves are yours.</em>",
+  ]}
+  faq={[
+    { q: 'Will automation make my Coos Bay business feel less personal?', a: 'It should do the opposite. Automating the sorting and drafting gives your team back the hours to actually talk to customers. The AI handles the busywork; you keep the relationships that a small-town business runs on.' },
+    { q: 'Where should a busy operation start?', a: 'With the single task eating the most time, usually intake or repeat questions. I automate that one thing, measure the hours saved, then expand only where the return is real.' },
+    { q: 'Do you build it, or just set up a SaaS tool?', a: 'I build it, and wire it into the tools you already use. Three of my live products are AI, so this is core work, not a reseller add-on.' },
+    { q: 'Can we meet in person?', a: 'Yes. Coos Bay is about 30 minutes from the shop in Bandon. First consult is a free video call, and in-person meetings carry no travel deposit inside Coos County.' },
+  ]}
+  relatedTitle="Related"
+  relatedIntro="The full service, the Coos Bay overview, and what else I build."
+  relatedLinks={[
+    { href: '/services/ai-automation', label: 'AI Automation', sub: 'The full service' },
+    { href: '/web-design-coos-bay', label: 'Web Design in Coos Bay', sub: 'Coos Bay overview' },
+    { href: '/services/custom-software', label: 'Custom Software', sub: 'When you need a system' },
+  ]}
+/>

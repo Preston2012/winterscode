@@ -1,0 +1,221 @@
+---
+/**
+ * CaseStudyLayout, shared scaffold for per-project case-study pages under
+ * /work/<slug>. Facts (stack, scope, result, quote, links, image) come from
+ * the real portfolio data in src/lib/portfolio.ts so nothing drifts or gets
+ * invented. The page file passes only the narrative framing.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../layout/Header.astro';
+import MobileMenu from '../layout/MobileMenu.astro';
+import PageHero from '../sections/PageHero.astro';
+import Divider from '../ui/Divider.astro';
+import RelatedLinks from '../sections/RelatedLinks.astro';
+import Contact from '../sections/Contact.astro';
+import { portfolio } from '../../lib/portfolio';
+import type { PortfolioItem } from '../../lib/portfolio';
+import { breadcrumbSchema, absUrl, BUSINESS_ID } from '../../lib/schema';
+
+interface RelatedLink { href: string; label: string; sub?: string }
+interface Props {
+  slug: string;
+  title: string;
+  description: string;
+  eyebrow: string;
+  h1: string;
+  sub: string;
+  /** Narrative paragraphs (HTML allowed). */
+  intro: string[];
+  relatedLinks: RelatedLink[];
+}
+
+const { slug, title, description, eyebrow, h1, sub, intro, relatedLinks } = Astro.props;
+const item = portfolio.find((p) => p.slug === slug) as PortfolioItem;
+const path = `/work/${slug}`;
+
+const breadcrumbLd = breadcrumbSchema([
+  { name: 'Home', path: '/' },
+  { name: 'Work', path: '/work' },
+  { name: item.name, path },
+]);
+// CreativeWork node for the project, attributed to the business. Real values only.
+const workLd = {
+  '@context': 'https://schema.org',
+  '@type': 'CreativeWork',
+  name: item.name,
+  url: absUrl(path),
+  description,
+  creator: { '@id': BUSINESS_ID },
+  ...(item.image ? { image: absUrl(item.image.src) } : {}),
+};
+---
+
+<BaseLayout title={title} description={description} canonicalPath={path}>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbLd)} />
+    <script type="application/ld+json" set:html={JSON.stringify(workLd)} />
+  </Fragment>
+
+  <Header />
+  <MobileMenu />
+
+  <PageHero eyebrow={eyebrow} h1={h1} sub={sub} bgImage="/photo/local/oldtown-wash" bgOpacity={0.28} />
+
+  <Divider label="01" />
+
+  {item.image && (
+    <section class="cs-hero-img" aria-hidden="false">
+      <img
+        src={item.image.src}
+        srcset={item.image.srcSmall ? `${item.image.srcXSmall ?? item.image.src} 480w, ${item.image.srcSmall} 720w, ${item.image.src} 1200w` : undefined}
+        sizes="(min-width: 1024px) 960px, 100vw"
+        alt={item.image.alt}
+        width={item.image.width}
+        height={item.image.height}
+        loading="eager"
+        decoding="async"
+      />
+    </section>
+  )}
+
+  <section class="cs-intro" aria-label="Overview">
+    {intro.map((p) => <p class="cs-lead" set:html={p} />)}
+  </section>
+
+  <Divider label="02" />
+
+  <section class="cs-block" aria-labelledby="cs-build-h">
+    <h2 class="cs-h" id="cs-build-h">The build</h2>
+    <dl class="cs-details">
+      {item.details.map((d) => (
+        <div class="cs-row">
+          <dt>{d.label}</dt>
+          <dd>{d.value}</dd>
+        </div>
+      ))}
+    </dl>
+  </section>
+
+  {item.quote && (
+    <>
+      <Divider label="03" />
+      <section class="cs-quote-wrap" aria-label="Quote">
+        <blockquote class="cs-quote">
+          <p>{item.quote.text}</p>
+          <cite>{item.quote.attr}</cite>
+        </blockquote>
+      </section>
+    </>
+  )}
+
+  {item.links.length > 0 && (
+    <section class="cs-links">
+      {item.links.map((l) => (
+        <a href={l.href} class={`cs-link${l.primary ? ' primary' : ''}`} target="_blank" rel="noopener">{l.label}</a>
+      ))}
+    </section>
+  )}
+
+  <Divider label="04" />
+
+  <RelatedLinks id="cs-related" title="Related" links={relatedLinks} />
+
+  <Divider label="05" />
+
+  <Contact sectionNumber="05" centered suppressHeader />
+</BaseLayout>
+
+<style>
+  .cs-hero-img { max-width: 960px; margin: 0 auto; padding: 8px 4px 0; }
+  .cs-hero-img img {
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius-card, 10px);
+    border: 1px solid var(--copper-hairline);
+  }
+  .cs-intro { padding: 20px 4px 8px; max-width: 720px; margin: 0 auto; }
+  .cs-lead {
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 1.7;
+    color: var(--color-ash-300);
+    margin: 0 0 16px;
+    max-width: 62ch;
+  }
+  @media (min-width: 768px) { .cs-lead { font-size: 17px; } }
+  .cs-lead :global(strong) { color: var(--color-ash-100); font-weight: 600; }
+  .cs-lead :global(em) { color: var(--color-copper-bright); font-style: italic; font-family: var(--font-serif); }
+
+  .cs-block { padding: 28px 4px 20px; max-width: 720px; margin: 0 auto; }
+  .cs-h { font-family: var(--font-serif); font-size: 26px; font-weight: 600; color: var(--color-ash-100); margin: 0 0 16px; }
+  @media (min-width: 768px) { .cs-h { font-size: 34px; } }
+  .cs-details { margin: 0; display: grid; gap: 0; }
+  .cs-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2px;
+    padding: 14px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
+  @media (min-width: 768px) { .cs-row { grid-template-columns: 140px 1fr; gap: 18px; } }
+  .cs-row:last-child { border-bottom: 0; }
+  .cs-row dt {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-copper);
+    margin: 0;
+    padding-top: 2px;
+  }
+  .cs-row dd {
+    font-family: var(--font-sans);
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--color-ash-300);
+    margin: 0;
+  }
+
+  .cs-quote-wrap { padding: 8px 4px; max-width: 720px; margin: 0 auto; }
+  .cs-quote {
+    margin: 0;
+    padding: 20px 22px;
+    background: var(--color-bg-card);
+    border: 1px solid var(--copper-hairline);
+    border-radius: var(--radius-card, 10px);
+  }
+  .cs-quote p {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 20px;
+    line-height: 1.4;
+    color: var(--color-ash-100);
+    margin: 0 0 10px;
+  }
+  @media (min-width: 768px) { .cs-quote p { font-size: 24px; } }
+  .cs-quote cite {
+    font-family: var(--font-mono);
+    font-style: normal;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    color: var(--color-copper);
+  }
+
+  .cs-links { max-width: 720px; margin: 18px auto 0; padding: 0 4px; display: flex; flex-wrap: wrap; gap: 10px; }
+  .cs-link {
+    font-family: var(--font-sans);
+    font-size: 14px;
+    color: var(--color-wc-green);
+    border: 1px solid var(--color-wc-green-dim, rgba(77, 216, 168, 0.4));
+    border-radius: 6px;
+    padding: 9px 14px;
+    text-decoration: none;
+    transition: background-color 0.15s ease, color 0.15s ease;
+  }
+  .cs-link.primary { background: rgba(77, 216, 168, 0.08); }
+  .cs-link:hover, .cs-link:focus-visible {
+    background-color: var(--color-wc-green);
+    color: var(--color-bg-deep);
+    outline: none;
+  }
+</style>

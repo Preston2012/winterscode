@@ -1,0 +1,54 @@
+---
+import ServiceLayout from '../components/templates/ServiceLayout.astro';
+import { serviceBySlug } from '../lib/business';
+const service = serviceBySlug('app-development')!;
+---
+<ServiceLayout
+  service={service}
+  path="/app-development-bandon"
+  schemaName="App Development in Bandon, Oregon"
+  areaName="Bandon"
+  breadcrumb={[
+    { name: 'Home', path: '/' },
+    { name: 'App Development', path: '/services/app-development' },
+    { name: 'App Development in Bandon', path: '/app-development-bandon' },
+  ]}
+  title="App Development in Bandon, OR · Winters Code"
+  description="Mobile app development in Bandon, Oregon. Flutter apps for tourism, golf, and lodging: booking, guest experience, and loyalty, built by a local shop."
+  eyebrow="Bandon · App Development"
+  h1="App development in Bandon, Oregon."
+  sub="Cross-platform apps for Bandon's tourism, golf, and lodging businesses. Booking, guest experience, and loyalty, in your customer's pocket."
+  sub2="Built here, by the person you meet for coffee."
+  bgImage="/photo/local/oldtown-wash"
+  intro={[
+    "Bandon's economy runs on visitors: the Dunes, the lodges, the restaurants and galleries in Old Town. A lot of those guests would happily keep your business on their phone if it earned the spot: a booking they can manage, a loyalty punch card that never gets lost, a guest guide that works without signal out on the beach.",
+    "An app is a bigger commitment than a website, so I am honest about when it pays. If your guests will open it more than once, or it needs the camera, notifications, or offline use, an app earns its place. If not, I will point you to a fast site instead.",
+  ]}
+  includesTitle="What an app can do here"
+  includes={[
+    { h: 'Booking and reservations', body: 'Guests check availability and book a room, tee time, or table in a tap or two, synced to the calendar you already run.' },
+    { h: 'Guest experience', body: 'A pocket guide to your lodge or course that works offline, out on the dunes where the signal drops.' },
+    { h: 'Loyalty and repeat visits', body: 'Digital punch cards, member perks, and return-visit nudges that bring Bandon guests back next season.' },
+    { h: 'Notifications', body: 'Tee-time reminders, event alerts, and weather-driven updates, sent the moment they matter.' },
+    { h: 'Both app stores', body: 'One Flutter codebase shipped to the App Store and Google Play, half the cost and upkeep of two native apps.' },
+    { h: 'Local and accountable', body: 'The builder is in Bandon. No offshore team, no ticket queue. The person who ships it is the person who maintains it.' },
+  ]}
+  whyTitle="Real shipped apps, from right here"
+  why={[
+    "This is not theory. <strong>StainSlayer AI</strong> is live on both app stores. <strong>Baseline</strong> runs multiple AI models in parallel. <strong>MyKonos</strong> runs on Demiurge, a memory engine I built. All shipped from a solo shop in Bandon.",
+    "When you hire me for a Bandon app, you are hiring the person who has already taken apps through store review and out to real phones. <em>The code is mine. The speed is real.</em>",
+  ]}
+  faq={[
+    { q: 'Does my Bandon business actually need an app?', a: 'Often a fast website is the smarter spend. An app earns its place when guests open it repeatedly or it needs device features like the camera, notifications, or offline use, common for lodging, golf, and tours. I will tell you straight which one fits.' },
+    { q: 'How long does an app take?', a: 'A focused MVP runs 2 to 4 weeks. A full build with booking and payments, 4 to 8 weeks. Apps take weeks where a site takes days.' },
+    { q: 'Will it work without signal on the beach or course?', a: 'Yes. Offline support is one of the main reasons to build an app instead of a site. The guide, map, or schedule keeps working where the signal does not.' },
+    { q: 'Can we meet in person?', a: 'Yes, and it is free. Bandon is home base. I will meet at the Warehouse, Bandon Coffee, or Bandon Brewing, no deposit, no pitch deck.' },
+  ]}
+  relatedTitle="Related"
+  relatedIntro="The full service, the Bandon overview, and the automation that can run inside an app."
+  relatedLinks={[
+    { href: '/services/app-development', label: 'App Development', sub: 'The full service' },
+    { href: '/web-design-bandon', label: 'Web Design in Bandon', sub: 'Bandon overview' },
+    { href: '/services/ai-automation', label: 'AI Automation', sub: 'Smarter apps' },
+  ]}
+/>
