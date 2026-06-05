@@ -1,0 +1,48 @@
+---
+import ServiceLayout from '../../components/templates/ServiceLayout.astro';
+import { serviceBySlug, towns } from '../../lib/business';
+
+const service = serviceBySlug('web-design')!;
+const townLinks = towns.map((t) => ({
+  href: `/web-design-${t.slug}`,
+  label: `${t.name}, OR`,
+  sub: t.county,
+}));
+---
+
+<ServiceLayout
+  service={service}
+  title="Web Design for Oregon Coast Businesses · Winters Code"
+  description="Custom web design for Coos and Curry County businesses. Mobile-first, fast, and built for your customer. Not a template, not WordPress. Live in days."
+  eyebrow="Services · Web Design"
+  h1="Web design built for your customer."
+  sub="Custom design for Oregon coast businesses. Mobile-first, fast, and shaped around the one thing your customer came to do."
+  sub2="Not a template. Not a builder. Yours."
+  bgImage="/photo/local/services-coast-wash"
+  intro={[
+    "Good web design is not decoration. It is the shortest path between a stranger on their phone and the thing they need from you: a booking, a quote, a phone call. I design every page around that path first, then make it look like it belongs to your business.",
+    "Every build starts with one question. <em>What story does this site need to tell?</em> For a charter captain that might be here is the boat, here is the dock, book a trip. For a lodge it is a full visual narrative. I figure out which one fits, then design to it.",
+  ]}
+  includes={[
+    { h: 'Mobile-first layout', body: 'Designed for the phone first, because that is where your customers actually are. It scales up to desktop, never the other way around.' },
+    { h: 'Custom design', body: 'Drawn for your business, not pulled from a theme. Your colors, your photos, your voice. Nothing looks stamped from a template.' },
+    { h: 'Built to convert', body: 'Clear calls to action, a phone number that is one tap away, and a path to the booking or the brief that does not make people think.' },
+    { h: 'SEO foundations', body: 'Clean headings, real metadata, fast loads, and structured data baked in from the start so search engines understand the site.' },
+    { h: 'Accessible by default', body: 'Keyboard navigation, real contrast, and semantic markup. It reads well for everyone and ranks better for it.' },
+    { h: 'Yours to own', body: 'You own the code and the content. No platform lock-in, no monthly ransom to keep your own site online.' },
+  ]}
+  why={[
+    "Most small-business sites on the Oregon coast are rented, not owned. They sit on WordPress, Squarespace, or Wix, loaded with plugins and templates, and they pay for it in speed.",
+    "I audited 169 Coos County small-business websites with Google Lighthouse and Mozilla Observatory. The average mobile speed score was <strong>61 out of 100</strong>. Not one site scored both fast and secure. The three platforms most businesses rent from averaged a <strong>D, an F, and a C</strong>. Custom code, the kind I write, averaged <strong>94 on mobile with an A-plus security grade</strong>.",
+    "That gap is the opportunity. In a low-competition market, a fast, well-designed site does not just look better. It outranks the rented sites around it, and the phone rings.",
+  ]}
+  faq={[
+    { q: 'How long does a website take?', a: 'A Starter site is typically live in 3 to 7 business days. A Pro site with custom widgets runs 1 to 2 weeks. Bigger custom builds, 2 to 4 weeks. I work in days, not quarters.' },
+    { q: 'Do you design on WordPress or a builder?', a: 'No. I write the actual code. WordPress and builders are mass-produced software with plugins stacked on top: slower, plugin-dependent, and prone to breaking at 2 AM when something auto-updates. Custom code loads faster, ranks better, and stays secure.' },
+    { q: 'What if I do not have photos or copy yet?', a: 'I do most of the lift. A short questionnaire gets us started, and I can shoot real photos of your business and draft the copy for you to edit. No stock photography unless you want it.' },
+    { q: 'Will my site work on phones?', a: 'It is designed for phones first. On the Oregon coast most local searches happen on a phone over rural LTE, so sub-second mobile loads are the whole point, not an afterthought.' },
+  ]}
+  relatedTitle="Web design across Coos and Curry counties"
+  relatedIntro="Local pages for the towns I serve. Same fast, custom build, tuned to each town."
+  relatedLinks={townLinks}
+/>

@@ -1,0 +1,47 @@
+---
+import ServiceLayout from '../../components/templates/ServiceLayout.astro';
+import { serviceBySlug, towns } from '../../lib/business';
+
+const service = serviceBySlug('web-development')!;
+const townLinks = towns.map((t) => ({
+  href: `/web-design-${t.slug}`,
+  label: `${t.name}, OR`,
+  sub: t.county,
+}));
+---
+
+<ServiceLayout
+  service={service}
+  title="Web Development · Custom-Coded Sites · Winters Code"
+  description="Hand-written web development for Oregon coast businesses. Astro, React, and edge functions. No WordPress, no page builders. Fast, secure, and yours to own."
+  eyebrow="Services · Web Development"
+  h1="Hand-written code, not a plugin stack."
+  sub="The engineering under the design. Astro, React, and edge functions, written for your site and no one else's."
+  sub2="No WordPress. No page builders. No plugins to babysit."
+  bgImage="/photo/local/services-coast-wash"
+  intro={[
+    "Web development is the part customers never see and always feel. It is why a page loads in under a second instead of five, why a form actually delivers, why the site does not fall over when something auto-updates at 2 AM.",
+    "I write the code myself, end to end. Modern stack, no offshore team, no junior you will never meet. The person who builds it is the person who maintains it.",
+  ]}
+  includes={[
+    { h: 'Modern stack', body: 'Astro and React for sites, with edge functions where the logic needs them. The same tools the fastest sites on the web are built on.' },
+    { h: 'Real performance', body: 'Sub-second loads on rural LTE, around a 95 Lighthouse average across the sites I ship. Speed is engineered in, not bolted on.' },
+    { h: 'Secure by default', body: 'Strict content security policy, HTTPS, and an A-plus security posture. Most local sites have HTTPS and nothing else behind it.' },
+    { h: 'Custom integrations', body: 'Stripe, booking systems, CRMs, your existing tools, wired together so they actually talk to each other.' },
+    { h: 'Clean, owned codebase', body: 'No vendor lock-in. The code is yours, documented and handed over, hosted wherever you like.' },
+    { h: 'Built to last', body: 'No plugin soup to rot. Fewer moving parts means fewer 2 AM breakages and a site that still runs in five years.' },
+  ]}
+  why={[
+    "When I audited 169 Coos County small-business sites, <strong>88 percent were renting their website</strong> from a platform: WordPress, Squarespace, or Wix. Every Squarespace site shared the same locked configuration. Every Wix site scored identically to all the others. Templated software produces templated results.",
+    "Hand-written code is the difference. It loads faster, it is harder to break, and it does exactly what your business needs instead of what a theme assumed. <em>You own it, and it owns nothing of you.</em>",
+  ]}
+  faq={[
+    { q: 'What is wrong with WordPress?', a: 'For a brochure site, mostly speed and security. It is mass-produced software with plugins stacked on top, which means slower loads, a bigger attack surface, and updates that break things. Custom code avoids all three.' },
+    { q: 'Can you work with my existing tools?', a: 'Yes. Integrations are core work: Stripe to QuickBooks, a booking calendar, a CRM, an email platform. If you already use it, I can wire your site into it.' },
+    { q: 'Do I get the code?', a: 'Yes. You own what I build, code and content both. No platform holding your site hostage for a monthly fee.' },
+    { q: 'Who maintains it after launch?', a: 'I do, if you want. Monthly care plans start at 75 dollars. The person who wrote the code is the person who keeps it running.' },
+  ]}
+  relatedTitle="Development for businesses across the south coast"
+  relatedIntro="Local pages for the towns I serve."
+  relatedLinks={townLinks}
+/>

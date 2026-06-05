@@ -1,0 +1,20 @@
+---
+import LocationPage from '../components/templates/LocationPage.astro';
+import { serviceBySlug, townBySlug } from '../lib/business';
+const town = townBySlug('coquille')!;
+const service = serviceBySlug('web-design')!;
+---
+<LocationPage
+  town={town}
+  service={service}
+  path="/web-design-coquille"
+  title="Web Design in Coquille, OR · Winters Code"
+  description="Custom web design in Coquille, Oregon. Fast, mobile-first sites that win the valley's local searches. Low competition, quick results, built in days."
+  eyebrow="Locations · Coquille"
+  h1="Web design in Coquille, Oregon."
+  sub="Custom, fast, mobile-first websites for Coquille businesses. Light local competition means fast results."
+  bgImage="/photo/local/grass-coast-wash"
+  intro={[
+    "Coquille is the heart of the valley and the Coos County seat. Its businesses serve a steady local base rather than tourist traffic, and ranking for the everyday valley searches is very winnable here.",
+  ]}
+/>

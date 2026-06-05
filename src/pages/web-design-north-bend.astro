@@ -1,0 +1,20 @@
+---
+import LocationPage from '../components/templates/LocationPage.astro';
+import { serviceBySlug, townBySlug } from '../lib/business';
+const town = townBySlug('north-bend')!;
+const service = serviceBySlug('web-design')!;
+---
+<LocationPage
+  town={town}
+  service={service}
+  path="/web-design-north-bend"
+  title="Web Design in North Bend, OR · Winters Code"
+  description="Custom web design in North Bend, Oregon. Fast, mobile-first sites built to catch travellers searching before they arrive. No templates, no WordPress."
+  eyebrow="Locations · North Bend"
+  h1="Web design in North Bend, Oregon."
+  sub="Custom, fast, mobile-first websites for North Bend businesses. Built to catch travellers the moment they search."
+  bgImage="/photo/local/grass-coast-wash"
+  intro={[
+    "North Bend runs on travellers: the airport, the casino, the shops along the highway. A lot of those customers are searching on a phone before they ever arrive, so a fast site that loads and answers in seconds is the whole game.",
+  ]}
+/>

@@ -1,0 +1,140 @@
+---
+/**
+ * RelatedLinks, a compact internal-link section used to tie the new
+ * service + location pages together (service pages link DOWN to towns,
+ * town pages link UP to services + neighbors).
+ *
+ * Additive + native: reuses the card aesthetic and design tokens already
+ * used by services.astro (.sv-tier) so it looks 100% like the existing site.
+ * Caller is responsible for the preceding <Divider label="0X" />.
+ */
+interface LinkItem {
+  href: string;
+  label: string;
+  sub?: string;
+}
+interface Props {
+  title: string;
+  intro?: string;
+  links: LinkItem[];
+  /** aria id seed so multiple instances on a page stay unique. */
+  id?: string;
+}
+const { title, intro, links, id = 'related' } = Astro.props;
+const headingId = `${id}-h`;
+---
+
+<section class="rl" aria-labelledby={headingId}>
+  <header class="rl-head">
+    <h2 class="rl-h" id={headingId}>{title}</h2>
+    {intro && <p class="rl-sub">{intro}</p>}
+  </header>
+
+  <ul class="rl-grid">
+    {links.map((l) => (
+      <li class="rl-card">
+        <a href={l.href} class="rl-link">
+          <span class="rl-label">{l.label}</span>
+          {l.sub && <span class="rl-meta">{l.sub}</span>}
+          <span class="rl-arrow" aria-hidden="true">→</span>
+        </a>
+      </li>
+    ))}
+  </ul>
+</section>
+
+<style>
+  .rl {
+    padding: 32px 4px 24px;
+    max-width: 960px;
+    margin: 0 auto;
+  }
+  @media (min-width: 768px) {
+    .rl { padding: 48px 4px 32px; }
+  }
+  .rl-head { margin: 0 0 18px; }
+  .rl-h {
+    font-family: var(--font-serif);
+    font-size: 28px;
+    line-height: 1.15;
+    margin: 0 0 6px;
+    color: var(--color-ash-100);
+    font-weight: 600;
+  }
+  @media (min-width: 768px) { .rl-h { font-size: 36px; } }
+  @media (min-width: 1024px) { .rl-h { font-size: 42px; } }
+  .rl-sub {
+    font-family: var(--font-sans);
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--color-ash-400);
+    margin: 0;
+    max-width: 560px;
+  }
+  @media (min-width: 768px) { .rl-sub { font-size: 15px; } }
+
+  .rl-grid {
+    list-style: none;
+    padding: 0;
+    margin: 18px 0 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  @media (min-width: 768px) {
+    .rl-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  }
+  @media (min-width: 1024px) {
+    .rl-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  .rl-card {
+    background: var(--color-bg-card);
+    border: 1px solid var(--copper-hairline);
+    border-radius: var(--radius-card, 10px);
+    overflow: hidden;
+  }
+  .rl-link {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-rows: auto auto;
+    align-items: center;
+    gap: 2px 12px;
+    padding: 14px 16px;
+    text-decoration: none;
+    transition: background-color 0.15s ease;
+  }
+  .rl-link:hover,
+  .rl-link:focus-visible {
+    background-color: rgba(200, 128, 74, 0.05);
+    outline: none;
+  }
+  .rl-label {
+    grid-column: 1;
+    font-family: var(--font-sans);
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--color-ash-100);
+    line-height: 1.3;
+  }
+  .rl-meta {
+    grid-column: 1;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    color: var(--color-ash-500);
+  }
+  .rl-arrow {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    font-family: var(--font-mono);
+    font-size: 15px;
+    color: var(--color-copper);
+    transition: transform 0.15s ease;
+  }
+  .rl-link:hover .rl-arrow,
+  .rl-link:focus-visible .rl-arrow {
+    transform: translateX(3px);
+    color: var(--color-wc-green);
+  }
+</style>

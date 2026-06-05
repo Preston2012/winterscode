@@ -1,0 +1,47 @@
+---
+import ServiceLayout from '../../components/templates/ServiceLayout.astro';
+import { serviceBySlug, towns } from '../../lib/business';
+
+const service = serviceBySlug('app-development')!;
+const townLinks = towns.map((t) => ({
+  href: `/web-design-${t.slug}`,
+  label: `${t.name}, OR`,
+  sub: t.county,
+}));
+---
+
+<ServiceLayout
+  service={service}
+  title="App Development · Flutter iOS & Android · Winters Code"
+  description="Cross-platform mobile app development in Flutter for Oregon coast businesses. One codebase, two stores. Live apps already on the App Store and Google Play."
+  eyebrow="Services · App Development"
+  h1="One codebase. Both app stores."
+  sub="Cross-platform iOS and Android apps in Flutter. Real products, already shipped to the App Store and Google Play."
+  sub2="Built here, by the person you talk to."
+  bgImage="/photo/local/services-coast-wash"
+  intro={[
+    "A mobile app is a bigger commitment than a website, so I am honest about when you actually need one. If your customers will open it more than once, if it needs the camera, sensors, notifications, or offline use, an app earns its place. If not, a fast mobile site is the smarter spend.",
+    "When an app is the right call, I build it in Flutter: one codebase that ships to both the App Store and Google Play. That is half the cost and half the maintenance of building two native apps.",
+  ]}
+  includes={[
+    { h: 'Cross-platform', body: 'One Flutter codebase, two stores. iOS and Android stay in sync instead of drifting into two separate products.' },
+    { h: 'Native device features', body: 'Camera, GPS, sensors, push notifications, offline storage. The things a website cannot do well, done properly.' },
+    { h: 'Auth and backend', body: 'Accounts, secure data, real-time sync. A backend that holds up as you grow, not a prototype that buckles.' },
+    { h: 'Payments built in', body: 'In-app purchases, subscriptions, or Stripe. Tested against real store review, not just in a simulator.' },
+    { h: 'AI features', body: 'Vision, language, and multi-model AI where it adds real value. I have shipped all three in live apps.' },
+    { h: 'Store submission', body: 'I handle the App Store and Play Store listings, review, and launch. You get an app people can actually download.' },
+  ]}
+  why={[
+    "This is not theory. <strong>StainSlayer AI</strong> is live on both the App Store and Google Play: snap a photo of a stain, get step-by-step removal, powered by vision AI. <strong>Baseline</strong> runs four AI models in parallel across 106 tracked figures. <strong>MyKonos</strong> is an AI companion running on Demiurge, a memory engine I built myself.",
+    "Three shipped AI apps from a solo shop on the Oregon coast. <em>The code is mine. The speed is real.</em> When you hire me for an app, you are hiring the person who has already done it.",
+  ]}
+  faq={[
+    { q: 'Do I really need an app, or just a website?', a: 'Usually a website first. An app earns its place when customers open it repeatedly or it needs device features like the camera, GPS, notifications, or offline use. I will tell you straight which one fits your business.' },
+    { q: 'Why Flutter instead of native?', a: 'Flutter is one codebase for both iOS and Android. That means roughly half the build cost and half the ongoing maintenance, with near-native performance. For a small business it is almost always the right trade.' },
+    { q: 'How long does an app take?', a: 'An MVP of 5 to 10 screens runs 2 to 4 weeks. A full build with payments and a real backend, 4 to 8 weeks. Larger systems, 8 to 16. Apps take weeks where sites take days.' },
+    { q: 'Can you get it into the App Store?', a: 'Yes. Store submission, review, and launch are part of the work. I have live apps on both stores and know how to get through review.' },
+  ]}
+  relatedTitle="App development across the Oregon coast"
+  relatedIntro="Local pages for the towns I serve."
+  relatedLinks={townLinks}
+/>
