@@ -1,0 +1,116 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/layout/Header.astro';
+import MobileMenu from '../components/layout/MobileMenu.astro';
+import PageHero from '../components/sections/PageHero.astro';
+import Divider from '../components/ui/Divider.astro';
+import Contact from '../components/sections/Contact.astro';
+import { breadcrumbSchema, absUrl } from '../lib/schema';
+
+// Posts, newest first. Add an entry here when a new piece ships.
+const posts = [
+  {
+    href: '/insights/coos-county-website-audit',
+    title: 'I audited 169 Coos County websites. Here is what I found.',
+    date: 'June 2026',
+    blurb:
+      'Average mobile speed: 61 out of 100. Not one of the 169 sites scored both fast and secure. The full field report, and what it means for your business.',
+  },
+];
+
+const breadcrumbLd = breadcrumbSchema([
+  { name: 'Home', path: '/' },
+  { name: 'Insights', path: '/insights' },
+]);
+const blogLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Blog',
+  name: 'Winters Code Insights',
+  url: absUrl('/insights'),
+  blogPost: posts.map((p) => ({ '@type': 'BlogPosting', headline: p.title, url: absUrl(p.href) })),
+};
+---
+
+<BaseLayout
+  title="Insights · Field Notes on Coast Web · Winters Code"
+  description="Field notes and original research on websites, performance, and small business on the Oregon coast. Real data, plain English, from a working shop."
+  canonicalPath="/insights"
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbLd)} />
+    <script type="application/ld+json" set:html={JSON.stringify(blogLd)} />
+  </Fragment>
+
+  <Header />
+  <MobileMenu />
+
+  <PageHero
+    eyebrow="Insights"
+    h1="Field notes from the shop."
+    sub="Original research and plain-English notes on websites, speed, and small business on the Oregon coast. No filler."
+    bgImage="/photo/local/grass-coast-wash"
+    bgOpacity={0.3}
+  />
+
+  <Divider label="01" />
+
+  <section class="ins-list" aria-label="Posts">
+    <ul>
+      {posts.map((p) => (
+        <li class="ins-card">
+          <a href={p.href}>
+            <span class="ins-date mono">{p.date}</span>
+            <h2 class="ins-title">{p.title}</h2>
+            <p class="ins-blurb">{p.blurb}</p>
+            <span class="ins-more">Read the report →</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <Divider label="02" />
+
+  <Contact sectionNumber="02" centered suppressHeader />
+</BaseLayout>
+
+<style>
+  .ins-list { max-width: 760px; margin: 0 auto; padding: 16px 4px 8px; }
+  .ins-list ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
+  .ins-card {
+    background: var(--color-bg-card);
+    border: 1px solid var(--copper-hairline);
+    border-radius: var(--radius-card, 10px);
+    overflow: hidden;
+  }
+  .ins-card a {
+    display: block;
+    padding: 22px 22px 20px;
+    transition: background-color 0.15s ease;
+  }
+  .ins-card a:hover, .ins-card a:focus-visible { background-color: rgba(200, 128, 74, 0.04); outline: none; }
+  .ins-date { font-size: 11px; letter-spacing: 0.08em; color: var(--color-copper); text-transform: uppercase; }
+  .ins-title {
+    font-family: var(--font-serif);
+    font-size: 23px;
+    font-weight: 600;
+    color: var(--color-ash-100);
+    margin: 8px 0 8px;
+    line-height: 1.2;
+  }
+  @media (min-width: 768px) { .ins-title { font-size: 27px; } }
+  .ins-blurb {
+    font-family: var(--font-sans);
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--color-ash-300);
+    margin: 0 0 12px;
+    max-width: 60ch;
+  }
+  .ins-more {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--color-wc-green);
+    letter-spacing: 0.04em;
+  }
+</style>
