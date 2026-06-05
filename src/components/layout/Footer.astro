@@ -109,16 +109,15 @@ const columns: { title: string; links: { label: string; href: string; external?:
   /* ── Additive column grid ── */
   .wc-foot-cols {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 22px 18px;
-    max-width: 1000px;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 26px 14px;
+    max-width: 680px;
     margin: 0 auto 30px;
     text-align: left;
     padding-bottom: 26px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   }
-  @media (min-width: 600px) { .wc-foot-cols { grid-template-columns: repeat(3, 1fr); } }
-  @media (min-width: 900px) { .wc-foot-cols { grid-template-columns: repeat(6, 1fr); gap: 24px; } }
+  @media (min-width: 768px) { .wc-foot-cols { gap: 30px 28px; max-width: 800px; } }
   .wc-foot-col-h {
     font-family: var(--font-mono);
     font-size: 10px;
@@ -131,11 +130,14 @@ const columns: { title: string; links: { label: string; href: string; external?:
   .wc-foot-col ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 7px; }
   .wc-foot-col a {
     font-family: var(--font-sans);
-    font-size: 13px;
+    font-size: 12px;
     color: var(--color-ash-400);
     text-decoration: none;
     transition: color 0.15s ease;
+    line-height: 1.35;
+    display: inline-block;
   }
+  @media (min-width: 768px) { .wc-foot-col a { font-size: 13px; } }
   .wc-foot-col a:hover, .wc-foot-col a:focus-visible { color: var(--color-wc-green); outline: none; }
 
   /* ── Preserved footer chrome (verbatim from BaseLayout) ── */
