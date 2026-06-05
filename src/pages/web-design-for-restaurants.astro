@@ -1,0 +1,64 @@
+---
+import ServiceLayout from '../components/templates/ServiceLayout.astro';
+import type { ServiceEntry } from '../lib/business';
+const service: ServiceEntry = {
+  slug: 'web-design-for-restaurants',
+  name: 'Web Design for Restaurants',
+  shortLabel: 'For Restaurants',
+  blurb: 'Websites for Oregon coast restaurants and cafes.',
+  serviceType: 'Web design for restaurants and cafes',
+};
+---
+<ServiceLayout
+  service={service}
+  path="/web-design-for-restaurants"
+  breadcrumb={[
+    { name: 'Home', path: '/' },
+    { name: 'Web Design for Restaurants', path: '/web-design-for-restaurants' },
+  ]}
+  title="Web Design for Restaurants · Oregon Coast · Winters Code"
+  description="Websites for Oregon coast restaurants and cafes. A menu that loads instantly, online ordering and reservations, and the photos that fill tables."
+  eyebrow="Industries · Restaurants"
+  h1="Restaurant sites that fill tables."
+  sub="A menu that loads instantly, reservations and online ordering built in, and the photos that turn a search into a seat."
+  bgImage="/photo/local/oldtown-wash"
+  intro={[
+    "When someone searches your restaurant, they want three things fast: the menu, the hours, and how to get a table. Most restaurant sites bury all three behind a slow homepage or a PDF menu that is unreadable on a phone. That is a lost customer who just picked somewhere else.",
+    "I build the site around those three things first, then make it beautiful. On the Oregon coast, where a lot of diners are visitors deciding in the moment, fast and clear wins the table.",
+  ]}
+  figure={{
+    src: '/work/concept-builds-800.webp',
+    srcLarge: '/work/concept-builds-1600.webp',
+    width: 1122,
+    height: 1402,
+    alt: 'Concept build mockups for coast businesses including a restaurant site with menu, online ordering, and reservations.',
+    label: 'Concept build · fictional business',
+    caption: 'Salt & Cedar Cafe, one of several concept builds showing the approach for food and drink.',
+  }}
+  includesTitle="What a restaurant site needs"
+  includes={[
+    { h: 'A real menu', body: 'A fast, readable menu page, not a pinch-to-zoom PDF. Easy for you to update when prices or dishes change.' },
+    { h: 'Reservations', body: 'Book a table in a tap, integrated with the system you already use or a simple request form.' },
+    { h: 'Online ordering', body: 'Takeout and pickup ordering wired in, so you capture the order instead of a third-party app taking a cut.' },
+    { h: 'Photos that sell', body: 'Real, optimized food and room photography that loads fast and makes people hungry.' },
+    { h: 'Hours and location', body: 'Hours, map, and parking answered instantly, the questions every visitor asks first.' },
+    { h: 'Fast and mobile', body: 'Sub-second loads so a hungry visitor deciding right now lands on you, not the next result.' },
+  ]}
+  whyTitle="Why not a builder or a delivery-app page"
+  why={[
+    "Restaurant builders and delivery-app microsites look fine and perform badly: slow, generic, and rented. In my audit of 169 Coos County sites, the rented platforms averaged a <strong>D, an F, and a C</strong> on mobile speed. For a decision made in seconds, that is the difference between a full table and an empty one.",
+    "A custom site is faster, captures your own orders and reservations without a middleman’s cut, and looks like your place. <em>You own it, and it works as hard as you do.</em>",
+  ]}
+  faq={[
+    { q: 'Can people order or reserve through the site?', a: 'Yes. Reservations and takeout ordering can both be built in, either integrated with a system you already use or as a clean simple flow. The goal is to capture the order or booking directly, without handing a cut to a third-party app.' },
+    { q: 'Can I update the menu myself?', a: 'Yes. The menu is built to be easy to update, or it is two minutes of a care plan for me to change prices and dishes for you. No wrestling with a clunky dashboard.' },
+    { q: 'My current menu is a PDF. Is that a problem?', a: 'It is the most common one. A PDF menu is hard to read on a phone and invisible to search. I rebuild it as a real, fast menu page that diners and Google can both read.' },
+    { q: 'Why does speed matter for a restaurant?', a: 'Because the decision is instant. A visitor deciding where to eat right now will not wait for a slow page. Fast mobile loads keep them on your site instead of the next result.' },
+  ]}
+  relatedTitle="Related"
+  relatedLinks={[
+    { href: '/services/web-design', label: 'Web Design', sub: 'The full service' },
+    { href: '/web-design-bandon', label: 'Web Design in Bandon', sub: 'Old Town and beyond' },
+    { href: '/web-design-port-orford', label: 'Web Design in Port Orford', sub: 'Coast dining' },
+  ]}
+/>

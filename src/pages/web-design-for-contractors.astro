@@ -1,0 +1,64 @@
+---
+import ServiceLayout from '../components/templates/ServiceLayout.astro';
+import type { ServiceEntry } from '../lib/business';
+const service: ServiceEntry = {
+  slug: 'web-design-for-contractors',
+  name: 'Web Design for Contractors',
+  shortLabel: 'For Contractors',
+  blurb: 'Websites for Oregon coast contractors and trades.',
+  serviceType: 'Web design for contractors and trades',
+};
+---
+<ServiceLayout
+  service={service}
+  path="/web-design-for-contractors"
+  breadcrumb={[
+    { name: 'Home', path: '/' },
+    { name: 'Web Design for Contractors', path: '/web-design-for-contractors' },
+  ]}
+  title="Web Design for Contractors · Oregon Coast · Winters Code"
+  description="Websites for Oregon coast contractors and trades. Show the work, capture leads, and load fast on a phone at the job site. A real contractor site, live in days."
+  eyebrow="Industries · Contractors"
+  h1="Websites for contractors who build."
+  sub="Show the work, capture the lead, and load fast on a phone at the job site. Built for trades on the Oregon coast."
+  bgImage="/photo/local/grass-coast-wash"
+  intro={[
+    "Most of your customers find you on a phone, often standing in the project they want fixed. Your website has one job in that moment: prove you do good work and make it dead simple to reach you. A slow, generic template does neither.",
+    "I have already built this. <strong>Sogn Contracting</strong>, a 30-year Bandon contractor, went from kickoff to a live custom site in three days, with a before-and-after gallery, clear services, and a lead form, averaging 95+ on Lighthouse.",
+  ]}
+  figure={{
+    src: '/work/concept-builds-800.webp',
+    srcLarge: '/work/concept-builds-1600.webp',
+    width: 1122,
+    height: 1402,
+    alt: 'Concept build mockups for coast businesses including a contractor site with project gallery and instant-quote estimate.',
+    label: 'Concept build · fictional business',
+    caption: 'Driftline Contracting, one of several concept builds showing the approach for trades.',
+  }}
+  includesTitle="What a contractor site needs"
+  includes={[
+    { h: 'Before-and-after gallery', body: 'The most persuasive thing you have. Real project photos, organized and fast, even on a slow connection.' },
+    { h: 'Services and service area', body: 'Clear pages for what you do and where, so you rank for the trade plus the town.' },
+    { h: 'Lead capture', body: 'A quote request form that actually delivers to your inbox, with the details you need to scope a job.' },
+    { h: 'Reviews and trust', body: 'License number, years in business, and real reviews placed where they close the deal.' },
+    { h: 'Phone-first', body: 'A tap-to-call number in reach at all times, because half your visitors want to call now.' },
+    { h: 'Fast on the job site', body: 'Sub-second loads on rural LTE, so the page is up before the customer loses patience.' },
+  ]}
+  whyTitle="Why not a template"
+  why={[
+    "Contractor templates are everywhere, and they all look and load the same. In my audit of 169 Coos County sites, the rented-platform sites averaged a <strong>D, an F, and a C</strong> on mobile speed. A custom site outruns them and actually represents the quality of your work.",
+    "<em>The person who builds your site is the person who maintains it.</em> When you need the hours updated or a new project added to the gallery, you text me, not a help desk.",
+  ]}
+  faq={[
+    { q: 'I am busy on jobs. How much of my time does this take?', a: 'Very little. A short questionnaire and one consult gets me what I need. I can shoot the project photos and draft the copy, then you just approve. Most contractor sites go live in days.' },
+    { q: 'Can you show my past projects?', a: 'Yes, and you should. A before-and-after gallery is the single most persuasive thing on a contractor site. I organize and optimize the photos so they load fast and look sharp.' },
+    { q: 'Will it bring in leads?', a: 'That is the goal. Clear services, a working quote form, your service-area towns, and fast mobile loads are what turn a search into a phone call. I also wire up the SEO basics most contractor sites skip.' },
+    { q: 'Have you built a contractor site before?', a: 'Yes. Sogn Contracting in Bandon is live, built in three days, averaging 95+ on Lighthouse. Real, indexed, local work you can go look at.' },
+  ]}
+  relatedTitle="Related"
+  relatedLinks={[
+    { href: '/work/sogn-contracting', label: 'Sogn Contracting', sub: 'Contractor case study' },
+    { href: '/services/web-design', label: 'Web Design', sub: 'The full service' },
+    { href: '/web-design-bandon', label: 'Web Design in Bandon', sub: 'Local work' },
+  ]}
+/>

@@ -42,6 +42,17 @@ interface Props {
   /** Override the Service schema name (e.g. "App Development in Bandon, OR"). */
   schemaName?: string;
   intro: string[];
+  /** Optional labeled figure shown under the intro (e.g. concept builds). */
+  figure?: {
+    src: string;
+    srcLarge?: string;
+    width: number;
+    height: number;
+    alt: string;
+    caption?: string;
+    /** Small honesty pill, e.g. "Concept build · fictional business". */
+    label?: string;
+  };
   includesTitle?: string;
   includes: Include[];
   whyTitle?: string;
@@ -67,6 +78,7 @@ const {
   areaName,
   schemaName,
   intro,
+  figure,
   includesTitle = "What's included",
   includes,
   whyTitle = 'Why custom, not a builder',
@@ -119,6 +131,22 @@ const faqLd = faq.length ? faqSchema(faq) : null;
   <!-- Intro / lead -->
   <section class="svc-intro" aria-label="Overview">
     {intro.map((p) => <p class="svc-lead" set:html={p} />)}
+    {figure && (
+      <figure class="svc-figure">
+        {figure.label && <span class="svc-figure-label">{figure.label}</span>}
+        <img
+          src={figure.src}
+          srcset={figure.srcLarge ? `${figure.src} 800w, ${figure.srcLarge} 1200w` : undefined}
+          sizes="(min-width: 768px) 680px, 100vw"
+          alt={figure.alt}
+          width={figure.width}
+          height={figure.height}
+          loading="lazy"
+          decoding="async"
+        />
+        {figure.caption && <figcaption>{figure.caption}</figcaption>}
+      </figure>
+    )}
   </section>
 
   <Divider label="02" />
@@ -205,6 +233,35 @@ const faqLd = faq.length ? faqSchema(faq) : null;
     color: var(--color-copper-bright);
     font-style: italic;
     font-family: var(--font-serif);
+  }
+
+  .svc-figure { margin: 22px 0 4px; position: relative; }
+  .svc-figure img {
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius-card, 10px);
+    border: 1px solid var(--copper-hairline);
+    display: block;
+  }
+  .svc-figure-label {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-copper);
+    background: var(--color-bg-deep);
+    border: 1px solid var(--copper-hairline);
+    border-radius: 999px;
+    padding: 4px 10px;
+    margin-bottom: 10px;
+  }
+  .svc-figure figcaption {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--color-ash-500);
+    margin-top: 10px;
+    letter-spacing: 0.03em;
   }
 
   .svc-block {
