@@ -186,33 +186,57 @@ const { eyebrow, h1, sub, sub2, sub3, showStamp = false, bgImage, bgOpacity = 0.
   .ph-row, .ph-sub { position: relative; z-index: 1; }
 
   /* ── Showcase mode: the photo IS the hero ──
-     Full-bleed photo at full strength, text anchored in the bottom negative
-     space over a directional scrim, so each hero "forms around" its image.
-     bgPosition sets the focal point so the subject never gets cropped out. */
+     A tight photo banner sized to its text, not a tall frame with a dead
+     sky band on top. Text is large and sits on a strong bottom scrim with a
+     text-shadow, so eyebrow, H1, and sub all read over any photo.
+     bgPosition sets the focal point so the subject stays in the visible slice. */
   .page-hero.showcase {
-    min-height: 56vh;
+    min-height: 330px;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    padding: 64px 22px 26px;
+    padding: 40px 20px 22px;
     border-radius: 14px;
     overflow: hidden;
     margin-top: 6px;
     isolation: isolate;
   }
   @media (min-width: 768px) {
-    .page-hero.showcase { min-height: 60vh; padding: 80px 40px 38px; }
+    .page-hero.showcase { min-height: 400px; padding: 52px 40px 32px; }
   }
   @media (min-width: 1024px) {
-    .page-hero.showcase { min-height: 62vh; padding: 96px 56px 48px; }
+    .page-hero.showcase { min-height: 460px; padding: 60px 56px 42px; }
   }
   .page-hero.showcase .ph-wash img { opacity: 1; }
+  /* Strong bottom scrim: the lower ~half is solidly dark for legible text,
+     the photo stays clear up top. */
   .page-hero.showcase .ph-wash::after {
     background:
-      linear-gradient(to top, rgba(8, 11, 10, 0.94) 0%, rgba(8, 11, 10, 0.74) 20%, rgba(8, 11, 10, 0.30) 50%, rgba(8, 11, 10, 0.10) 78%, rgba(8, 11, 10, 0.20) 100%),
-      linear-gradient(to right, rgba(8, 11, 10, 0.45), rgba(8, 11, 10, 0) 60%);
+      linear-gradient(to top, rgba(8, 11, 10, 0.97) 0%, rgba(8, 11, 10, 0.9) 26%, rgba(8, 11, 10, 0.62) 48%, rgba(8, 11, 10, 0.26) 72%, rgba(8, 11, 10, 0.34) 100%),
+      linear-gradient(to right, rgba(8, 11, 10, 0.5), rgba(8, 11, 10, 0) 62%);
   }
-  /* A touch larger + more breathing room for the showcase H1. */
-  .page-hero.showcase .ph-eyebrow { margin-bottom: 14px; }
-  .page-hero.showcase .ph-sub { max-width: 600px; }
+  /* Showcase text: larger + brighter so the words command the frame. */
+  .page-hero.showcase .ph-eyebrow { margin-bottom: 12px; }
+  .page-hero.showcase .ph-eyebrow .text {
+    color: var(--color-copper-bright);
+    text-shadow: 0 1px 10px rgba(0, 0, 0, 0.55);
+  }
+  .page-hero.showcase .ph-h1 {
+    font-size: 37px;
+    line-height: 1.06;
+    max-width: 17ch;
+    text-shadow: 0 2px 20px rgba(0, 0, 0, 0.5);
+  }
+  @media (min-width: 768px) {
+    .page-hero.showcase .ph-h1 { font-size: 54px; max-width: 16ch; }
+  }
+  @media (min-width: 1024px) {
+    .page-hero.showcase .ph-h1 { font-size: 64px; max-width: 17ch; }
+  }
+  .page-hero.showcase .ph-sub {
+    max-width: 600px;
+    color: var(--color-ash-100);
+    text-shadow: 0 1px 14px rgba(0, 0, 0, 0.6);
+  }
+  .page-hero.showcase .ph-sub em { color: #fff; }
 </style>
