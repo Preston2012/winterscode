@@ -1,0 +1,20 @@
+---
+import LocationPage from '../components/templates/LocationPage.astro';
+import { serviceBySlug, townBySlug } from '../lib/business';
+const town = townBySlug('coos-bay')!;
+const service = serviceBySlug('web-design')!;
+---
+<LocationPage
+  town={town}
+  service={service}
+  path="/web-design-coos-bay"
+  title="Web Design in Coos Bay, OR · Winters Code"
+  description="Custom web design in Coos Bay, Oregon. Fast, mobile-first sites that outrank the template platforms most local businesses are renting. Built in days."
+  eyebrow="Locations · Coos Bay"
+  h1="Web design in Coos Bay, Oregon."
+  sub="Custom, fast, mobile-first websites for Coos Bay businesses. Built to outrank the rented sites around you."
+  bgImage="/photo/local/home-coast-wash"
+  intro={[
+    "Coos Bay is the biggest market on the Oregon coast, which makes it the most competitive locally. That cuts both ways: when your site is the fast one, you stand out quickly.",
+  ]}
+/>

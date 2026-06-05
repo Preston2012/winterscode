@@ -1,0 +1,48 @@
+---
+import ServiceLayout from '../../components/templates/ServiceLayout.astro';
+import { serviceBySlug, towns } from '../../lib/business';
+
+const service = serviceBySlug('custom-software')!;
+const townLinks = towns.map((t) => ({
+  href: `/web-design-${t.slug}`,
+  label: `${t.name}, OR`,
+  sub: t.county,
+}));
+---
+
+<ServiceLayout
+  service={service}
+  title="Custom Software & SaaS Development · Winters Code"
+  description="Custom software and SaaS for Oregon coast businesses. Portals, dashboards, and multi-tenant systems built for the work off-the-shelf tools cannot handle."
+  eyebrow="Services · Custom Software"
+  h1="Software shaped to how you actually work."
+  sub="Portals, dashboards, and systems built for the parts of your business no off-the-shelf tool covers."
+  sub2="When the spreadsheet finally breaks."
+  bgImage="/photo/local/services-coast-wash"
+  intro={[
+    "Most businesses outgrow their tools the same way: a spreadsheet becomes the system of record, then three spreadsheets, then a tangle of apps that do not talk to each other and a person whose real job is copying data between them.",
+    "Custom software replaces that tangle with one system built around your actual workflow. Not a generic platform you bend your business to fit, but software that fits the business you already run.",
+  ]}
+  includes={[
+    { h: 'Internal dashboards', body: 'One screen that shows the state of the business: jobs, inventory, bookings, revenue. The numbers you keep rebuilding by hand.' },
+    { h: 'Customer portals', body: 'A secure place for your clients to log in, see their account, pay, and self-serve the requests that fill your inbox.' },
+    { h: 'Multi-tenant systems', body: 'Multiple roles, locations, or client organizations under one roof, with the right walls between them.' },
+    { h: 'Workflow automation', body: 'The repetitive steps, intake, routing, follow-up, reminders, handled by the software instead of by you.' },
+    { h: 'Integrations', body: 'Stripe, QuickBooks, your CRM, your booking tool, wired together so data flows once and stays in sync.' },
+    { h: 'Real ownership', body: 'Your software, your data, documented and handed over. No per-seat fees climbing forever as you grow.' },
+  ]}
+  why={[
+    "Off-the-shelf SaaS is built for the average of a thousand businesses, which means it fits none of them well. You pay per seat, per month, forever, and still end up with workarounds.",
+    "Custom software is a different deal. It does exactly what your business needs, it integrates with what you already use, and <em>you own it.</em> For the right workflow, it pays for itself in the hours it stops wasting.",
+    "I build these the same way I build everything: modern stack, written by hand, secure by default, and maintained by the person who wrote it.",
+  ]}
+  faq={[
+    { q: 'How do I know if I need custom software?', a: 'A good sign is when spreadsheets have become the system that runs the business, or when someone spends real hours moving data between apps that should talk to each other. If a tool would save those hours, it usually pays for itself.' },
+    { q: 'Is this not too expensive for a small business?', a: 'It does not have to be. I scope to the one workflow that hurts most and build that first, so you get value fast instead of a giant project. Then we grow it only if the return is there.' },
+    { q: 'Can it connect to the tools I already use?', a: 'Yes. Integration is most of the point. Stripe, QuickBooks, your CRM, your booking system, connected so data flows once and stays correct everywhere.' },
+    { q: 'Do I own it, or am I renting again?', a: 'You own it. The code and the data are yours, documented and handed over. No per-seat subscription that grows every time you hire.' },
+  ]}
+  relatedTitle="Custom software across Coos and Curry counties"
+  relatedIntro="Local pages for the towns I serve."
+  relatedLinks={townLinks}
+/>

@@ -1,0 +1,20 @@
+---
+import LocationPage from '../components/templates/LocationPage.astro';
+import { serviceBySlug, townBySlug } from '../lib/business';
+const town = townBySlug('port-orford')!;
+const service = serviceBySlug('web-design')!;
+---
+<LocationPage
+  town={town}
+  service={service}
+  path="/web-design-port-orford"
+  title="Web Design in Port Orford, OR · Winters Code"
+  description="Custom web design in Port Orford, Oregon. Fast, image-forward sites for fishing, arts, and tourism businesses in Curry County. Built in days."
+  eyebrow="Locations · Port Orford"
+  h1="Web design in Port Orford, Oregon."
+  sub="Custom, fast, image-forward websites for Port Orford's fishing, arts, and tourism businesses."
+  bgImage="/photo/local/contact-sunset-wash"
+  intro={[
+    "Port Orford is small, salty, and full of character: a working fishing port with a dolly dock and a genuine arts scene. Visitors and gallery buyers research before they drive out, so a clean, fast site turns curiosity into a stop.",
+  ]}
+/>

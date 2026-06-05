@@ -1,0 +1,321 @@
+---
+/**
+ * ServiceLayout, shared scaffold for the Tier-1 service spine pages
+ * (/services/<slug>). Keeps every service page native to the existing site
+ * by reusing BaseLayout, Header, MobileMenu, PageHero, Divider, RelatedLinks,
+ * and Contact. Per-service differentiation lives entirely in the copy passed
+ * as props, not in the layout.
+ *
+ * Injects per-page Service + BreadcrumbList + FAQPage JSON-LD through the
+ * BaseLayout head slot (CSP-safe data blocks).
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../layout/Header.astro';
+import MobileMenu from '../layout/MobileMenu.astro';
+import PageHero from '../sections/PageHero.astro';
+import Divider from '../ui/Divider.astro';
+import RelatedLinks from '../sections/RelatedLinks.astro';
+import Contact from '../sections/Contact.astro';
+import type { ServiceEntry } from '../../lib/business';
+import { serviceSchema, breadcrumbSchema, faqSchema } from '../../lib/schema';
+
+interface Include { h: string; body: string }
+interface Faq { q: string; a: string }
+interface RelatedLink { href: string; label: string; sub?: string }
+
+interface Props {
+  service: ServiceEntry;
+  title: string;
+  description: string;
+  eyebrow: string;
+  h1: string;
+  sub: string;
+  sub2?: string;
+  bgImage?: string;
+  bgOpacity?: number;
+  intro: string[];
+  includesTitle?: string;
+  includes: Include[];
+  whyTitle?: string;
+  why: string[];
+  faq: Faq[];
+  relatedTitle?: string;
+  relatedIntro?: string;
+  relatedLinks: RelatedLink[];
+}
+
+const {
+  service,
+  title,
+  description,
+  eyebrow,
+  h1,
+  sub,
+  sub2,
+  bgImage,
+  bgOpacity = 0.34,
+  intro,
+  includesTitle = "What's included",
+  includes,
+  whyTitle = 'Why custom, not a builder',
+  why,
+  faq,
+  relatedTitle = 'Serving the Oregon coast',
+  relatedIntro,
+  relatedLinks,
+} = Astro.props;
+
+const path = `/services/${service.slug}`;
+const serviceLd = serviceSchema({
+  name: service.name,
+  serviceType: service.serviceType,
+  description,
+  path,
+});
+const breadcrumbLd = breadcrumbSchema([
+  { name: 'Home', path: '/' },
+  { name: 'Services', path: '/services' },
+  { name: service.name, path },
+]);
+const faqLd = faq.length ? faqSchema(faq) : null;
+---
+
+<BaseLayout title={title} description={description} canonicalPath={path}>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(serviceLd)} />
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbLd)} />
+    {faqLd && <script type="application/ld+json" set:html={JSON.stringify(faqLd)} />}
+  </Fragment>
+
+  <Header />
+  <MobileMenu />
+
+  <PageHero
+    eyebrow={eyebrow}
+    h1={h1}
+    sub={sub}
+    sub2={sub2}
+    bgImage={bgImage}
+    bgOpacity={bgOpacity}
+  />
+
+  <Divider label="01" />
+
+  <!-- Intro / lead -->
+  <section class="svc-intro" aria-label="Overview">
+    {intro.map((p) => <p class="svc-lead" set:html={p} />)}
+  </section>
+
+  <Divider label="02" />
+
+  <!-- What's included -->
+  <section class="svc-block" aria-labelledby="svc-incl-h">
+    <header class="svc-block-head">
+      <h2 class="svc-block-h" id="svc-incl-h">{includesTitle}</h2>
+    </header>
+    <div class="svc-grid">
+      {includes.map((it) => (
+        <article class="svc-card">
+          <h3 class="svc-card-h">{it.h}</h3>
+          <p class="svc-card-body" set:html={it.body} />
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <Divider label="03" />
+
+  <!-- Why custom -->
+  <section class="svc-block svc-why" aria-labelledby="svc-why-h">
+    <header class="svc-block-head">
+      <h2 class="svc-block-h" id="svc-why-h">{whyTitle}</h2>
+    </header>
+    {why.map((p) => <p class="svc-why-p" set:html={p} />)}
+  </section>
+
+  {faq.length > 0 && (
+    <>
+      <Divider label="04" />
+      <section class="svc-faq" aria-labelledby="svc-faq-h">
+        <header class="svc-block-head">
+          <h2 class="svc-block-h" id="svc-faq-h">Questions</h2>
+        </header>
+        <div class="svc-faq-list">
+          {faq.map((item, i) => (
+            <details class="svc-faq-item" open={i === 0}>
+              <summary class="svc-faq-q">
+                <span class="svc-faq-q-text">{item.q}</span>
+                <span class="svc-faq-toggle" aria-hidden="true">+</span>
+              </summary>
+              <div class="svc-faq-a"><p set:html={item.a} /></div>
+            </details>
+          ))}
+        </div>
+      </section>
+    </>
+  )}
+
+  <Divider label="05" />
+
+  <RelatedLinks
+    id="svc-related"
+    title={relatedTitle}
+    intro={relatedIntro}
+    links={relatedLinks}
+  />
+
+  <Divider label="06" />
+
+  <Contact sectionNumber="06" centered suppressHeader />
+</BaseLayout>
+
+<style>
+  .svc-intro {
+    padding: 24px 4px 8px;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  @media (min-width: 768px) { .svc-intro { padding: 36px 4px 12px; } }
+  .svc-lead {
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 1.7;
+    color: var(--color-ash-300);
+    margin: 0 0 16px;
+    max-width: 62ch;
+  }
+  @media (min-width: 768px) { .svc-lead { font-size: 17.5px; } }
+  .svc-lead :global(strong) { color: var(--color-ash-100); font-weight: 600; }
+  .svc-lead :global(em) {
+    color: var(--color-copper-bright);
+    font-style: italic;
+    font-family: var(--font-serif);
+  }
+
+  .svc-block {
+    padding: 32px 4px 24px;
+    max-width: 960px;
+    margin: 0 auto;
+  }
+  @media (min-width: 768px) { .svc-block { padding: 48px 4px 32px; } }
+  .svc-block-head { margin: 0 0 18px; }
+  .svc-block-h {
+    font-family: var(--font-serif);
+    font-size: 28px;
+    line-height: 1.15;
+    margin: 0;
+    color: var(--color-ash-100);
+    font-weight: 600;
+  }
+  @media (min-width: 768px) { .svc-block-h { font-size: 36px; } }
+  @media (min-width: 1024px) { .svc-block-h { font-size: 42px; } }
+
+  .svc-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+    margin: 18px 0 0;
+  }
+  @media (min-width: 768px) { .svc-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; } }
+  @media (min-width: 1024px) { .svc-grid { grid-template-columns: repeat(3, 1fr); } }
+  .svc-card {
+    background: var(--color-bg-card);
+    border: 1px solid var(--copper-hairline);
+    border-radius: var(--radius-card, 10px);
+    padding: 18px 16px 16px;
+  }
+  .svc-card-h {
+    font-family: var(--font-serif);
+    font-size: 19px;
+    margin: 0 0 8px;
+    color: var(--color-ash-100);
+    font-weight: 600;
+  }
+  @media (min-width: 768px) { .svc-card-h { font-size: 21px; } }
+  .svc-card-body {
+    font-family: var(--font-sans);
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--color-ash-300);
+    margin: 0;
+  }
+  @media (min-width: 768px) { .svc-card-body { font-size: 14.5px; } }
+  .svc-card-body :global(strong) { color: var(--color-ash-100); }
+
+  .svc-why { max-width: 720px; }
+  .svc-why-p {
+    font-family: var(--font-sans);
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--color-ash-300);
+    margin: 0 0 16px;
+    max-width: 62ch;
+  }
+  @media (min-width: 768px) { .svc-why-p { font-size: 16px; } }
+  .svc-why-p :global(strong) { color: var(--color-ash-100); font-weight: 600; }
+  .svc-why-p :global(em) {
+    color: var(--color-copper-bright);
+    font-style: italic;
+    font-family: var(--font-serif);
+  }
+
+  /* FAQ accordion, mirrors services.astro pattern */
+  .svc-faq {
+    padding: 32px 4px 24px;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  @media (min-width: 768px) { .svc-faq { padding: 48px 4px 32px; } }
+  .svc-faq-list { margin: 18px 0 0; display: grid; gap: 8px; }
+  .svc-faq-item {
+    background: var(--color-bg-card);
+    border: 1px solid var(--copper-hairline);
+    border-radius: var(--radius-card, 10px);
+    overflow: hidden;
+  }
+  .svc-faq-item[open] { border-color: var(--copper-dim, rgba(240, 160, 110, 0.5)); }
+  .svc-faq-q {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 12px;
+    align-items: center;
+    padding: 14px 16px;
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+  }
+  .svc-faq-q::-webkit-details-marker { display: none; }
+  .svc-faq-q:hover, .svc-faq-q:focus-visible {
+    background-color: rgba(200, 128, 74, 0.04);
+    outline: none;
+  }
+  .svc-faq-q-text {
+    font-family: var(--font-sans);
+    font-size: 15px;
+    color: var(--color-ash-100);
+    font-weight: 600;
+    line-height: 1.35;
+  }
+  @media (min-width: 768px) { .svc-faq-q-text { font-size: 17px; } }
+  .svc-faq-toggle {
+    font-family: var(--font-mono);
+    font-size: 18px;
+    color: var(--color-copper);
+    width: 20px;
+    text-align: center;
+    transition: transform 0.15s ease;
+  }
+  .svc-faq-item[open] .svc-faq-toggle { transform: rotate(45deg); }
+  .svc-faq-a {
+    padding: 0 16px 16px 16px;
+    font-family: var(--font-sans);
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--color-ash-300);
+    border-top: 1px solid rgba(255, 255, 255, 0.04);
+  }
+  @media (min-width: 768px) { .svc-faq-a { font-size: 15px; } }
+  .svc-faq-a p { margin: 14px 0 0; }
+  .svc-faq-a :global(strong) { color: var(--color-ash-100); }
+  .svc-faq-a :global(em) { color: var(--color-copper-bright); font-style: italic; }
+</style>
