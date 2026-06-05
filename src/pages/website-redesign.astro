@@ -1,0 +1,56 @@
+---
+import ServiceLayout from '../components/templates/ServiceLayout.astro';
+import type { ServiceEntry } from '../lib/business';
+const service: ServiceEntry = {
+  slug: 'website-redesign',
+  name: 'Website Redesign',
+  shortLabel: 'Website Redesign',
+  blurb: 'Redesign and rebuild for sites that are slow, dated, or rented.',
+  serviceType: 'Website redesign and rebuild',
+};
+---
+<ServiceLayout
+  service={service}
+  path="/website-redesign"
+  breadcrumb={[
+    { name: 'Home', path: '/' },
+    { name: 'Website Redesign', path: '/website-redesign' },
+  ]}
+  title="Website Redesign & Rebuild · Winters Code"
+  description="Website redesign and rebuild for Oregon coast businesses. Turn a slow, dated, rented site into a fast custom one you own. Measured before and after."
+  eyebrow="Redesign · Rebuild"
+  h1="A redesign that earns its keep."
+  sub="Turn a slow, dated, or rented website into a fast custom one you own. Same modern stack I build new sites on."
+  sub2="Measured before. Measured after."
+  bgImage="/photo/local/grass-coast-wash"
+  intro={[
+    "A redesign is worth it when the current site is costing you: slow loads that lose mobile visitors, a template you cannot really change, a platform you pay monthly to rent, or a look that no longer matches the business.",
+    "I rebuild on a modern, hand-written stack. Not a new theme on the same tired platform, but a fast, secure, custom site that you own outright. And I measure it, so the improvement is on paper, not just a feeling.",
+  ]}
+  includesTitle="What a rebuild fixes"
+  includes={[
+    { h: 'Speed', body: 'Sub-second mobile loads instead of the 5-second crawl that sends visitors back to the search results.' },
+    { h: 'Ownership', body: 'You own the code and content. No monthly platform rent, no lock-in holding your own site hostage.' },
+    { h: 'Security', body: 'A strict content security policy and an A-plus posture, not just a bare lock icon in the address bar.' },
+    { h: 'Search visibility', body: 'Clean metadata, structured data, and an internal-link structure search engines can actually read.' },
+    { h: 'A current look', body: 'A custom design that matches the business you run today, built mobile-first.' },
+    { h: 'Content migration', body: 'Your existing pages, photos, and copy carried over, cleaned up, and improved, not lost.' },
+  ]}
+  whyTitle="Why most local sites are due for one"
+  why={[
+    "I audited 169 Coos County small-business websites. The average mobile speed score was <strong>61 out of 100</strong>, <strong>88 percent</strong> were renting their site from a template platform, and not one scored both fast and secure. Most of those sites are overdue for a rebuild and do not know it.",
+    "A redesign on a custom stack closes that gap. <em>It loads faster, ranks better, and it is finally yours.</em> Run your current site through my free audit and we will see exactly what a rebuild would change.",
+  ]}
+  faq={[
+    { q: 'Can you save my content, or do I start over?', a: 'I carry your existing pages, photos, and copy over, then clean them up. You keep what works; we fix what does not. Nothing of value gets thrown away.' },
+    { q: 'How do I know a redesign is worth it?', a: 'Run the free audit. If your site is slow, insecure, hard to update, or stuck on a platform you pay to rent, a rebuild usually pays for itself in speed and search visibility. The audit shows you where you stand first.' },
+    { q: 'How long does a rebuild take?', a: 'Most rebuilds land in the same windows as a new build: a few days to a couple of weeks depending on size. I work in days, not quarters.' },
+    { q: 'Will my search rankings survive the move?', a: 'Yes, when it is done right. I keep your URLs stable or set proper redirects so existing rankings carry over, and the speed and structure gains usually help, not hurt.' },
+  ]}
+  relatedTitle="Related"
+  relatedLinks={[
+    { href: '/services/web-design', label: 'Web Design', sub: 'The full service' },
+    { href: '/core-web-vitals-fix', label: 'Core Web Vitals Fix', sub: 'If speed is the issue' },
+    { href: '/audit', label: 'Free site audit', sub: 'See where you stand' },
+  ]}
+/>

@@ -37,6 +37,10 @@ interface Props {
   path?: string;
   /** Override the breadcrumb trail. Defaults to Home > Services > <name>. */
   breadcrumb?: { name: string; path: string }[];
+  /** When set, the Service schema areaServed is this single town. */
+  areaName?: string;
+  /** Override the Service schema name (e.g. "App Development in Bandon, OR"). */
+  schemaName?: string;
   intro: string[];
   includesTitle?: string;
   includes: Include[];
@@ -60,6 +64,8 @@ const {
   bgOpacity = 0.34,
   path: pathProp,
   breadcrumb,
+  areaName,
+  schemaName,
   intro,
   includesTitle = "What's included",
   includes,
@@ -73,10 +79,11 @@ const {
 
 const path = pathProp ?? `/services/${service.slug}`;
 const serviceLd = serviceSchema({
-  name: service.name,
+  name: schemaName ?? service.name,
   serviceType: service.serviceType,
   description,
   path,
+  areaName,
 });
 const breadcrumbLd = breadcrumbSchema(
   breadcrumb ?? [

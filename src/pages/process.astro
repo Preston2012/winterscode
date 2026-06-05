@@ -1,0 +1,185 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/layout/Header.astro';
+import MobileMenu from '../components/layout/MobileMenu.astro';
+import PageHero from '../components/sections/PageHero.astro';
+import Divider from '../components/ui/Divider.astro';
+import Contact from '../components/sections/Contact.astro';
+import { breadcrumbSchema } from '../lib/schema';
+
+const breadcrumbLd = breadcrumbSchema([
+  { name: 'Home', path: '/' },
+  { name: 'Process', path: '/process' },
+]);
+
+const steps = [
+  {
+    num: '01',
+    name: 'Questionnaire + consult',
+    meta: 'no cost, no pitch deck',
+    body: 'A short questionnaire covers your business, audience, services, and goals. Then we talk: in person if you are local, on a video call if you are not. A completed questionnaire keeps the consult sharp and is required before the first meeting.',
+  },
+  {
+    num: '02',
+    name: 'Quote + SOW + 50%',
+    meta: 'locks scope, work starts the same week',
+    body: 'I send a custom quote and a plain-English scope of work. Quotes hold for 14 days. A 50 percent deposit locks the scope and the schedule, and the build starts that same week. No waiting for next quarter.',
+  },
+  {
+    num: '03',
+    name: 'Build',
+    meta: 'days for sites, weeks for apps',
+    body: 'I write the code, send you progress, and fold in your revision rounds. Modern stack, around a 95 Lighthouse average, secure by default. You see real work fast, not a status meeting.',
+  },
+  {
+    num: '04',
+    name: 'Launch',
+    meta: 'final 50% on launch',
+    body: 'The site goes live, indexed and fast, with the final 50 percent due at launch. You own the code and the content outright.',
+  },
+  {
+    num: '05',
+    name: 'Maintain',
+    meta: 'optional, from $75/mo',
+    body: 'If you want it, a monthly care plan keeps the site hosted, secure, backed up, and edited. The person who built it is the person who maintains it, five years from now included.',
+  },
+];
+---
+
+<BaseLayout
+  title="How I Work · The Process · Winters Code"
+  description="From questionnaire to launch and beyond. A clear five-step process for Oregon coast websites and apps: consult, quote, build, launch, and maintain."
+  canonicalPath="/process"
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbLd)} />
+  </Fragment>
+
+  <Header />
+  <MobileMenu />
+
+  <PageHero
+    eyebrow="The Process"
+    h1="From questionnaire to launch."
+    sub="A clear, honest path from first conversation to a live site you own. No agency runaround."
+    bgImage="/photo/local/services-coast-wash"
+    bgOpacity={0.34}
+  />
+
+  <Divider label="01" />
+
+  <section class="proc" aria-label="The five steps">
+    <ol class="proc-steps">
+      {steps.map((s) => (
+        <li class="proc-step">
+          <span class="proc-num">{s.num}</span>
+          <div class="proc-body">
+            <h2 class="proc-name">{s.name}</h2>
+            <p class="proc-meta">{s.meta}</p>
+            <p class="proc-text">{s.body}</p>
+          </div>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <Divider label="02" />
+
+  <section class="proc-creed" aria-labelledby="proc-creed-h">
+    <h2 class="proc-creed-h" id="proc-creed-h">How I work</h2>
+    <ul class="proc-creed-list">
+      <li>I write the code myself, end to end. No offshore team, no junior you will never meet.</li>
+      <li>I show up in person when it matters. Small towns run on trust, and that is built face to face.</li>
+      <li>I answer my texts within a few hours on business days. Real human, real response time.</li>
+      <li>The site fits your customer, not the other way around. Sometimes that is a long scrolling story, sometimes a big phone number and a clear way to book.</li>
+      <li>I am here for the long run. Bandon is home, and the person who built your site is the one who maintains it.</li>
+    </ul>
+  </section>
+
+  <Divider label="03" />
+
+  <Contact sectionNumber="03" centered suppressHeader />
+</BaseLayout>
+
+<style>
+  .proc { padding: 24px 4px 16px; max-width: 760px; margin: 0 auto; }
+  @media (min-width: 768px) { .proc { padding: 36px 4px 24px; } }
+  .proc-steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 18px; }
+  .proc-step {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 16px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
+  .proc-step:last-child { border-bottom: 0; }
+  .proc-num {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 28px;
+    color: var(--color-copper-bright);
+    line-height: 1;
+  }
+  @media (min-width: 768px) { .proc-num { font-size: 34px; } }
+  .proc-name {
+    font-family: var(--font-serif);
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--color-ash-100);
+    margin: 0 0 2px;
+  }
+  @media (min-width: 768px) { .proc-name { font-size: 24px; } }
+  .proc-meta {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-copper);
+    margin: 0 0 8px;
+  }
+  .proc-text {
+    font-family: var(--font-sans);
+    font-size: 15px;
+    line-height: 1.65;
+    color: var(--color-ash-300);
+    margin: 0;
+    max-width: 60ch;
+  }
+  @media (min-width: 768px) { .proc-text { font-size: 16px; } }
+
+  .proc-creed { padding: 24px 4px; max-width: 760px; margin: 0 auto; }
+  .proc-creed-h {
+    font-family: var(--font-serif);
+    font-size: 26px;
+    font-weight: 600;
+    color: var(--color-ash-100);
+    margin: 0 0 16px;
+  }
+  @media (min-width: 768px) { .proc-creed-h { font-size: 34px; } }
+  .proc-creed-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 12px;
+    font-family: var(--font-sans);
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--color-ash-300);
+  }
+  @media (min-width: 768px) { .proc-creed-list { font-size: 16px; } }
+  .proc-creed-list li {
+    padding-left: 18px;
+    position: relative;
+    max-width: 62ch;
+  }
+  .proc-creed-list li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 11px;
+    width: 8px;
+    height: 1px;
+    background: var(--color-copper);
+  }
+</style>
