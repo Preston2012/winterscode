@@ -31,12 +31,16 @@ interface Props {
   bgImage?: string;
   bgOpacity?: number;
   bgPosition?: string;
+  /** Showcase mode: prominent full-bleed photo with text anchored in the
+   *  bottom negative space, a directional scrim, and a taller frame. Use
+   *  bgPosition to set the photo focal point so the subject stays in view. */
+  showcase?: boolean;
 }
 
-const { eyebrow, h1, sub, sub2, sub3, showStamp = false, bgImage, bgOpacity = 0.3, bgPosition = 'center' } = Astro.props;
+const { eyebrow, h1, sub, sub2, sub3, showStamp = false, bgImage, bgOpacity = 0.3, bgPosition = 'center', showcase = false } = Astro.props;
 ---
 
-<section class="page-hero" aria-labelledby="page-hero-h1">
+<section class:list={['page-hero', { showcase: showcase && bgImage }]} aria-labelledby="page-hero-h1">
   {bgImage && (
     <div class="ph-wash" aria-hidden="true" style={`--ph-wash-opacity:${bgOpacity}; --ph-wash-pos:${bgPosition}`}>
       <img
@@ -180,4 +184,35 @@ const { eyebrow, h1, sub, sub2, sub3, showStamp = false, bgImage, bgOpacity = 0.
   .ph-wash img { width: 100%; height: 100%; object-fit: cover; object-position: var(--ph-wash-pos, center); opacity: var(--ph-wash-opacity, 0.08); display: block; }
   .ph-wash::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(10, 13, 12, 0.2), rgba(10, 13, 12, 0.54) 78%, rgba(10, 13, 12, 0.66)); }
   .ph-row, .ph-sub { position: relative; z-index: 1; }
+
+  /* ── Showcase mode: the photo IS the hero ──
+     Full-bleed photo at full strength, text anchored in the bottom negative
+     space over a directional scrim, so each hero "forms around" its image.
+     bgPosition sets the focal point so the subject never gets cropped out. */
+  .page-hero.showcase {
+    min-height: 56vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 64px 22px 26px;
+    border-radius: 14px;
+    overflow: hidden;
+    margin-top: 6px;
+    isolation: isolate;
+  }
+  @media (min-width: 768px) {
+    .page-hero.showcase { min-height: 60vh; padding: 80px 40px 38px; }
+  }
+  @media (min-width: 1024px) {
+    .page-hero.showcase { min-height: 62vh; padding: 96px 56px 48px; }
+  }
+  .page-hero.showcase .ph-wash img { opacity: 1; }
+  .page-hero.showcase .ph-wash::after {
+    background:
+      linear-gradient(to top, rgba(8, 11, 10, 0.94) 0%, rgba(8, 11, 10, 0.74) 20%, rgba(8, 11, 10, 0.30) 50%, rgba(8, 11, 10, 0.10) 78%, rgba(8, 11, 10, 0.20) 100%),
+      linear-gradient(to right, rgba(8, 11, 10, 0.45), rgba(8, 11, 10, 0) 60%);
+  }
+  /* A touch larger + more breathing room for the showcase H1. */
+  .page-hero.showcase .ph-eyebrow { margin-bottom: 14px; }
+  .page-hero.showcase .ph-sub { max-width: 600px; }
 </style>
