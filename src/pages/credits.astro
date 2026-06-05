@@ -1,0 +1,129 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/layout/Header.astro';
+import MobileMenu from '../components/layout/MobileMenu.astro';
+import PageHero from '../components/sections/PageHero.astro';
+import Divider from '../components/ui/Divider.astro';
+import Contact from '../components/sections/Contact.astro';
+import { breadcrumbSchema } from '../lib/schema';
+
+const breadcrumbLd = breadcrumbSchema([
+  { name: 'Home', path: '/' },
+  { name: 'Credits', path: '/credits' },
+]);
+
+// Town hero photography licensed under Creative Commons (attribution required).
+const ccPhotos = [
+  { town: 'Coos Bay', subject: 'Coos Bay Boardwalk', artist: 'Sheila Sund', lic: 'CC BY 2.0', licurl: 'https://creativecommons.org/licenses/by/2.0', src: 'https://commons.wikimedia.org/wiki/File:Coos_Bay_Boardwalk_(8459932181).jpg' },
+  { town: 'North Bend', subject: 'Conde McCullough Memorial Bridge', artist: 'Debbie Tegtmeier', lic: 'CC BY-SA 3.0', licurl: 'https://creativecommons.org/licenses/by-sa/3.0', src: 'https://commons.wikimedia.org/wiki/File:Conde_McCullough_Memorial_Bridge.jpg' },
+  { town: 'Coquille', subject: 'Aerial of Coquille', artist: 'Oregon Department of Transportation', lic: 'CC BY 2.0', licurl: 'https://creativecommons.org/licenses/by/2.0', src: 'https://commons.wikimedia.org/wiki/File:DJI_0153_(32855352117).jpg' },
+  { town: 'Reedsport', subject: 'Umpqua River Swing Bridge', artist: 'Tony Webster', lic: 'CC BY-SA 2.0', licurl: 'https://creativecommons.org/licenses/by-sa/2.0', src: 'https://commons.wikimedia.org/wiki/File:Umpqua_River_Swing_Bridge,_Reedsport,_Oregon_(38712074540).jpg' },
+  { town: 'Myrtle Point', subject: 'Myrtle Point City Hall', artist: 'Visitor7', lic: 'CC BY-SA 3.0', licurl: 'https://creativecommons.org/licenses/by-sa/3.0', src: 'https://commons.wikimedia.org/wiki/File:Myrtle_Point,_Oregon.jpg' },
+  { town: 'Port Orford', subject: 'Winter sunset, Port Orford Heads', artist: 'Ian Poellet', lic: 'CC BY-SA 4.0', licurl: 'https://creativecommons.org/licenses/by-sa/4.0', src: 'https://commons.wikimedia.org/wiki/File:Winter_sunset_-_Port_Orford_Heads_SP_Oregon.jpg' },
+  { town: 'Gold Beach', subject: 'Isaac Lee Patterson (Rogue River) Bridge', artist: 'Cacophony', lic: 'CC BY-SA 3.0', licurl: 'https://creativecommons.org/licenses/by-sa/3.0', src: 'https://commons.wikimedia.org/wiki/File:IsaacLeePattersonBridgeSE.jpg' },
+];
+---
+
+<BaseLayout
+  title="Photo Credits · Winters Code"
+  description="Photography credits and Creative Commons attributions for the Winters Code website."
+  canonicalPath="/credits"
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbLd)} />
+  </Fragment>
+
+  <Header />
+  <MobileMenu />
+
+  <PageHero
+    eyebrow="Colophon"
+    h1="Photo credits."
+    sub="Most of the photography here is mine, shot around Bandon and the south coast. The town landmark photos are licensed under Creative Commons, credited below."
+    bgImage="/photo/local/beach-pebbles"
+    bgOpacity={0.26}
+  />
+
+  <Divider label="01" />
+
+  <section class="cr" aria-label="Credits">
+    <h2 class="cr-h">Original photography</h2>
+    <p class="cr-p">
+      The home, about, work, contact, and service-page photography, and the
+      Bandon hero, are original work by Winters Code. The concept-build mockups
+      are fictional businesses; the graphic-work samples are real Winters Code
+      design work.
+    </p>
+
+    <h2 class="cr-h">Licensed town photography</h2>
+    <p class="cr-p">
+      Hero photos for the seven non-Bandon towns are used under Creative Commons
+      licenses, with thanks to the photographers below. Each links to its source
+      and license.
+    </p>
+    <ul class="cr-list">
+      {ccPhotos.map((p) => (
+        <li class="cr-item">
+          <span class="cr-town">{p.town}</span>
+          <span class="cr-detail">
+            {p.subject} &middot; {p.artist} &middot;
+            <a href={p.licurl} rel="noopener" target="_blank">{p.lic}</a> &middot;
+            <a href={p.src} rel="noopener" target="_blank">source</a>
+          </span>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <Divider label="02" />
+
+  <Contact sectionNumber="02" centered suppressHeader />
+</BaseLayout>
+
+<style>
+  .cr { max-width: 720px; margin: 0 auto; padding: 20px 4px 8px; }
+  .cr-h {
+    font-family: var(--font-serif);
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--color-ash-100);
+    margin: 26px 0 10px;
+  }
+  .cr-h:first-child { margin-top: 0; }
+  .cr-p {
+    font-family: var(--font-sans);
+    font-size: 15px;
+    line-height: 1.65;
+    color: var(--color-ash-300);
+    margin: 0 0 14px;
+    max-width: 64ch;
+  }
+  .cr-list { list-style: none; margin: 10px 0 0; padding: 0; display: grid; gap: 10px; }
+  .cr-item {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2px;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
+  @media (min-width: 640px) { .cr-item { grid-template-columns: 130px 1fr; gap: 16px; } }
+  .cr-town {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    color: var(--color-copper);
+    text-transform: uppercase;
+  }
+  .cr-detail {
+    font-family: var(--font-sans);
+    font-size: 13.5px;
+    line-height: 1.5;
+    color: var(--color-ash-400);
+  }
+  .cr-detail a {
+    color: var(--color-wc-green);
+    text-decoration: underline;
+    text-decoration-color: rgba(77, 216, 168, 0.4);
+    text-underline-offset: 2px;
+  }
+</style>

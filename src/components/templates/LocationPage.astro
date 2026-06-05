@@ -38,6 +38,10 @@ interface Props {
   intro: string[];
   bgImage?: string;
   bgOpacity?: number;
+  /** Prominent photo hero with bottom-anchored text + scrim. */
+  showcase?: boolean;
+  /** Photo focal point (object-position) for showcase heroes. */
+  heroFocal?: string;
   /** Show the 169-site county audit hook (hub pages). Default true. */
   showAuditHook?: boolean;
 }
@@ -55,6 +59,8 @@ const {
   intro,
   bgImage = '/photo/local/home-coast-wash',
   bgOpacity = 0.3,
+  showcase = false,
+  heroFocal = 'center',
   showAuditHook = true,
 } = Astro.props;
 
@@ -107,6 +113,8 @@ const faqLd = town.faq.length ? faqSchema(town.faq) : null;
     sub2={sub2}
     bgImage={bgImage}
     bgOpacity={bgOpacity}
+    showcase={showcase}
+    bgPosition={heroFocal}
   />
 
   <Divider label="01" />
