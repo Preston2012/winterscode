@@ -33,6 +33,10 @@ interface Props {
   sub2?: string;
   bgImage?: string;
   bgOpacity?: number;
+  /** Override the public path. Defaults to /services/<slug>. */
+  path?: string;
+  /** Override the breadcrumb trail. Defaults to Home > Services > <name>. */
+  breadcrumb?: { name: string; path: string }[];
   intro: string[];
   includesTitle?: string;
   includes: Include[];
@@ -54,6 +58,8 @@ const {
   sub2,
   bgImage,
   bgOpacity = 0.34,
+  path: pathProp,
+  breadcrumb,
   intro,
   includesTitle = "What's included",
   includes,
@@ -65,18 +71,20 @@ const {
   relatedLinks,
 } = Astro.props;
 
-const path = `/services/${service.slug}`;
+const path = pathProp ?? `/services/${service.slug}`;
 const serviceLd = serviceSchema({
   name: service.name,
   serviceType: service.serviceType,
   description,
   path,
 });
-const breadcrumbLd = breadcrumbSchema([
-  { name: 'Home', path: '/' },
-  { name: 'Services', path: '/services' },
-  { name: service.name, path },
-]);
+const breadcrumbLd = breadcrumbSchema(
+  breadcrumb ?? [
+    { name: 'Home', path: '/' },
+    { name: 'Services', path: '/services' },
+    { name: service.name, path },
+  ]
+);
 const faqLd = faq.length ? faqSchema(faq) : null;
 ---
 

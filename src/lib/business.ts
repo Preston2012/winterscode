@@ -153,7 +153,7 @@ export const towns: TownEntry[] = [
       },
       {
         q: 'My Coos Bay business already has a website. Is a rebuild worth it?',
-        a: 'Often, yes. In an audit of 169 Coos County small-business websites, the average mobile speed score was 61 out of 100 and not one site scored both fast and secure. If your current site is slow or built on a page builder, a custom rebuild usually pays for itself in search visibility and load speed.',
+        a: 'Often, yes. If your current site is slow, built on a page builder, or missing basic security, a custom rebuild usually pays for itself in search visibility and load speed. The free audit shows you exactly where your site stands before you decide.',
       },
     ],
     neighbors: ['north-bend', 'coquille'],
