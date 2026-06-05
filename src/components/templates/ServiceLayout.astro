@@ -33,6 +33,10 @@ interface Props {
   sub2?: string;
   bgImage?: string;
   bgOpacity?: number;
+  /** Prominent photo hero with bottom-anchored text + scrim. */
+  showcase?: boolean;
+  /** Photo focal point (object-position) for showcase heroes. */
+  heroFocal?: string;
   /** Override the public path. Defaults to /services/<slug>. */
   path?: string;
   /** Override the breadcrumb trail. Defaults to Home > Services > <name>. */
@@ -73,6 +77,8 @@ const {
   sub2,
   bgImage,
   bgOpacity = 0.34,
+  showcase = false,
+  heroFocal = 'center',
   path: pathProp,
   breadcrumb,
   areaName,
@@ -124,6 +130,8 @@ const faqLd = faq.length ? faqSchema(faq) : null;
     sub2={sub2}
     bgImage={bgImage}
     bgOpacity={bgOpacity}
+    showcase={showcase}
+    bgPosition={heroFocal}
   />
 
   <Divider label="01" />
