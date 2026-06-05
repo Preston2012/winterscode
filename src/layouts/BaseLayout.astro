@@ -12,6 +12,10 @@ import KeyboardShortcuts from '../components/layout/KeyboardShortcuts.astro';
 // at lowest priority and NEVER blocks screen paint. Saves ~1KB off the
 // render-blocking BaseLayout CSS chunk.
 import printCssUrl from '../styles/print.css?url';
+// Site-wide JSON-LD builders. Business identity now lives in src/lib/business.ts
+// (single source of truth) and is shaped into schema here. Per-page Service /
+// Breadcrumb / FAQ nodes are added by each page through the head slot.
+import { localBusinessSchema, websiteSchema } from '../lib/schema';
 
 export interface Props {
   /** Page title, appears in <title>, og:title, twitter:title. */
@@ -52,33 +56,16 @@ const canonical = canonicalPath
 const ogImageUrl =
   ogImage === null ? null : ogImage.startsWith('http') ? ogImage : `${siteUrl}${ogImage}`;
 
-// Schema.org LocalBusiness, required for Bandon SEO targeting.
-// Phone + email left unset until Preston confirms (STATE.md open questions).
-const localBusinessSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'LocalBusiness',
-  '@id': `${siteUrl}/#business`,
-  name: 'Winters Code',
-  description:
-    'Custom React, Astro, and Flutter for Oregon coast businesses. Modern stack. Days, not weeks.',
-  url: siteUrl,
-  ...(ogImageUrl ? { image: ogImageUrl } : {}),
-  priceRange: '$$',
-  address: {
-    '@type': 'PostalAddress',
-    addressLocality: 'Bandon',
-    addressRegion: 'OR',
-    addressCountry: 'US',
-  },
-  areaServed: [
-    { '@type': 'AdministrativeArea', name: 'Coos County, Oregon' },
-    { '@type': 'AdministrativeArea', name: 'Curry County, Oregon' },
-  ],
-  founder: {
-    '@type': 'Person',
-    name: 'Preston Winters',
-  },
-};
+// Preview-deploy guard. Cloudflare Pages sets CF_PAGES_BRANCH on every build.
+// Production builds from the default branch stay fully indexable (current
+// behavior). Any OTHER branch (preview / temp link) gets noindex so the
+// in-progress SEO pages can be reviewed on a *.pages.dev URL without leaking
+// into search or creating duplicate content. Local builds (no CF_PAGES_BRANCH)
+// stay indexable, matching prior behavior.
+const prodBranch = 'main';
+const cfBranch =
+  typeof process !== 'undefined' ? process.env?.CF_PAGES_BRANCH : undefined;
+const isPreviewDeploy = !!cfBranch && cfBranch !== prodBranch;
 ---
 
 <!doctype html>
@@ -92,6 +79,7 @@ const localBusinessSchema = {
   <title>{title}</title>
   <meta name="description" content={description} />
   <link rel="canonical" href={canonical} />
+  {isPreviewDeploy && <meta name="robots" content="noindex, nofollow" />}
 
   <!-- Theme + favicons. The color seal (wc-stamp PNGs) is the canonical favicon:
        it matches the Google Business Profile mark, reads at tab size, and the
@@ -151,8 +139,12 @@ const localBusinessSchema = {
        TLS handshake and render-blocking round-trip on mobile.
        font-display: swap renders text immediately with fallbacks. -->
 
-  <!-- Schema.org LocalBusiness -->
-  <script type="application/ld+json" set:html={JSON.stringify(localBusinessSchema)} />
+  <!-- Schema.org: business identity (LocalBusiness + ProfessionalService) and
+       WebSite, site-wide. Per-page Service / BreadcrumbList / FAQPage nodes are
+       injected by each page through the head slot below. Built from the single
+       business data module (src/lib/business.ts). -->
+  <script type="application/ld+json" set:html={JSON.stringify(localBusinessSchema())} />
+  <script type="application/ld+json" set:html={JSON.stringify(websiteSchema())} />
 
   <!-- Slot for per-page <head> additions (extra schemas, page-scoped styles) -->
   <slot name="head" />
