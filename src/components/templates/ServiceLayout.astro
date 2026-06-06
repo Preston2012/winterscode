@@ -33,10 +33,12 @@ interface Props {
   sub2?: string;
   bgImage?: string;
   bgOpacity?: number;
-  /** Prominent photo hero with bottom-anchored text + scrim. */
+  /** Prominent photo hero with text in the photo's dead space + scrim. */
   showcase?: boolean;
   /** Photo focal point (object-position) for showcase heroes. */
   heroFocal?: string;
+  /** Which dead-space the hero text sits in: 'bottom' (default) or 'top'. */
+  heroTextPos?: 'top' | 'bottom';
   /** Override the public path. Defaults to /services/<slug>. */
   path?: string;
   /** Override the breadcrumb trail. Defaults to Home > Services > <name>. */
@@ -79,6 +81,7 @@ const {
   bgOpacity = 0.34,
   showcase = false,
   heroFocal = 'center',
+  heroTextPos = 'bottom',
   path: pathProp,
   breadcrumb,
   areaName,
@@ -132,6 +135,7 @@ const faqLd = faq.length ? faqSchema(faq) : null;
     bgOpacity={bgOpacity}
     showcase={showcase}
     bgPosition={heroFocal}
+    textPos={heroTextPos}
   />
 
   <Divider label="01" />
