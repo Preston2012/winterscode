@@ -241,6 +241,13 @@ const faqLd = faq.length ? faqSchema(faq) : null;
   }
   @media (min-width: 768px) { .svc-lead { font-size: 17.5px; } }
   .svc-lead :global(strong) { color: var(--color-ash-100); font-weight: 600; }
+  .svc-lead :global(a) {
+    color: var(--color-wc-green);
+    text-decoration: underline;
+    text-decoration-color: rgba(77, 216, 168, 0.45);
+    text-underline-offset: 3px;
+    font-weight: 600;
+  }
   .svc-lead :global(em) {
     color: var(--color-copper-bright);
     font-style: italic;
