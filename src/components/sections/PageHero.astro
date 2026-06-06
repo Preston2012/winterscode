@@ -31,16 +31,20 @@ interface Props {
   bgImage?: string;
   bgOpacity?: number;
   bgPosition?: string;
-  /** Showcase mode: prominent full-bleed photo with text anchored in the
-   *  bottom negative space, a directional scrim, and a taller frame. Use
-   *  bgPosition to set the photo focal point so the subject stays in view. */
+  /** Showcase mode: prominent full-bleed photo with text in the photo's
+   *  dead space, a directional scrim, and a taller frame. Use bgPosition to
+   *  set the photo focal point so the subject stays in view. */
   showcase?: boolean;
+  /** Which dead-space the text sits in: 'bottom' (default) or 'top'.
+   *  Pick the edge of the photo that has empty sky/water/sand so the text
+   *  never covers the subject. */
+  textPos?: 'top' | 'bottom';
 }
 
-const { eyebrow, h1, sub, sub2, sub3, showStamp = false, bgImage, bgOpacity = 0.3, bgPosition = 'center', showcase = false } = Astro.props;
+const { eyebrow, h1, sub, sub2, sub3, showStamp = false, bgImage, bgOpacity = 0.3, bgPosition = 'center', showcase = false, textPos = 'bottom' } = Astro.props;
 ---
 
-<section class:list={['page-hero', { showcase: showcase && bgImage }]} aria-labelledby="page-hero-h1">
+<section class:list={['page-hero', { showcase: showcase && bgImage, 'showcase-top': showcase && bgImage && textPos === 'top' }]} aria-labelledby="page-hero-h1">
   {bgImage && (
     <div class="ph-wash" aria-hidden="true" style={`--ph-wash-opacity:${bgOpacity}; --ph-wash-pos:${bgPosition}`}>
       <img
@@ -239,4 +243,13 @@ const { eyebrow, h1, sub, sub2, sub3, showStamp = false, bgImage, bgOpacity = 0.
     text-shadow: 0 1px 14px rgba(0, 0, 0, 0.6);
   }
   .page-hero.showcase .ph-sub em { color: #fff; }
+
+  /* Text in the TOP dead-space (for photos whose subject sits low and whose
+     sky/empty area is up top). Flip the anchor and the scrim direction. */
+  .page-hero.showcase-top { justify-content: flex-start; }
+  .page-hero.showcase-top .ph-wash::after {
+    background:
+      linear-gradient(to bottom, rgba(8, 11, 10, 0.97) 0%, rgba(8, 11, 10, 0.9) 26%, rgba(8, 11, 10, 0.62) 48%, rgba(8, 11, 10, 0.26) 72%, rgba(8, 11, 10, 0.34) 100%),
+      linear-gradient(to right, rgba(8, 11, 10, 0.5), rgba(8, 11, 10, 0) 62%);
+  }
 </style>
