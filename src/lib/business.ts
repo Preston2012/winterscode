@@ -134,6 +134,14 @@ export interface TownEntry {
    */
   localAngle?: { heading: string; body: string };
   /**
+   * A third unique section: the concrete local business scene. Named districts,
+   * landmarks, anchors, and the real competitive picture for THIS town. This is
+   * the highest-uniqueness block (no parallel on other towns), added to push
+   * per-page duplication well under 30% while giving Google genuine local
+   * relevance signals. 3-5 sentences, all factual, no fabricated proof.
+   */
+  localScene?: { heading: string; body: string };
+  /**
    * Town-specific framing for the audit/opportunity block. Replaces the
    * identical shared paragraph so each page reads differently. Factual.
    */
@@ -188,6 +196,11 @@ export const towns: TownEntry[] = [
     localAngle: {
       heading: 'Why it matters in Coos Bay',
       body: 'Coos Bay is the one market on the coast big enough to have real local-search competition. In a small town you can rank by default. Here, a clinic, shop, or contractor is fighting a dozen others for the same query, and most of them are renting slow template sites. That is the opening: speed, clean structure, and security are a low bar in this market, and clearing it puts you ahead of competitors who never did the work.',
+    },
+    localScene: {
+      heading: 'The business scene in Coos Bay',
+      body:
+        'The commercial core runs along Highway 101 through downtown, with the Coos History Museum and the boardwalk on the waterfront and the broader retail strip stretching toward the Pony Village area in neighboring North Bend. Bay Area Hospital anchors a whole cluster of clinics and practices, Southwestern Oregon Community College brings steady foot traffic, and the port and Coos Bay Rail Line anchor the industrial side. Charleston, just west, adds the working marina and seafood trade. It is the one place on the south coast where multiple businesses chase the same search, which is exactly why being the fast, well-built option pays here when it would not matter in a smaller town.',
     },
     auditNote:
       'I audited 169 Coos County small-business websites with Google Lighthouse and Mozilla Observatory. The average mobile speed score was 61 out of 100, and not one site scored both fast and secure. Coos Bay has the most businesses and the most competition in that sample, which means it also has the most room to win by simply being the fast, secure option.',
@@ -248,6 +261,11 @@ export const towns: TownEntry[] = [
     localAngle: {
       heading: 'Why it matters in North Bend',
       body: 'North Bend is a gateway town. The airport and the casino bring in people who do not live here and are deciding where to eat, stay, and shop from a phone, often before they have even landed. That is a different kind of visitor than a local who already knows you. They judge on the first screen, and a slow or confusing site loses them to whoever loads faster. For a North Bend business, mobile speed is not a nicety, it is the storefront.',
+    },
+    localScene: {
+      heading: 'The business scene in North Bend',
+      body:
+        'North Bend\u2019s commercial weight sits in two places: the Pony Village Mall area, the largest enclosed shopping center on the coast and the retail hub for the whole region, and the Highway 101 corridor running down toward the McCullough Bridge. The Mill Casino Hotel on the bay is a destination economy of its own, drawing lodging, dining, and event traffic. The Southwest Oregon Regional Airport and the businesses around it serve arriving travelers directly. Because so many North Bend customers are passing through or flying in rather than local regulars, the first thing they see is a phone screen, which makes a fast, clear site the actual front door.',
     },
     auditNote:
       'Across the 169 Coos County sites I audited with Google Lighthouse, the average mobile speed score was 61 out of 100. That number stings more in North Bend than most places, because so many businesses here are pitching to travelers on phones and slow airport or rental-car connections. The site that loads first is the one that gets the booking.',
@@ -314,6 +332,11 @@ export const towns: TownEntry[] = [
       heading: 'Why it matters in Bandon',
       body: 'Bandon punches above its size online because the visitors are global but the businesses are small. A golfer booking a room or a couple picking a dinner spot is searching on a phone, often from the resort or the road, and they decide in seconds. The shops that win those seconds are not the ones with the prettiest logo, they are the ones whose site loads fast and answers the question. That is a low bar most local sites still miss, which is exactly the opening.',
     },
+    localScene: {
+      heading: 'The business scene in Bandon',
+      body:
+        'Most of the commercial energy is in Old Town, the ten-block grid down by the harbor: Second Street Gallery and Art by the Sea on the gallery side, Bandon Coffee, Cranberry Sweets, Foley\u2019s, Tony\u2019s Crab Shack and the Bandon Fish Market on the food side, plus the shops along Baltimore and First. Out on Round Lake Road, Bandon Dunes is its own economy of pro shops, lodging, and dining. Then there is Highway 101 frontage and Face Rock Creamery on the way in. Three distinct commercial zones, three different kinds of customer, and almost none of those businesses have a site that loads fast on a phone. That is the gap a custom build steps into.',
+    },
     auditNote:
       'I live and work in Bandon, so I have looked at most of the sites in town. The pattern is the same one I found across Coos County: rented template sites that load slowly and bury the basics. In a tourist town where the visitor decides in seconds, that is the difference between a booking and a back button.',
     faq: [
@@ -374,6 +397,11 @@ export const towns: TownEntry[] = [
       heading: 'Why it matters in Coquille',
       body: 'Coquille is an inland working town, not a tourist economy, and that shapes the whole strategy. The searches that matter are local and practical: a resident looking for a contractor, a clinic, a service in the valley. Competition for those searches is light because so few valley businesses have a fast, modern site. That is the opening. A properly built site can own Coquille searches quickly, with very little standing in the way, and the county-seat foot traffic means those searches have real intent behind them.',
     },
+    localScene: {
+      heading: 'The business scene in Coquille',
+      body:
+        'Coquille\u2019s commercial life centers on the downtown grid around Front Street and First Street, near the Coquille River and the 1922 river bridge, with the county courthouse drawing daily civic traffic. The Sawdust Theatre and the Coquille Valley Museum on North Central anchor the cultural side, and the trades, feed and farm services, the clinic, and the everyday shops serve a working valley rather than tourists. It is a town where customers already know the businesses by name, so the job of a site is less about discovery and more about being findable and reachable when a neighbor finally searches you up. With almost no local web competition, that is a low bar to clear and own.',
+    },
     auditNote:
       'In the audit I ran across 169 Coos County small-business sites, the inland valley towns like Coquille had the weakest web presence of all, mostly slow template sites or no site at all. For a Coquille business that is good news: the bar to rank locally is on the floor, and clearing it does not take much.',
     faq: [
@@ -432,6 +460,11 @@ export const towns: TownEntry[] = [
     localAngle: {
       heading: 'Why it matters in Reedsport',
       body: 'Reedsport is a trip-planning town. Most of its visitors are deciding from home, days or weeks out, where to stay, who to fish with, where to rent an ATV. That decision happens on a phone, through search, before anyone gets near the dunes. A Reedsport business that loads fast and answers the question quickly catches that visitor while a slow competitor loses them. The tourism economy here is seasonal and competitive, which makes being the findable, fast option worth real money in the summer window.',
+    },
+    localScene: {
+      heading: 'The business scene in Reedsport',
+      body:
+        'The commercial center is Old Town along the riverfront, where early-1900s wooden storefronts now hold diners, burger joints, galleries, and motels, with the Umpqua Discovery Center anchoring the waterfront. A cluster of businesses exists specifically to outfit the dunes: ATV rentals, repair, fuel, and gear, plus the RV parks and campgrounds toward Winchester Bay. Highway 38 and 101 meet right here, so traffic funnels through town on the way to the dunes or the elk-viewing area at Dean Creek. The customers are overwhelmingly visitors planning ahead, which is exactly the kind of searcher a fast, findable site captures and a slow one loses.',
     },
     auditNote:
       'The same pattern from my 169-site Coos County audit holds just north in Reedsport: most local tourism sites are slow template builds that bury the booking. In a town where the visitor decides online before the trip, a fast site that gets to the point is a direct advantage over the businesses that never did the work.',
@@ -492,6 +525,11 @@ export const towns: TownEntry[] = [
       heading: 'Why it matters in Myrtle Point',
       body: 'Two things make Myrtle Point a strong play despite its size. First, almost no local business has a fast, modern site, so web competition is close to zero and a clean build can own the valley searches from day one. Second, the town is a gateway: travelers heading to the coast on Highway 42 pass straight through, and a business that shows up well online catches some of that pass-through traffic on top of the local base. Low competition plus a steady road of visitors is a better setup than the population number suggests.',
     },
+    localScene: {
+      heading: 'The business scene in Myrtle Point',
+      body:
+        'Commercial life runs along Spruce Street and the historic downtown grid: Myrtle Point Ace Hardware, Cherry Creek Floral, the Spruce Street Bar and Grill, the Railroad Cafe, and the accountants and trades that serve the valley. The dome-roofed Coos County Logging Museum at Maple and 7th, built in 1910 and on the National Register, is the town landmark, and the Coos County Fair and Rodeo is the event that fills the streets each summer. These are family businesses serving neighbors and the traffic passing through on Highway 42, and almost none have a real website. For most of them, being findable at all would put them ahead of every competitor in town.',
+    },
     auditNote:
       'Across the 169 Coos County sites I audited, the small inland towns had the thinnest web presence of all, and Myrtle Point was squarely in that group. For a business here it is the easiest kind of win: most competitors have a slow template site or none, so a fast custom site can outrank everything around it without much of a fight.',
     faq: [
@@ -551,6 +589,11 @@ export const towns: TownEntry[] = [
       heading: 'Why it matters in Port Orford',
       body: 'Port Orford is tiny and remote, which is exactly why a good site pays off. Visitors and gallery buyers research before they make the drive out here, often from well away, because nobody ends up in Port Orford by accident. That means the decision to stop, book, or buy is made online, ahead of time. With very few local businesses presenting well on the web, the one that loads fast and looks the part captures a disproportionate share of that planned-ahead traffic. Small market, light competition, high-intent visitors.',
     },
+    localScene: {
+      heading: 'The business scene in Port Orford',
+      body:
+        'For a town of a thousand people, Port Orford packs a lot into a few blocks along Highway 101 and down at the port: the working dolly dock with its commercial fleet, several artist-owned galleries, a handful of seafood spots and cafes, and the inns and rentals that serve Cape Blanco and Humbug Mountain visitors. The OSU Field Station at the port adds a small research presence. It is a tight, self-selecting market where almost everyone arriving has researched the trip first, so the few businesses that present well online quietly take the lion\u2019s share of the planned-ahead visitor spend.',
+    },
     auditNote:
       'Curry County sites were not in my 169-site Coos County sample, but the pattern out here is the same or thinner: small coastal businesses on slow template platforms, or with no site at all. For a Port Orford business that is the opening. There is almost nothing to outrank, so a fast, clean site can own the searches that matter with little resistance.',
     faq: [
@@ -609,6 +652,11 @@ export const towns: TownEntry[] = [
     localAngle: {
       heading: 'Why it matters in Gold Beach',
       body: 'Gold Beach runs on a three-month season, and nearly every dollar of it is decided online in advance. A traveler picks the jet-boat operator, the lodge, the fishing guide weeks ahead from a phone, often from another state. For a Gold Beach business, the website is the storefront the visitor sees first and judges fastest. A fast, clear site that takes a booking wins the reservation before anyone reaches town, and in a season this short, losing that first impression to a slow site is losing the whole year on that customer.',
+    },
+    localScene: {
+      heading: 'The business scene in Gold Beach',
+      body:
+        'The commercial spine is Highway 101 through town and the harbor at the mouth of the Rogue, where Jerry\u2019s Rogue Jets has launched tours since 1958 and the fishing charters and guides tie up. Lodges and motels line the river and the coast, the Curry County courthouse sits in town as the county seat, and the Patterson Memorial Bridge is the landmark on the way in. Nearly every storefront is pointed at the summer visitor, whether that is a jet-boat seat, a guided salmon trip, or a riverfront room. With the whole year riding on a few months of online-booked trips, the business with the faster, clearer site is the one that fills the calendar first.',
     },
     auditNote:
       'Gold Beach was not in my 169-site Coos County audit, but as the most tourism-dependent town on this list it has the most to lose from a slow site. When the entire year rides on a short summer of online-booked trips, a homepage that loads slowly on a phone is not a small problem, it is the booking going to whoever loaded faster.',
