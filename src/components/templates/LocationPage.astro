@@ -178,6 +178,18 @@ const faqLd = town.faq.length ? faqSchema(town.faq) : null;
     </>
   )}
 
+  {town.localScene && (
+    <>
+      <Divider label="02c" />
+      <section class="loc-block loc-angle loc-scene" aria-labelledby="loc-scene-h">
+        <header class="loc-block-head">
+          <h2 class="loc-block-h" id="loc-scene-h">{town.localScene.heading}</h2>
+        </header>
+        <p class="loc-angle-p" set:html={town.localScene.body} />
+      </section>
+    </>
+  )}
+
   {showAuditHook && (
     <>
       <Divider label="03" />
