@@ -531,7 +531,7 @@ import Divider from '../components/ui/Divider.astro';
     max-width: 720px;
     margin: 0 auto;
   }
-  @media (min-width: 768px) {
+  @media (min-width: 740px) {
     .au-form-wrap { padding: 40px 4px 24px; }
   }
   .au-form-h {
@@ -541,7 +541,7 @@ import Divider from '../components/ui/Divider.astro';
     margin: 0 0 12px;
     font-weight: 600;
   }
-  @media (min-width: 768px) { .au-form-h { font-size: 26px; } }
+  @media (min-width: 740px) { .au-form-h { font-size: 26px; } }
 
   .au-form-label {
     display: block;
@@ -615,7 +615,7 @@ import Divider from '../components/ui/Divider.astro';
     color: var(--color-copper);
     margin: 0 0 12px;
   }
-  @media (min-width: 768px) { .au-what-h { font-size: 12px; } }
+  @media (min-width: 740px) { .au-what-h { font-size: 12px; } }
   .au-what-list {
     list-style: none;
     padding: 0;
@@ -627,7 +627,7 @@ import Divider from '../components/ui/Divider.astro';
     font-size: 13px;
     color: var(--color-ash-300);
   }
-  @media (min-width: 768px) {
+  @media (min-width: 740px) {
     .au-what-list { grid-template-columns: 1fr 1fr; column-gap: 24px; }
   }
   .au-what-list li {
@@ -654,7 +654,7 @@ import Divider from '../components/ui/Divider.astro';
     max-width: 920px;
     margin: 0 auto;
   }
-  @media (min-width: 768px) { .au-results { padding: 40px 4px 24px; } }
+  @media (min-width: 740px) { .au-results { padding: 40px 4px 24px; } }
 
   /* Empty state: shown until an audit runs. Quiet, restrained, signals "this fills in later". */
   .au-empty {
@@ -664,14 +664,14 @@ import Divider from '../components/ui/Divider.astro';
     border-radius: var(--radius-card, 10px);
     background: rgba(255, 255, 255, 0.01);
   }
-  @media (min-width: 768px) { .au-empty { padding: 48px 24px 52px; } }
+  @media (min-width: 740px) { .au-empty { padding: 48px 24px 52px; } }
   .au-empty-text {
     font-family: var(--font-serif);
     font-size: 18px;
     color: var(--color-ash-300);
     margin: 0 0 8px;
   }
-  @media (min-width: 768px) { .au-empty-text { font-size: 22px; } }
+  @media (min-width: 740px) { .au-empty-text { font-size: 22px; } }
   .au-empty-sub {
     font-family: var(--font-sans);
     font-size: 13px;
@@ -679,7 +679,7 @@ import Divider from '../components/ui/Divider.astro';
     margin: 0;
     line-height: 1.5;
   }
-  @media (min-width: 768px) { .au-empty-sub { font-size: 14px; } }
+  @media (min-width: 740px) { .au-empty-sub { font-size: 14px; } }
 
   .au-results-head {
     display: grid;
@@ -689,7 +689,7 @@ import Divider from '../components/ui/Divider.astro';
     padding-bottom: 14px;
     border-bottom: 1px solid var(--copper-hairline);
   }
-  @media (min-width: 768px) {
+  @media (min-width: 740px) {
     .au-results-head { grid-template-columns: 1fr auto; align-items: end; }
   }
   .au-results-eyebrow {
@@ -712,7 +712,7 @@ import Divider from '../components/ui/Divider.astro';
     gap: 14px;
     flex-wrap: wrap;
   }
-  @media (min-width: 768px) { .au-results-h { font-size: 32px; gap: 18px; } }
+  @media (min-width: 740px) { .au-results-h { font-size: 32px; gap: 18px; } }
   .au-results-grade {
     font-size: 1.6em;
     color: var(--color-copper);
@@ -740,7 +740,7 @@ import Divider from '../components/ui/Divider.astro';
     gap: 14px;
     margin: 0 0 24px;
   }
-  @media (min-width: 768px) {
+  @media (min-width: 740px) {
     .au-scores-section { grid-template-columns: 1fr 1fr; gap: 18px; }
   }
   .au-scores-col {
@@ -749,7 +749,7 @@ import Divider from '../components/ui/Divider.astro';
     border-radius: var(--radius-card, 10px);
     padding: 14px 12px 12px;
   }
-  @media (min-width: 768px) { .au-scores-col { padding: 16px 14px 14px; } }
+  @media (min-width: 740px) { .au-scores-col { padding: 16px 14px 14px; } }
   .au-scores-col-head {
     display: flex;
     align-items: baseline;
@@ -767,14 +767,14 @@ import Divider from '../components/ui/Divider.astro';
     color: var(--color-copper);
     font-weight: 500;
   }
-  @media (min-width: 768px) { .au-scores-col-label { font-size: 12px; } }
+  @media (min-width: 740px) { .au-scores-col-label { font-size: 12px; } }
   .au-scores-col-note {
     font-family: var(--font-sans);
     font-size: 10px;
     color: var(--color-ash-500);
     font-style: italic;
   }
-  @media (min-width: 768px) { .au-scores-col-note { font-size: 11px; } }
+  @media (min-width: 740px) { .au-scores-col-note { font-size: 11px; } }
   .au-scores-grid {
     list-style: none;
     padding: 0;
@@ -783,7 +783,7 @@ import Divider from '../components/ui/Divider.astro';
     grid-template-columns: repeat(4, 1fr);
     gap: 6px;
   }
-  @media (min-width: 768px) { .au-scores-grid { gap: 8px; } }
+  @media (min-width: 740px) { .au-scores-grid { gap: 8px; } }
   .au-scores-grid li {
     background: var(--color-bg-card);
     border: 1px solid var(--copper-hairline);
@@ -791,7 +791,7 @@ import Divider from '../components/ui/Divider.astro';
     padding: 10px 6px;
     text-align: center;
   }
-  @media (min-width: 768px) { .au-scores-grid li { padding: 12px 8px; } }
+  @media (min-width: 740px) { .au-scores-grid li { padding: 12px 8px; } }
   .au-score-num {
     font-family: var(--font-serif);
     font-size: 22px;
@@ -801,7 +801,7 @@ import Divider from '../components/ui/Divider.astro';
     margin: 0 0 4px;
     font-weight: 600;
   }
-  @media (min-width: 768px) { .au-score-num { font-size: 28px; } }
+  @media (min-width: 740px) { .au-score-num { font-size: 28px; } }
   .au-score-good { color: var(--color-wc-green); }
   .au-score-ok { color: var(--color-amber, #f0b878); }
   .au-score-bad { color: #d97565; }
@@ -813,7 +813,7 @@ import Divider from '../components/ui/Divider.astro';
     letter-spacing: 0.04em;
     line-height: 1.2;
   }
-  @media (min-width: 768px) { .au-score-label { font-size: 10px; } }
+  @media (min-width: 740px) { .au-score-label { font-size: 10px; } }
 
   /* Findings groups */
   .au-findings { margin: 0 0 24px; }
@@ -904,7 +904,7 @@ import Divider from '../components/ui/Divider.astro';
     margin: 0 0 6px;
     line-height: 1.35;
   }
-  @media (min-width: 768px) { :global(.au-find-summary) { font-size: 16px; } }
+  @media (min-width: 740px) { :global(.au-find-summary) { font-size: 16px; } }
   :global(.au-find-detail) {
     font-family: var(--font-sans);
     font-size: 13px;
@@ -912,7 +912,7 @@ import Divider from '../components/ui/Divider.astro';
     line-height: 1.55;
     margin: 0 0 8px;
   }
-  @media (min-width: 768px) { :global(.au-find-detail) { font-size: 14px; } }
+  @media (min-width: 740px) { :global(.au-find-detail) { font-size: 14px; } }
   :global(.au-find-fix) {
     font-family: var(--font-sans);
     font-size: 13px;
@@ -967,7 +967,7 @@ import Divider from '../components/ui/Divider.astro';
     color: var(--color-ash-100);
     margin: 0 0 14px;
   }
-  @media (min-width: 768px) { .au-cta-text { font-size: 22px; } }
+  @media (min-width: 740px) { .au-cta-text { font-size: 22px; } }
   .au-cta-actions {
     display: flex;
     gap: 10px;
@@ -1000,7 +1000,7 @@ import Divider from '../components/ui/Divider.astro';
     text-transform: uppercase;
     color: var(--color-ash-500);
   }
-  @media (min-width: 768px) { .au-cta-another { font-size: 12px; } }
+  @media (min-width: 740px) { .au-cta-another { font-size: 12px; } }
   .au-cta-another-link {
     color: var(--color-copper-bright);
     text-decoration: none;
@@ -1021,7 +1021,7 @@ import Divider from '../components/ui/Divider.astro';
     line-height: 1.55;
     color: var(--color-ash-300);
   }
-  @media (min-width: 768px) { .au-banner-structural { font-size: 14px; } }
+  @media (min-width: 740px) { .au-banner-structural { font-size: 14px; } }
   .au-banner-structural strong { color: var(--color-amber); margin-right: 6px; }
 
   /* ─── Start here · top 3 highest-impact fixes ─── */
@@ -1032,7 +1032,7 @@ import Divider from '../components/ui/Divider.astro';
     border: 1px solid var(--copper-hairline);
     border-radius: var(--radius-card, 10px);
   }
-  @media (min-width: 768px) { .au-topfixes { padding: 20px 22px 22px; } }
+  @media (min-width: 740px) { .au-topfixes { padding: 20px 22px 22px; } }
   .au-topfixes-h {
     font-family: var(--font-serif);
     font-size: 18px;
@@ -1040,7 +1040,7 @@ import Divider from '../components/ui/Divider.astro';
     margin: 0 0 4px;
     font-weight: 600;
   }
-  @media (min-width: 768px) { .au-topfixes-h { font-size: 20px; } }
+  @media (min-width: 740px) { .au-topfixes-h { font-size: 20px; } }
   .au-topfixes-sub {
     font-family: var(--font-mono);
     font-size: 11px;
@@ -1049,7 +1049,7 @@ import Divider from '../components/ui/Divider.astro';
     color: var(--color-ash-500);
     margin: 0 0 12px;
   }
-  @media (min-width: 768px) { .au-topfixes-sub { font-size: 12px; } }
+  @media (min-width: 740px) { .au-topfixes-sub { font-size: 12px; } }
   .au-topfixes-list {
     list-style: none;
     padding: 0;
@@ -1106,7 +1106,7 @@ import Divider from '../components/ui/Divider.astro';
     line-height: 1.5;
     color: var(--color-ash-100);
   }
-  @media (min-width: 768px) { :global(.au-topfix-summary) { font-size: 15px; } }
+  @media (min-width: 740px) { :global(.au-topfix-summary) { font-size: 15px; } }
 
   /* ─── Pitch section (the "why I built this") ─── */
   .au-pitch {
@@ -1114,7 +1114,7 @@ import Divider from '../components/ui/Divider.astro';
     max-width: 640px;
     margin: 0 auto;
   }
-  @media (min-width: 768px) { .au-pitch { padding: 48px 4px 64px; } }
+  @media (min-width: 740px) { .au-pitch { padding: 48px 4px 64px; } }
   .au-pitch-h {
     font-family: var(--font-serif);
     font-size: 22px;
@@ -1122,7 +1122,7 @@ import Divider from '../components/ui/Divider.astro';
     margin: 0 0 14px;
     font-weight: 600;
   }
-  @media (min-width: 768px) { .au-pitch-h { font-size: 26px; } }
+  @media (min-width: 740px) { .au-pitch-h { font-size: 26px; } }
   .au-pitch-body {
     font-family: var(--font-sans);
     font-size: 15px;
@@ -1130,7 +1130,7 @@ import Divider from '../components/ui/Divider.astro';
     color: var(--color-ash-300);
     margin: 0 0 14px;
   }
-  @media (min-width: 768px) { .au-pitch-body { font-size: 16px; } }
+  @media (min-width: 740px) { .au-pitch-body { font-size: 16px; } }
   .au-pitch-body em {
     color: var(--color-copper-bright);
     font-style: italic;

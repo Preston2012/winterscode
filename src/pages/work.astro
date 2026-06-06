@@ -433,7 +433,7 @@ import Instrument from '../components/sections/Instrument.astro';
   .wk-ix-num { font-family: var(--font-mono); font-size: 12px; font-weight: 600; color: var(--color-copper-bright); letter-spacing: 0.04em; }
   .wk-ix-name { font-family: var(--font-serif); font-size: 18px; font-weight: 500; color: var(--color-ash-100); line-height: 1.15; }
   .wk-ix-meta { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.04em; color: var(--color-ash-500); text-align: right; white-space: nowrap; }
-  @media (min-width: 768px) { .wk-ix-name { font-size: 20px; } }
+  @media (min-width: 740px) { .wk-ix-name { font-size: 20px; } }
   @media (min-width: 1024px) {
     .wk-index ol { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0 28px; }
     .wk-index li { border-bottom: 0; border-left: 1px solid rgba(255,255,255,0.07); padding: 4px 0 4px 16px; display: block; }
@@ -462,7 +462,7 @@ import Instrument from '../components/sections/Instrument.astro';
     max-width: 720px;
     margin: 0 auto;
   }
-  @media (min-width: 768px) {
+  @media (min-width: 740px) {
     .wk-section { padding: 48px 4px 56px; max-width: 860px; }
   }
   @media (min-width: 1024px) {
@@ -521,13 +521,13 @@ import Instrument from '../components/sections/Instrument.astro';
     margin-left: auto;
     margin-right: auto;
   }
-  @media (min-width: 768px) { .wk-grid-apps { gap: 28px; } }
+  @media (min-width: 740px) { .wk-grid-apps { gap: 28px; } }
   @media (min-width: 1024px) { .wk-grid-apps { gap: 32px; } }
 
   /* Sites grid: 2-col at 768+ as before. */
   /* Sites are 1-col on tablet so widget cards (Sogn) get full width to
      breathe. 2-col only at desktop where there's actual horizontal room. */
-  @media (min-width: 768px) {
+  @media (min-width: 740px) {
     .wk-grid-sites { gap: 24px; }
   }
   @media (min-width: 1024px) {
@@ -791,7 +791,7 @@ import Instrument from '../components/sections/Instrument.astro';
     display: grid;
     gap: 4px;
   }
-  @media (min-width: 768px) {
+  @media (min-width: 740px) {
     .wk-detail-row { grid-template-columns: 90px 1fr; gap: 12px; }
   }
   .wk-detail-row dt {
@@ -875,7 +875,7 @@ import Instrument from '../components/sections/Instrument.astro';
     display: grid;
     gap: 16px;
   }
-  @media (min-width: 768px) {
+  @media (min-width: 740px) {
     .wk-steps { grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
   }
   .wk-step {

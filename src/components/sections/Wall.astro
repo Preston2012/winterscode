@@ -176,7 +176,7 @@ const ROWS: WallRow[] = [
       return arr.join('/');
     }
 
-    fetch('/api/workshop', { signal: AbortSignal.timeout(4000) })
+    fetch('/api/workshop', { signal: AbortSignal.timeout(8000) })
       .then(function (r) { return r.ok ? r.json() : null; })
       .then(function (d) {
         if (!d) return;
@@ -268,7 +268,7 @@ const ROWS: WallRow[] = [
     max-width: 720px;
     margin: 0 auto;
   }
-  @media (min-width: 768px) {
+  @media (min-width: 740px) {
     .wall { padding: 56px 4px 64px; max-width: 860px; }
   }
   @media (min-width: 1024px) {
@@ -401,7 +401,7 @@ const ROWS: WallRow[] = [
     position: relative;
   }
   /* Tablet+: flatten back to rows with hairlines, no card chrome */
-  @media (min-width: 768px) {
+  @media (min-width: 740px) {
     .wall-rows { gap: 0; }
     .wall-row {
       grid-template-columns: 20px 110px 1fr;
@@ -460,7 +460,7 @@ const ROWS: WallRow[] = [
     white-space: nowrap;
     z-index: 1;
   }
-  @media (min-width: 768px) {
+  @media (min-width: 740px) {
     /* Tablet: badge moves slightly to clear hairline-only rows (no card padding).
        Was align-self:center inside the grid; now absolute, so tune top/right
        to match the new flatter row geometry. */
@@ -491,7 +491,7 @@ const ROWS: WallRow[] = [
     grid-row: 2;
     min-width: 0;
   }
-  @media (min-width: 768px) {
+  @media (min-width: 740px) {
     .row-content {
       grid-column: 3;
       grid-row: auto;
@@ -523,7 +523,7 @@ const ROWS: WallRow[] = [
     margin-top: 0;
     font-style: italic;
   }
-  @media (min-width: 768px) {
+  @media (min-width: 740px) {
     .row-meta {
       grid-column: 3;
       grid-row: auto;
@@ -558,7 +558,7 @@ const ROWS: WallRow[] = [
     font-style: normal;
     font-size: 11px;
   }
-  @media (min-width: 768px) {
+  @media (min-width: 740px) {
     .wall-row-featured {
       border-bottom-color: rgba(77, 216, 168, 0.35);
     }

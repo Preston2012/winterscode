@@ -42,7 +42,7 @@ try {
   // this can become Astro.url-relative.
   const r = await fetch('https://winterscode.com/api/workshop', {
     headers: { 'user-agent': 'winterscode-build/1.0' },
-    signal: AbortSignal.timeout(6000),
+    signal: AbortSignal.timeout(8000),
   });
   if (r.ok) initialData = await r.json();
 } catch (err) {
@@ -332,7 +332,7 @@ const updatedAt = initialData?.updated_at ?? new Date().toISOString();
         var now = Date.now();
         if (now - lastFetch < minIntervalMs) return;
         lastFetch = now;
-        fetch('/api/workshop', { signal: AbortSignal.timeout(6000) })
+        fetch('/api/workshop', { signal: AbortSignal.timeout(8000) })
           .then(function (r) { return r.ok ? r.json() : null; })
           .then(function (d) {
             if (!d) return;
@@ -431,7 +431,7 @@ const updatedAt = initialData?.updated_at ?? new Date().toISOString();
     grid-template-columns: 1fr;
     gap: 16px;
   }
-  @media (min-width: 768px) {
+  @media (min-width: 740px) {
     .wall-grid {
       grid-template-columns: 1fr 1fr;
       gap: 18px;
@@ -467,7 +467,7 @@ const updatedAt = initialData?.updated_at ?? new Date().toISOString();
     color: var(--color-ash-400);
     letter-spacing: 0.06em;
   }
-  @media (min-width: 768px) {
+  @media (min-width: 740px) {
     .wall-status-bar {
       font-size: 11px;
       padding: 12px 14px;
@@ -535,7 +535,7 @@ const updatedAt = initialData?.updated_at ?? new Date().toISOString();
     position: relative;
     z-index: 1;
   }
-  @media (min-width: 768px) {
+  @media (min-width: 740px) {
     .wall-mod-head {
       padding: 16px 18px 12px;
     }
@@ -626,7 +626,7 @@ const updatedAt = initialData?.updated_at ?? new Date().toISOString();
     position: relative;
     z-index: 1;
   }
-  @media (min-width: 768px) {
+  @media (min-width: 740px) {
     .wall-mod-body {
       padding: 18px;
     }
@@ -646,7 +646,7 @@ const updatedAt = initialData?.updated_at ?? new Date().toISOString();
     letter-spacing: -0.02em;
     font-feature-settings: 'tnum';
   }
-  @media (min-width: 768px) {
+  @media (min-width: 740px) {
     .wall-stat-num { font-size: 32px; }
   }
   @media (min-width: 1024px) {
@@ -758,7 +758,7 @@ const updatedAt = initialData?.updated_at ?? new Date().toISOString();
     line-height: 1;
     letter-spacing: -0.04em;
   }
-  @media (min-width: 768px) { .wall-grade { font-size: 44px; } }
+  @media (min-width: 740px) { .wall-grade { font-size: 44px; } }
   .wall-grade-a,
   .wall-grade-aplus { color: var(--color-wc-green); }
   .wall-grade-b,
