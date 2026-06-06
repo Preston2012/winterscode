@@ -241,7 +241,7 @@ export const towns: TownEntry[] = [
     industriesDetail: [
       {
         name: 'Air travel and tourism',
-        note: 'North Bend has the only commercial airport on the Oregon coast, the Southwest Oregon Regional Airport, with scheduled flights to Portland. Businesses here reach visitors who are searching from a plane seat or a rental car, so a fast mobile site is the first impression before anyone arrives.',
+        note: 'North Bend has the only airport on the Oregon coast with scheduled commercial airline service, the Southwest Oregon Regional Airport, with flights to Portland and San Francisco. Businesses here reach visitors who are searching from a plane seat or a rental car, so a fast mobile site is the first impression before anyone arrives.',
       },
       {
         name: 'Hospitality and gaming',
@@ -257,7 +257,7 @@ export const towns: TownEntry[] = [
       },
     ],
     context:
-      'North Bend sits directly against Coos Bay, the two cities running together as the largest urban area on the Oregon coast, and shares much of that economy. But North Bend has its own assets: the Southwest Oregon Regional Airport, the only commercial airport on the coast, The Mill Casino Hotel run by the Coquille Indian Tribe, and Pony Village Mall, the coast\u2019s largest enclosed shopping center. A lot of North Bend businesses serve travelers searching on their phones before they land or check in, which makes mobile speed and a clear booking path matter more here than almost anywhere on the coast.',
+      'North Bend sits directly against Coos Bay, the two cities running together as the largest urban area on the Oregon coast, and shares much of that economy. But North Bend has its own assets: the Southwest Oregon Regional Airport, the only one on the Oregon coast with scheduled airline service, The Mill Casino Hotel run by the Coquille Indian Tribe, and Pony Village Mall, the coast\u2019s largest enclosed shopping center. A lot of North Bend businesses serve travelers searching on their phones before they land or check in, which makes mobile speed and a clear booking path matter more here than almost anywhere on the coast.',
     localAngle: {
       heading: 'Why it matters in North Bend',
       body: 'North Bend is a gateway town. The airport and the casino bring in people who do not live here and are deciding where to eat, stay, and shop from a phone, often before they have even landed. That is a different kind of visitor than a local who already knows you. They judge on the first screen, and a slow or confusing site loses them to whoever loads faster. For a North Bend business, mobile speed is not a nicety, it is the storefront.',
