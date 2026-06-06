@@ -414,3 +414,36 @@ main.page {
   white-space: nowrap;
   border: 0;
 }
+
+/* ─── Shared button base (site-wide) ───
+   Used by Contact CTAs, 404, and any future buttons. Previously this lived
+   as :global() inside Hero.astro, which only loads on the homepage, leaving
+   the Contact CTAs unstyled (and left-aligned) everywhere else. */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 13px 18px;
+  border-radius: var(--radius-btn);
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.01em;
+  text-align: center;
+  cursor: pointer;
+  transition: all 200ms;
+  border: 1.5px solid transparent;
+  white-space: nowrap;
+  min-height: 44px;
+  text-decoration: none;
+}
+.btn-primary {
+  background: var(--color-wc-green);
+  color: var(--color-bg-deep);
+  box-shadow: 0 1px 0 rgba(240, 160, 110, 0.3) inset;
+}
+.btn-primary:hover { background: var(--color-wc-green-bright); transform: translateY(-1px); }
+.btn-secondary { background: transparent; color: var(--color-ash-100); border-color: var(--copper-hairline); }
+.btn-secondary:hover { border-color: var(--color-copper); color: var(--color-copper-bright); }
+@media (min-width: 768px) { .btn { padding: 15px 22px; font-size: 15px; } }

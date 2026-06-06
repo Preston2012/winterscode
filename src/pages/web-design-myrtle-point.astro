@@ -1,0 +1,23 @@
+---
+import LocationPage from '../components/templates/LocationPage.astro';
+import { serviceBySlug, townBySlug } from '../lib/business';
+const town = townBySlug('myrtle-point')!;
+const service = serviceBySlug('web-design')!;
+---
+<LocationPage
+  town={town}
+  service={service}
+  path="/web-design-myrtle-point"
+  title="Web Design in Myrtle Point, OR · Winters Code"
+  description="Custom web design in Myrtle Point, Oregon. Fast, mobile-first sites for valley trades and farms. Little local competition, quick to rank, built in days."
+  eyebrow="Locations · Myrtle Point"
+  h1="Web design in Myrtle Point, Oregon."
+  sub="Custom, fast, mobile-first websites for Myrtle Point trades, farms, and family shops."
+  bgImage="/photo/local/towns/myrtle-point"
+  showcase
+  heroFocal="center 42%"
+  heroTextPos="top"
+  intro={[
+    "Myrtle Point is ranch and dairy country in the upper Coquille Valley, and almost no one here has a fast, modern site. That is the opportunity: a clean build can own the valley's searches with very little standing in the way.",
+  ]}
+/>

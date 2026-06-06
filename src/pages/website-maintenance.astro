@@ -1,0 +1,59 @@
+---
+import ServiceLayout from '../components/templates/ServiceLayout.astro';
+import type { ServiceEntry } from '../lib/business';
+const service: ServiceEntry = {
+  slug: 'website-maintenance',
+  name: 'Website Maintenance',
+  shortLabel: 'Website Maintenance',
+  blurb: 'Monthly care plans: hosting, security, backups, and edits.',
+  serviceType: 'Website maintenance and care plans',
+};
+---
+<ServiceLayout
+  service={service}
+  path="/website-maintenance"
+  breadcrumb={[
+    { name: 'Home', path: '/' },
+    { name: 'Website Maintenance', path: '/website-maintenance' },
+  ]}
+  title="Website Maintenance & Care Plans · Winters Code"
+  description="Website maintenance and care plans for Oregon coast businesses. Hosting, security, backups, and edits from $75/mo. The builder maintains it, not a queue."
+  eyebrow="Care · Maintenance"
+  h1="Maintenance, done by the builder."
+  sub="Monthly care plans starting at $75. Hosting, security, backups, and edits, handled by the person who built the site."
+  sub2="The phone number stays the same."
+  bgImage="/photo/local/scenes/overcast-beach"
+  showcase
+  heroFocal="center 46%"
+  intro={[
+    "A website is not a one-time purchase. It needs hosting, security patches, backups, and the occasional edit, and when something breaks, you want a real person who knows your site, not a ticket that gets escalated into the void.",
+    "My care plans cover all of it, and the person answering is the person who wrote the code. That is the whole point of hiring a local shop: the relationship does not end at launch.",
+  ]}
+  includesTitle="What a plan covers"
+  includes={[
+    { h: 'Hosting and SSL', body: 'Fast, secure hosting and a current certificate, handled so you never think about it.' },
+    { h: 'Daily backups', body: 'Automatic backups so a mistake or an outage is a quick restore, not a crisis.' },
+    { h: 'Security patches', body: 'The site kept current and locked down, with none of the 2 AM plugin breakage WordPress is known for.' },
+    { h: 'Content edits', body: 'Real edits made for you: hours, prices, photos, a new page. Two a month on Basic, unlimited reasonable edits on Pro.' },
+    { h: 'Uptime monitoring', body: 'The site watched around the clock, so if something goes down I usually know before you do.' },
+    { h: 'A direct line', body: 'Text Preston. Real human, real response time, on Pro plans. No queue.' },
+  ]}
+  whyTitle="Basic and Pro"
+  why={[
+    "<strong>Basic, starting at $75 a month:</strong> hosting, SSL, daily backups, security patches, two content edits a month, and uptime monitoring. The essentials, covered.",
+    "<strong>Pro, starting at $250 a month:</strong> everything in Basic, plus unlimited reasonable edits, a monthly performance report, priority response, and a direct text line to me.",
+    "Cancel anytime. <em>The person who built it is the person who maintains it</em>, five years from now included.",
+  ]}
+  faq={[
+    { q: 'Do I have to be a build client to get a plan?', a: 'Not necessarily. If your site is on a stack I can support, I can often take over maintenance. If it is a tangle of plugins on an old platform, a rebuild may be the better path, and the audit will tell us.' },
+    { q: 'What counts as a content edit?', a: 'Updating hours or prices, swapping a photo, adding a page, fixing a typo, posting an event. Basic includes two a month; Pro is unlimited within reason. Bigger feature work is quoted separately.' },
+    { q: 'What happens if my site goes down?', a: 'Uptime monitoring usually flags it before you notice, and daily backups mean recovery is fast. On a Pro plan you also get priority response and a direct line to me.' },
+    { q: 'Can I cancel?', a: 'Yes, anytime. The plans are month to month. No lock-in, because the work should keep earning the relationship.' },
+  ]}
+  relatedTitle="Related"
+  relatedLinks={[
+    { href: '/services/web-development', label: 'Web Development', sub: 'How the sites are built' },
+    { href: '/pricing', label: 'Pricing & Plans', sub: 'All the numbers' },
+    { href: '/contact', label: 'Start a plan', sub: 'Free consult' },
+  ]}
+/>

@@ -1,0 +1,229 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/layout/Header.astro';
+import MobileMenu from '../../components/layout/MobileMenu.astro';
+import PageHero from '../../components/sections/PageHero.astro';
+import Divider from '../../components/ui/Divider.astro';
+import Contact from '../../components/sections/Contact.astro';
+import { breadcrumbSchema, absUrl, BUSINESS_ID } from '../../lib/schema';
+
+const path = '/insights/coos-county-website-audit';
+const published = '2026-06-05';
+const headline = 'I audited 169 Coos County websites. Here is what I found.';
+
+const breadcrumbLd = breadcrumbSchema([
+  { name: 'Home', path: '/' },
+  { name: 'Insights', path: '/insights' },
+  { name: 'The Coos County website audit', path },
+]);
+const articleLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline,
+  description:
+    'An audit of 169 Coos County small-business websites with Google Lighthouse and Mozilla Observatory. Not one was both fast and secure.',
+  url: absUrl(path),
+  datePublished: published,
+  dateModified: published,
+  author: { '@id': BUSINESS_ID },
+  publisher: { '@id': BUSINESS_ID },
+  image: absUrl('/insights/coos-county-audit-1200.webp'),
+  mainEntityOfPage: absUrl(path),
+};
+---
+
+<BaseLayout
+  title="The Coos County Website Audit · Winters Code"
+  description="I audited 169 Coos County small-business websites with Lighthouse and Mozilla Observatory. Average mobile speed: 61/100. Not one was both fast and secure."
+  canonicalPath={path}
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbLd)} />
+    <script type="application/ld+json" set:html={JSON.stringify(articleLd)} />
+  </Fragment>
+
+  <Header />
+  <MobileMenu />
+
+  <PageHero
+    eyebrow="Insights · Field Report"
+    h1="169 Coos County websites, measured."
+    sub="I ran every small-business site I could find through Google Lighthouse and Mozilla Observatory. The numbers are rough, and that is the opportunity."
+    bgImage="/photo/local/scenes/sunset-stacks"
+    showcase
+    bgPosition="center 45%"
+  />
+
+  <Divider label="01" />
+
+  <article class="ins">
+    <p class="ins-meta mono">Field report · June 2026 · 169 sites audited</p>
+
+    <p class="ins-lead">
+      I wanted a real picture of how small-business websites on the south coast
+      actually perform, so I measured them. I ran <strong>169 Coos County
+      small-business websites</strong> through Google Lighthouse, which scores
+      speed, accessibility, best practices, and SEO, and Mozilla Observatory,
+      which grades security. Here is what came back.
+    </p>
+
+    <figure class="ins-fig">
+      <img
+        src="/insights/coos-county-audit-800.webp"
+        srcset="/insights/coos-county-audit-800.webp 800w, /insights/coos-county-audit-1200.webp 1200w"
+        sizes="(min-width: 768px) 640px, 100vw"
+        alt="Field report: of 169 Coos County sites audited, zero scored both fast and secure. Average mobile speed 61 of 100, 36 percent had HTTPS with no defenses, and 2 percent had a working sitemap."
+        width="1200" height="2133" loading="lazy" decoding="async"
+      />
+      <figcaption>Of 169 audited sites, not one scored both fast and secure.</figcaption>
+    </figure>
+
+    <h2 class="ins-h">The headline number: zero</h2>
+    <p>
+      Across all 169 sites, <strong>not a single one scored both fast and
+      secure.</strong> Not one. Speed and security are the two things that are
+      both measurable and fixable, and every business in the sample was missing
+      at least one.
+    </p>
+
+    <h2 class="ins-h">Speed: an average of 61 out of 100</h2>
+    <p>
+      The average Lighthouse mobile speed score was <strong>61 out of
+      100</strong>. On the phone, where most local searches actually happen,
+      that is the difference between a page that feels instant and one a visitor
+      abandons before it loads. Google treats speed as a ranking signal, so slow
+      sites lose twice: once in the rankings, and again with the people who do
+      not wait.
+    </p>
+
+    <h2 class="ins-h">Security: a B at best</h2>
+    <p>
+      On Mozilla Observatory, <strong>the highest security grade in the entire
+      sample was a B, and not one site earned an A.</strong> Thirty-six percent
+      had HTTPS, the basic lock icon, but nothing behind it: no real headers, no
+      content security policy, no defense in depth. A lock on the door is not the
+      same as locking it.
+    </p>
+
+    <h2 class="ins-h">SEO basics: 2 percent</h2>
+    <p>
+      Only <strong>2 percent</strong> of the sites had a working sitemap, the
+      simple file that tells search engines what pages exist. Most were leaving
+      the easiest SEO win on the table.
+    </p>
+
+    <h2 class="ins-h">Why: 88 percent are renting</h2>
+    <p>
+      The reason is structural. <strong>88 percent of the sites were rented from
+      a template platform</strong> rather than built. WordPress, Squarespace, and
+      Wix made up the bulk of the sample, and the pattern in their scores is hard
+      to miss.
+    </p>
+
+    <figure class="ins-fig">
+      <img
+        src="/insights/rental-platforms-800.webp"
+        srcset="/insights/rental-platforms-800.webp 800w, /insights/rental-platforms-1200.webp 1200w"
+        sizes="(min-width: 768px) 640px, 100vw"
+        alt="The three platforms most local businesses rent from: WordPress 63 sites at grade D, Squarespace 13 sites at grade F, Wix 10 sites at grade C, versus custom code averaging 94 on mobile with an A-plus security grade."
+        width="1200" height="1500" loading="lazy" decoding="async"
+      />
+      <figcaption>Custom code versus the three platforms most local businesses rent from.</figcaption>
+    </figure>
+
+    <p>
+      The three rental platforms averaged a <strong>D, an F, and a C</strong>.
+      The Squarespace sites clustered together near the bottom, and the Wix
+      sites landed within a few points of one another. Templated software tends
+      to produce templated results. For comparison, the custom-coded sites I build, and the
+      ones I checked alongside them, averaged <strong>94 on mobile with an A-plus
+      security grade</strong>.
+    </p>
+
+    <h2 class="ins-h">What this means for your business</h2>
+    <p>
+      This is not a knock on any of these businesses. It is an open lane. In a
+      market where almost no one has done the work, doing it well puts you ahead
+      fast. A site that loads in under a second, earns a real security grade, and
+      has clean SEO can outrank nearly everything around it locally, often within
+      weeks, because the competition simply is not trying.
+    </p>
+    <p>
+      You do not have to take my word for where your own site stands. The same
+      checks I used are built into a free tool on this site.
+      <a href="/audit" class="ins-link">Run a free audit of your site →</a>
+    </p>
+
+    <p class="ins-note">
+      Methodology: 169 publicly reachable Coos County small-business websites,
+      scored with Google Lighthouse (mobile) and Mozilla Observatory in 2026.
+      Platform identified by site fingerprint.
+    </p>
+  </article>
+
+  <Divider label="02" />
+
+  <Contact sectionNumber="02" centered suppressHeader />
+</BaseLayout>
+
+<style>
+  .ins { max-width: 680px; margin: 0 auto; padding: 16px 4px 8px; }
+  .ins-meta { font-size: 11px; letter-spacing: 0.08em; color: var(--color-copper); text-transform: uppercase; margin: 0 0 18px; }
+  .ins-lead {
+    font-family: var(--font-sans);
+    font-size: 17px;
+    line-height: 1.7;
+    color: var(--color-ash-200, var(--color-ash-100));
+    margin: 0 0 24px;
+  }
+  .ins-lead strong, .ins p strong { color: var(--color-ash-100); font-weight: 600; }
+  .ins p {
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 1.75;
+    color: var(--color-ash-300);
+    margin: 0 0 18px;
+    max-width: 64ch;
+  }
+  .ins-h {
+    font-family: var(--font-serif);
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--color-ash-100);
+    margin: 32px 0 12px;
+    line-height: 1.2;
+  }
+  @media (min-width: 768px) { .ins-h { font-size: 28px; } }
+  .ins-fig { margin: 26px 0; }
+  .ins-fig img {
+    width: 100%;
+    max-width: 520px;
+    height: auto;
+    margin: 0 auto;
+    border-radius: var(--radius-card, 10px);
+    border: 1px solid var(--copper-hairline);
+  }
+  .ins-fig figcaption {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--color-ash-500);
+    text-align: center;
+    margin-top: 10px;
+    letter-spacing: 0.03em;
+  }
+  .ins-link {
+    color: var(--color-wc-green);
+    text-decoration: underline;
+    text-decoration-color: rgba(77, 216, 168, 0.4);
+    text-underline-offset: 3px;
+    font-weight: 600;
+  }
+  .ins-note {
+    font-size: 13px !important;
+    color: var(--color-ash-500) !important;
+    font-style: italic;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    padding-top: 16px;
+    margin-top: 28px !important;
+  }
+</style>

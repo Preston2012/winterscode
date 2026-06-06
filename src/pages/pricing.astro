@@ -1,0 +1,242 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/layout/Header.astro';
+import MobileMenu from '../components/layout/MobileMenu.astro';
+import PageHero from '../components/sections/PageHero.astro';
+import Divider from '../components/ui/Divider.astro';
+import Contact from '../components/sections/Contact.astro';
+import { breadcrumbSchema } from '../lib/schema';
+
+const breadcrumbLd = breadcrumbSchema([
+  { name: 'Home', path: '/' },
+  { name: 'Pricing', path: '/pricing' },
+]);
+---
+
+<BaseLayout
+  title="Pricing & Plans · Winters Code"
+  description="How pricing works at Winters Code: custom quotes for sites and apps, plus monthly care plans from $75. Agency quality, priced under a freelancer. Starter sites from around $1,750. No surprises."
+  canonicalPath="/pricing"
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbLd)} />
+  </Fragment>
+
+  <Header />
+  <MobileMenu />
+
+  <PageHero
+    eyebrow="Pricing · Plans"
+    h1="Honest pricing, no surprises."
+    sub="Agency quality, priced under a freelancer. Starter sites from around $1,750. Bigger builds quoted, care plans fixed and public."
+    bgImage="/photo/local/scenes/seastacks-gorse"
+    showcase
+    bgPosition="center 50%"
+  />
+
+  <Divider label="01" />
+
+  <section class="pr-intro" aria-label="How pricing works">
+    <p class="pr-lead">
+      Builds are quoted, not priced off a menu, because a 5-page site and a
+      booking system are not the same job. Here is the honest range:
+      national agencies typically start around <strong>$5,000</strong> and run
+      6+ weeks. Hourly freelancers often run <strong>$2,500</strong> and up over
+      a month. A Winters Code starter site starts around <strong>$1,750</strong>. The
+      same modern stack and quality bar, for less than a freelancer, and live
+      in days, not months.
+    </p>
+    <p class="pr-lead">
+      Every project starts with a free consult and a written quote that holds
+      for 14 days. A 50 percent deposit locks scope and schedule; the rest is
+      due at launch. You own what I build.
+    </p>
+  </section>
+
+  <Divider label="02" />
+
+  <section class="pr-block" aria-labelledby="pr-sites-h">
+    <h2 class="pr-h" id="pr-sites-h">Sites</h2>
+    <div class="pr-grid">
+      <article class="pr-card">
+        <h3 class="pr-card-h">Starter</h3>
+        <p class="pr-time">live in 3 to 7 business days</p>
+        <ul class="pr-feat"><li>3 to 5 pages</li><li>Mobile responsive</li><li>Contact form</li><li>SEO basics</li><li>1 revision round</li></ul>
+        <p class="pr-quote">From $1,750</p>
+      </article>
+      <article class="pr-card">
+        <h3 class="pr-card-h">Pro</h3>
+        <p class="pr-time">live in 1 to 2 weeks</p>
+        <ul class="pr-feat"><li>6 to 12 pages</li><li>Custom widget (booking, gallery, calculator)</li><li>Advanced SEO</li><li>2 revision rounds</li></ul>
+        <p class="pr-quote">Custom quote</p>
+      </article>
+      <article class="pr-card">
+        <h3 class="pr-card-h">Custom build</h3>
+        <p class="pr-time">2 to 4 weeks typical</p>
+        <ul class="pr-feat"><li>E-commerce</li><li>Member portals</li><li>Custom integrations</li><li>Complex business logic</li></ul>
+        <p class="pr-quote">Custom quote</p>
+      </article>
+    </div>
+  </section>
+
+  <Divider label="03" />
+
+  <section class="pr-block" aria-labelledby="pr-apps-h">
+    <h2 class="pr-h" id="pr-apps-h">Apps</h2>
+    <div class="pr-grid">
+      <article class="pr-card">
+        <h3 class="pr-card-h">MVP</h3>
+        <p class="pr-time">2 to 4 weeks</p>
+        <ul class="pr-feat"><li>5 to 10 screens</li><li>Cross-platform iOS + Android</li><li>Auth + basic backend</li></ul>
+        <p class="pr-quote">Custom quote</p>
+      </article>
+      <article class="pr-card">
+        <h3 class="pr-card-h">Full build</h3>
+        <p class="pr-time">4 to 8 weeks</p>
+        <ul class="pr-feat"><li>Payments</li><li>Real-time</li><li>AI features</li><li>App Store + Play Store</li></ul>
+        <p class="pr-quote">Custom quote</p>
+      </article>
+      <article class="pr-card">
+        <h3 class="pr-card-h">Custom system</h3>
+        <p class="pr-time">8 to 16 weeks</p>
+        <ul class="pr-feat"><li>Multi-tenant or multi-role</li><li>Subscriptions</li><li>Enterprise integrations</li><li>Complex workflows</li></ul>
+        <p class="pr-quote">Custom quote</p>
+      </article>
+    </div>
+  </section>
+
+  <Divider label="04" />
+
+  <section class="pr-block" aria-labelledby="pr-care-h">
+    <h2 class="pr-h" id="pr-care-h">Care plans</h2>
+    <p class="pr-sub">Fixed monthly pricing, public. Cancel anytime.</p>
+    <div class="pr-grid pr-grid-2">
+      <article class="pr-card pr-care">
+        <h3 class="pr-card-h">Basic</h3>
+        <p class="pr-price">starting at <strong>$75</strong><span>/mo</span></p>
+        <ul class="pr-feat"><li>Hosting + SSL</li><li>Daily backups</li><li>Security patches</li><li>2 content edits / month</li><li>Uptime monitoring</li></ul>
+      </article>
+      <article class="pr-card pr-care">
+        <h3 class="pr-card-h">Pro</h3>
+        <p class="pr-price">starting at <strong>$250</strong><span>/mo</span></p>
+        <ul class="pr-feat"><li>Everything in Basic</li><li>Unlimited reasonable edits</li><li>Monthly performance report</li><li>Priority response</li><li>Text Preston direct</li></ul>
+      </article>
+    </div>
+    <p class="pr-foot">
+      Add-ons like brand and logo design, photography, AI workflow design, and
+      integration builds are quoted per project. See <a href="/services">all services</a>
+      or <a href="/website-maintenance">care plan details</a>.
+    </p>
+  </section>
+
+  <Divider label="05" />
+
+  <Contact sectionNumber="05" centered suppressHeader />
+</BaseLayout>
+
+<style>
+  .pr-intro { padding: 24px 4px 8px; max-width: 720px; margin: 0 auto; }
+  @media (min-width: 768px) { .pr-intro { padding: 36px 4px 12px; } }
+  .pr-lead {
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 1.7;
+    color: var(--color-ash-300);
+    margin: 0 0 16px;
+    max-width: 62ch;
+  }
+  @media (min-width: 768px) { .pr-lead { font-size: 17px; } }
+  .pr-lead strong { color: var(--color-ash-100); font-weight: 600; }
+
+  .pr-block { padding: 28px 4px 20px; max-width: 960px; margin: 0 auto; }
+  @media (min-width: 768px) { .pr-block { padding: 40px 4px 28px; } }
+  .pr-h {
+    font-family: var(--font-serif);
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--color-ash-100);
+    margin: 0 0 6px;
+  }
+  @media (min-width: 768px) { .pr-h { font-size: 36px; } }
+  .pr-sub {
+    font-family: var(--font-sans);
+    font-size: 14px;
+    color: var(--color-ash-400);
+    margin: 0 0 4px;
+  }
+  .pr-grid { display: grid; grid-template-columns: 1fr; gap: 14px; margin: 18px 0 0; }
+  @media (min-width: 768px) { .pr-grid { grid-template-columns: repeat(3, 1fr); gap: 16px; } .pr-grid-2 { grid-template-columns: repeat(2, 1fr); } }
+  .pr-card {
+    background: var(--color-bg-card);
+    border: 1px solid var(--copper-hairline);
+    border-radius: var(--radius-card, 10px);
+    padding: 18px 16px 16px;
+    display: flex;
+    flex-direction: column;
+  }
+  .pr-card-h {
+    font-family: var(--font-serif);
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--color-ash-100);
+    margin: 0 0 6px;
+  }
+  .pr-time {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-copper);
+    margin: 0 0 12px;
+  }
+  .pr-feat {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 12px;
+    font-family: var(--font-sans);
+    font-size: 13.5px;
+    color: var(--color-ash-300);
+    line-height: 1.6;
+    flex: 1 1 auto;
+  }
+  .pr-feat li { padding: 3px 0 3px 14px; position: relative; }
+  .pr-feat li::before { content: "·"; position: absolute; left: 2px; top: 1px; color: var(--color-copper); font-weight: 700; }
+  .pr-quote {
+    font-family: var(--font-sans);
+    font-size: 13px;
+    font-style: italic;
+    color: var(--color-ash-400);
+    margin: 0;
+  }
+  .pr-care .pr-price {
+    font-family: var(--font-sans);
+    font-size: 13px;
+    color: var(--color-ash-400);
+    margin: 0 0 12px;
+  }
+  .pr-care .pr-price strong {
+    font-family: var(--font-serif);
+    font-size: 34px;
+    color: var(--color-wc-green);
+    font-weight: 600;
+    margin: 0 2px;
+  }
+  .pr-care .pr-price span {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--color-ash-400);
+  }
+  .pr-foot {
+    font-family: var(--font-sans);
+    font-size: 14px;
+    color: var(--color-ash-400);
+    margin: 18px 0 0;
+    max-width: 62ch;
+  }
+  .pr-foot a {
+    color: var(--color-wc-green);
+    text-decoration: underline;
+    text-decoration-color: rgba(77, 216, 168, 0.4);
+    text-underline-offset: 3px;
+  }
+</style>

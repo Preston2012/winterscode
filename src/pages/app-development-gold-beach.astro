@@ -1,0 +1,55 @@
+---
+import ServiceLayout from '../components/templates/ServiceLayout.astro';
+import { serviceBySlug } from '../lib/business';
+const service = serviceBySlug('app-development')!;
+---
+<ServiceLayout
+  service={service}
+  path="/app-development-gold-beach"
+  schemaName="App Development in Gold Beach, Oregon"
+  areaName="Gold Beach"
+  breadcrumb={[
+    { name: 'Home', path: '/' },
+    { name: 'App Development', path: '/services/app-development' },
+    { name: 'App Development in Gold Beach', path: '/app-development-gold-beach' },
+  ]}
+  title="App Development in Gold Beach, OR · Winters Code"
+  description="Mobile app development in Gold Beach, Oregon. Flutter apps for Rogue River guides, lodges, and outfitters: trip booking, schedules, and offline maps."
+  eyebrow="Gold Beach · App Development"
+  h1="App development in Gold Beach, Oregon."
+  sub="Cross-platform apps for Rogue River guides, lodges, and outfitters. Trip booking, schedules, and maps that work where the signal does not."
+  bgImage="/photo/local/scenes/beach-vista"
+  showcase
+  heroFocal="center 42%"
+  intro={[
+    "Gold Beach runs on the Rogue: jet-boat tours, fishing charters, and the lodges that host them. Those trips are planned weeks ahead and run miles upriver where cell coverage disappears. That is the exact gap an app fills: book the trip from home, then carry the schedule, waiver, and map upriver without a signal.",
+    "An app is a real commitment, so I am honest about fit. For a guide or lodge whose guests need offline access and repeat bookings, it earns its place. For a simpler storefront, a fast website is the smarter spend, and I will tell you which.",
+  ]}
+  includesTitle="What an app can do here"
+  includes={[
+    { h: 'Trip booking', body: 'Guests reserve a jet-boat run, charter, or room and pay a deposit, synced to your existing calendar.' },
+    { h: 'Offline schedules and maps', body: 'Itineraries, meeting points, and river maps that keep working upriver where the signal drops to nothing.' },
+    { h: 'Digital waivers', body: 'Liability forms signed on the phone before the trip, so check-in at the dock is fast.' },
+    { h: 'Notifications', body: 'Weather holds, departure reminders, and reschedule alerts pushed the moment plans change.' },
+    { h: 'Both app stores', body: 'One Flutter codebase to the App Store and Google Play, half the cost and upkeep of two native apps.' },
+    { h: 'Built by the person you talk to', body: 'No offshore team. The builder who ships it is the one who maintains it, in your same time zone.' },
+  ]}
+  whyTitle="Real shipped apps"
+  why={[
+    "I ship apps for a living. <strong>StainSlayer AI</strong> is live on both app stores. <strong>Baseline</strong> runs multiple AI models in parallel. <strong>MyKonos</strong> runs on a memory engine I built called Demiurge.",
+    "For a Gold Beach guide or lodge, that means an app built by someone who has already navigated store review and offline-first design, not a freelancer learning on your project. <em>Built by me, owned by you. The reliability is the point.</em>",
+  ]}
+  faq={[
+    { q: 'Do I need an app, or just a website?', a: 'If your guests need to book ahead and carry information offline on the river, an app earns its place. If you mostly need to be found and contacted, a fast website is cheaper and faster. I will tell you straight which fits.' },
+    { q: 'Will it work without cell service upriver?', a: 'Yes. Offline-first design is one of the main reasons to build an app here. Schedules, maps, and waivers keep working where coverage drops.' },
+    { q: 'How long does it take?', a: 'A focused MVP runs 2 to 4 weeks. A full build with booking and payments, 4 to 8 weeks.' },
+    { q: 'Gold Beach is a drive. Does that work?', a: 'Yes. Gold Beach is about 70 minutes from Bandon, in my core Curry County area. The first consult is a free video call, and most of an app build happens remotely. In-person visits carry a $250 travel deposit that credits back to the project on signing.' },
+  ]}
+  relatedTitle="Related"
+  relatedIntro="The full service and the Gold Beach overview."
+  relatedLinks={[
+    { href: '/services/app-development', label: 'App Development', sub: 'The full service' },
+    { href: '/web-design-gold-beach', label: 'Web Design in Gold Beach', sub: 'Gold Beach overview' },
+    { href: '/services/custom-software', label: 'Custom Software', sub: 'Bigger systems' },
+  ]}
+/>

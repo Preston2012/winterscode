@@ -1,0 +1,162 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/layout/Header.astro';
+import MobileMenu from '../components/layout/MobileMenu.astro';
+import PageHero from '../components/sections/PageHero.astro';
+import Divider from '../components/ui/Divider.astro';
+import Contact from '../components/sections/Contact.astro';
+import { breadcrumbSchema, faqSchema } from '../lib/schema';
+
+// One flat list powers both the FAQPage schema and the rendered accordion.
+const faqs = [
+  {
+    q: 'How much does a website cost?',
+    a: 'Agency quality without the agency price. National agencies typically start around $5,000 over 6+ weeks, and hourly freelancers run $2,500 and up over a month. A Winters Code starter site starts around $1,750. Same modern stack, live in days, and yours to own. Bigger sites and apps are quoted; every project gets a free consult and a custom quote.',
+  },
+  {
+    q: 'How fast can you build it?',
+    a: 'Sites in days, apps in weeks. A Starter site is usually live in 3 to 7 business days, a Pro site in 1 to 2 weeks, and a larger custom build in 2 to 4 weeks. Apps run 2 to 16 weeks depending on scope. No agency runaround, no "next quarter."',
+  },
+  {
+    q: 'Why not WordPress, Squarespace, or Wix?',
+    a: 'Those are mass-produced platforms: slower, plugin-dependent, and rented rather than owned. I audited 169 Coos County sites and the three platforms most businesses use averaged a D, an F, and a C on mobile speed. I write the actual code, which loads faster, ranks better, stays secure, and belongs to you.',
+  },
+  {
+    q: 'Do I own the site, or am I renting it?',
+    a: 'You own it. The code and the content are yours, with no platform charging monthly rent to keep your own site online and no lock-in.',
+  },
+  {
+    q: 'Do I need an app or just a website?',
+    a: 'Usually a website first. An app earns its place when customers open it repeatedly or it needs device features like the camera, GPS, notifications, or offline use. I will tell you straight which one fits your business instead of selling you the bigger project.',
+  },
+  {
+    q: 'What if I do not have photos or copy yet?',
+    a: 'I do most of the lift. A short questionnaire gets us started, and I can shoot real photos of your business and draft the copy for you to edit. No stock photography unless you want it.',
+  },
+  {
+    q: 'Do you maintain the site after launch?',
+    a: 'Yes. Monthly care plans start at $75 and cover hosting, SSL, daily backups, security patches, and edits. The person who built it is the person who maintains it, and the phone number stays the same.',
+  },
+  {
+    q: 'What areas do you serve?',
+    a: 'Coos and Curry counties on the southern Oregon coast: Bandon, Coos Bay, North Bend, Coquille, Reedsport, Myrtle Point, Port Orford, Gold Beach, and the towns between. Bandon is home base, and most work happens remotely with in-person meetings where they help.',
+  },
+  {
+    q: 'How are you this fast?',
+    a: 'A modern stack (Astro, React, Flutter) and AI tooling I built myself, including a memory engine called Demiurge that remembers each project’s patterns so I am not relearning the same lessons. Three of my live products are AI. I write every line myself, you own what I build, and the speed is real.',
+  },
+  {
+    q: 'How do we start?',
+    a: 'A free consult, no pitch deck. Send a brief, book a call on Cal.com, or just text. We scope the project, I send a quote, and once it is signed the work starts that same week.',
+  },
+];
+
+const faqLd = faqSchema(faqs);
+const breadcrumbLd = breadcrumbSchema([
+  { name: 'Home', path: '/' },
+  { name: 'FAQ', path: '/faq' },
+]);
+---
+
+<BaseLayout
+  title="FAQ · Common Questions · Winters Code"
+  description="Answers to the questions Oregon coast businesses ask most: cost, timeline, why not WordPress, ownership, maintenance, service area, and how to start."
+  canonicalPath="/faq"
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(faqLd)} />
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbLd)} />
+  </Fragment>
+
+  <Header />
+  <MobileMenu />
+
+  <PageHero
+    eyebrow="FAQ"
+    h1="Questions, answered."
+    sub="The ones every Oregon coast business asks before they reach out. If yours is not here, just text."
+    bgImage="/photo/local/scenes/links-dusk"
+    showcase
+    bgPosition="center 50%"
+    textPos="split"
+  />
+
+  <Divider label="01" />
+
+  <section class="faqp" aria-label="Frequently asked questions">
+    <div class="faqp-list">
+      {faqs.map((item, i) => (
+        <details class="faqp-item" open={i === 0}>
+          <summary class="faqp-q">
+            <span class="faqp-q-text">{item.q}</span>
+            <span class="faqp-toggle" aria-hidden="true">+</span>
+          </summary>
+          <div class="faqp-a"><p>{item.a}</p></div>
+        </details>
+      ))}
+    </div>
+  </section>
+
+  <Divider label="02" />
+
+  <Contact sectionNumber="02" centered suppressHeader />
+</BaseLayout>
+
+<style>
+  .faqp {
+    padding: 24px 4px 24px;
+    max-width: 760px;
+    margin: 0 auto;
+  }
+  @media (min-width: 768px) { .faqp { padding: 36px 4px 32px; } }
+  .faqp-list { display: grid; gap: 8px; }
+  .faqp-item {
+    background: var(--color-bg-card);
+    border: 1px solid var(--copper-hairline);
+    border-radius: var(--radius-card, 10px);
+    overflow: hidden;
+  }
+  .faqp-item[open] { border-color: var(--copper-dim, rgba(240, 160, 110, 0.5)); }
+  .faqp-q {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 12px;
+    align-items: center;
+    padding: 16px 18px;
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+  }
+  .faqp-q::-webkit-details-marker { display: none; }
+  .faqp-q:hover, .faqp-q:focus-visible {
+    background-color: rgba(200, 128, 74, 0.04);
+    outline: none;
+  }
+  .faqp-q-text {
+    font-family: var(--font-serif);
+    font-size: 17px;
+    color: var(--color-ash-100);
+    font-weight: 600;
+    line-height: 1.3;
+  }
+  @media (min-width: 768px) { .faqp-q-text { font-size: 20px; } }
+  .faqp-toggle {
+    font-family: var(--font-mono);
+    font-size: 20px;
+    color: var(--color-copper);
+    width: 22px;
+    text-align: center;
+    transition: transform 0.15s ease;
+  }
+  .faqp-item[open] .faqp-toggle { transform: rotate(45deg); }
+  .faqp-a {
+    padding: 0 18px 18px;
+    font-family: var(--font-sans);
+    font-size: 15px;
+    line-height: 1.65;
+    color: var(--color-ash-300);
+    border-top: 1px solid rgba(255, 255, 255, 0.04);
+  }
+  @media (min-width: 768px) { .faqp-a { font-size: 16px; } }
+  .faqp-a p { margin: 14px 0 0; max-width: 64ch; }
+</style>

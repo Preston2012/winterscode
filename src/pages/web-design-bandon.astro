@@ -1,0 +1,24 @@
+---
+import LocationPage from '../components/templates/LocationPage.astro';
+import { serviceBySlug, townBySlug } from '../lib/business';
+const town = townBySlug('bandon')!;
+const service = serviceBySlug('web-design')!;
+---
+<LocationPage
+  town={town}
+  service={service}
+  path="/web-design-bandon"
+  title="Web Design in Bandon, OR · Winters Code"
+  description="Custom web design in Bandon, Oregon, from a local shop. Fast, mobile-first sites built by the person you meet for coffee. Real local work you can go see."
+  eyebrow="Locations · Bandon"
+  h1="Web design in Bandon, Oregon."
+  sub="Custom, fast, mobile-first websites for Bandon businesses, from a shop that is actually in Bandon."
+  sub2="The builder is local. The work is live."
+  bgImage="/photo/local/scenes/bandon-seastacks"
+  showcase
+  heroFocal="center 62%"
+  heroTextPos="top"
+  intro={[
+    "This is home. The shop is in Bandon, my family has been here six generations, and I have already shipped a live site for a Bandon contractor. When you hire me here, you get the person who builds it sitting across the table, not a ticket queue.",
+  ]}
+/>
