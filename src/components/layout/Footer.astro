@@ -1,0 +1,257 @@
+---
+/**
+ * Footer, one centered composition: a brand masthead (seal + tagline) on top,
+ * a delicate 3x2 IA column nav in the middle, and the legal line at the base,
+ * all on a shared centre axis. Keeps the original chrome: beach-pebble wash,
+ * corner brackets, pulsing teal dot, the "I build it…" tagline, and the
+ * nominative-use fine print. Column links source from the business data module
+ * so Services + Locations stay in sync.
+ */
+import { services, towns, business } from '../../lib/business';
+
+const year = new Date().getFullYear();
+
+const columns: { title: string; links: { label: string; href: string; external?: boolean }[] }[] = [
+  {
+    title: 'Services',
+    links: [
+      ...services.map((s) => ({ label: s.name, href: `/services/${s.slug}` })),
+      { label: 'Logo & Brand Design', href: '/logo-design' },
+      { label: 'All services', href: '/services' },
+    ],
+  },
+  {
+    title: 'Locations',
+    links: towns.map((t) => ({ label: t.name, href: `/web-design-${t.slug}` })),
+  },
+  {
+    title: 'Work',
+    links: [
+      { label: 'All work', href: '/work' },
+      { label: 'Sogn Contracting', href: '/work/sogn-contracting' },
+      { label: 'Baseline Marketing', href: '/work/baseline-marketing' },
+    ],
+  },
+  {
+    title: 'Resources',
+    links: [
+      { label: 'Free site audit', href: '/audit' },
+      { label: 'FAQ', href: '/faq' },
+      { label: 'Insights', href: '/insights' },
+      { label: 'Process', href: '/process' },
+      { label: 'Pricing', href: '/pricing' },
+    ],
+  },
+  {
+    title: 'Company',
+    links: [
+      { label: 'About', href: '/about' },
+      { label: 'Contact', href: '/contact' },
+      { label: 'The Wall', href: '/wall' },
+      { label: 'Changelog', href: '/changelog' },
+      { label: 'GitHub', href: business.github, external: true },
+    ],
+  },
+  {
+    title: 'Industries',
+    links: [
+      { label: 'For Contractors', href: '/web-design-for-contractors' },
+      { label: 'For Real Estate', href: '/web-design-for-real-estate' },
+      { label: 'For Restaurants', href: '/web-design-for-restaurants' },
+    ],
+  },
+];
+
+// Legal links live in the footer chrome (below), not as a column.
+const legalLinks = [
+  { label: 'Privacy', href: '/privacy', external: false },
+  { label: 'Terms', href: '/terms', external: false },
+  { label: 'Credits', href: '/credits', external: false },
+];
+---
+
+<footer class="page small wc-foot" style="position:relative; border-top:1px solid rgba(77, 216, 168, 0.18); padding-top:46px; padding-bottom:26px; margin-top:32px;">
+  <div class="wc-foot-wash" aria-hidden="true"><img srcset="/photo/local/beach-pebbles-480.webp 480w, /photo/local/beach-pebbles-800.webp 800w" src="/photo/local/beach-pebbles-800.webp" sizes="100vw" alt="" width="800" height="600" loading="lazy" decoding="async" /></div>
+  <span class="wc-foot-corner tl" aria-hidden="true"></span>
+  <span class="wc-foot-corner tr" aria-hidden="true"></span>
+  <span class="wc-foot-corner bl" aria-hidden="true"></span>
+  <span class="wc-foot-corner br" aria-hidden="true"></span>
+
+  <div class="wc-foot-inner">
+    <!-- Masthead -->
+    <div class="wc-foot-mast">
+      <img src="/wc-logo-256.webp" width="46" height="46" decoding="async" alt="" aria-hidden="true" class="wc-foot-seal" />
+      <p class="wc-foot-tag">I build it. I ship it. I maintain it.</p>
+      <p class="wc-foot-sub">Custom websites &amp; apps · Oregon Coast</p>
+    </div>
+
+    <span class="wc-foot-rule" aria-hidden="true"></span>
+
+    <!-- IA columns -->
+    <nav class="wc-foot-cols" aria-label="Footer">
+      {columns.map((col) => (
+        <div class="wc-foot-col">
+          <h2 class="wc-foot-col-h">{col.title}</h2>
+          <ul>
+            {col.links.map((l) => (
+              <li>
+                {l.external
+                  ? <a href={l.href} rel="noopener" target="_blank">{l.label}</a>
+                  : <a href={l.href}>{l.label}</a>}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </nav>
+
+    <span class="wc-foot-rule" aria-hidden="true"></span>
+
+    <!-- Legal -->
+    <div class="wc-foot-chrome">
+      <nav class="wc-foot-legal" aria-label="Legal">
+        {legalLinks.map((l) => (
+          l.external
+            ? <a href={l.href} rel="noopener" target="_blank">{l.label}</a>
+            : <a href={l.href}>{l.label}</a>
+        ))}
+      </nav>
+      <div class="wc-foot-copy">&copy; {year} Winters Code · Bandon, Oregon</div>
+      <p class="wc-foot-fine">
+        All product names, logos, and brands are property of their
+        respective owners. References here are nominative and do not imply
+        endorsement, affiliation, or sponsorship by any third party.
+      </p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  /* ── Centered composition ── */
+  .wc-foot-inner {
+    position: relative;
+    z-index: 1;
+    max-width: 760px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  /* Masthead */
+  .wc-foot-mast { display: flex; flex-direction: column; align-items: center; gap: 9px; }
+  .wc-foot-seal { display: block; opacity: 0.95; }
+  .wc-foot-tag {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 17px;
+    line-height: 1.25;
+    color: var(--color-ash-200, var(--color-ash-100));
+  }
+  @media (min-width: 768px) { .wc-foot-tag { font-size: 20px; } }
+  .wc-foot-sub {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-ash-500);
+  }
+
+  /* Hairline rules (match the chrome's teal gradient) */
+  .wc-foot-rule {
+    display: block;
+    height: 1px;
+    width: min(72%, 440px);
+    margin: 26px auto;
+    background: linear-gradient(90deg, transparent, rgba(77, 216, 168, 0.22) 25%, rgba(77, 216, 168, 0.22) 75%, transparent);
+  }
+
+  /* IA columns, delicate, centered, 3 wide x 2 tall */
+  .wc-foot-cols {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    align-items: start;
+    gap: 28px 16px;
+    max-width: 580px;
+    margin: 0 auto;
+  }
+  @media (min-width: 768px) { .wc-foot-cols { gap: 34px 28px; max-width: 600px; } }
+  .wc-foot-col-h {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-copper);
+    margin: 0 0 12px;
+  }
+  .wc-foot-col-h::after {
+    content: "";
+    display: block;
+    width: 14px;
+    height: 1px;
+    margin: 7px auto 0;
+    background: var(--color-copper);
+    opacity: 0.45;
+  }
+  .wc-foot-col ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+  .wc-foot-col a {
+    font-family: var(--font-sans);
+    font-size: 12px;
+    line-height: 1.35;
+    color: var(--color-ash-400);
+    text-decoration: none;
+    transition: color 0.15s ease;
+  }
+  @media (min-width: 768px) { .wc-foot-col a { font-size: 13px; } }
+  .wc-foot-col a:hover, .wc-foot-col a:focus-visible { color: var(--color-wc-green); outline: none; }
+
+  /* Legal */
+  .wc-foot-chrome { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+  .wc-foot-legal { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 18px; }
+  .wc-foot-legal a {
+    font-family: var(--font-sans);
+    font-size: 12px;
+    color: var(--color-ash-400);
+    text-decoration: none;
+    transition: color 0.15s ease;
+  }
+  .wc-foot-legal a:hover, .wc-foot-legal a:focus-visible { color: var(--color-wc-green); outline: none; }
+  .wc-foot-copy { font-size: 12px; color: var(--color-ash-300); }
+  .wc-foot-fine {
+    margin: 0 auto;
+    max-width: 600px;
+    font-size: 11px;
+    line-height: 1.55;
+    color: var(--color-ash-500);
+  }
+
+  /* ── Preserved footer chrome (verbatim from BaseLayout) ── */
+  .wc-foot::before {
+    content: ""; position: absolute; z-index: 2; left: 0; right: 0; top: 3px; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(77, 216, 168, 0.26) 20%, rgba(77, 216, 168, 0.26) 80%, transparent);
+    pointer-events: none;
+  }
+  .wc-foot::after {
+    content: ""; position: absolute; z-index: 2; left: 50%; top: -3px; width: 5px; height: 5px;
+    border-radius: 50%; background: var(--accent-teal); transform: translateX(-50%);
+    box-shadow: 0 0 7px rgba(53, 214, 196, 0.55), 0 0 0 3px var(--color-bg-deep);
+    pointer-events: none;
+    animation: wc-foot-pulse 2.6s ease-in-out infinite;
+  }
+  @keyframes wc-foot-pulse {
+    0%, 100% { opacity: 0.55; transform: translateX(-50%) scale(1); }
+    50% { opacity: 1; transform: translateX(-50%) scale(1.3); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .wc-foot::after { animation: none; }
+  }
+  .wc-foot-corner { position: absolute; z-index: 2; width: 14px; height: 14px; border-color: rgba(77, 216, 168, 0.26); pointer-events: none; }
+  .wc-foot-corner.tl { top: 8px;  left: 0;  border-top: 1px solid; border-left: 1px solid; }
+  .wc-foot-corner.tr { top: 8px;  right: 0; border-top: 1px solid; border-right: 1px solid; }
+  .wc-foot-corner.bl { bottom: 0; left: 0;  border-bottom: 1px solid; border-left: 1px solid; }
+  .wc-foot-corner.br { bottom: 0; right: 0; border-bottom: 1px solid; border-right: 1px solid; }
+  .wc-foot-wash { position: absolute; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+  .wc-foot-wash img { width: 100%; height: 100%; object-fit: cover; object-position: center 62%; opacity: 0.42; display: block; -webkit-mask-image: linear-gradient(to top, #000 16%, transparent 90%); mask-image: linear-gradient(to top, #000 16%, transparent 90%); }
+  .wc-foot-wash::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgba(10,13,12,0.18), rgba(10,13,12,0.5) 58%, var(--color-bg-deep)); }
+</style>

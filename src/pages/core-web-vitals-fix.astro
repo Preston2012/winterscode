@@ -1,0 +1,59 @@
+---
+import ServiceLayout from '../components/templates/ServiceLayout.astro';
+import type { ServiceEntry } from '../lib/business';
+const service: ServiceEntry = {
+  slug: 'core-web-vitals-fix',
+  name: 'Core Web Vitals Fix',
+  shortLabel: 'Core Web Vitals Fix',
+  blurb: 'Diagnose and fix slow loads and failing Core Web Vitals.',
+  serviceType: 'Core Web Vitals and website speed optimization',
+};
+---
+<ServiceLayout
+  service={service}
+  path="/core-web-vitals-fix"
+  breadcrumb={[
+    { name: 'Home', path: '/' },
+    { name: 'Core Web Vitals Fix', path: '/core-web-vitals-fix' },
+  ]}
+  title="Core Web Vitals Fix · Slow Website Repair · Winters Code"
+  description="Fix a slow website and failing Core Web Vitals. Diagnose LCP, layout shift, and load speed for Oregon coast businesses. Real Lighthouse gains, measured."
+  eyebrow="Speed · Core Web Vitals"
+  h1="Slow website? Fix the vitals."
+  sub="Diagnose and repair the Core Web Vitals Google actually scores: load speed, interaction delay, and layout shift."
+  sub2="Measured before. Measured after."
+  bgImage="/photo/local/scenes/driftwood-rocks"
+  showcase
+  heroFocal="center 52%"
+  heroTextPos="top"
+  intro={[
+    "Core Web Vitals are the three things Google measures to decide if a page feels fast: how quickly the main content loads, how fast it responds to a tap, and whether the layout jumps while it loads. Fail them and you lose both rankings and the visitors who give up waiting.",
+    "Most slow sites are slow for a handful of fixable reasons: huge unoptimized images, fonts that block the page, heavy plugins, and no caching. I find which ones are hurting you, fix them, and measure the result.",
+  ]}
+  includesTitle="What I fix"
+  includes={[
+    { h: 'Largest Contentful Paint', body: 'The main content made to appear fast, by fixing the images, fonts, and render-blocking code that delay it.' },
+    { h: 'Layout shift', body: 'The annoying jump as a page loads, eliminated by reserving space for images and embeds.' },
+    { h: 'Interaction delay', body: 'Taps and clicks that respond immediately, by trimming the heavy scripts that freeze the page.' },
+    { h: 'Image optimization', body: 'Modern formats, right-sized and lazy-loaded, often the single biggest speed win on a local site.' },
+    { h: 'Caching and delivery', body: 'Proper caching and a fast edge so repeat visits and far-away visitors load quickly too.' },
+    { h: 'Before-and-after proof', body: 'Real Lighthouse scores measured at the start and the end, so the gain is documented.' },
+  ]}
+  whyTitle="Where most local sites stand"
+  why={[
+    "I audited 169 Coos County small-business websites with Google Lighthouse. The average mobile speed score was <strong>61 out of 100</strong>. The platforms most businesses rent from, WordPress, Squarespace, and Wix, averaged a <strong>D, an F, and a C</strong>. Custom code averaged <strong>94 on mobile</strong>.",
+    "If your site is in the 60s, you are normal for the area, and that is the opportunity. Fixing the vitals moves you ahead of nearly everyone you compete with locally. <em>Start with the free audit</em> and we will see your real numbers.",
+  ]}
+  faq={[
+    { q: 'How do I know if my site fails Core Web Vitals?', a: 'Run it through my free audit, or I will. It shows the same speed, accessibility, SEO, and security scores Google sees, on both mobile and desktop. Most local sites are surprised by the mobile number.' },
+    { q: 'Can you fix my site, or do I need a rebuild?', a: 'Often I can fix the site you have: compress images, fix fonts, add caching, resolve layout shift. If the platform itself is the bottleneck, a rebuild may cost less long term. The audit tells us which.' },
+    { q: 'Does speed really affect my rankings?', a: 'Yes. Core Web Vitals are a confirmed ranking signal, and speed also affects whether visitors stay. A faster site ranks better and converts better, especially on rural mobile connections.' },
+    { q: 'Will you prove the improvement?', a: 'Yes. I measure Lighthouse scores before and after, so the gain is on paper, not just a promise.' },
+  ]}
+  relatedTitle="Related"
+  relatedLinks={[
+    { href: '/services/seo-performance', label: 'SEO & Performance', sub: 'The full service' },
+    { href: '/audit', label: 'Free site audit', sub: 'See your real scores' },
+    { href: '/website-redesign', label: 'Website Redesign', sub: 'When a fix is not enough' },
+  ]}
+/>

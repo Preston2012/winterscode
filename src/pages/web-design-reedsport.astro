@@ -1,0 +1,22 @@
+---
+import LocationPage from '../components/templates/LocationPage.astro';
+import { serviceBySlug, townBySlug } from '../lib/business';
+const town = townBySlug('reedsport')!;
+const service = serviceBySlug('web-design')!;
+---
+<LocationPage
+  town={town}
+  service={service}
+  path="/web-design-reedsport"
+  title="Web Design in Reedsport, OR · Winters Code"
+  description="Custom web design in Reedsport, Oregon. Fast, mobile-first sites built to catch dune and river visitors searching ahead. No templates, no plugins."
+  eyebrow="Locations · Reedsport"
+  h1="Web design in Reedsport, Oregon."
+  sub="Custom, fast, mobile-first websites for Reedsport businesses. Built to catch visitors planning a dune or river trip."
+  bgImage="/photo/local/towns/reedsport"
+  showcase
+  heroFocal="center 48%"
+  intro={[
+    "Reedsport sits where the Umpqua River meets the Oregon Dunes. Its businesses live and die by visitors who plan their trip online before they pull into town, so loading fast and answering the question first is what wins the booking.",
+  ]}
+/>

@@ -1,0 +1,23 @@
+---
+import LocationPage from '../components/templates/LocationPage.astro';
+import { serviceBySlug, townBySlug } from '../lib/business';
+const town = townBySlug('gold-beach')!;
+const service = serviceBySlug('web-design')!;
+---
+<LocationPage
+  town={town}
+  service={service}
+  path="/web-design-gold-beach"
+  title="Web Design in Gold Beach, OR · Winters Code"
+  description="Custom web design in Gold Beach, Oregon. Fast, mobile-first sites with booking built in for Rogue River guides, lodges, and restaurants in Curry County."
+  eyebrow="Locations · Gold Beach"
+  h1="Web design in Gold Beach, Oregon."
+  sub="Custom, fast, mobile-first websites for Gold Beach guides, lodges, and restaurants. Booking built in."
+  bgImage="/photo/local/towns/gold-beach"
+  showcase
+  heroFocal="center 55%"
+  heroTextPos="top"
+  intro={[
+    "Gold Beach lives on the Rogue River and the visitors who come to run it. For a guide, lodge, or restaurant here, the website is the storefront travellers see weeks before they arrive, and a fast, clear one wins the booking first.",
+  ]}
+/>

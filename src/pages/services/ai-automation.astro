@@ -1,0 +1,50 @@
+---
+import ServiceLayout from '../../components/templates/ServiceLayout.astro';
+import { serviceBySlug, towns } from '../../lib/business';
+
+const service = serviceBySlug('ai-automation')!;
+const townLinks = towns.map((t) => ({
+  href: `/web-design-${t.slug}`,
+  label: `${t.name}, OR`,
+  sub: t.county,
+}));
+---
+
+<ServiceLayout
+  service={service}
+  title="AI Automation & Integration · Winters Code"
+  description="Practical AI automation for Oregon coast businesses. Intake, replies, lead routing, and integrations that save real hours. Built by a shop that ships AI apps."
+  eyebrow="Services · AI Automation"
+  h1="Practical AI, not the buzzword kind."
+  sub="Automating the busywork: intake, replies, lead routing, and the handoffs between tools you already use."
+  sub2="Built by a shop that ships real AI products."
+  bgImage="/photo/local/dunes-sunset"
+  showcase
+  heroFocal="center 46%"
+  intro={[
+    "Most AI pitches are vague. Mine is not, because I ship AI for a living. The question I start with is simple: which repetitive task is eating your week? Then I automate that one thing well, prove it saves hours, and move to the next.",
+    "This is automation you can point at. Not a chatbot that annoys your customers, but quiet systems that handle intake, sort and route leads, draft replies, and keep your tools in sync while you do the work only you can do.",
+  ]}
+  includes={[
+    { h: 'Smart intake', body: 'Turn messy inbound messages, forms, and emails into clean, structured records, sorted and ready to act on.' },
+    { h: 'Lead routing', body: 'New inquiries triaged and sent to the right place automatically, so nothing sits unanswered overnight.' },
+    { h: 'Drafted replies', body: 'First-draft responses to common questions, in your voice, ready for you to glance at and send.' },
+    { h: 'Tool integration', body: 'Your forms, inbox, calendar, CRM, and payment tools wired together so data moves once and stays in sync.' },
+    { h: 'Document and photo AI', body: 'Vision and language models that read documents, tag photos, or analyze an image, the way StainSlayer reads a stain.' },
+    { h: 'Built to own', body: 'Practical, auditable automation you control, not a black box you rent and cannot inspect.' },
+  ]}
+  why={[
+    "I do not talk about AI in the abstract. <strong>StainSlayer AI</strong> uses vision models to identify a stain from a photo and is live on both app stores. <strong>Baseline</strong> runs Claude, GPT, and Grok in parallel and treats their disagreement as the signal. <strong>Demiurge</strong> is a memory engine I built that now holds more than 2,500 memories and powers the MyKonos companion.",
+    "That is the difference between a shop that uses AI and a shop that builds it. <em>Built by me, owned by you, end to end.</em> When I automate your intake or wire your tools together, it is the same engineering, pointed at your business.",
+    "One honest note from the services menu: I will not run your social media by hand, but I can build the automation that does. That is exactly this work.",
+  ]}
+  faq={[
+    { q: 'Is this just a chatbot?', a: 'No. Chatbots are the smallest, often worst, use of AI. The valuable work is quiet: sorting intake, routing leads, drafting replies, and keeping your tools in sync. The customer usually never sees it; they just get a faster response.' },
+    { q: 'Will AI replace the personal touch my customers expect?', a: 'It should protect it. Automating the busywork gives you back the hours to actually talk to people. AI handles the sorting and drafting; you keep the relationship.' },
+    { q: 'Do you actually build AI, or just resell a tool?', a: 'I build it. Three of my live products are AI: StainSlayer, Baseline, and MyKonos, running on a memory engine I wrote called Demiurge. This is my core strength, not a reseller add-on.' },
+    { q: 'Where do we start?', a: 'With the one task eating the most time. I automate that, prove it saves hours, then expand only where the return is real. No giant rip-and-replace.' },
+  ]}
+  relatedTitle="AI automation across the Oregon coast"
+  relatedIntro="Local pages for the towns I serve."
+  relatedLinks={townLinks}
+/>

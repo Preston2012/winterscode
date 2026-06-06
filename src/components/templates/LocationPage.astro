@@ -1,0 +1,390 @@
+---
+/**
+ * LocationPage, shared scaffold for the local matrix (town hub pages like
+ * /web-design-bandon and service-x-town combos like /app-development-coos-bay).
+ *
+ * Differentiation is real and data-driven: each town carries its own local
+ * industry context, FAQ, drive/travel facts, and neighbors in
+ * src/lib/business.ts. The template only arranges that real content. No
+ * fabricated proof, no copy-paste city pages.
+ *
+ * Native by construction: BaseLayout + Header + MobileMenu + PageHero +
+ * Divider + RelatedLinks + Contact, with per-page Service + BreadcrumbList +
+ * FAQPage JSON-LD via the head slot.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../layout/Header.astro';
+import MobileMenu from '../layout/MobileMenu.astro';
+import PageHero from '../sections/PageHero.astro';
+import Divider from '../ui/Divider.astro';
+import RelatedLinks from '../sections/RelatedLinks.astro';
+import Contact from '../sections/Contact.astro';
+import { services, towns, townBySlug } from '../../lib/business';
+import type { ServiceEntry, TownEntry } from '../../lib/business';
+import { serviceSchema, breadcrumbSchema, faqSchema } from '../../lib/schema';
+
+interface Props {
+  town: TownEntry;
+  service: ServiceEntry;
+  /** Public path for this page, e.g. '/web-design-bandon'. */
+  path: string;
+  title: string;
+  description: string;
+  eyebrow: string;
+  h1: string;
+  sub: string;
+  sub2?: string;
+  /** Lead paragraphs above the town context. */
+  intro: string[];
+  bgImage?: string;
+  bgOpacity?: number;
+  /** Prominent photo hero with text in the photo's dead space + scrim. */
+  showcase?: boolean;
+  /** Photo focal point (object-position) for showcase heroes. */
+  heroFocal?: string;
+  /** Which dead-space the hero text sits in: 'bottom' (default) or 'top'. */
+  heroTextPos?: 'top' | 'bottom';
+  /** Show the 169-site county audit hook (hub pages). Default true. */
+  showAuditHook?: boolean;
+}
+
+const {
+  town,
+  service,
+  path,
+  title,
+  description,
+  eyebrow,
+  h1,
+  sub,
+  sub2,
+  intro,
+  bgImage = '/photo/local/home-coast-wash',
+  bgOpacity = 0.3,
+  showcase = false,
+  heroFocal = 'center',
+  heroTextPos = 'bottom',
+  showAuditHook = true,
+} = Astro.props;
+
+// Link UP to the six services.
+const serviceLinks = services.map((s) => ({
+  href: `/services/${s.slug}`,
+  label: s.name,
+  sub: s.shortLabel === s.name ? undefined : s.shortLabel,
+}));
+
+// Neighboring towns for the local link web.
+const neighborLinks = town.neighbors
+  .map((slug) => townBySlug(slug))
+  .filter((t): t is TownEntry => !!t)
+  .map((t) => ({
+    href: `/web-design-${t.slug}`,
+    label: `${t.name}, OR`,
+    sub: t.county,
+  }));
+
+const serviceLd = serviceSchema({
+  name: `${service.name} in ${town.name}, Oregon`,
+  serviceType: service.serviceType,
+  description,
+  path,
+  areaName: town.name,
+});
+const breadcrumbLd = breadcrumbSchema([
+  { name: 'Home', path: '/' },
+  { name: service.name, path: `/services/${service.slug}` },
+  { name: `${service.name} in ${town.name}`, path },
+]);
+const faqLd = town.faq.length ? faqSchema(town.faq) : null;
+---
+
+<BaseLayout title={title} description={description} canonicalPath={path}>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(serviceLd)} />
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbLd)} />
+    {faqLd && <script type="application/ld+json" set:html={JSON.stringify(faqLd)} />}
+  </Fragment>
+
+  <Header />
+  <MobileMenu />
+
+  <PageHero
+    eyebrow={eyebrow}
+    h1={h1}
+    sub={sub}
+    sub2={sub2}
+    bgImage={bgImage}
+    bgOpacity={bgOpacity}
+    showcase={showcase}
+    bgPosition={heroFocal}
+    textPos={heroTextPos}
+  />
+
+  <Divider label="01" />
+
+  <!-- Lead + real local context -->
+  <section class="loc-intro" aria-label={`About ${town.name}`}>
+    {intro.map((p) => <p class="loc-lead" set:html={p} />)}
+    <p class="loc-context" set:html={town.context} />
+  </section>
+
+  <Divider label="02" />
+
+  <!-- Common local industries (real) -->
+  <section class="loc-block" aria-labelledby="loc-ind-h">
+    <header class="loc-block-head">
+      <h2 class="loc-block-h" id="loc-ind-h">Built for {town.name}'s businesses</h2>
+      <p class="loc-block-sub">The trades and industries that drive {town.name}, and the kind of work each one needs online.</p>
+    </header>
+    <ul class="loc-industries">
+      {town.industries.map((ind) => <li>{ind}</li>)}
+    </ul>
+  </section>
+
+  {showAuditHook && (
+    <>
+      <Divider label="03" />
+      <section class="loc-block loc-audit" aria-labelledby="loc-audit-h">
+        <header class="loc-block-head">
+          <h2 class="loc-block-h" id="loc-audit-h">Why this matters here</h2>
+        </header>
+        <p class="loc-audit-p">
+          I audited <strong>169 Coos County small-business websites</strong> with Google
+          Lighthouse and Mozilla Observatory. The average mobile speed score was
+          <strong> 61 out of 100</strong>, and not one site scored both fast and secure.
+          Most are rented from a template platform and pay for it in speed.
+        </p>
+        <p class="loc-audit-p">
+          In a market where almost no one has done the work, doing it well wins.
+          A fast, custom site can outrank the rented sites around {town.name} and turn
+          local searches into calls. <a href="/audit" class="loc-link">Run a free audit of your site →</a>
+        </p>
+      </section>
+    </>
+  )}
+
+  <Divider label="04" />
+
+  <RelatedLinks
+    id="loc-services"
+    title={`What I build for ${town.name}`}
+    intro="Every service, available to businesses in your town. I write the code myself, end to end."
+    links={serviceLinks}
+  />
+
+  {town.faq.length > 0 && (
+    <>
+      <Divider label="05" />
+      <section class="loc-faq" aria-labelledby="loc-faq-h">
+        <header class="loc-block-head">
+          <h2 class="loc-block-h" id="loc-faq-h">{town.name} questions</h2>
+        </header>
+        <div class="loc-faq-list">
+          {town.faq.map((item, i) => (
+            <details class="loc-faq-item" open={i === 0}>
+              <summary class="loc-faq-q">
+                <span class="loc-faq-q-text">{item.q}</span>
+                <span class="loc-faq-toggle" aria-hidden="true">+</span>
+              </summary>
+              <div class="loc-faq-a"><p set:html={item.a} /></div>
+            </details>
+          ))}
+        </div>
+      </section>
+    </>
+  )}
+
+  <Divider label="06" />
+
+  <!-- Getting together (real travel facts) -->
+  <section class="loc-block loc-travel" aria-labelledby="loc-travel-h">
+    <header class="loc-block-head">
+      <h2 class="loc-block-h" id="loc-travel-h">Getting together</h2>
+    </header>
+    <p class="loc-travel-p">
+      From the shop in Bandon, {town.name} is {town.driveFromBandon}. The first consult is
+      a free 30-minute video call, no pitch deck. Most of a build happens remotely, and I
+      come to {town.name} in person when the project earns the trip.
+    </p>
+  </section>
+
+  {neighborLinks.length > 0 && (
+    <>
+      <Divider label="07" />
+      <RelatedLinks
+        id="loc-neighbors"
+        title="Nearby towns I serve"
+        links={neighborLinks}
+      />
+    </>
+  )}
+
+  <Divider label="08" />
+
+  <Contact sectionNumber="08" centered suppressHeader />
+</BaseLayout>
+
+<style>
+  .loc-intro {
+    padding: 24px 4px 8px;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  @media (min-width: 768px) { .loc-intro { padding: 36px 4px 12px; } }
+  .loc-lead {
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 1.7;
+    color: var(--color-ash-300);
+    margin: 0 0 16px;
+    max-width: 62ch;
+  }
+  @media (min-width: 768px) { .loc-lead { font-size: 17.5px; } }
+  .loc-lead :global(strong) { color: var(--color-ash-100); font-weight: 600; }
+  .loc-lead :global(em) {
+    color: var(--color-copper-bright);
+    font-style: italic;
+    font-family: var(--font-serif);
+  }
+  .loc-context {
+    font-family: var(--font-sans);
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--color-ash-300);
+    margin: 0;
+    max-width: 62ch;
+  }
+  @media (min-width: 768px) { .loc-context { font-size: 16px; } }
+  .loc-context :global(strong) { color: var(--color-ash-100); font-weight: 600; }
+
+  .loc-block {
+    padding: 32px 4px 24px;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  @media (min-width: 768px) { .loc-block { padding: 48px 4px 32px; } }
+  .loc-block-head { margin: 0 0 16px; }
+  .loc-block-h {
+    font-family: var(--font-serif);
+    font-size: 26px;
+    line-height: 1.15;
+    margin: 0 0 6px;
+    color: var(--color-ash-100);
+    font-weight: 600;
+  }
+  @media (min-width: 768px) { .loc-block-h { font-size: 34px; } }
+  @media (min-width: 1024px) { .loc-block-h { font-size: 40px; } }
+  .loc-block-sub {
+    font-family: var(--font-sans);
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--color-ash-400);
+    margin: 0;
+    max-width: 560px;
+  }
+  @media (min-width: 768px) { .loc-block-sub { font-size: 15px; } }
+
+  .loc-industries {
+    list-style: none;
+    padding: 0;
+    margin: 18px 0 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 6px;
+    font-family: var(--font-sans);
+    font-size: 14px;
+    color: var(--color-ash-300);
+    text-transform: capitalize;
+  }
+  @media (min-width: 768px) {
+    .loc-industries { grid-template-columns: repeat(2, 1fr); column-gap: 32px; row-gap: 8px; font-size: 15px; }
+  }
+  .loc-industries li {
+    padding: 4px 0 4px 16px;
+    position: relative;
+  }
+  .loc-industries li::before {
+    content: "·";
+    position: absolute;
+    left: 3px;
+    top: 2px;
+    color: var(--color-copper);
+    font-weight: 700;
+  }
+
+  .loc-audit-p, .loc-travel-p {
+    font-family: var(--font-sans);
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--color-ash-300);
+    margin: 0 0 14px;
+    max-width: 62ch;
+  }
+  @media (min-width: 768px) { .loc-audit-p, .loc-travel-p { font-size: 16px; } }
+  .loc-audit-p strong { color: var(--color-ash-100); font-weight: 600; }
+  .loc-link {
+    color: var(--color-wc-green);
+    text-decoration: underline;
+    text-decoration-color: rgba(77, 216, 168, 0.4);
+    text-underline-offset: 3px;
+  }
+
+  /* FAQ accordion, mirrors the site pattern */
+  .loc-faq {
+    padding: 32px 4px 24px;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  @media (min-width: 768px) { .loc-faq { padding: 48px 4px 32px; } }
+  .loc-faq-list { margin: 18px 0 0; display: grid; gap: 8px; }
+  .loc-faq-item {
+    background: var(--color-bg-card);
+    border: 1px solid var(--copper-hairline);
+    border-radius: var(--radius-card, 10px);
+    overflow: hidden;
+  }
+  .loc-faq-item[open] { border-color: var(--copper-dim, rgba(240, 160, 110, 0.5)); }
+  .loc-faq-q {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 12px;
+    align-items: center;
+    padding: 14px 16px;
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+  }
+  .loc-faq-q::-webkit-details-marker { display: none; }
+  .loc-faq-q:hover, .loc-faq-q:focus-visible {
+    background-color: rgba(200, 128, 74, 0.04);
+    outline: none;
+  }
+  .loc-faq-q-text {
+    font-family: var(--font-sans);
+    font-size: 15px;
+    color: var(--color-ash-100);
+    font-weight: 600;
+    line-height: 1.35;
+  }
+  @media (min-width: 768px) { .loc-faq-q-text { font-size: 17px; } }
+  .loc-faq-toggle {
+    font-family: var(--font-mono);
+    font-size: 18px;
+    color: var(--color-copper);
+    width: 20px;
+    text-align: center;
+    transition: transform 0.15s ease;
+  }
+  .loc-faq-item[open] .loc-faq-toggle { transform: rotate(45deg); }
+  .loc-faq-a {
+    padding: 0 16px 16px 16px;
+    font-family: var(--font-sans);
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--color-ash-300);
+    border-top: 1px solid rgba(255, 255, 255, 0.04);
+  }
+  @media (min-width: 768px) { .loc-faq-a { font-size: 15px; } }
+  .loc-faq-a p { margin: 14px 0 0; }
+</style>

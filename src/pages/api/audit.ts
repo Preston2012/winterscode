@@ -515,7 +515,7 @@ function buildFindings(r: Omit<AuditResult, 'findings' | 'overall' | 'overallSou
       summary: 'No meta description.',
       detail:
         'The description is the snippet under the title in Google results. Without one, Google grabs random text from the page.',
-      fix: 'Add a <meta name="description"> tag with a 120–160 character pitch for the business.',
+      fix: 'Add a <meta name="description"> tag with a 120-160 character pitch for the business.',
     });
   }
 

@@ -31,12 +31,21 @@ interface Props {
   bgImage?: string;
   bgOpacity?: number;
   bgPosition?: string;
+  /** Showcase mode: prominent full-bleed photo with text in the photo's
+   *  dead space, a directional scrim, and a taller frame. Use bgPosition to
+   *  set the photo focal point so the subject stays in view. */
+  showcase?: boolean;
+  /** Which dead-space the text sits in: 'bottom' (default), 'top', or 'split'
+   *  (eyebrow + H1 at the top, sub at the bottom, photo clear in the middle).
+   *  Pick the edges of the photo that have empty sky/water/sand so the text
+   *  never covers the subject. */
+  textPos?: 'top' | 'bottom' | 'split';
 }
 
-const { eyebrow, h1, sub, sub2, sub3, showStamp = false, bgImage, bgOpacity = 0.3, bgPosition = 'center' } = Astro.props;
+const { eyebrow, h1, sub, sub2, sub3, showStamp = false, bgImage, bgOpacity = 0.3, bgPosition = 'center', showcase = false, textPos = 'bottom' } = Astro.props;
 ---
 
-<section class="page-hero" aria-labelledby="page-hero-h1">
+<section class:list={['page-hero', { showcase: showcase && bgImage, 'showcase-top': showcase && bgImage && textPos === 'top', 'showcase-split': showcase && bgImage && textPos === 'split' }]} aria-labelledby="page-hero-h1">
   {bgImage && (
     <div class="ph-wash" aria-hidden="true" style={`--ph-wash-opacity:${bgOpacity}; --ph-wash-pos:${bgPosition}`}>
       <img
@@ -180,4 +189,77 @@ const { eyebrow, h1, sub, sub2, sub3, showStamp = false, bgImage, bgOpacity = 0.
   .ph-wash img { width: 100%; height: 100%; object-fit: cover; object-position: var(--ph-wash-pos, center); opacity: var(--ph-wash-opacity, 0.08); display: block; }
   .ph-wash::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(10, 13, 12, 0.2), rgba(10, 13, 12, 0.54) 78%, rgba(10, 13, 12, 0.66)); }
   .ph-row, .ph-sub { position: relative; z-index: 1; }
+
+  /* ── Showcase mode: the photo IS the hero ──
+     A tight photo banner sized to its text, not a tall frame with a dead
+     sky band on top. Text is large and sits on a strong bottom scrim with a
+     text-shadow, so eyebrow, H1, and sub all read over any photo.
+     bgPosition sets the focal point so the subject stays in the visible slice. */
+  .page-hero.showcase {
+    min-height: 330px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 40px 20px 22px;
+    border-radius: 14px;
+    overflow: hidden;
+    margin-top: 6px;
+    isolation: isolate;
+  }
+  @media (min-width: 768px) {
+    .page-hero.showcase { min-height: 400px; padding: 52px 40px 32px; }
+  }
+  @media (min-width: 1024px) {
+    .page-hero.showcase { min-height: 460px; padding: 60px 56px 42px; }
+  }
+  .page-hero.showcase .ph-wash img { opacity: 1; }
+  /* Strong bottom scrim: the lower ~half is solidly dark for legible text,
+     the photo stays clear up top. */
+  .page-hero.showcase .ph-wash::after {
+    background:
+      linear-gradient(to top, rgba(8, 11, 10, 0.97) 0%, rgba(8, 11, 10, 0.9) 26%, rgba(8, 11, 10, 0.62) 48%, rgba(8, 11, 10, 0.26) 72%, rgba(8, 11, 10, 0.34) 100%),
+      linear-gradient(to right, rgba(8, 11, 10, 0.5), rgba(8, 11, 10, 0) 62%);
+  }
+  /* Showcase text: larger + brighter so the words command the frame. */
+  .page-hero.showcase .ph-eyebrow { margin-bottom: 12px; }
+  .page-hero.showcase .ph-eyebrow .text {
+    color: var(--color-copper-bright);
+    text-shadow: 0 1px 10px rgba(0, 0, 0, 0.55);
+  }
+  .page-hero.showcase .ph-h1 {
+    font-size: 37px;
+    line-height: 1.06;
+    max-width: 17ch;
+    text-shadow: 0 2px 20px rgba(0, 0, 0, 0.5);
+  }
+  @media (min-width: 768px) {
+    .page-hero.showcase .ph-h1 { font-size: 54px; max-width: 16ch; }
+  }
+  @media (min-width: 1024px) {
+    .page-hero.showcase .ph-h1 { font-size: 64px; max-width: 17ch; }
+  }
+  .page-hero.showcase .ph-sub {
+    max-width: 600px;
+    color: var(--color-ash-100);
+    text-shadow: 0 1px 14px rgba(0, 0, 0, 0.6);
+  }
+  .page-hero.showcase .ph-sub em { color: #fff; }
+
+  /* Text in the TOP dead-space (for photos whose subject sits low and whose
+     sky/empty area is up top). Flip the anchor and the scrim direction. */
+  .page-hero.showcase-top { justify-content: flex-start; }
+  .page-hero.showcase-top .ph-wash::after {
+    background:
+      linear-gradient(to bottom, rgba(8, 11, 10, 0.97) 0%, rgba(8, 11, 10, 0.9) 26%, rgba(8, 11, 10, 0.62) 48%, rgba(8, 11, 10, 0.26) 72%, rgba(8, 11, 10, 0.34) 100%),
+      linear-gradient(to right, rgba(8, 11, 10, 0.5), rgba(8, 11, 10, 0) 62%);
+  }
+
+  /* Split: eyebrow + H1 at the top, sub at the bottom, photo clear in the
+     middle. Scrim is dark at both ends and clears through the centre. */
+  .page-hero.showcase-split { justify-content: space-between; }
+  .page-hero.showcase-split .ph-wash::after {
+    background:
+      linear-gradient(to bottom, rgba(8, 11, 10, 0.95) 0%, rgba(8, 11, 10, 0.66) 20%, rgba(8, 11, 10, 0.14) 40%, rgba(8, 11, 10, 0.14) 60%, rgba(8, 11, 10, 0.66) 82%, rgba(8, 11, 10, 0.95) 100%),
+      linear-gradient(to right, rgba(8, 11, 10, 0.4), rgba(8, 11, 10, 0) 65%);
+  }
 </style>

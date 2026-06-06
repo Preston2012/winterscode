@@ -1,0 +1,58 @@
+---
+import ServiceLayout from '../components/templates/ServiceLayout.astro';
+import type { ServiceEntry } from '../lib/business';
+const service: ServiceEntry = {
+  slug: 'web-design-for-real-estate',
+  name: 'Web Design for Real Estate',
+  shortLabel: 'For Real Estate',
+  blurb: 'Websites for Oregon coast real estate agents and brokers.',
+  serviceType: 'Web design for real estate',
+};
+---
+<ServiceLayout
+  service={service}
+  path="/web-design-for-real-estate"
+  breadcrumb={[
+    { name: 'Home', path: '/' },
+    { name: 'Web Design for Real Estate', path: '/web-design-for-real-estate' },
+  ]}
+  title="Web Design for Real Estate · Oregon Coast · Winters Code"
+  description="Websites for Oregon coast real estate agents and brokers. Fast, image-heavy listing pages, lead capture, and local search that wins coastal buyers."
+  eyebrow="Industries · Real Estate"
+  h1="Real estate sites that load fast."
+  sub="Image-heavy listings that still load in under a second, lead capture that works, and local search tuned for coastal buyers."
+  bgImage="/photo/local/scenes/coast-overlook"
+  showcase
+  heroFocal="center 50%"
+  heroTextPos="top"
+  intro={[
+    "Real estate is the hardest kind of site to keep fast, because it is all photos. Buyers researching the Oregon coast scroll listings on their phones from out of the area, and if the gallery crawls, they bounce. The whole craft is heavy imagery that still loads instantly.",
+    "That is exactly what custom code is good at: optimized, responsive images that look sharp and load quick, paired with the local search work that puts your listings in front of the right buyers.",
+  ]}
+  includesTitle="What a real estate site needs"
+  includes={[
+    { h: 'Fast listing galleries', body: 'High-resolution photos, optimized and lazy-loaded, so a 30-image listing still loads in a snap on mobile.' },
+    { h: 'Search and filter', body: 'Buyers narrow by price, area, and type without waiting on a clunky third-party widget.' },
+    { h: 'Map and area pages', body: 'Coastal towns and neighborhoods as real pages, so you rank for the place buyers are searching.' },
+    { h: 'Lead capture', body: 'Inquiry and showing-request forms that route straight to you, with the context to follow up fast.' },
+    { h: 'Agent branding', body: 'A site that looks like you, not a franchise template every other agent in town also uses.' },
+    { h: 'Owned and current', body: 'You own the site, and updates are a text away. No platform rent, no stale listings.' },
+  ]}
+  whyTitle="Why custom beats the franchise template"
+  why={[
+    "Most agents get a templated site from their brokerage or a national vendor. It looks like everyone else’s and scores like everyone else’s. In my audit of 169 Coos County sites, the rented platforms averaged a <strong>D, an F, and a C</strong> on mobile speed, which on an image-heavy real estate site is fatal.",
+    "A custom site is faster, ranks for your specific coastal markets, and represents you as an individual agent. <em>It is yours, and it is built to sell.</em>",
+  ]}
+  faq={[
+    { q: 'Can it pull MLS or IDX listings?', a: 'Yes, IDX and listing feeds can be integrated. We scope which feed and how it should display so it stays fast, since a poorly built IDX embed is the most common reason agent sites are slow.' },
+    { q: 'My photos are huge. Will the site be slow?', a: 'No. Handling large photography without slowing the page is the core skill here. I optimize and serve images responsively so a heavy gallery still loads in well under a second on mobile.' },
+    { q: 'Can buyers search by area?', a: 'Yes. Search and filter plus dedicated coastal-town pages help buyers find listings and help you rank for the places they are searching, like Bandon or Gold Beach.' },
+    { q: 'Will it look different from other agents in town?', a: 'That is the point. A custom site is built around your brand and your market, not stamped from the same franchise template everyone else uses.' },
+  ]}
+  relatedTitle="Related"
+  relatedLinks={[
+    { href: '/services/web-design', label: 'Web Design', sub: 'The full service' },
+    { href: '/services/seo-performance', label: 'SEO & Performance', sub: 'Win local search' },
+    { href: '/web-design-bandon', label: 'Web Design in Bandon', sub: 'Local work' },
+  ]}
+/>
