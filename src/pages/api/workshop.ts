@@ -685,12 +685,29 @@ export const GET: APIRoute = async ({ locals }) => {
     updated_at: new Date().toISOString(),
   };
 
+  // Conditional caching. A response is only cacheable at the normal TTL when
+  // every upstream returned real data (live or KV-cached). If ANY source
+  // dropped to the static 'fallback' stub, we must NOT let that degraded
+  // response stick in the browser or edge cache, or repeat visitors keep
+  // seeing 'fallback' for the full 15min s-maxage until it expires. A degraded
+  // response gets no-store so the very next request re-attempts the upstreams.
+  const sources = [
+    deploys.source,
+    lighthouse.source,
+    security.source,
+    calendar.source,
+    engine.source,
+  ];
+  const anyFallback = sources.indexOf('fallback') !== -1;
+  const cacheControl = anyFallback
+    ? 'no-store'
+    : 'public, max-age=300, s-maxage=900';
+
   return new Response(JSON.stringify(data), {
     status: 200,
     headers: {
       'Content-Type': 'application/json',
-      // Cache 15 minutes at the edge, 5 minutes in browser.
-      'Cache-Control': 'public, max-age=300, s-maxage=900',
+      'Cache-Control': cacheControl,
       'Access-Control-Allow-Origin': '*',
     },
   });

@@ -84,6 +84,19 @@ const neighborLinks = town.neighbors
     sub: t.county,
   }));
 
+// Service-in-this-town combo pages that actually exist, surfaced as internal
+// links so the combo pages are reachable (not orphan/search-only) and the town
+// page gains a relevant cross-link. Driven by town.combos, which is kept in sync
+// with the real combo page files.
+const comboLinks = (town.combos ?? [])
+  .map((slug) => services.find((sv) => sv.slug === slug))
+  .filter((sv): sv is ServiceEntry => !!sv)
+  .map((sv) => ({
+    href: `/${sv.slug}-${town.slug}`,
+    label: `${sv.name} in ${town.name}`,
+    sub: `for ${town.name} businesses`,
+  }));
+
 const serviceLd = serviceSchema({
   name: `${service.name} in ${town.name}, Oregon`,
   serviceType: service.serviceType,
@@ -137,10 +150,33 @@ const faqLd = town.faq.length ? faqSchema(town.faq) : null;
       <h2 class="loc-block-h" id="loc-ind-h">Built for {town.name}'s businesses</h2>
       <p class="loc-block-sub">The trades and industries that drive {town.name}, and the kind of work each one needs online.</p>
     </header>
-    <ul class="loc-industries">
-      {town.industries.map((ind) => <li>{ind}</li>)}
-    </ul>
+    {town.industriesDetail && town.industriesDetail.length > 0 ? (
+      <dl class="loc-industries-detail">
+        {town.industriesDetail.map((ind) => (
+          <div class="loc-ind-row">
+            <dt class="loc-ind-name">{ind.name}</dt>
+            <dd class="loc-ind-note" set:html={ind.note} />
+          </div>
+        ))}
+      </dl>
+    ) : (
+      <ul class="loc-industries">
+        {town.industries.map((ind) => <li>{ind}</li>)}
+      </ul>
+    )}
   </section>
+
+  {town.localAngle && (
+    <>
+      <Divider label="02b" />
+      <section class="loc-block loc-angle" aria-labelledby="loc-angle-h">
+        <header class="loc-block-head">
+          <h2 class="loc-block-h" id="loc-angle-h">{town.localAngle.heading}</h2>
+        </header>
+        <p class="loc-angle-p" set:html={town.localAngle.body} />
+      </section>
+    </>
+  )}
 
   {showAuditHook && (
     <>
@@ -149,12 +185,16 @@ const faqLd = town.faq.length ? faqSchema(town.faq) : null;
         <header class="loc-block-head">
           <h2 class="loc-block-h" id="loc-audit-h">Why this matters here</h2>
         </header>
-        <p class="loc-audit-p">
-          I audited <strong>169 Coos County small-business websites</strong> with Google
-          Lighthouse and Mozilla Observatory. The average mobile speed score was
-          <strong> 61 out of 100</strong>, and not one site scored both fast and secure.
-          Most are rented from a template platform and pay for it in speed.
-        </p>
+        {town.auditNote ? (
+          <p class="loc-audit-p" set:html={town.auditNote} />
+        ) : (
+          <p class="loc-audit-p">
+            I audited <strong>169 Coos County small-business websites</strong> with Google
+            Lighthouse and Mozilla Observatory. The average mobile speed score was
+            <strong> 61 out of 100</strong>, and not one site scored both fast and secure.
+            Most are rented from a template platform and pay for it in speed.
+          </p>
+        )}
         <p class="loc-audit-p">
           In a market where almost no one has done the work, doing it well wins.
           A fast, custom site can outrank the rented sites around {town.name} and turn
@@ -209,6 +249,18 @@ const faqLd = town.faq.length ? faqSchema(town.faq) : null;
     </p>
   </section>
 
+  {comboLinks.length > 0 && (
+    <>
+      <Divider label="06b" />
+      <RelatedLinks
+        id="loc-combos"
+        title={`Other services in ${town.name}`}
+        intro={`Apps and automation built for ${town.name} businesses, not just sites.`}
+        links={comboLinks}
+      />
+    </>
+  )}
+
   {neighborLinks.length > 0 && (
     <>
       <Divider label="07" />
@@ -231,7 +283,7 @@ const faqLd = town.faq.length ? faqSchema(town.faq) : null;
     max-width: 720px;
     margin: 0 auto;
   }
-  @media (min-width: 768px) { .loc-intro { padding: 36px 4px 12px; } }
+  @media (min-width: 740px) { .loc-intro { padding: 36px 4px 12px; } }
   .loc-lead {
     font-family: var(--font-sans);
     font-size: 16px;
@@ -240,7 +292,7 @@ const faqLd = town.faq.length ? faqSchema(town.faq) : null;
     margin: 0 0 16px;
     max-width: 62ch;
   }
-  @media (min-width: 768px) { .loc-lead { font-size: 17.5px; } }
+  @media (min-width: 740px) { .loc-lead { font-size: 17.5px; } }
   .loc-lead :global(strong) { color: var(--color-ash-100); font-weight: 600; }
   .loc-lead :global(em) {
     color: var(--color-copper-bright);
@@ -255,7 +307,7 @@ const faqLd = town.faq.length ? faqSchema(town.faq) : null;
     margin: 0;
     max-width: 62ch;
   }
-  @media (min-width: 768px) { .loc-context { font-size: 16px; } }
+  @media (min-width: 740px) { .loc-context { font-size: 16px; } }
   .loc-context :global(strong) { color: var(--color-ash-100); font-weight: 600; }
 
   .loc-block {
@@ -263,7 +315,7 @@ const faqLd = town.faq.length ? faqSchema(town.faq) : null;
     max-width: 720px;
     margin: 0 auto;
   }
-  @media (min-width: 768px) { .loc-block { padding: 48px 4px 32px; } }
+  @media (min-width: 740px) { .loc-block { padding: 48px 4px 32px; } }
   .loc-block-head { margin: 0 0 16px; }
   .loc-block-h {
     font-family: var(--font-serif);
@@ -273,7 +325,7 @@ const faqLd = town.faq.length ? faqSchema(town.faq) : null;
     color: var(--color-ash-100);
     font-weight: 600;
   }
-  @media (min-width: 768px) { .loc-block-h { font-size: 34px; } }
+  @media (min-width: 740px) { .loc-block-h { font-size: 34px; } }
   @media (min-width: 1024px) { .loc-block-h { font-size: 40px; } }
   .loc-block-sub {
     font-family: var(--font-sans);
@@ -283,7 +335,7 @@ const faqLd = town.faq.length ? faqSchema(town.faq) : null;
     margin: 0;
     max-width: 560px;
   }
-  @media (min-width: 768px) { .loc-block-sub { font-size: 15px; } }
+  @media (min-width: 740px) { .loc-block-sub { font-size: 15px; } }
 
   .loc-industries {
     list-style: none;
@@ -297,7 +349,7 @@ const faqLd = town.faq.length ? faqSchema(town.faq) : null;
     color: var(--color-ash-300);
     text-transform: capitalize;
   }
-  @media (min-width: 768px) {
+  @media (min-width: 740px) {
     .loc-industries { grid-template-columns: repeat(2, 1fr); column-gap: 32px; row-gap: 8px; font-size: 15px; }
   }
   .loc-industries li {
@@ -313,6 +365,51 @@ const faqLd = town.faq.length ? faqSchema(town.faq) : null;
     font-weight: 700;
   }
 
+  /* Per-industry detail list (industriesDetail) */
+  .loc-industries-detail {
+    margin: 20px 0 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+  @media (min-width: 740px) {
+    .loc-industries-detail { grid-template-columns: repeat(2, 1fr); column-gap: 36px; row-gap: 22px; }
+  }
+  .loc-ind-row {
+    border-left: 2px solid var(--copper-hairline);
+    padding: 2px 0 2px 14px;
+  }
+  .loc-ind-name {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-copper-bright);
+    margin: 0 0 5px;
+  }
+  @media (min-width: 740px) { .loc-ind-name { font-size: 13px; } }
+  .loc-ind-note {
+    font-family: var(--font-sans);
+    font-size: 14.5px;
+    line-height: 1.6;
+    color: var(--color-ash-300);
+    margin: 0;
+  }
+  @media (min-width: 740px) { .loc-ind-note { font-size: 15px; } }
+
+  /* Local-angle section (localAngle) */
+  .loc-angle { }
+  .loc-angle-p {
+    font-family: var(--font-sans);
+    font-size: 15.5px;
+    line-height: 1.7;
+    color: var(--color-ash-300);
+    margin: 16px 0 0;
+    max-width: 64ch;
+  }
+  @media (min-width: 740px) { .loc-angle-p { font-size: 16.5px; } }
+  .loc-angle-p :global(strong) { color: var(--color-ash-100); font-weight: 600; }
+
   .loc-audit-p, .loc-travel-p {
     font-family: var(--font-sans);
     font-size: 15px;
@@ -321,7 +418,7 @@ const faqLd = town.faq.length ? faqSchema(town.faq) : null;
     margin: 0 0 14px;
     max-width: 62ch;
   }
-  @media (min-width: 768px) { .loc-audit-p, .loc-travel-p { font-size: 16px; } }
+  @media (min-width: 740px) { .loc-audit-p, .loc-travel-p { font-size: 16px; } }
   .loc-audit-p strong { color: var(--color-ash-100); font-weight: 600; }
   .loc-link {
     color: var(--color-wc-green);
@@ -336,7 +433,7 @@ const faqLd = town.faq.length ? faqSchema(town.faq) : null;
     max-width: 720px;
     margin: 0 auto;
   }
-  @media (min-width: 768px) { .loc-faq { padding: 48px 4px 32px; } }
+  @media (min-width: 740px) { .loc-faq { padding: 48px 4px 32px; } }
   .loc-faq-list { margin: 18px 0 0; display: grid; gap: 8px; }
   .loc-faq-item {
     background: var(--color-bg-card);
@@ -367,7 +464,7 @@ const faqLd = town.faq.length ? faqSchema(town.faq) : null;
     font-weight: 600;
     line-height: 1.35;
   }
-  @media (min-width: 768px) { .loc-faq-q-text { font-size: 17px; } }
+  @media (min-width: 740px) { .loc-faq-q-text { font-size: 17px; } }
   .loc-faq-toggle {
     font-family: var(--font-mono);
     font-size: 18px;
@@ -385,6 +482,6 @@ const faqLd = town.faq.length ? faqSchema(town.faq) : null;
     color: var(--color-ash-300);
     border-top: 1px solid rgba(255, 255, 255, 0.04);
   }
-  @media (min-width: 768px) { .loc-faq-a { font-size: 15px; } }
+  @media (min-width: 740px) { .loc-faq-a { font-size: 15px; } }
   .loc-faq-a p { margin: 14px 0 0; }
 </style>

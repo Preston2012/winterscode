@@ -149,7 +149,7 @@ const faqLd = faq.length ? faqSchema(faq) : null;
         <img
           src={figure.src}
           srcset={figure.srcLarge ? `${figure.src} 800w, ${figure.srcLarge} 1200w` : undefined}
-          sizes="(min-width: 768px) 680px, 100vw"
+          sizes="(min-width: 740px) 680px, 100vw"
           alt={figure.alt}
           width={figure.width}
           height={figure.height}
@@ -230,7 +230,7 @@ const faqLd = faq.length ? faqSchema(faq) : null;
     max-width: 720px;
     margin: 0 auto;
   }
-  @media (min-width: 768px) { .svc-intro { padding: 36px 4px 12px; } }
+  @media (min-width: 740px) { .svc-intro { padding: 36px 4px 12px; } }
   .svc-lead {
     font-family: var(--font-sans);
     font-size: 16px;
@@ -239,7 +239,7 @@ const faqLd = faq.length ? faqSchema(faq) : null;
     margin: 0 0 16px;
     max-width: 62ch;
   }
-  @media (min-width: 768px) { .svc-lead { font-size: 17.5px; } }
+  @media (min-width: 740px) { .svc-lead { font-size: 17.5px; } }
   .svc-lead :global(strong) { color: var(--color-ash-100); font-weight: 600; }
   .svc-lead :global(a) {
     color: var(--color-wc-green);
@@ -288,7 +288,7 @@ const faqLd = faq.length ? faqSchema(faq) : null;
     max-width: 960px;
     margin: 0 auto;
   }
-  @media (min-width: 768px) { .svc-block { padding: 48px 4px 32px; } }
+  @media (min-width: 740px) { .svc-block { padding: 48px 4px 32px; } }
   .svc-block-head { margin: 0 0 18px; }
   .svc-block-h {
     font-family: var(--font-serif);
@@ -298,7 +298,7 @@ const faqLd = faq.length ? faqSchema(faq) : null;
     color: var(--color-ash-100);
     font-weight: 600;
   }
-  @media (min-width: 768px) { .svc-block-h { font-size: 36px; } }
+  @media (min-width: 740px) { .svc-block-h { font-size: 36px; } }
   @media (min-width: 1024px) { .svc-block-h { font-size: 42px; } }
 
   .svc-grid {
@@ -307,7 +307,7 @@ const faqLd = faq.length ? faqSchema(faq) : null;
     gap: 14px;
     margin: 18px 0 0;
   }
-  @media (min-width: 768px) { .svc-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; } }
+  @media (min-width: 740px) { .svc-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; } }
   @media (min-width: 1024px) { .svc-grid { grid-template-columns: repeat(3, 1fr); } }
   .svc-card {
     background: var(--color-bg-card);
@@ -322,7 +322,7 @@ const faqLd = faq.length ? faqSchema(faq) : null;
     color: var(--color-ash-100);
     font-weight: 600;
   }
-  @media (min-width: 768px) { .svc-card-h { font-size: 21px; } }
+  @media (min-width: 740px) { .svc-card-h { font-size: 21px; } }
   .svc-card-body {
     font-family: var(--font-sans);
     font-size: 14px;
@@ -330,7 +330,7 @@ const faqLd = faq.length ? faqSchema(faq) : null;
     color: var(--color-ash-300);
     margin: 0;
   }
-  @media (min-width: 768px) { .svc-card-body { font-size: 14.5px; } }
+  @media (min-width: 740px) { .svc-card-body { font-size: 14.5px; } }
   .svc-card-body :global(strong) { color: var(--color-ash-100); }
 
   .svc-why { max-width: 720px; }
@@ -342,7 +342,7 @@ const faqLd = faq.length ? faqSchema(faq) : null;
     margin: 0 0 16px;
     max-width: 62ch;
   }
-  @media (min-width: 768px) { .svc-why-p { font-size: 16px; } }
+  @media (min-width: 740px) { .svc-why-p { font-size: 16px; } }
   .svc-why-p :global(strong) { color: var(--color-ash-100); font-weight: 600; }
   .svc-why-p :global(em) {
     color: var(--color-copper-bright);
@@ -356,7 +356,7 @@ const faqLd = faq.length ? faqSchema(faq) : null;
     max-width: 720px;
     margin: 0 auto;
   }
-  @media (min-width: 768px) { .svc-faq { padding: 48px 4px 32px; } }
+  @media (min-width: 740px) { .svc-faq { padding: 48px 4px 32px; } }
   .svc-faq-list { margin: 18px 0 0; display: grid; gap: 8px; }
   .svc-faq-item {
     background: var(--color-bg-card);
@@ -387,7 +387,7 @@ const faqLd = faq.length ? faqSchema(faq) : null;
     font-weight: 600;
     line-height: 1.35;
   }
-  @media (min-width: 768px) { .svc-faq-q-text { font-size: 17px; } }
+  @media (min-width: 740px) { .svc-faq-q-text { font-size: 17px; } }
   .svc-faq-toggle {
     font-family: var(--font-mono);
     font-size: 18px;
@@ -405,7 +405,7 @@ const faqLd = faq.length ? faqSchema(faq) : null;
     color: var(--color-ash-300);
     border-top: 1px solid rgba(255, 255, 255, 0.04);
   }
-  @media (min-width: 768px) { .svc-faq-a { font-size: 15px; } }
+  @media (min-width: 740px) { .svc-faq-a { font-size: 15px; } }
   .svc-faq-a p { margin: 14px 0 0; }
   .svc-faq-a :global(strong) { color: var(--color-ash-100); }
   .svc-faq-a :global(em) { color: var(--color-copper-bright); font-style: italic; }

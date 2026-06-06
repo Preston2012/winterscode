@@ -273,7 +273,7 @@ const WORKSHOP_PREVIEW = [
   // Live data fetch from /api/workshop for trust tooltips + Workshop preview.
   // Falls back to baked-in last-known-good silently.
   (function () {
-    fetch('/api/workshop', { signal: AbortSignal.timeout(4000) })
+    fetch('/api/workshop', { signal: AbortSignal.timeout(8000) })
       .then(function (r) { return r.ok ? r.json() : null; })
       .then(function (d) {
         if (!d) return;
@@ -342,7 +342,7 @@ const WORKSHOP_PREVIEW = [
     padding: 36px 4px 28px;
     position: relative;
   }
-  @media (min-width: 768px) {
+  @media (min-width: 740px) {
     /* Reserve right-side space on tablet so the 110px stamp doesn't
        overlap the H1. The stamp is fixed top-right inside .hero, so
        hero-text needs its own right-pad on this breakpoint only. */
@@ -405,7 +405,7 @@ const WORKSHOP_PREVIEW = [
     color: var(--color-ash-300);
   }
   .desktop-break { display: none; }
-  @media (min-width: 768px) {
+  @media (min-width: 740px) {
     .hero-h1 {
       font-size: 44px;
       line-height: 1.08;
@@ -437,7 +437,7 @@ const WORKSHOP_PREVIEW = [
     font-family: var(--font-serif);
     font-weight: 500;
   }
-  @media (min-width: 768px) {
+  @media (min-width: 740px) {
     .hero-sub { font-size: 15px; margin-top: 20px; }
   }
   @media (min-width: 1024px) {
@@ -459,7 +459,7 @@ const WORKSHOP_PREVIEW = [
     font-weight: 400;
     letter-spacing: 0;
   }
-  @media (min-width: 768px) {
+  @media (min-width: 740px) {
     .hero-morph-line { font-size: 14px; }
   }
   @media (min-width: 1024px) {
@@ -492,7 +492,7 @@ const WORKSHOP_PREVIEW = [
     gap: 8px;
     margin-top: 26px;
   }
-  @media (min-width: 768px) {
+  @media (min-width: 740px) {
     .hero-cta {
       gap: 12px;
       max-width: 480px;
@@ -537,7 +537,7 @@ const WORKSHOP_PREVIEW = [
     border-color: var(--color-copper);
     color: var(--color-copper-bright);
   }
-  @media (min-width: 768px) {
+  @media (min-width: 740px) {
     :global(.btn) { padding: 15px 22px; font-size: 15px; }
   }
 
@@ -550,7 +550,7 @@ const WORKSHOP_PREVIEW = [
     padding-top: 18px;
     border-top: 1px solid rgba(255, 255, 255, 0.05);
   }
-  @media (min-width: 768px) {
+  @media (min-width: 740px) {
     .hero-trust { gap: 12px 22px; margin-top: 32px; padding-top: 24px; }
   }
   .trust-item {
@@ -566,7 +566,7 @@ const WORKSHOP_PREVIEW = [
     border-bottom: 1px dashed rgba(255, 255, 255, 0.08);
     padding-bottom: 1px;
   }
-  @media (min-width: 768px) {
+  @media (min-width: 740px) {
     .trust-item { font-size: 13px; }
   }
   .trust-item .dot {
@@ -659,7 +659,7 @@ const WORKSHOP_PREVIEW = [
     transform: scale(calc(64 / 140));
     transform-origin: top right;
   }
-  @media (min-width: 768px) {
+  @media (min-width: 740px) {
     .hero-mark {
       top: 20px;
       right: 14px;

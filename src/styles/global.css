@@ -192,23 +192,34 @@ body::after {
 
 /* ─────────────────────────────────────────────────────────────
    RESPONSIVE PAGE CONTAINER
-   mobile  ≤767px : 440px max, 16px padding
-   tablet  ≥768px : 720px max, 24px padding
-   desktop ≥1024px: 1200px max, 40px padding
+   mobile  <740px  : fluid min(92vw, 720px), 16px padding
+   tablet  >=740px : fluid min(92vw, 960px), 24px padding (catches 744px iPad mini)
+   desktop >=1024px: 1200px max, 40px padding
    ───────────────────────────────────────────────────────────── */
 html { scroll-padding-top: 80px; }
 
 .page {
-  max-width: 440px;
+  /* Fluid at all widths below desktop. The old fixed 440px cap meant any
+     viewport wider than 440px (large phones AND iPad mini portrait, which
+     reports 744px, below the 768px tablet breakpoint) rendered as a narrow
+     440px column with large dead side margins. Fill the viewport minus a
+     reading margin instead, with a sane ceiling so a wide phone/small tablet
+     never overruns before the tablet/desktop rules take over. */
+  width: 100%;
+  max-width: min(92vw, 720px);
   margin: 0 auto;
   padding: 0 16px 80px;
   position: relative;
   z-index: 2;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 700px) {
   .page {
-    max-width: 720px;
+    /* iPad mini portrait (744px CSS px) and up: fill the viewport up to a
+       960px ceiling, then hand off to the desktop grid at 1024px. Breakpoint
+       lowered from 768 to 700 so modern iPad minis (744px) get tablet width,
+       not the phone treatment. */
+    max-width: min(92vw, 960px);
     padding: 0 24px 100px;
   }
 }
@@ -229,7 +240,7 @@ main.page {
   padding-bottom: 16px;
   z-index: 3;
 }
-@media (min-width: 768px) {
+@media (min-width: 740px) {
   main.page { padding-bottom: 20px; }
 }
 @media (min-width: 1024px) {
@@ -317,7 +328,7 @@ main.page {
   }
 }
 
-@media (min-width: 768px) {
+@media (min-width: 740px) {
   :root {
     --fs-h1: 56px;
     --fs-h2: 32px;
@@ -446,4 +457,4 @@ main.page {
 .btn-primary:hover { background: var(--color-wc-green-bright); transform: translateY(-1px); }
 .btn-secondary { background: transparent; color: var(--color-ash-100); border-color: var(--copper-hairline); }
 .btn-secondary:hover { border-color: var(--color-copper); color: var(--color-copper-bright); }
-@media (min-width: 768px) { .btn { padding: 15px 22px; font-size: 15px; } }
+@media (min-width: 740px) { .btn { padding: 15px 22px; font-size: 15px; } }

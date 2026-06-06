@@ -108,7 +108,7 @@ const CARDS: WorkCard[] = [
                   <source
                     type="image/webp"
                     srcset={`${card.image.srcXSmall ? card.image.srcXSmall + " 480w, " : ""}${card.image.srcSmall} 720w, ${card.image.src} 1280w`}
-                    sizes="(min-width: 1024px) 320px, (min-width: 768px) 50vw, 100vw"
+                    sizes="(min-width: 1024px) 320px, (min-width: 740px) 50vw, 100vw"
                   />
                 )}
                 <img
@@ -148,7 +148,7 @@ const CARDS: WorkCard[] = [
     max-width: 720px;
     margin: 0 auto;
   }
-  @media (min-width: 768px) {
+  @media (min-width: 740px) {
     .selected { padding: 56px 4px 64px; max-width: 860px; }
   }
   @media (min-width: 1024px) {
@@ -208,7 +208,7 @@ const CARDS: WorkCard[] = [
     display: grid;
     gap: 16px;
   }
-  @media (min-width: 768px) {
+  @media (min-width: 740px) {
     .selected-grid {
       grid-template-columns: 1fr 1fr;
       gap: 20px;

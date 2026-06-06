@@ -36,7 +36,7 @@ import Contact from '../components/sections/Contact.astro';
             /photo/preston-840.webp 840w,
             /photo/preston-1120.webp 1120w
           "
-          sizes="(min-width: 1024px) 380px, (min-width: 768px) 300px, 100vw"
+          sizes="(min-width: 1024px) 380px, (min-width: 740px) 300px, 100vw"
         />
         <img
           src="/photo/preston-840.webp"
@@ -246,7 +246,7 @@ import Contact from '../components/sections/Contact.astro';
     max-width: 760px;
     margin: 0 auto;
   }
-  @media (min-width: 768px) {
+  @media (min-width: 740px) {
     .ab-block { padding: 48px 4px 32px; }
   }
   .ab-block-head { margin: 0 0 18px; }
@@ -258,7 +258,7 @@ import Contact from '../components/sections/Contact.astro';
     margin: 0 0 6px;
     font-weight: 600;
   }
-  @media (min-width: 768px) { .ab-block-h { font-size: 36px; } }
+  @media (min-width: 740px) { .ab-block-h { font-size: 36px; } }
   @media (min-width: 1024px) { .ab-block-h { font-size: 42px; } }
   .ab-block-sub {
     font-family: var(--font-sans);
@@ -266,7 +266,7 @@ import Contact from '../components/sections/Contact.astro';
     color: var(--color-ash-400);
     margin: 0;
   }
-  @media (min-width: 768px) { .ab-block-sub { font-size: 15px; } }
+  @media (min-width: 740px) { .ab-block-sub { font-size: 15px; } }
 
   /* ─── Section 01: photo + prose ─── */
   .ab-story {
@@ -278,7 +278,7 @@ import Contact from '../components/sections/Contact.astro';
     margin: 0 auto;
     align-items: start;
   }
-  @media (min-width: 768px) {
+  @media (min-width: 740px) {
     .ab-story { grid-template-columns: 260px 1fr; gap: 32px; padding: 40px 4px 24px; }
   }
   @media (min-width: 1024px) {
@@ -290,7 +290,7 @@ import Contact from '../components/sections/Contact.astro';
     max-width: 380px;
     justify-self: center;
   }
-  @media (min-width: 768px) { .ab-photo { justify-self: start; } }
+  @media (min-width: 740px) { .ab-photo { justify-self: start; } }
   .ab-photo-img {
     width: 100%;
     height: auto;
@@ -306,7 +306,7 @@ import Contact from '../components/sections/Contact.astro';
     margin: 10px 0 0;
     letter-spacing: 0.02em;
   }
-  @media (min-width: 768px) { .ab-photo-cap { font-size: 12px; } }
+  @media (min-width: 740px) { .ab-photo-cap { font-size: 12px; } }
 
   .ab-prose { min-width: 0; }
   .ab-story-h {
@@ -317,7 +317,7 @@ import Contact from '../components/sections/Contact.astro';
     margin: 0 0 16px;
     font-weight: 600;
   }
-  @media (min-width: 768px) { .ab-story-h { font-size: 28px; } }
+  @media (min-width: 740px) { .ab-story-h { font-size: 28px; } }
   @media (min-width: 1024px) { .ab-story-h { font-size: 32px; } }
 
   .ab-prose p {
@@ -327,7 +327,7 @@ import Contact from '../components/sections/Contact.astro';
     color: var(--color-ash-300);
     margin: 0 0 14px;
   }
-  @media (min-width: 768px) { .ab-prose p { font-size: 16px; } }
+  @media (min-width: 740px) { .ab-prose p { font-size: 16px; } }
   .ab-prose p strong { color: var(--color-ash-100); }
   .ab-prose p em {
     color: var(--color-copper-bright);
@@ -370,7 +370,7 @@ import Contact from '../components/sections/Contact.astro';
     padding: 0 0 14px 0;
     border-bottom: 1px solid rgba(255, 255, 255, 0.04);
   }
-  @media (min-width: 768px) { .ab-how-list li { font-size: 15px; } }
+  @media (min-width: 740px) { .ab-how-list li { font-size: 15px; } }
   .ab-how-list li:last-child { border-bottom: 0; }
   .ab-how-list strong {
     display: block;
@@ -397,7 +397,7 @@ import Contact from '../components/sections/Contact.astro';
   .ab-laws-list li:last-child {
     border-bottom: 1px solid var(--copper-hairline);
   }
-  @media (min-width: 768px) {
+  @media (min-width: 740px) {
     .ab-laws-list li { grid-template-columns: 72px 1fr; gap: 20px; padding: 18px 0; }
   }
 
@@ -409,7 +409,7 @@ import Contact from '../components/sections/Contact.astro';
     color: var(--color-copper);
     font-weight: 600;
   }
-  @media (min-width: 768px) { .ab-law-num { font-size: 48px; } }
+  @media (min-width: 740px) { .ab-law-num { font-size: 48px; } }
   @media (min-width: 1024px) { .ab-law-num { font-size: 56px; } }
 
   .ab-law-body { min-width: 0; }
@@ -421,7 +421,7 @@ import Contact from '../components/sections/Contact.astro';
     margin: 0 0 4px;
     font-weight: 600;
   }
-  @media (min-width: 768px) { .ab-law-h { font-size: 18px; } }
+  @media (min-width: 740px) { .ab-law-h { font-size: 18px; } }
   .ab-law-body p {
     font-family: var(--font-sans);
     font-size: 13px;
@@ -429,7 +429,7 @@ import Contact from '../components/sections/Contact.astro';
     color: var(--color-ash-400);
     margin: 0;
   }
-  @media (min-width: 768px) { .ab-law-body p { font-size: 14px; } }
+  @media (min-width: 740px) { .ab-law-body p { font-size: 14px; } }
 
   /* ─── Section 04: Bandon roots ─── */
   .ab-roots-body p {
@@ -439,7 +439,7 @@ import Contact from '../components/sections/Contact.astro';
     color: var(--color-ash-300);
     margin: 0 0 14px;
   }
-  @media (min-width: 768px) { .ab-roots-body p { font-size: 16px; } }
+  @media (min-width: 740px) { .ab-roots-body p { font-size: 16px; } }
   .ab-roots-pull {
     font-family: var(--font-serif);
     font-size: 20px !important;
@@ -449,7 +449,7 @@ import Contact from '../components/sections/Contact.astro';
     padding-left: 16px;
     margin: 24px 0 0 !important;
   }
-  @media (min-width: 768px) {
+  @media (min-width: 740px) {
     .ab-roots-pull { font-size: 24px !important; padding-left: 20px; }
   }
   .ab-roots-pull em {
@@ -464,7 +464,7 @@ import Contact from '../components/sections/Contact.astro';
     margin: 0 auto;
     text-align: center;
   }
-  @media (min-width: 768px) { .ab-cta { padding: 48px 4px 56px; } }
+  @media (min-width: 740px) { .ab-cta { padding: 48px 4px 56px; } }
   .ab-cta-h {
     font-family: var(--font-serif);
     font-size: 32px;
@@ -473,7 +473,7 @@ import Contact from '../components/sections/Contact.astro';
     margin: 0 0 10px;
     font-weight: 600;
   }
-  @media (min-width: 768px) { .ab-cta-h { font-size: 44px; } }
+  @media (min-width: 740px) { .ab-cta-h { font-size: 44px; } }
   @media (min-width: 1024px) { .ab-cta-h { font-size: 52px; } }
   .ab-cta-sub {
     font-family: var(--font-sans);
@@ -485,7 +485,7 @@ import Contact from '../components/sections/Contact.astro';
     margin-left: auto;
     margin-right: auto;
   }
-  @media (min-width: 768px) { .ab-cta-sub { font-size: 15px; margin-bottom: 24px; } }
+  @media (min-width: 740px) { .ab-cta-sub { font-size: 15px; margin-bottom: 24px; } }
   .ab-cta-actions {
     display: flex;
     flex-wrap: wrap;
