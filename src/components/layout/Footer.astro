@@ -16,6 +16,7 @@ const columns: { title: string; links: { label: string; href: string; external?:
     title: 'Services',
     links: [
       ...services.map((s) => ({ label: s.name, href: `/services/${s.slug}` })),
+      { label: 'Logo & Brand Design', href: '/logo-design' },
       { label: 'All services', href: '/services' },
     ],
   },
@@ -51,14 +52,21 @@ const columns: { title: string; links: { label: string; href: string; external?:
     ],
   },
   {
-    title: 'Legal',
+    title: 'Industries',
     links: [
-      { label: 'Privacy', href: '/privacy' },
-      { label: 'Terms', href: '/terms' },
-      { label: 'Credits', href: '/credits' },
-      { label: 'GitHub', href: business.github, external: true },
+      { label: 'For Contractors', href: '/web-design-for-contractors' },
+      { label: 'For Real Estate', href: '/web-design-for-real-estate' },
+      { label: 'For Restaurants', href: '/web-design-for-restaurants' },
     ],
   },
+];
+
+// Legal links live in the footer chrome (below), not as a column.
+const legalLinks = [
+  { label: 'Privacy', href: '/privacy', external: false },
+  { label: 'Terms', href: '/terms', external: false },
+  { label: 'Credits', href: '/credits', external: false },
+  { label: 'GitHub', href: business.github, external: true },
 ];
 ---
 
@@ -101,6 +109,13 @@ const columns: { title: string; links: { label: string; href: string; external?:
 
     <!-- Legal -->
     <div class="wc-foot-chrome">
+      <nav class="wc-foot-legal" aria-label="Legal">
+        {legalLinks.map((l) => (
+          l.external
+            ? <a href={l.href} rel="noopener" target="_blank">{l.label}</a>
+            : <a href={l.href}>{l.label}</a>
+        ))}
+      </nav>
       <div class="wc-foot-copy">&copy; {year} Winters Code · Bandon, Oregon</div>
       <p class="wc-foot-fine">
         All product names, logos, and brands are property of their
@@ -193,6 +208,15 @@ const columns: { title: string; links: { label: string; href: string; external?:
 
   /* Legal */
   .wc-foot-chrome { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+  .wc-foot-legal { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 18px; }
+  .wc-foot-legal a {
+    font-family: var(--font-sans);
+    font-size: 12px;
+    color: var(--color-ash-400);
+    text-decoration: none;
+    transition: color 0.15s ease;
+  }
+  .wc-foot-legal a:hover, .wc-foot-legal a:focus-visible { color: var(--color-wc-green); outline: none; }
   .wc-foot-copy { font-size: 12px; color: var(--color-ash-300); }
   .wc-foot-fine {
     margin: 0 auto;
