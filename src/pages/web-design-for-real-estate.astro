@@ -26,7 +26,7 @@ const service: ServiceEntry = {
   heroFocal="center 50%"
   heroTextPos="top"
   intro={[
-    "Real estate is the hardest kind of site to keep fast, because it is all photos. Buyers researching the Oregon coast scroll listings on their phones from out of the area, and if the gallery crawls, they bounce. The whole craft is heavy imagery that still loads instantly.",
+    "Real estate is the hardest kind of site to keep fast, because it is all photos. Buyers researching the Oregon coast scroll listings on their phones from out of the area, and if the gallery crawls, they bounce. <span class='hl-green'>Keep it instant and the buyer keeps scrolling.</span>",
     "That is exactly what custom code is good at: optimized, responsive images that look sharp and load quick, paired with the local search work that puts your listings in front of the right buyers.",
   ]}
   includesTitle="What a real estate site needs"
@@ -38,11 +38,16 @@ const service: ServiceEntry = {
     { h: 'Agent branding', body: 'A site that looks like you, not a franchise template every other agent in town also uses.' },
     { h: 'Owned and current', body: 'You own the site, and updates are a text away. No platform rent, no stale listings.' },
   ]}
-  whyTitle="Why custom beats the franchise template"
-  why={[
-    "Most agents get a templated site from their brokerage or a national vendor. It looks like everyone else’s and scores like everyone else’s. In my audit of 169 Coos County sites, the rented platforms averaged a <strong>D, an F, and a C</strong> on mobile speed, which on an image-heavy real estate site is fatal.",
-    "A custom site is faster, ranks for your specific coastal markets, and represents you as an individual agent. <em>It is yours, and it is built to sell.</em>",
+  sections={[
+    {
+      heading: 'Image weight is where these sites die',
+      body: [
+        "A single listing can carry 30 high-resolution photos, and a buyer is scrolling it on a phone from out of the area. Most agent sites serve those as raw uploads and crawl. In a review of <span class='stat'>169</span> Coos County sites, the rented platforms averaged a <span class='hl-copper'>D, an F, and a C on mobile speed</span>, and on an image-heavy listing that is fatal.",
+        "Custom code is built for exactly this: images sized per device, lazy-loaded, served in modern formats, so a heavy gallery still opens in <span class='stat'>under a second</span>. <em>Fast imagery is not a nice-to-have here, it is the entire job.</em> Done right, an IDX or MLS feed drops in without dragging the page down.",
+      ],
+    },
   ]}
+  whyLink
   faq={[
     { q: 'Can it pull MLS or IDX listings?', a: 'Yes, IDX and listing feeds can be integrated. We scope which feed and how it should display so it stays fast, since a poorly built IDX embed is the most common reason agent sites are slow.' },
     { q: 'My photos are huge. Will the site be slow?', a: 'No. Handling large photography without slowing the page is the core skill here. I optimize and serve images responsively so a heavy gallery still loads in well under a second on mobile.' },

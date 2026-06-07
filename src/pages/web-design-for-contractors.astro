@@ -26,8 +26,8 @@ const service: ServiceEntry = {
   heroFocal="center 50%"
   heroTextPos="top"
   intro={[
-    "Most of your customers find you on a phone, often standing in the project they want fixed. Your website has one job in that moment: prove you do good work and make it dead simple to reach you. A slow, generic template does neither.",
-    "I built this website for <a href=\"https://sogncontracting.com\" target=\"_blank\" rel=\"noopener\">Sogn Contracting</a>, a 30-year Bandon contractor. From kickoff to a live custom site in three days, with a before-and-after gallery, clear services, and a lead form, averaging 95+ on Lighthouse.",
+    "Most of your customers find you on a phone, often standing in the project they want fixed. Your website has one job in that moment: prove you do good work and make it dead simple to reach you. <span class='hl-green'>Do that well and the search turns into a phone call.</span> A slow, generic template does neither.",
+    "I built the website for <a href=\"https://sogncontracting.com\" target=\"_blank\" rel=\"noopener\">Sogn Contracting</a>, a 30-year Bandon contractor, so this is not theory. What a real contractor site does for a trade business is below.",
   ]}
   includesTitle="What a contractor site needs"
   includes={[
@@ -38,11 +38,16 @@ const service: ServiceEntry = {
     { h: 'Phone-first', body: 'A tap-to-call number in reach at all times, because half your visitors want to call now.' },
     { h: 'Fast on the job site', body: 'Sub-second loads on rural LTE, so the page is up before the customer loses patience.' },
   ]}
-  whyTitle="Why not a template"
-  why={[
-    "Contractor templates are everywhere, and they all look and load the same. In my audit of 169 Coos County sites, the rented-platform sites averaged a <strong>D, an F, and a C</strong> on mobile speed. A custom site outruns them and actually represents the quality of your work.",
-    "<em>The person who builds your site is the person who maintains it.</em> When you need the hours updated or a new project added to the gallery, you text me, not a help desk.",
+  sections={[
+    {
+      heading: 'Proof from a real contractor site',
+      body: [
+        "<a href=\"https://sogncontracting.com\" target=\"_blank\" rel=\"noopener\">Sogn Contracting</a> in Bandon has been at it for 30 years. The site went from kickoff to live in <span class='stat'>three days</span>: a before-and-after gallery that does the selling, services and service-area pages, a working quote form, and the CCB license number right where customers look for it.",
+        "It runs <span class='stat'>95+</span> on Lighthouse and is indexed and live, so you can go look at it instead of taking my word. <em>The person who builds your site is the person who answers when you text it.</em>",
+      ],
+    },
   ]}
+  whyLink
   faq={[
     { q: 'I am busy on jobs. How much of my time does this take?', a: 'Very little. A short questionnaire and one consult gets me what I need. I can shoot the project photos and draft the copy, then you just approve. Most contractor sites go live in days.' },
     { q: 'Can you show my past projects?', a: 'Yes, and you should. A before-and-after gallery is the single most persuasive thing on a contractor site. I organize and optimize the photos so they load fast and look sharp.' },

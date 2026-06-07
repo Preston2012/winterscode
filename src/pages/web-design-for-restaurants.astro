@@ -27,7 +27,7 @@ const service: ServiceEntry = {
   heroTextPos="top"
   intro={[
     "When someone searches your restaurant, they want three things fast: the menu, the hours, and how to get a table. Most restaurant sites bury all three behind a slow homepage or a PDF menu that is unreadable on a phone. That is a lost customer who just picked somewhere else.",
-    "I build the site around those three things first, then make it beautiful. On the Oregon coast, where a lot of diners are visitors deciding in the moment, fast and clear wins the table.",
+    "I build the site around those three things first, then make it beautiful. On the Oregon coast, where a lot of diners are visitors deciding in the moment, <span class='hl-green'>fast and clear wins the table.</span>",
   ]}
   includesTitle="What a restaurant site needs"
   includes={[
@@ -38,11 +38,16 @@ const service: ServiceEntry = {
     { h: 'Hours and location', body: 'Hours, map, and parking answered instantly, the questions every visitor asks first.' },
     { h: 'Fast and mobile', body: 'Sub-second loads so a hungry visitor deciding right now lands on you, not the next result.' },
   ]}
-  whyTitle="Why not a builder or a delivery-app page"
-  why={[
-    "Restaurant builders and delivery-app microsites look fine and perform badly: slow, generic, and rented. In my audit of 169 Coos County sites, the rented platforms averaged a <strong>D, an F, and a C</strong> on mobile speed. For a decision made in seconds, that is the difference between a full table and an empty one.",
-    "A custom site is faster, captures your own orders and reservations without a middleman’s cut, and looks like your place. <em>You own it, and it works as hard as you do.</em>",
+  sections={[
+    {
+      heading: 'Keep the cut the apps take',
+      body: [
+        "A delivery-app microsite or a builder page looks fine and quietly costs you. Every order routed through a third-party app hands over a percentage, and the page itself is slow, generic, and rented. For a decision made in seconds, slow loses the table.",
+        "A custom site captures your own takeout orders and reservations <span class='hl-green'>without a middleman taking a cut of every ticket</span>, serves a real menu that loads instantly instead of a pinch-to-zoom PDF, and looks like your place. <em>You own it, and it works as hard as you do.</em>",
+      ],
+    },
   ]}
+  whyLink
   faq={[
     { q: 'Can people order or reserve through the site?', a: 'Yes. Reservations and takeout ordering can both be built in, either integrated with a system you already use or as a clean simple flow. The goal is to capture the order or booking directly, without handing a cut to a third-party app.' },
     { q: 'Can I update the menu myself?', a: 'Yes. The menu is built to be easy to update, or it is two minutes of a care plan for me to change prices and dishes for you. No wrestling with a clunky dashboard.' },
