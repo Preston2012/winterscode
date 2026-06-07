@@ -39,11 +39,16 @@ const service: ServiceEntry = {
     { h: 'Caching and delivery', body: 'Proper caching and a fast edge so repeat visits and far-away visitors load quickly too.' },
     { h: 'Before-and-after proof', body: 'Real Lighthouse scores measured at the start and the end, so the gain is documented.' },
   ]}
-  whyTitle="Where most local sites stand"
-  why={[
-    "I audited 169 Coos County small-business websites with Google Lighthouse. The average mobile speed score was <strong>61 out of 100</strong>. The platforms most businesses rent from, WordPress, Squarespace, and Wix, averaged a <strong>D, an F, and a C</strong>. Custom code averaged <strong>94 on mobile</strong>.",
-    "If your site is in the 60s, you are normal for the area, and that is the opportunity. Fixing the vitals moves you ahead of nearly everyone you compete with locally. <em>Start with the free audit</em> and we will see your real numbers.",
+  sections={[
+    {
+      heading: 'Where local sites land',
+      body: [
+        'Average mobile speed across the <span class="stat">169</span> sites I audited: <span class="stat">61/100</span>. By platform, the rented ones graded out at a <span class="hl-copper">D</span>, an <span class="hl-copper">F</span>, and a <span class="hl-copper">C</span>. Custom code averaged <span class="stat">94</span> on mobile.',
+        'If your site is in the 60s, you are normal for the area, and <span class="hl-green">that is exactly the opening.</span> Fixing the vitals moves you ahead of nearly everyone you compete with locally.',
+      ],
+    },
   ]}
+  whyLink
   faq={[
     { q: 'How do I know if my site fails Core Web Vitals?', a: 'Run it through my free audit, or I will. It shows the same speed, accessibility, SEO, and security scores Google sees, on both mobile and desktop. Most local sites are surprised by the mobile number.' },
     { q: 'Can you fix my site, or do I need a rebuild?', a: 'Often I can fix the site you have: compress images, fix fonts, add caching, resolve layout shift. If the platform itself is the bottleneck, a rebuild may cost less long term. The audit tells us which.' },

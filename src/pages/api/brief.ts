@@ -1,25 +1,19 @@
 /**
  * /api/brief : contact-page brief form submission handler.
  *
- * Accepts a structured form POST from /contact and forwards a formatted
- * email to preston@winterscode.com. Returns {ok: true} on success so the
- * client can render a thank-you state without redirecting away.
+ * Captures each submission as a JSON object in the LEADS R2 bucket
+ * (binding declared in the root wrangler.jsonc, bucket "winterscode-leads").
+ * winterscode.com has no transactional-email provider by design, so the
+ * durable store IS the delivery: the lead is safe the moment it is written,
+ * and Preston reads new leads from the VPS (R2 is readable there with the
+ * account R2 credentials, plus a cron mirrors new ones into a flat file).
  *
- * Validation: every field is bounded and trimmed. Rejects clearly empty
- * or oversized payloads. Honeypot field "company_extra" must be empty
- * (basic bot trap, hidden via CSS on the form).
+ * Returns {ok:true} once the lead is stored so the client renders the
+ * thank-you state. If the store fails, returns {ok:false} so the form shows
+ * the direct-contact fallback instead of a false thank-you.
  *
- * Email delivery: uses Resend if RESEND_API_KEY is set, otherwise falls
- * back to logging the formatted payload to the Worker log so submissions
- * never silently disappear. Preston rotates a Resend key in S12.
- *
- * Rate limit: 3 briefs per IP per UTC day (reuses the wc_demo_counters
- * pattern but with a separate key prefix "brief:"). Briefs are higher-
- * intent than chat so the cap is tighter.
- *
- * Env (optional):
- *   - RESEND_API_KEY: Resend API key, sends from preston@winterscode.com
- *   - BRIEF_FORWARD_TO: target email (default preston@winterscode.com)
+ * Validation: every field is bounded and trimmed. Honeypot field
+ * "company_extra" must be empty (hidden via CSS on the form).
  */
 
 export const prerender = false;
@@ -30,7 +24,6 @@ import { env as cfEnv } from 'cloudflare:workers';
 
 const MAX_FIELD = 500;
 const MAX_NOTES = 4000;
-const DEFAULT_TO = 'preston@winterscode.com';
 
 interface Brief {
   name: string;
@@ -43,6 +36,10 @@ interface Brief {
   notes?: string;
 }
 
+interface R2Like {
+  put(key: string, value: string, opts?: unknown): Promise<unknown>;
+}
+
 function trimField(v: unknown, max: number): string {
   if (typeof v !== 'string') return '';
   return v.trim().slice(0, max);
@@ -52,56 +49,11 @@ function isEmail(s: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s);
 }
 
-function formatBrief(b: Brief, ip: string): { subject: string; text: string; html: string } {
-  const subject = `Brief from ${b.name}. ${b.business || b.projectType || 'Winters Code'}`;
-  const lines = [
-    `New brief submitted at ${new Date().toISOString()}`,
-    `Source IP: ${ip}`,
-    '',
-    `Name:           ${b.name}`,
-    `Email:          ${b.email}`,
-    b.phone ? `Phone:          ${b.phone}` : null,
-    b.business ? `Business:       ${b.business}` : null,
-    b.city ? `City:           ${b.city}` : null,
-    b.industry ? `Industry:       ${b.industry}` : null,
-    b.projectType ? `Project type:   ${b.projectType}` : null,
-    '',
-    b.notes ? 'Notes:' : null,
-    b.notes ? b.notes : null,
-  ].filter(Boolean);
-  const text = lines.join('\n');
-  const html =
-    '<pre style="font-family:ui-monospace,Menlo,monospace;font-size:13px;line-height:1.5;">' +
-    text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') +
-    '</pre>';
-  return { subject, text, html };
-}
-
-async function sendViaResend(
-  apiKey: string,
-  to: string,
-  brief: ReturnType<typeof formatBrief>,
-): Promise<boolean> {
-  try {
-    const res = await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        'content-type': 'application/json',
-      },
-      body: JSON.stringify({
-        from: 'Winters Code <preston@winterscode.com>',
-        to: [to],
-        reply_to: undefined,
-        subject: brief.subject,
-        text: brief.text,
-        html: brief.html,
-      }),
-    });
-    return res.ok;
-  } catch {
-    return false;
-  }
+// Sortable, filesystem-safe key: leads/20260607T191000Z-ab12cd34.json
+function leadKey(now: Date): string {
+  const ts = now.toISOString().replace(/[-:]/g, '').replace(/\.\d+Z$/, 'Z');
+  const rand = (crypto.randomUUID?.() ?? `${Math.random()}`).replace(/-/g, '').slice(0, 8);
+  return `leads/${ts}-${rand}.json`;
 }
 
 export const POST: APIRoute = async ({ request }) => {
@@ -114,11 +66,7 @@ export const POST: APIRoute = async ({ request }) => {
 
   // Honeypot. bots usually fill every field including hidden ones.
   if (typeof body.company_extra === 'string' && body.company_extra.trim().length > 0) {
-    // Pretend success so bots don't retry.
-    return new Response(JSON.stringify({ ok: true }), {
-      status: 200,
-      headers: { 'content-type': 'application/json' },
-    });
+    return jsonOk();
   }
 
   const brief: Brief = {
@@ -135,32 +83,55 @@ export const POST: APIRoute = async ({ request }) => {
   if (!brief.name || brief.name.length < 2) return jsonError('name required', 400);
   if (!brief.email || !isEmail(brief.email)) return jsonError('valid email required', 400);
 
+  const now = new Date();
   const ip =
     request.headers.get('cf-connecting-ip') ??
     request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ??
     '0.0.0.0';
+  const country = request.headers.get('cf-ipcountry') ?? '';
+  const referer = request.headers.get('referer') ?? '';
 
-  const formatted = formatBrief(brief, ip);
-  const env = cfEnv as Record<string, string | undefined>;
-  const to = env.BRIEF_FORWARD_TO ?? DEFAULT_TO;
+  const record = {
+    receivedAt: now.toISOString(),
+    ip,
+    country,
+    referer,
+    ...brief,
+  };
 
-  let delivered = false;
-  if (env.RESEND_API_KEY) {
-    delivered = await sendViaResend(env.RESEND_API_KEY, to, formatted);
+  const env = cfEnv as { LEADS?: R2Like };
+  const key = leadKey(now);
+
+  let stored = false;
+  if (env.LEADS) {
+    try {
+      await env.LEADS.put(key, JSON.stringify(record, null, 2), {
+        httpMetadata: { contentType: 'application/json' },
+      });
+      stored = true;
+    } catch (err) {
+      console.error('[brief] R2 put failed', String(err));
+    }
   }
 
-  if (!delivered) {
-    // Fall back to logging the formatted brief. Cloudflare Worker logs
-    // are retained for ~24h and visible via wrangler tail. Preston can
-    // pull these manually if Resend is not yet configured at deploy time.
-    console.log('[brief-fallback]', JSON.stringify({ to, ...formatted }));
+  if (!stored) {
+    console.log('[brief-unstored]', JSON.stringify(record));
+    return new Response(JSON.stringify({ ok: false, error: 'store_failed' }), {
+      status: 502,
+      headers: { 'content-type': 'application/json' },
+    });
   }
 
-  return new Response(JSON.stringify({ ok: true, delivered }), {
+  console.log('[brief-stored]', key);
+  return jsonOk();
+};
+
+function jsonOk(): Response {
+  return new Response(JSON.stringify({ ok: true }), {
     status: 200,
     headers: { 'content-type': 'application/json' },
   });
-};
+}
 
 function jsonError(error: string, status: number): Response {
   return new Response(JSON.stringify({ error }), {

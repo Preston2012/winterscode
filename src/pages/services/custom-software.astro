@@ -3,11 +3,7 @@ import ServiceLayout from '../../components/templates/ServiceLayout.astro';
 import { serviceBySlug, towns } from '../../lib/business';
 
 const service = serviceBySlug('custom-software')!;
-const townLinks = towns.map((t) => ({
-  href: `/web-design-${t.slug}`,
-  label: `${t.name}, OR`,
-  sub: t.county,
-}));
+const townLinks = towns.map((t) => ({ href: `/web-design-${t.slug}`, label: `${t.name}, OR`, sub: t.county }));
 ---
 
 <ServiceLayout
@@ -31,13 +27,18 @@ const townLinks = towns.map((t) => ({
     { h: 'Multi-tenant systems', body: 'Multiple roles, locations, or client organizations under one roof, with the right walls between them.' },
     { h: 'Workflow automation', body: 'The repetitive steps, intake, routing, follow-up, reminders, handled by the software instead of by you.' },
     { h: 'Integrations', body: 'Stripe, QuickBooks, your CRM, your booking tool, wired together so data flows once and stays in sync.' },
-    { h: 'Real ownership', body: 'Your software, your data, documented and handed over. No per-seat fees climbing forever as you grow.' },
+    { h: 'Real ownership', body: '<span class="hl-green">Your software, your data, documented and handed over.</span> No per-seat fees climbing forever as you grow.' },
   ]}
-  why={[
-    "Off-the-shelf SaaS is built for the average of a thousand businesses, which means it fits none of them well. You pay per seat, per month, forever, and still end up with workarounds.",
-    "Custom software is a different deal. It does exactly what your business needs, it integrates with what you already use, and <em>you own it.</em> For the right workflow, it pays for itself in the hours it stops wasting.",
-    "I build these the same way I build everything: modern stack, written by hand, secure by default, and maintained by the person who wrote it.",
+  sections={[
+    {
+      heading: 'I build my own software too',
+      body: [
+        'This is not a service I picked up to fill a menu. I run my own products on custom software: <strong>Baseline</strong>, a multi-model intelligence dashboard, and <strong>Demiurge</strong>, a memory engine holding more than <span class="stat">2,500</span> records that powers everything I build.',
+        'So when I build a portal or a dashboard for your business, it is the same engineering I trust to run mine. <em>Built by hand, secure by default, maintained by the person who wrote it.</em>',
+      ],
+    },
   ]}
+  whyLink
   faq={[
     { q: 'How do I know if I need custom software?', a: 'A good sign is when spreadsheets have become the system that runs the business, or when someone spends real hours moving data between apps that should talk to each other. If a tool would save those hours, it usually pays for itself.' },
     { q: 'Is this not too expensive for a small business?', a: 'It does not have to be. I scope to the one workflow that hurts most and build that first, so you get value fast instead of a giant project. Then we grow it only if the return is there.' },
