@@ -27,22 +27,27 @@ const service: ServiceEntry = {
   heroFocal="center 40%"
   intro={[
     "A redesign is worth it when the current site is costing you: slow loads that lose mobile visitors, a template you cannot really change, a platform you pay monthly to rent, or a look that no longer matches the business.",
-    "I rebuild on a modern, hand-written stack. Not a new theme on the same tired platform, but a fast, secure, custom site that you own outright. And I measure it, so the improvement is on paper, not just a feeling.",
+    "I rebuild on a modern, hand-written stack. Not a new theme on the same tired platform, but a fast, secure, custom site that you own outright. And I measure it, so <em>the improvement is on paper, not just a feeling.</em>",
   ]}
   includesTitle="What a rebuild fixes"
   includes={[
     { h: 'Speed', body: 'Sub-second mobile loads instead of the 5-second crawl that sends visitors back to the search results.' },
-    { h: 'Ownership', body: 'You own the code and content. No monthly platform rent, no lock-in holding your own site hostage.' },
-    { h: 'Security', body: 'A strict content security policy and an A-plus posture, not just a bare lock icon in the address bar.' },
+    { h: 'Ownership', body: '<span class="hl-green">You own the code and content.</span> No monthly platform rent, no lock-in holding your own site hostage.' },
+    { h: 'Security', body: 'A strict content security policy and an <span class="hl-copper">A-plus</span> posture, not just a bare lock icon in the address bar.' },
     { h: 'Search visibility', body: 'Clean metadata, structured data, and an internal-link structure search engines can actually read.' },
     { h: 'A current look', body: 'A custom design that matches the business you run today, built mobile-first.' },
     { h: 'Content migration', body: 'Your existing pages, photos, and copy carried over, cleaned up, and improved, not lost.' },
   ]}
-  whyTitle="Why most local sites are due for one"
-  why={[
-    "I audited 169 Coos County small-business websites. The average mobile speed score was <strong>61 out of 100</strong>, <strong>88 percent</strong> were renting their site from a template platform, and not one scored both fast and secure. Most of those sites are overdue for a rebuild and do not know it.",
-    "A redesign on a custom stack closes that gap. <em>It loads faster, ranks better, and it is finally yours.</em> Run your current site through my free audit and we will see exactly what a rebuild would change.",
+  sections={[
+    {
+      heading: 'Most local sites are overdue',
+      body: [
+        'In my audit of 169 Coos County sites, <span class="stat">88%</span> were renting their website from a template platform, and not one scored both fast and secure. A rebuild on a custom stack is how you <span class="hl-green">stop paying rent on your own site.</span>',
+        'Run your current site through the free audit and we will see exactly what a rebuild would change.',
+      ],
+    },
   ]}
+  whyLink
   faq={[
     { q: 'Can you save my content, or do I start over?', a: 'I carry your existing pages, photos, and copy over, then clean them up. You keep what works; we fix what does not. Nothing of value gets thrown away.' },
     { q: 'How do I know a redesign is worth it?', a: 'Run the free audit. If your site is slow, insecure, hard to update, or stuck on a platform you pay to rent, a rebuild usually pays for itself in speed and search visibility. The audit shows you where you stand first.' },

@@ -3,11 +3,7 @@ import ServiceLayout from '../../components/templates/ServiceLayout.astro';
 import { serviceBySlug, towns } from '../../lib/business';
 
 const service = serviceBySlug('app-development')!;
-const townLinks = towns.map((t) => ({
-  href: `/web-design-${t.slug}`,
-  label: `${t.name}, OR`,
-  sub: t.county,
-}));
+const townLinks = towns.map((t) => ({ href: `/web-design-${t.slug}`, label: `${t.name}, OR`, sub: t.county }));
 ---
 
 <ServiceLayout
@@ -22,8 +18,8 @@ const townLinks = towns.map((t) => ({
   showcase
   heroFocal="center 38%"
   intro={[
-    "A mobile app is a bigger commitment than a website, so I am honest about when you actually need one. If your customers will open it more than once, if it needs the camera, sensors, notifications, or offline use, an app earns its place. If not, a fast mobile site is the smarter spend.",
-    "When an app is the right call, I build it in Flutter: one codebase that ships to both the App Store and Google Play. That is half the cost and half the maintenance of building two native apps.",
+    "I will start with the honest part most shops skip: most businesses do not need an app. If a fast mobile site does the job, that is the smarter spend, and I will tell you so.",
+    "An app earns its place when customers open it more than once, or when it needs the camera, GPS, notifications, or offline use. When it is the right call, I build it in Flutter: one codebase that ships to both stores, <span class=\"hl-green\">half the cost and half the maintenance</span> of two native apps.",
   ]}
   includes={[
     { h: 'Cross-platform', body: 'One Flutter codebase, two stores. iOS and Android stay in sync instead of drifting into two separate products.' },
@@ -33,10 +29,16 @@ const townLinks = towns.map((t) => ({
     { h: 'AI features', body: 'Vision, language, and multi-model AI where it adds real value. I have shipped all three in live apps.' },
     { h: 'Store submission', body: 'I handle the App Store and Play Store listings, review, and launch. You get an app people can actually download.' },
   ]}
-  why={[
-    "This is not theory. <strong>StainSlayer AI</strong> is live on both the App Store and Google Play: snap a photo of a stain, get step-by-step removal, powered by vision AI. <strong>Baseline</strong> runs four AI models in parallel across 106 tracked figures. <strong>MyKonos</strong> is an AI companion running on Demiurge, a memory engine I built myself.",
-    "Three shipped AI apps from a solo shop on the Oregon coast. <em>Built by me, owned by you. The speed is real.</em> When you hire me for an app, you are hiring the person who has already done it.",
+  sections={[
+    {
+      heading: 'Already shipped, not theory',
+      body: [
+        '<strong>StainSlayer AI</strong> is live on both the App Store and Google Play: snap a photo of a stain, get step-by-step removal, powered by vision AI. <strong>Baseline</strong> runs four AI models in parallel. <strong>MyKonos</strong> is an AI companion running on Demiurge, a memory engine I built myself.',
+        'Three shipped AI apps from a solo shop on the Oregon coast. <em>When you hire me for an app, you are hiring the person who has already done it.</em>',
+      ],
+    },
   ]}
+  whyLink
   faq={[
     { q: 'Do I really need an app, or just a website?', a: 'Usually a website first. An app earns its place when customers open it repeatedly or it needs device features like the camera, GPS, notifications, or offline use. I will tell you straight which one fits your business.' },
     { q: 'Why Flutter instead of native?', a: 'Flutter is one codebase for both iOS and Android. That means roughly half the build cost and half the ongoing maintenance, with near-native performance. For a small business it is almost always the right trade.' },

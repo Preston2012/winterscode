@@ -3,11 +3,7 @@ import ServiceLayout from '../../components/templates/ServiceLayout.astro';
 import { serviceBySlug, towns } from '../../lib/business';
 
 const service = serviceBySlug('seo-performance')!;
-const townLinks = towns.map((t) => ({
-  href: `/web-design-${t.slug}`,
-  label: `${t.name}, OR`,
-  sub: t.county,
-}));
+const townLinks = towns.map((t) => ({ href: `/web-design-${t.slug}`, label: `${t.name}, OR`, sub: t.county }));
 ---
 
 <ServiceLayout
@@ -24,21 +20,27 @@ const townLinks = towns.map((t) => ({
   heroTextPos="top"
   intro={[
     "Search engines reward sites that load fast, stay secure, and are easy to read. Most small-business sites fail all three, and they have no idea, because nobody ever measured.",
-    "I measure. Then I fix what the numbers point to: the slow loads, the missing metadata, the security gaps, the layout that jumps while it loads. Then I measure again, so you can see exactly what changed.",
+    "I measure, fix what the numbers point to, then measure again. <em>You see exactly what changed.</em>",
   ]}
   includes={[
     { h: 'Core Web Vitals', body: 'Largest Contentful Paint, interaction latency, and layout shift, brought into the green where Google actually counts them.' },
     { h: 'Speed optimization', body: 'Image compression, font loading, render-blocking resources, and caching. The fixes that turn a 5-second load into under one.' },
     { h: 'On-page SEO', body: 'Titles, meta descriptions, headings, canonicals, and internal links, cleaned up and made unique on every page.' },
     { h: 'Structured data', body: 'Schema markup so search engines and AI overviews understand your business, your services, and your service area.' },
-    { h: 'Security posture', body: 'HTTPS done right, a strict content security policy, and the headers that earn an A-plus grade instead of a bare lock icon.' },
+    { h: 'Security posture', body: 'HTTPS done right, a strict content security policy, and the headers that earn an <span class="hl-copper">A-plus</span> grade instead of a bare lock icon.' },
     { h: 'Before and after report', body: 'Real Lighthouse and Observatory scores, measured at the start and again at the end. No vague promises.' },
   ]}
-  why={[
-    "I audited 169 Coos County small-business websites with Google Lighthouse and Mozilla Observatory. The results were rough: an average mobile speed of <strong>61 out of 100</strong>, <strong>36 percent</strong> with HTTPS but no real security behind it, and only <strong>2 percent</strong> with a working sitemap. <strong>Zero</strong> sites scored both fast and secure.",
-    "That is not a knock on those businesses. It is an open lane. In a market where almost no one has done the work, doing it well puts you ahead fast.",
-    "This is also how I build from scratch: around a 95 Lighthouse average and an A-plus security grade on every site I ship. The optimization service brings an existing site toward the same bar.",
+  sections={[
+    {
+      heading: 'The numbers from 169 local sites',
+      body: [
+        'I audited <span class="stat">169</span> Coos County small-business websites with Google Lighthouse and Mozilla Observatory. Average mobile speed: <span class="stat">61/100</span>. <span class="stat">36%</span> had HTTPS but no real security behind it. Only <span class="stat">2%</span> had a working sitemap. <span class="hl-copper">Zero</span> scored both fast and secure.',
+        'That is not a knock on those businesses. It is an open lane. In a market where almost no one has done the work, <span class="hl-green">doing it well puts you ahead fast.</span>',
+        'This is also the bar I build to from scratch: around a <span class="stat">95</span> Lighthouse average and an <span class="hl-copper">A-plus</span> security grade on every site I ship. The optimization service brings an existing site toward the same bar.',
+      ],
+    },
   ]}
+  whyLink
   faq={[
     { q: 'How do I know if my site is slow?', a: 'Run it through my free audit tool, or I will. It checks speed, accessibility, SEO, and security on both mobile and desktop and shows you the same scores Google sees. Most local sites are surprised.' },
     { q: 'Can you fix my site, or do I need a rebuild?', a: 'Often I can fix the site you have: compress images, fix the metadata, tighten security, resolve layout shift. If the platform itself is the bottleneck, like a heavy page builder, a rebuild may cost less in the long run. The audit tells us which.' },
