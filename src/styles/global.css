@@ -458,3 +458,28 @@ main.page {
 .btn-secondary { background: transparent; color: var(--color-ash-100); border-color: var(--copper-hairline); }
 .btn-secondary:hover { border-color: var(--color-copper); color: var(--color-copper-bright); }
 @media (min-width: 740px) { .btn { padding: 15px 22px; font-size: 15px; } }
+
+/* ---- Inline emphasis system (locked meaning, see brain #3271) ---- */
+/* GREEN = the win/outcome the customer gets */
+.hl-green {
+  color: var(--color-wc-green);
+  font-weight: 600;
+}
+/* COPPER = a proof number or stat */
+.hl-copper {
+  color: var(--color-copper-bright);
+  font-weight: 600;
+}
+/* Big stat treatment: mono, copper, slightly larger, for headline numbers */
+.stat {
+  font-family: var(--font-mono);
+  color: var(--color-copper-bright);
+  font-weight: 600;
+  font-size: 1.05em;
+  letter-spacing: -0.01em;
+}
+/* EMPH (the human aside) uses plain <em>; ensure it reads as voice, not shout */
+.svc-lead em, .svc-why-p em, .svc-card-body em, .loc-angle-p em, .svc-section-p em {
+  color: var(--color-ash-100);
+  font-style: italic;
+}
