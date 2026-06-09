@@ -278,6 +278,7 @@ const cal = 'https://cal.com/preston-winters';
     }
   }
   .contact-action-btn {
+    min-width: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -333,18 +334,14 @@ const cal = 'https://cal.com/preston-winters';
      never wraps to a second line in the 2x2 button grid on narrow phones.
      Phone numbers (12 chars) keep the default tracking for readability. */
   .contact-sub-email {
-    font-size: 8.5px;
+    font-size: clamp(7.5px, 2.1vw, 10px);
     letter-spacing: 0.02em;
-  }
-  @media (min-width: 740px) {
-    .contact-sub-email {
-      font-size: 9.5px;
-      letter-spacing: 0.04em;
-    }
+    white-space: nowrap;
+    max-width: 100%;
   }
   @media (min-width: 1024px) {
     .contact-sub { font-size: 10px; }
-    .contact-sub-email { font-size: 10px; letter-spacing: 0.06em; }
+    .contact-sub-email { letter-spacing: 0.06em; }
   }
 
   /* ─── Bottom CTA row ─── */
@@ -354,8 +351,19 @@ const cal = 'https://cal.com/preston-winters';
     gap: 8px;
     margin-top: 20px;
   }
+  @media (max-width: 599px) {
+    .contact-cta-row { grid-template-columns: 1fr; }
+  }
   @media (min-width: 740px) {
     .contact-cta-row { gap: 12px; }
+  }
+  .contact-cta-row .btn {
+    min-width: 0;
+    white-space: nowrap;
+    font-size: clamp(12px, 2.6vw, 15px);
+    padding-left: 14px;
+    padding-right: 14px;
+    text-align: center;
   }
 
   /* ─── Centered mode (dedicated pages like /contact) ─────────────────

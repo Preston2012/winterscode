@@ -61,8 +61,14 @@ interface Props {
   };
   includesTitle?: string;
   includes: Include[];
+  /** Optional flexible sections rendered between includes and FAQ. 0, 1, or 2. */
+  sections?: { heading: string; body: string[] }[];
   whyTitle?: string;
-  why: string[];
+  /** When true, the page drops its own why-block and links to the canonical one. */
+  whyLink?: boolean;
+  why?: string[];
+  /** When true, show a one-line link to the canonical /process page. */
+  processLink?: boolean;
   faq: Faq[];
   relatedTitle?: string;
   relatedIntro?: string;
@@ -90,8 +96,11 @@ const {
   figure,
   includesTitle = "What's included",
   includes,
+  sections = [],
   whyTitle = 'Why custom, not a builder',
-  why,
+  whyLink = false,
+  why = [],
+  processLink = false,
   faq,
   relatedTitle = 'Serving the Oregon coast',
   relatedIntro,
@@ -178,15 +187,41 @@ const faqLd = faq.length ? faqSchema(faq) : null;
     </div>
   </section>
 
-  <Divider label="03" />
+  {sections.map((sec, i) => (
+    <>
+      <Divider label={`0${3 + i}`} />
+      <section class="svc-block svc-section" aria-label={sec.heading}>
+        <header class="svc-block-head">
+          <h2 class="svc-block-h">{sec.heading}</h2>
+        </header>
+        {sec.body.map((para) => <p class="svc-section-p" set:html={para} />)}
+      </section>
+    </>
+  ))}
 
-  <!-- Why custom -->
-  <section class="svc-block svc-why" aria-labelledby="svc-why-h">
-    <header class="svc-block-head">
-      <h2 class="svc-block-h" id="svc-why-h">{whyTitle}</h2>
-    </header>
-    {why.map((p) => <p class="svc-why-p" set:html={p} />)}
-  </section>
+  {why.length > 0 && !whyLink && (
+    <>
+      <Divider label={`0${3 + sections.length}`} />
+      <section class="svc-block svc-why" id="why" aria-labelledby="svc-why-h">
+        <header class="svc-block-head">
+          <h2 class="svc-block-h" id="svc-why-h">{whyTitle}</h2>
+        </header>
+        {why.map((para) => <p class="svc-why-p" set:html={para} />)}
+      </section>
+    </>
+  )}
+
+  {whyLink && (
+    <section class="svc-block svc-inline-link">
+      <p class="svc-section-p">Curious why I write real code instead of WordPress or a builder? <a href="/services/web-design#why">Here is the full reasoning, with the numbers</a>.</p>
+    </section>
+  )}
+
+  {processLink && (
+    <section class="svc-block svc-inline-link">
+      <p class="svc-section-p">Every build follows the same clear path, from questionnaire to launch. <a href="/process">See exactly how it goes</a>.</p>
+    </section>
+  )}
 
   {faq.length > 0 && (
     <>
@@ -344,6 +379,22 @@ const faqLd = faq.length ? faqSchema(faq) : null;
   }
   @media (min-width: 740px) { .svc-why-p { font-size: 16px; } }
   .svc-why-p :global(strong) { color: var(--color-ash-100); font-weight: 600; }
+  /* Flexible per-page sections + inline canonical links (re-spine system) */
+  .svc-section { max-width: 720px; }
+  .svc-section-p {
+    font-family: var(--font-sans);
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--color-ash-300);
+    margin: 0 0 16px;
+    max-width: 62ch;
+  }
+  @media (min-width: 740px) { .svc-section-p { font-size: 16px; } }
+  .svc-section-p :global(strong) { color: var(--color-ash-100); font-weight: 600; }
+  .svc-section-p :global(a) { color: var(--color-copper-bright); text-decoration: underline; text-underline-offset: 3px; }
+  .svc-inline-link { max-width: 720px; padding-top: 4px; padding-bottom: 4px; }
+  .svc-inline-link .svc-section-p { color: var(--color-ash-400); font-size: 14px; margin: 0; }
+  @media (min-width: 740px) { .svc-inline-link .svc-section-p { font-size: 15px; } }
   .svc-why-p :global(em) {
     color: var(--color-copper-bright);
     font-style: italic;
