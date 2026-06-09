@@ -72,17 +72,40 @@
   @keyframes p{0%,100%{opacity:.3}50%{opacity:1}}
   .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:var(--navy);color:#fff;padding:12px 20px;border-radius:999px;font-weight:700;font-size:14px;opacity:0;pointer-events:none;transition:.2s;box-shadow:var(--shadow);z-index:60}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  .note{margin-top:18px;border-left:4px solid var(--navy)}
+  .noteKick{font-family:Oswald;font-weight:600;letter-spacing:.14em;text-transform:uppercase;font-size:12px;color:var(--gold)}
+  .noteTitle{font-family:Oswald;font-weight:600;font-size:22px;color:var(--navy);margin:4px 0 8px;letter-spacing:.01em}
+  .noteLede{margin:0 0 12px;color:var(--ink);font-size:15px}
+  .noteList{margin:0 0 14px;padding:0;list-style:none;display:grid;gap:10px}
+  .noteList li{font-size:14.5px;color:var(--ink);line-height:1.55;padding-left:20px;position:relative}
+  .noteList li::before{content:"";position:absolute;left:0;top:9px;width:8px;height:8px;border-radius:2px;background:var(--gold)}
+  .noteList strong{color:var(--navy)}
+  .noteFoot{margin:0;color:var(--muted);font-size:14px}
+  .topbar{height:5px;background:linear-gradient(90deg,var(--navy) 0%,var(--navy) 52%,var(--gold) 100%)}
+  .builtFor{margin-left:auto;align-self:center;font-family:Oswald;font-weight:600;letter-spacing:.09em;text-transform:uppercase;font-size:11px;color:var(--navy);background:#fff;border:1px solid var(--line);border-radius:999px;padding:7px 14px;box-shadow:var(--shadow);white-space:nowrap}
+  .hero{margin:16px 2px 22px}
+  .hero h1{font-family:Oswald;font-weight:600;font-size:30px;line-height:1.14;color:var(--navy);margin:0 0 8px;letter-spacing:.005em}
+  .hero .lede{margin:0;max-width:64ch}
+  .foot{margin:24px 2px 4px;color:var(--muted);font-size:13px;text-align:center}
+  .foot a{color:var(--navy);font-weight:700;text-decoration:none}
+  .foot a:hover{text-decoration:underline}
+  @media(max-width:560px){ .builtFor{margin-left:0;width:100%;text-align:center} .hero h1{font-size:25px} }
   @media (prefers-reduced-motion:reduce){*{transition:none!important}.dot{animation:none}}
 </style>
 </head>
 <body>
+<div class="topbar"></div>
 <div class="wrap">
   <header class="app">
     <img class="logo" src="https://www.bandonhomes.com/wp-content/uploads/2020/06/David-L-Davis-Real-Estate-Logo1.png" alt="David L. Davis Real Estate" onerror="this.outerHTML='<span class=&quot;brandfallback&quot;>David L. Davis Real Estate</span>'">
     <span class="divider"></span>
-    <span class="kicker">Listing Studio<span class="sub">A listing becomes a post</span></span>
+    <span class="kicker">Listing Studio<span class="sub">by Winters Code</span></span>
+    <span class="builtFor">Built for David L. Davis Real Estate</span>
   </header>
-  <p class="lede">Add a photo, fill in the listing, pick a look and a voice. The caption is written fresh by AI for each post, and you get a sharp graphic ready for Facebook or Instagram.</p>
+  <div class="hero">
+    <h1>Turn a listing into a post in about a minute.</h1>
+    <p class="lede">Add a photo, fill in the details, pick a look and a voice. You get a sharp, on-brand graphic and a caption written fresh for each home, ready for Facebook or Instagram.</p>
+  </div>
 
   <div class="layout">
     <div class="controlsCol">
@@ -97,14 +120,14 @@
             <option value="just-sold">Just Sold</option>
           </select>
         </label>
-        <label class="fld"><span>Address</span><input type="text" id="address" /></label>
+        <label class="fld"><span>Address</span><input type="text" id="address" placeholder="1234 Beach Loop Dr, Bandon, OR" /></label>
         <div class="row2">
-          <label class="fld"><span>Price</span><input type="text" id="price" /></label>
-          <label class="fld"><span>Square feet</span><input type="text" id="sqft" /></label>
+          <label class="fld"><span>Price</span><input type="text" id="price" placeholder="$725,000" /></label>
+          <label class="fld"><span>Square feet</span><input type="text" id="sqft" placeholder="1,840" /></label>
         </div>
         <div class="row2">
-          <label class="fld"><span>Beds</span><input type="text" id="beds" /></label>
-          <label class="fld"><span>Baths</span><input type="text" id="baths" /></label>
+          <label class="fld"><span>Beds</span><input type="text" id="beds" placeholder="3" /></label>
+          <label class="fld"><span>Baths</span><input type="text" id="baths" placeholder="2" /></label>
         </div>
         <label class="fld"><span>Highlights (one per line)</span><textarea id="features" style="min-height:84px"></textarea></label>
       </div>
@@ -120,12 +143,11 @@
 
       <div class="card pad">
         <h2 class="sectTitle"><span class="n">3</span> Your details</h2>
-        <label class="fld"><span>Brokerage</span><input type="text" id="brokerage" /></label>
+        <label class="fld"><span>Brokerage</span><input type="text" id="brokerage" placeholder="David L. Davis Real Estate" /></label>
         <div class="row2">
-          <label class="fld"><span>Agent</span><input type="text" id="agent" /></label>
-          <label class="fld"><span>Phone</span><input type="text" id="phone" /></label>
+          <label class="fld"><span>Agent</span><input type="text" id="agent" placeholder="Your name" /></label>
+          <label class="fld"><span>Phone</span><input type="text" id="phone" placeholder="(541) 000-0000" /></label>
         </div>
-        <label class="toggle"><input type="checkbox" id="eho" checked><span class="switch"></span> Equal Housing mark on image</label>
       </div>
     </div>
 
@@ -158,7 +180,7 @@
           <button data-tone="punchy" aria-pressed="false">Punchy</button>
           <button data-tone="luxury" aria-pressed="false">Luxury</button>
         </div>
-        <textarea id="caption" aria-label="Post caption" placeholder="Tap Write caption to generate."></textarea>
+        <textarea id="caption" aria-label="Post caption" placeholder="Fill in the listing, then tap Write caption."></textarea>
         <div class="status" id="capStatus"></div>
         <div class="capbar">
           <button class="btn gold" id="genCap">
@@ -174,20 +196,33 @@
       </div>
     </div>
   </div>
+
+  <div class="card pad note">
+    <div class="noteKick">A note from Winters Code</div>
+    <h2 class="noteTitle">Where this can go</h2>
+    <p class="noteLede">This is a working preview, tuned to David L. Davis Real Estate. A few things we can add as we go.</p>
+    <ul class="noteList">
+      <li><strong>Pull your listings in automatically.</strong> With MLS or IDX access, the address, price, beds, baths and photos fill themselves. No typing.</li>
+      <li><strong>Tune the voice to yours.</strong> The more you use it, the more we shape the captions to sound like you, not a template.</li>
+      <li><strong>See what is working.</strong> A simple dashboard that tracks how each post performs on Facebook and Instagram, so you can do more of what lands.</li>
+      <li><strong>Make it yours.</strong> If you can picture a feature that would help you, just ask. If it is doable, we can probably build it in.</li>
+    </ul>
+    <p class="noteFoot">We build it, tune it with you, and keep it running. Ideas or questions? Reach Winters Code at winterscode.com.</p>
+  </div>
+
+  <footer class="foot">Built and maintained by <a href="https://winterscode.com">Winters Code</a>. Help is just a text away.</footer>
 </div>
 <div class="toast" id="toast">Copied</div>
 
 <script>
 const $ = id => document.getElementById(id);
 const stage = $('stage'), ctx = stage.getContext('2d');
-const C = { navy:'#2c3e70', navyDeep:'#1d2a52' };
+const C = { navy:'#2c3e70', navyDeep:'#1d2a52', panel:'#15203b', gold:'#b08534' };
 
 const state = {
-  status:'just-listed', address:'1234 Beach Loop Dr, Bandon, OR',
-  price:'$725,000', sqft:'1,840', beds:'3', baths:'2',
-  features:'Ocean views\nUpdated kitchen\nMinutes to Old Town',
-  brokerage:'David L. Davis Real Estate', agent:'Keeli Gernandt', phone:'(541) 555-0123',
-  fmt:'square', layout:'editorial', tone:'warm', enhance:true, eho:true, photo:null
+  status:'just-listed', address:'', price:'', sqft:'', beds:'', baths:'',
+  features:'', brokerage:'', agent:'', phone:'',
+  fmt:'square', layout:'editorial', tone:'warm', enhance:true, photo:null
 };
 const STATUS = { 'just-listed':'JUST LISTED','open-house':'OPEN HOUSE','price-improved':'PRICE IMPROVED','coming-soon':'COMING SOON','just-sold':'JUST SOLD' };
 const STATUS_LABEL = { 'just-listed':'Just listed','open-house':'Open house','price-improved':'Price improved','coming-soon':'Coming soon','just-sold':'Just sold' };
@@ -198,7 +233,6 @@ const STATUS_LABEL = { 'just-listed':'Just listed','open-house':'Open house','pr
   el.addEventListener('input',upd); el.addEventListener('change',upd);
 });
 $('enhance').addEventListener('change',e=>{ state.enhance=e.target.checked; render(); });
-$('eho').addEventListener('change',e=>{ state.eho=e.target.checked; render(); });
 
 document.querySelectorAll('.seg').forEach(group=>{
   group.querySelectorAll('button').forEach(btn=>{
@@ -207,7 +241,7 @@ document.querySelectorAll('.seg').forEach(group=>{
       btn.setAttribute('aria-pressed','true');
       if(btn.dataset.layout){ state.layout=btn.dataset.layout; render(); }
       if(btn.dataset.fmt){ state.fmt=btn.dataset.fmt; render(); }
-      if(btn.dataset.tone){ state.tone=btn.dataset.tone; capIndex=0; genCaption(); }
+      if(btn.dataset.tone){ state.tone=btn.dataset.tone; capIndex=0; }
     });
   });
 });
@@ -238,9 +272,9 @@ function cover(img,x,y,w,h){
   ctx.drawImage(img,dx,dy,dw,dh); ctx.filter='none'; ctx.restore();
 }
 function placeholder(x,y,w,h){
-  const g=ctx.createLinearGradient(x,y,x+w,y+h); g.addColorStop(0,'#9fb0c9'); g.addColorStop(1,'#6f86a6');
+  const g=ctx.createLinearGradient(x,y,x+w,y+h); g.addColorStop(0,'#b7c2d6'); g.addColorStop(1,'#7c90ad');
   ctx.fillStyle=g; ctx.fillRect(x,y,w,h);
-  ctx.fillStyle='rgba(255,255,255,.9)'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.font='500 30px Oswald';
+  ctx.fillStyle='rgba(255,255,255,.92)'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.font='500 30px Oswald';
   ctx.fillText('ADD YOUR LISTING PHOTO', x+w/2, y+h/2); ctx.textAlign='left'; ctx.textBaseline='alphabetic';
 }
 function lText(t,x,y,ls){ let cx=x; for(const ch of t){ ctx.fillText(ch,cx,y); cx+=ctx.measureText(ch).width+ls; } return cx-ls; }
@@ -249,16 +283,17 @@ function lTextRight(t,xr,y,ls){ const w=lWidth(t,ls); lText(t,xr-w,y,ls); }
 function fit(t,max,base,fam,wt){ let s=base; ctx.font=wt+' '+s+'px '+fam; while(ctx.measureText(t).width>max&&s>16){ s-=1; ctx.font=wt+' '+s+'px '+fam; } return s; }
 function clip(t,max,font){ ctx.save(); ctx.font=font; if(ctx.measureText(t).width<=max){ctx.restore();return t;} let s=t; while(ctx.measureText(s+'…').width>max&&s.length>1) s=s.slice(0,-1); ctx.restore(); return s+'…'; }
 function specStr(){ return [state.beds&&state.beds+' BD',state.baths&&state.baths+' BA',state.sqft&&state.sqft+' SQFT'].filter(Boolean).join('   ·   '); }
-function tag(x,y,onDark){
-  const col=onDark?'#fff':C.navy; ctx.fillStyle=col;
-  ctx.fillRect(x,y,13,13);
-  ctx.font='500 27px Oswald'; ctx.textBaseline='alphabetic';
-  lText(STATUS[state.status], x+24, y+13, 4);
-}
-function wordmark(xr,y,onDark){
-  ctx.textBaseline='alphabetic';
-  ctx.fillStyle=onDark?'#fff':C.navy; ctx.font='500 25px Oswald';
-  lTextRight('DAVID L. DAVIS REAL ESTATE', xr, y, 2);
+function roundRect(x,y,w,h,r){ ctx.beginPath(); ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r); ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath(); }
+function accentRule(x,y,w){ ctx.fillStyle=C.gold; ctx.fillRect(x,y,w,3); }
+function brokeUpper(){ return (state.brokerage||'David L. Davis Real Estate').toUpperCase(); }
+function statusPill(x,y){
+  const label=STATUS[state.status], fs=24, ls=4, sq=12, gap=13, padx=18, pady=12;
+  ctx.font='600 '+fs+'px Oswald'; ctx.textBaseline='alphabetic';
+  const tw=lWidth(label,ls), w=padx*2+sq+gap+tw, h=fs+pady*2, cy=y+h/2;
+  roundRect(x,y,w,h,9); ctx.fillStyle='rgba(9,13,24,.46)'; ctx.fill();
+  ctx.strokeStyle='rgba(255,255,255,.30)'; ctx.lineWidth=1; ctx.stroke();
+  ctx.fillStyle=C.gold; ctx.fillRect(x+padx, cy-sq/2, sq, sq);
+  ctx.fillStyle='#fff'; ctx.font='600 '+fs+'px Oswald'; lText(label, x+padx+sq+gap, cy+fs*0.36, ls);
 }
 
 /* render */
@@ -269,42 +304,54 @@ function render(){
 }
 
 function editorial(W,H){
-  if(state.photo) cover(state.photo,0,0,W,H); else placeholder(0,0,W,H);
-  const g=ctx.createLinearGradient(0,H*0.40,0,H);
-  g.addColorStop(0,'rgba(14,20,38,0)'); g.addColorStop(.55,'rgba(14,20,38,.55)'); g.addColorStop(1,'rgba(14,20,38,.93)');
-  ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
-  const pad=72;
-  tag(pad,pad+4,true);
-  const bPrice = H-pad-110;
-  const ps=fit(state.price, W-pad*2, 104,'Oswald','700');
-  ctx.fillStyle='#fff'; ctx.font='700 '+ps+'px Oswald'; ctx.textBaseline='alphabetic';
-  ctx.fillText(state.price, pad, bPrice);
-  ctx.fillStyle='rgba(255,255,255,.92)'; ctx.font='400 30px Lato';
-  ctx.fillText(clip(state.address, W-pad*2, '400 30px Lato'), pad, bPrice+42);
-  ctx.strokeStyle='rgba(255,255,255,.34)'; ctx.lineWidth=2;
-  ctx.beginPath(); ctx.moveTo(pad,bPrice+70); ctx.lineTo(W-pad,bPrice+70); ctx.stroke();
-  const bFoot=bPrice+108;
-  ctx.fillStyle='#fff'; ctx.font='700 24px Lato'; lText(specStr(), pad, bFoot, 0.5);
-  wordmark(W-pad, bFoot, true);
-  if(state.eho){ ctx.fillStyle='rgba(255,255,255,.5)'; ctx.font='400 13px Lato'; ctx.textAlign='center'; ctx.fillText('EQUAL HOUSING OPPORTUNITY', W/2, H-24); ctx.textAlign='left'; }
+  const story = state.fmt==='story';
+  const photoH = story ? Math.round(H*0.60) : H;
+  if(state.photo) cover(state.photo,0,0,W,photoH); else placeholder(0,0,W,photoH);
+  if(story){
+    ctx.fillStyle=C.panel; ctx.fillRect(0,photoH,W,H-photoH);
+    const sg=ctx.createLinearGradient(0,photoH-150,0,photoH);
+    sg.addColorStop(0,'rgba(21,32,59,0)'); sg.addColorStop(1,C.panel);
+    ctx.fillStyle=sg; ctx.fillRect(0,photoH-150,W,150);
+  } else {
+    const g=ctx.createLinearGradient(0,H*0.30,0,H);
+    g.addColorStop(0,'rgba(9,13,26,0)'); g.addColorStop(.5,'rgba(9,13,26,.5)'); g.addColorStop(1,'rgba(9,13,26,.95)');
+    ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+    const tg=ctx.createLinearGradient(0,0,0,Math.round(H*0.18));
+    tg.addColorStop(0,'rgba(9,13,26,.5)'); tg.addColorStop(1,'rgba(9,13,26,0)');
+    ctx.fillStyle=tg; ctx.fillRect(0,0,W,Math.round(H*0.18));
+  }
+  const inset = story?42:36;
+  ctx.strokeStyle='rgba(255,255,255,.5)'; ctx.lineWidth=1.5;
+  ctx.strokeRect(inset+0.75, inset+0.75, W-inset*2-1.5, H-inset*2-1.5);
+  const padX = inset+30;
+  statusPill(padX, inset+30);
+  const yP = story ? (photoH + Math.round((H-photoH)/2) - 64) : (H - 160);
+  ctx.textBaseline='alphabetic';
+  const ps = fit(state.price, W-padX*2, story?112:96,'Oswald','700');
+  ctx.fillStyle='#fff'; ctx.font='700 '+ps+'px Oswald'; ctx.fillText(state.price, padX, yP);
+  ctx.fillStyle='rgba(255,255,255,.9)'; ctx.font='400 32px Lato';
+  ctx.fillText(clip(state.address, W-padX*2,'400 32px Lato'), padX, yP+42);
+  accentRule(padX, yP+66, 120);
+  ctx.fillStyle='#fff'; ctx.font='500 26px Oswald'; lText(specStr(), padX, yP+108, 4);
+  ctx.fillStyle='rgba(255,255,255,.88)'; ctx.font='500 23px Oswald'; lTextRight(brokeUpper(), W-padX, yP+108, 2);
 }
 
 function card(W,H){
-  const band = state.fmt==='story' ? 520 : 372;
-  const ph = H-band;
-  if(state.photo) cover(state.photo,0,0,W,ph); else placeholder(0,0,W,ph);
-  ctx.fillStyle='#fff'; ctx.fillRect(0,ph,W,band);
-  ctx.fillStyle=C.navy; ctx.fillRect(0,ph,W,5);
-  const pad=72; let y=ph+62;
-  tag(pad,y-14,false);
-  y+=70;
-  const ps=fit(state.price, W-pad*2, 84,'Oswald','700');
-  ctx.fillStyle=C.navy; ctx.font='700 '+ps+'px Oswald'; ctx.textBaseline='alphabetic'; ctx.fillText(state.price, pad, y);
-  y+=36; ctx.fillStyle='rgba(25,32,47,.72)'; ctx.font='400 27px Lato'; ctx.fillText(clip(state.address, W-pad*2, '400 27px Lato'), pad, y);
-  y+=28; ctx.strokeStyle='rgba(44,62,112,.22)'; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(pad,y); ctx.lineTo(W-pad,y); ctx.stroke();
-  y+=36; ctx.fillStyle=C.navy; ctx.font='700 23px Lato'; lText(specStr(), pad, y, 0.5);
-  wordmark(W-pad, y, false);
-  if(state.eho){ ctx.fillStyle='rgba(25,32,47,.4)'; ctx.font='400 13px Lato'; ctx.textAlign='center'; ctx.fillText('EQUAL HOUSING OPPORTUNITY', W/2, H-26); ctx.textAlign='left'; }
+  const story = state.fmt==='story';
+  ctx.fillStyle='#ffffff'; ctx.fillRect(0,0,W,H);
+  const photoH = story ? Math.round(H*0.60) : Math.round(H*0.62);
+  if(state.photo) cover(state.photo,0,0,W,photoH); else placeholder(0,0,W,photoH);
+  ctx.fillStyle=C.gold; ctx.fillRect(0,photoH,W,4);
+  statusPill(36,36);
+  const padX=72;
+  const yP = photoH + Math.round((H-photoH)/2) - 28;
+  ctx.textBaseline='alphabetic';
+  const ps=fit(state.price, W-padX*2, story?100:84,'Oswald','700');
+  ctx.fillStyle=C.navy; ctx.font='700 '+ps+'px Oswald'; ctx.fillText(state.price, padX, yP);
+  ctx.fillStyle='rgba(25,32,47,.7)'; ctx.font='400 30px Lato'; ctx.fillText(clip(state.address,W-padX*2,'400 30px Lato'), padX, yP+40);
+  accentRule(padX, yP+64, 120);
+  ctx.fillStyle=C.navy; ctx.font='500 26px Oswald'; lText(specStr(), padX, yP+106, 4);
+  ctx.fillStyle='rgba(44,62,112,.85)'; ctx.font='500 23px Oswald'; lTextRight(brokeUpper(), W-padX, yP+106, 2);
 }
 
 /* ===== live AI caption ===== */
@@ -343,7 +390,7 @@ Listing:
 - Highlights: ${f.length?f.join('; '):'none provided'}
 - Agent: ${state.agent}
 - Phone: ${state.phone}
-- Brokerage: ${state.brokerage}
+- Brokerage: ${state.brokerage||'David L. Davis Real Estate'}
 - Market: Bandon and the southern Oregon coast`;
 }
 
@@ -358,7 +405,9 @@ async function genCaption(){
       body: JSON.stringify({ status:state.status, address:state.address, price:state.price, beds:state.beds, baths:state.baths, sqft:state.sqft, features:feats(), agent:state.agent, phone:state.phone, brokerage:state.brokerage, tone:state.tone, n:capIndex })
     });
     const data = await res.json();
-    if(res.ok && data.caption){ $('caption').value=data.caption; } else { $('capStatus').textContent = data.error==='rate_limited' ? 'Daily caption limit reached, try again tomorrow.' : 'Could not generate. Tap Write caption to retry.'; setBusy(false); return; }
+    if(res.ok && data.caption){ $('caption').value=data.caption; }
+    else if(data.error==='rate_limited'){ $('capStatus').textContent="Sorry, you've hit the daily limit on this preview. It resets tomorrow. The full version has no cap."; setBusy(false); return; }
+    else { $('capStatus').textContent='Could not generate. Tap Write caption to retry.'; setBusy(false); return; }
   }catch(e){ $('capStatus').textContent='Caption service is unavailable. Tap Write caption to retry.'; setBusy(false); return; }
   setBusy(false);
 }
@@ -373,17 +422,17 @@ $('copyCap').addEventListener('click',async()=>{
 /* download */
 $('download').addEventListener('click',()=>{
   stage.toBlob(b=>{ const a=document.createElement('a');
-    const t=(state.address.split(',')[0]||'listing').replace(/[^a-z0-9]+/gi,'-').toLowerCase();
+    const t=(state.address.split(',')[0]||'listing').replace(/[^a-z0-9]+/gi,'-').toLowerCase()||'listing';
     a.download='post-'+t+'-'+state.fmt+'.png'; a.href=URL.createObjectURL(b); a.click();
     setTimeout(()=>URL.revokeObjectURL(a.href),1500); showToast('Post downloaded'); },'image/png');
 });
 let tT; function showToast(m){ const t=$('toast'); t.textContent=m; t.classList.add('show'); clearTimeout(tT); tT=setTimeout(()=>t.classList.remove('show'),1600); }
 
 /* boot */
-function boot(){ render(); genCaption(); }
+function boot(){ render(); }
 if(document.fonts&&document.fonts.ready){
   boot();
-  Promise.all([ document.fonts.load('700 92px "Oswald"'), document.fonts.load('500 25px "Oswald"'), document.fonts.load('700 24px "Lato"'), document.fonts.load('400 30px "Lato"') ]).then(render).catch(()=>{});
+  Promise.all([ document.fonts.load('700 92px "Oswald"'), document.fonts.load('600 24px "Oswald"'), document.fonts.load('500 26px "Oswald"'), document.fonts.load('400 32px "Lato"') ]).then(render).catch(()=>{});
 } else boot();
 </script>
 </body>
