@@ -225,11 +225,15 @@ async function probeLighthouse(target: string, key: string, strategy: 'mobile' |
   const categories = ['performance', 'accessibility', 'best-practices', 'seo'];
   for (const c of categories) params.append('category', c);
   try {
-    const res = await fetchWithTimeout(
-      `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?${params}`,
-      {},
-      PSI_TIMEOUT_MS,
-    );
+    const psiUrl = `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?${params}`;
+    let res = await fetchWithTimeout(psiUrl, {}, PSI_TIMEOUT_MS);
+    // PSI quota hiccups (429) and transient 5xx return fast; one short-fuse
+    // retry rescues most of them. Timeouts land in catch and never retry,
+    // so the Worker's 30s request budget holds.
+    if (res.status === 429 || res.status >= 500) {
+      await new Promise((r) => setTimeout(r, 1200 + Math.random() * 800));
+      res = await fetchWithTimeout(psiUrl, {}, 20000);
+    }
     if (!res.ok) {
       return { performance: null, accessibility: null, bestPractices: null, seo: null, source: 'unavailable' };
     }

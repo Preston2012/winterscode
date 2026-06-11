@@ -36,6 +36,10 @@ interface Commit {
 // Filter rules: skip prefixes that are noise to outside readers.
 const SKIP_PREFIXES = ['wip:', 'lint:', 'fmt:', 'chore:', 'typo:', 'style:', 'ci:', 'deps:', 'merge', 'Merge'];
 
+// Client-named work stays out of the public feed. Display-side only; git
+// history is unchanged. Covers client names and client domains.
+const PRIVATE_PATTERNS = [/davis/i, /keeli/i, /gernandt/i, /bandonhomes/i, /bandonrealtee/i, /\bbarry\b/i, /\bjodie\b/i, /seabreeze/i, /\bstacy\b/i];
+
 let commits: Commit[] = [];
 let buildError: string | null = null;
 
@@ -63,6 +67,8 @@ try {
       for (const skip of SKIP_PREFIXES) {
         if (lower.startsWith(skip.toLowerCase())) return null;
       }
+      // Skip client-named commits entirely
+      if (PRIVATE_PATTERNS.some((p) => p.test(message))) return null;
       // Detect the type prefix (everything before first ':')
       const colonIdx = message.indexOf(':');
       let type = '';

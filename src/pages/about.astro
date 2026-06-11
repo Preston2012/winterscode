@@ -14,6 +14,12 @@ import Contact from '../components/sections/Contact.astro';
   <Header />
   <MobileMenu />
 
+  <Fragment slot="head">
+    <!-- Preload the about hero wash (page LCP). Mirrors the homepage stamp
+         preload pattern: the fetch starts during HTML parse, not after CSS. -->
+    <link rel="preload" as="image" imagesrcset="/photo/local/grass-coast-wash-768.webp 768w, /photo/local/grass-coast-wash-1600.webp 1600w" imagesizes="100vw" fetchpriority="high" />
+  </Fragment>
+
   <PageHero
     eyebrow="About · Preston Winters"
     h1="I'm Preston Winters."
@@ -21,6 +27,7 @@ import Contact from '../components/sections/Contact.astro';
     sub2="I've owned small businesses. I know what it's like to drown in software you didn't choose."
     bgImage="/photo/local/grass-coast-wash"
     bgOpacity={0.4}
+    lcp
   />
 
   <Divider label="01" />

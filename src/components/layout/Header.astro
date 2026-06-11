@@ -370,6 +370,9 @@ const navItems = [
     color: var(--color-copper-bright);
     font-weight: 600;
   }
+  /* 44px floor for the most-tapped control on a phone. Hit-area only:
+     the negative margin cancels the layout shift. */
+  .topmark-menu-btn { min-width: 44px; min-height: 44px; padding: 10px 8px; margin: -10px -8px; }
 </style>
 
 

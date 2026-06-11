@@ -29,6 +29,8 @@ interface Props {
   sub3?: string;
   showStamp?: boolean;
   bgImage?: string;
+  /** Mark the wash image as the page LCP: high fetch priority (the page should also preload it). */
+  lcp?: boolean;
   bgOpacity?: number;
   bgPosition?: string;
   /** Showcase mode: prominent full-bleed photo with text in the photo's
@@ -42,7 +44,7 @@ interface Props {
   textPos?: 'top' | 'bottom' | 'split';
 }
 
-const { eyebrow, h1, sub, sub2, sub3, showStamp = false, bgImage, bgOpacity = 0.3, bgPosition = 'center', showcase = false, textPos = 'bottom' } = Astro.props;
+const { eyebrow, h1, sub, sub2, sub3, showStamp = false, bgImage, bgOpacity = 0.3, bgPosition = 'center', lcp = false, showcase = false, textPos = 'bottom' } = Astro.props;
 ---
 
 <section class:list={['page-hero', { showcase: showcase && bgImage, 'showcase-top': showcase && bgImage && textPos === 'top', 'showcase-split': showcase && bgImage && textPos === 'split' }]} aria-labelledby="page-hero-h1">
@@ -54,7 +56,7 @@ const { eyebrow, h1, sub, sub2, sub3, showStamp = false, bgImage, bgOpacity = 0.
         sizes="100vw"
         alt=""
         decoding="async"
-        fetchpriority="low"
+        fetchpriority={lcp ? 'high' : 'low'}
       />
     </div>
   )}
