@@ -188,6 +188,9 @@ const id = `xp-${Math.random().toString(36).slice(2, 9)}`;
       transition: none;
     }
   }
+  /* Expand the tap target to 44px without moving the visual glyph. */
+  .xp { position: relative; }
+  .xp::after { content: ''; position: absolute; inset: -15px; }
 </style>
 
 <script is:inline>

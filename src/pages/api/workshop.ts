@@ -256,6 +256,10 @@ async function fetchGitHub(
       const repoShort = showable.repo?.name?.split('/').pop() ?? 'repo';
       last_message = `[private repo] · ${repoShort} · main`;
     }
+    // Client-named commit subjects stay out of the public feed.
+    if (/davis|keeli|gernandt|bandonhomes|bandonrealtee|\bbarry\b|\bjodie\b|seabreeze|\bstacy\b/i.test(last_message)) {
+      last_message = 'client build · main';
+    }
     // 30-day rolling count of push events
     // cutoffMs already defined above for pagination
     const recent = pushEvents.filter(e => new Date(e.created_at).getTime() > cutoffMs);

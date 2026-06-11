@@ -107,7 +107,7 @@ const WORKSHOP_PREVIEW = [
         role="button"
         tabindex="0"
         aria-label={`Industry: ${PHRASES[0]}. Click to see another.`}
-      >{PHRASES[0]}</span>.
+      >{PHRASES[0]}.</span>
     </p>
 
     <div class="hero-cta">
@@ -193,7 +193,7 @@ const WORKSHOP_PREVIEW = [
     }
     // Set the initial phrase to index 0 of the shuffled order so the
     // first thing the visitor sees isn't always the first source phrase.
-    el.textContent = phrases[0];
+    el.textContent = phrases[0] + '.';
     el.setAttribute('aria-label', 'Industry: ' + phrases[0] + '. Click to see another.');
 
     const FADE_MS = 400;
@@ -209,7 +209,7 @@ const WORKSHOP_PREVIEW = [
       el.style.opacity = '0';
       setTimeout(function () {
         idx = (idx + 1) % phrases.length;
-        el.textContent = phrases[idx];
+        el.textContent = phrases[idx] + '.';
         el.setAttribute('aria-label', 'Industry: ' + phrases[idx] + '. Click to see another.');
         el.style.opacity = '1';
       }, FADE_MS);
