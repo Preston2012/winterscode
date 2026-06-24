@@ -30,6 +30,7 @@ interface WallRow {
   primary: string;
   secondary?: string;
   tertiary?: string;
+  quaternary?: string;
   meta?: string;
   featured?: boolean;
   /** API source key used to look up live/cached/fallback state. */
@@ -57,6 +58,7 @@ const ROWS: WallRow[] = [
     primary: 'winterscode 97/100/100/100',
     secondary: 'sogn 99/100/100/100',
     tertiary: 'baseline 92/100/100/100',
+    quaternary: 'bandon 96/100/100/100',
     explain:
       'Google\'s scorecard for any website. Four numbers, 0 to 100 each: speed, accessibility, security, and how well Google can read the page. 100 is perfect. Most small-business sites score 50-70. Scores shown are mobile (the harder test). Desktop usually runs 2 to 5 points higher.',
   },
@@ -113,6 +115,7 @@ const ROWS: WallRow[] = [
           {row.secondary && row.tertiary && <span class="row-secondary row-secondary-block">{row.secondary}</span>}
           {row.secondary && !row.tertiary && <span class="row-secondary"> · {row.secondary}</span>}
           {row.tertiary && <span class="row-tertiary">{row.tertiary}</span>}
+          {row.quaternary && <span class="row-quaternary">{row.quaternary}</span>}
         </span>
         {row.meta && <span class="row-meta">{row.meta}</span>}
       </li>
@@ -144,7 +147,7 @@ const ROWS: WallRow[] = [
       badge.textContent = source;
     }
 
-    function setRow(label, primary, secondary, meta, tertiary) {
+    function setRow(label, primary, secondary, meta, tertiary, quaternary) {
       const rows = wall.querySelectorAll('.wall-row');
       rows.forEach(function (row) {
         const lbl = row.querySelector('.row-label');
@@ -168,6 +171,8 @@ const ROWS: WallRow[] = [
         }
         if (met && meta) met.textContent = meta;
         if (ter && tertiary) ter.textContent = tertiary;
+        var quat = row.querySelector('.row-quaternary');
+        if (quat && quaternary) quat.textContent = quaternary;
       });
     }
 
@@ -199,13 +204,16 @@ const ROWS: WallRow[] = [
           var wc = fmtLh(d.lighthouse.winterscode);
           var sogn = fmtLh(d.lighthouse.sogn);
           var base = fmtLh(d.lighthouse.baseline);
-          // Each site on its own line. setRow signature: (label, primary, secondary, meta).
-          // Use meta slot for baseline (third line position).
-          if (wc && sogn && base) {
-            // 3 sites on 3 lines. tertiary slot for baseline, meta unused.
+          var bbtd = fmtLh(d.lighthouse.bbtd);
+          // Each site on its own line. setRow signature: (label, primary, secondary, meta, tertiary, quaternary).
+          if (wc && sogn && base && bbtd) {
+            // 4 sites on 4 lines.
+            setRow('LIGHTHOUSE', 'winterscode ' + wc, 'sogn ' + sogn, null, 'baseline ' + base, 'bandon ' + bbtd);
+          } else if (wc && sogn && base) {
+            // bbtd failed PSI, keep the other three live.
             setRow('LIGHTHOUSE', 'winterscode ' + wc, 'sogn ' + sogn, null, 'baseline ' + base);
           } else if (wc && sogn) {
-            // Baseline failed PSI, keep wc + sogn live.
+            // Only wc + sogn live.
             setRow('LIGHTHOUSE', 'winterscode ' + wc, 'sogn ' + sogn, null);
           }
         }
@@ -506,6 +514,11 @@ const ROWS: WallRow[] = [
     color: var(--color-ash-400);
   }
   .row-tertiary {
+    color: var(--color-ash-400);
+    display: block;
+    margin-top: 2px;
+  }
+  .row-quaternary {
     color: var(--color-ash-400);
     display: block;
     margin-top: 2px;

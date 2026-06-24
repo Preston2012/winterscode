@@ -38,6 +38,7 @@ interface WorkshopData {
     winterscode: [number, number, number, number]; // [perf, a11y, seo, best]
     sogn:        [number, number, number, number];
     baseline:    [number, number, number, number];
+    bbtd:        [number, number, number, number];
     measured: string; // "8m ago"
     source: 'live' | 'fallback';
   };
@@ -84,6 +85,9 @@ const FALLBACK: WorkshopData = {
     // Baseline.marketing: heavier site (Scifi entry, animations), PSI flaky
     // on the www subdomain. Conservative fallback below typical PSI scores.
     baseline:    [95, 100, 100, 100],
+    // Bandon By The Dunes Realtee (Astro on Cloudflare). Confirmed live PSI
+    // median (mobile), measured 2026-06-24: perf 95, a11y/seo/best 100.
+    bbtd:        [95, 100, 100, 100],
     measured: '8m ago',
     source: 'fallback',
   },
@@ -359,17 +363,19 @@ async function fetchPSI(
   // Measure the canonical www directly. The old PSI Lighthouse-500 on www is
   // resolved (verified May 2026, www PSI ~96). Measuring the bare apex paid the
   // 301 to www redirect penalty (~92 vs ~96 on www); www matches the sogn entry.
-  const [wc, sogn, baseline] = await Promise.all([
+  const [wc, sogn, baseline, bbtd] = await Promise.all([
     auditSite('https://winterscode.com', FALLBACK.lighthouse.winterscode),
     auditSite('https://www.sogncontracting.com', FALLBACK.lighthouse.sogn),
     auditSite('https://www.baseline.marketing', FALLBACK.lighthouse.baseline),
+    auditSite('https://www.bandonbythedunesrealtee.net', FALLBACK.lighthouse.bbtd),
   ]);
   // Source flag is 'live' if any site returned non-fallback data.
   // UI shows "live · partial" when not all 3 succeeded.
   const isLive =
     JSON.stringify(wc) !== JSON.stringify(FALLBACK.lighthouse.winterscode) ||
     JSON.stringify(sogn) !== JSON.stringify(FALLBACK.lighthouse.sogn) ||
-    JSON.stringify(baseline) !== JSON.stringify(FALLBACK.lighthouse.baseline);
+    JSON.stringify(baseline) !== JSON.stringify(FALLBACK.lighthouse.baseline) ||
+    JSON.stringify(bbtd) !== JSON.stringify(FALLBACK.lighthouse.bbtd);
 
   // Rolling-best display. Keep the last N live runs per site in KV and show the
   // element-wise best-of-N per category, so a single cold/throttled PSI run (or
@@ -391,8 +397,8 @@ async function fetchPSI(
     };
     return [pick(0), pick(1), pick(2), pick(3)];
   };
-  let hist: { winterscode: Quad[]; sogn: Quad[]; baseline: Quad[] } =
-    { winterscode: [], sogn: [], baseline: [] };
+  let hist: { winterscode: Quad[]; sogn: Quad[]; baseline: Quad[]; bbtd: Quad[] } =
+    { winterscode: [], sogn: [], baseline: [], bbtd: [] };
   if (kv) {
     try { const h = await kv.get<typeof hist>(HIST_KEY, 'json'); if (h) hist = h; } catch { /* non-fatal */ }
   }
@@ -403,6 +409,7 @@ async function fetchPSI(
     winterscode: roll(hist.winterscode, wc, FALLBACK.lighthouse.winterscode),
     sogn: roll(hist.sogn, sogn, FALLBACK.lighthouse.sogn),
     baseline: roll(hist.baseline, baseline, FALLBACK.lighthouse.baseline),
+    bbtd: roll(hist.bbtd, bbtd, FALLBACK.lighthouse.bbtd),
   };
   if (kv && isLive) {
     try { await kv.put(HIST_KEY, JSON.stringify(hist), { expirationTtl: HIST_TTL }); } catch { /* non-fatal */ }
@@ -412,6 +419,7 @@ async function fetchPSI(
     winterscode: aggregate(hist.winterscode, wc),
     sogn: aggregate(hist.sogn, sogn),
     baseline: aggregate(hist.baseline, baseline),
+    bbtd: aggregate(hist.bbtd, bbtd),
     measured: 'just now',
     source: isLive ? 'live' : 'fallback',
   };

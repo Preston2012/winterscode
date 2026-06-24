@@ -15,7 +15,7 @@ interface WorkCard {
   desc: string;
   stack: [string, string];
   status: 'LIVE' | 'BETA' | 'PROD';
-  built_in_days: number;
+  built_in_days?: number;
   external_url?: string;
   /** Optional hero image (overrides editorial glyph). */
   image?: {
@@ -30,6 +30,23 @@ interface WorkCard {
 
 const CARDS: WorkCard[] = [
   {
+    id: 'bandon-by-the-dunes',
+    title: 'Bandon By The Dunes Realtee',
+    desc: 'Real estate site with listings live from the RMLS feed.',
+    stack: ['Astro', 'RMLS API'],
+    status: 'LIVE',
+    built_in_days: 18,
+    external_url: 'https://www.bandonbythedunesrealtee.net',
+    image: {
+      src: '/work/bbtd-card.webp',
+      srcSmall: '/work/bbtd-card-720.webp',
+      srcXSmall: '/work/bbtd-card-480.webp',
+      alt: 'Bandon By The Dunes Realtee: navy lighthouse mark on cream.',
+      width: 1200,
+      height: 630,
+    },
+  },
+  {
     id: 'sogn-contracting',
     title: 'Sogn Contracting',
     desc: 'Marketing site for a 30-year Bandon contractor.',
@@ -41,7 +58,7 @@ const CARDS: WorkCard[] = [
       src: '/work/sogn-card.webp',
       srcSmall: '/work/sogn-card-720.webp',
       srcXSmall: '/work/sogn-card-480.webp',
-      alt: 'Sogn Contracting Bandon Oregon: company logo with green and gold accents.',
+      alt: 'Sogn Contracting LLC, Bandon Oregon. 30 years of construction. Paul Sogn, Oregon CCB# 257491.',
       width: 1200,
       height: 630,
     },
@@ -133,7 +150,7 @@ const CARDS: WorkCard[] = [
             <p class="sw-desc">{card.desc}</p>
             <div class="sw-stack">
               {card.stack.map((s) => <span class="sw-tag">{s}</span>)}
-              <span class="sw-built">Built in {card.built_in_days}d</span>
+              {card.built_in_days != null && <span class="sw-built">Built in {card.built_in_days}d</span>}
             </div>
           </div>
         </a>
@@ -290,7 +307,7 @@ const CARDS: WorkCard[] = [
   }
   .sw-title-row {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
     gap: 8px;
   }
@@ -300,6 +317,7 @@ const CARDS: WorkCard[] = [
     font-weight: 600;
     color: var(--color-ash-100);
     letter-spacing: -0.01em;
+    min-width: 0;
   }
   @media (min-width: 1024px) {
     .sw-title { font-size: 19px; }
@@ -312,6 +330,8 @@ const CARDS: WorkCard[] = [
     border-radius: 3px;
     text-transform: uppercase;
     font-weight: 600;
+    white-space: nowrap;
+    flex-shrink: 0;
   }
   .sw-status-live {
     background: rgba(77, 216, 168, 0.15);

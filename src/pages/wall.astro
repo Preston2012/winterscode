@@ -51,7 +51,7 @@ try {
 
 // Safe extractors with sensible fallbacks
 const deploys = initialData?.deploys ?? { last: '.', last_message: '.', count_30d: 0, repo_count: 0, source: 'fallback' };
-const lighthouse = initialData?.lighthouse ?? { winterscode: [0,0,0,0], sogn: [0,0,0,0], baseline: [0,0,0,0], measured: '.', source: 'fallback' };
+const lighthouse = initialData?.lighthouse ?? { winterscode: [0,0,0,0], sogn: [0,0,0,0], baseline: [0,0,0,0], bbtd: [0,0,0,0], measured: '.', source: 'fallback' };
 const security = initialData?.security ?? { grade: '.', headers_ok: [], source: 'fallback' };
 const engine = initialData?.engine ?? { memories: 0, added_last_7d: 0, uptime_30d_pct: 0, source: 'fallback' };
 const calendar = initialData?.calendar ?? { next: '.', source: 'fallback' };
@@ -61,6 +61,7 @@ const speed = initialData?.speed ?? { last_three: '.', source: 'fallback' };
 const lhWC = Array.isArray(lighthouse.winterscode) ? lighthouse.winterscode : [0,0,0,0];
 const lhSogn = Array.isArray(lighthouse.sogn) ? lighthouse.sogn : [0,0,0,0];
 const lhBaseline = Array.isArray(lighthouse.baseline) ? lighthouse.baseline : [0,0,0,0];
+const lhBbtd = Array.isArray(lighthouse.bbtd) ? lighthouse.bbtd : [0,0,0,0];
 
 // LH average (P/A/SEO/BP). easier to scan at a glance
 function avg(arr: number[]): number {
@@ -70,6 +71,7 @@ function avg(arr: number[]): number {
 const lhWCAvg = avg(lhWC);
 const lhSognAvg = avg(lhSogn);
 const lhBaselineAvg = avg(lhBaseline);
+const lhBbtdAvg = avg(lhBbtd);
 
 // Engine memory format with thousands separator
 const memCount = (engine.memories ?? 0).toLocaleString();
@@ -173,6 +175,14 @@ const updatedAt = initialData?.updated_at ?? new Date().toISOString();
               <td class="wall-num" data-lh-baseline-2>{lhBaseline[2]}</td>
               <td class="wall-num" data-lh-baseline-3>{lhBaseline[3]}</td>
               <td class="wall-num wall-num-strong" data-lh-baseline-avg>{lhBaselineAvg}</td>
+            </tr>
+            <tr>
+              <th scope="row">bandon</th>
+              <td class="wall-num" data-lh-bbtd-0>{lhBbtd[0]}</td>
+              <td class="wall-num" data-lh-bbtd-1>{lhBbtd[1]}</td>
+              <td class="wall-num" data-lh-bbtd-2>{lhBbtd[2]}</td>
+              <td class="wall-num" data-lh-bbtd-3>{lhBbtd[3]}</td>
+              <td class="wall-num wall-num-strong" data-lh-bbtd-avg>{lhBbtdAvg}</td>
             </tr>
           </tbody>
         </table>
@@ -375,6 +385,11 @@ const updatedAt = initialData?.updated_at ?? new Date().toISOString();
                 for (var i = 0; i < 4; i++) setText('[data-lh-baseline-' + i + ']', lh.baseline[i]);
                 var avgBaseline = Math.round(lh.baseline.reduce(function(a,b){return a+b;},0) / 4);
                 setText('[data-lh-baseline-avg]', avgBaseline);
+              }
+              if (Array.isArray(lh.bbtd)) {
+                for (var i = 0; i < 4; i++) setText('[data-lh-bbtd-' + i + ']', lh.bbtd[i]);
+                var avgBbtd = Math.round(lh.bbtd.reduce(function(a,b){return a+b;},0) / 4);
+                setText('[data-lh-bbtd-avg]', avgBbtd);
               }
               setText('[data-lh-measured]', lh.measured);
             }

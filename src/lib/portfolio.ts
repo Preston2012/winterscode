@@ -60,8 +60,44 @@ export interface PortfolioItem {
 export const portfolio: PortfolioItem[] = [
   // ─────────── SITES ───────────
   {
-    slug: 'sogn-contracting',
+    slug: 'bandon-by-the-dunes',
     numeral: 'i.',
+    name: 'Bandon By The Dunes Realtee',
+    category: 'site',
+    meta: 'bandonbythedunesrealtee.net · real estate · live RMLS listings',
+    tags: ['ASTRO', 'RMLS API', 'CLOUDFLARE'],
+    status: 'live',
+    order: 5,
+    image: {
+      src: '/work/bbtd-card.webp',
+      srcSmall: '/work/bbtd-card-720.webp',
+      srcXSmall: '/work/bbtd-card-480.webp',
+      alt: 'Bandon By The Dunes Realtee: navy lighthouse mark on cream, with broker names and Oregon license numbers.',
+      width: 1200,
+      height: 630,
+    },
+    details: [
+      {
+        label: 'Stack',
+        value: 'Astro · Cloudflare Workers · D1 · direct RMLS listing feed',
+      },
+      {
+        label: 'Scope',
+        value:
+          'Real estate site for a Bandon brokerage. Listings pull straight from the RMLS feed, so the page shows current inventory with no third-party IDX widget. Map, search, and dunes-distance context built in.',
+      },
+      {
+        label: 'Result',
+        value: 'Live with real RMLS listings, mobile-first, measured on the wall above.',
+      },
+    ],
+    links: [
+      { label: 'Visit site →', href: 'https://www.bandonbythedunesrealtee.net', primary: true },
+    ],
+  },
+  {
+    slug: 'sogn-contracting',
+    numeral: 'ii.',
     name: 'Sogn Contracting',
     category: 'site',
     meta: 'sogncontracting.com · contractor · 3-day build',
@@ -102,7 +138,7 @@ export const portfolio: PortfolioItem[] = [
   },
   {
     slug: 'baseline-marketing',
-    numeral: 'ii.',
+    numeral: 'iii.',
     name: 'Baseline Marketing',
     category: 'site',
     meta: 'baseline.marketing · 13 pages · 22 custom widgets',

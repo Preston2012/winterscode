@@ -413,6 +413,7 @@ import Instrument from '../components/sections/Instrument.astro';
         }
         // Each /work card gets its real site's PSI scores.
         // Previously baseline-marketing card showed winterscode scores by mistake.
+        if (lh.bbtd) fill('bandon-by-the-dunes', lh.bbtd);
         if (lh.baseline) fill('baseline-marketing', lh.baseline);
         if (lh.sogn) fill('sogn-contracting', lh.sogn);
       } catch (e) {
