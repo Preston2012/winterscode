@@ -98,7 +98,7 @@ interface AuditFinding {
 
 const ALLOWED_PROTOCOLS = new Set(['http:', 'https:']);
 const FETCH_TIMEOUT_MS = 8000;
-const PSI_TIMEOUT_MS = 25000; // PSI is slow on real-world sites. 25s timeout sits comfortably within Worker 30s request budget since mobile+desktop run in parallel (max time = 25s, not 50s). Bumped from 18s after Coos County audit showed many timeouts that PSI would have completed with more time (e.g. Plainview Motel returned unavailable at exactly 18s, suggesting the call was on track but cut off).
+const PSI_TIMEOUT_MS = 55000; // Wait up to ~55s so a slow mobile run finishes inline (PSI mobile uses a 4x throttle). UI says up to 60s. Mobile and desktop run in parallel, so wall time is ~one run.
 
 /**
  * Normalize a user-supplied URL string into a parseable absolute URL.
@@ -205,34 +205,169 @@ function structuralGrade(r: Omit<AuditResult, 'findings' | 'overall' | 'overallS
   return 'F';
 }
 
-function scoreToGrade(scores: number[]): 'A' | 'B' | 'C' | 'D' | 'F' | null {
-  const valid = scores.filter((s) => s != null && !Number.isNaN(s));
-  if (valid.length === 0) return null;
-  const avg = valid.reduce((a, b) => a + b, 0) / valid.length;
-  if (avg >= 90) return 'A';
-  if (avg >= 80) return 'B';
-  if (avg >= 70) return 'C';
-  if (avg >= 60) return 'D';
+function letterFromScore(s: number): 'A' | 'B' | 'C' | 'D' | 'F' {
+  if (s >= 90) return 'A';
+  if (s >= 80) return 'B';
+  if (s >= 70) return 'C';
+  if (s >= 60) return 'D';
   return 'F';
 }
 
-async function probeLighthouse(target: string, key: string, strategy: 'mobile' | 'desktop'): Promise<LighthouseScores> {
-  const params = new URLSearchParams({
-    url: target,
-    strategy,
-    key,
-  });
-  const categories = ['performance', 'accessibility', 'best-practices', 'seo'];
-  for (const c of categories) params.append('category', c);
+const GRADE_RANK: Record<'A' | 'B' | 'C' | 'D' | 'F', number> = { A: 4, B: 3, C: 2, D: 1, F: 0 };
+
+// Observatory sometimes returns a letter without a number. Map it so security still counts.
+function gradeStringToScore(g: string): number {
+  const m: Record<string, number> = {
+    'A+': 95, A: 92, 'A-': 88,
+    'B+': 83, B: 80, 'B-': 77,
+    'C+': 73, C: 70, 'C-': 66,
+    'D+': 63, D: 60, 'D-': 56,
+    F: 40,
+  };
+  return m[g.trim().toUpperCase()] ?? 50;
+}
+
+/**
+ * Overall grade from Lighthouse plus security. Not a flat average.
+ *
+ * A flat mean of all eight Lighthouse numbers misleads in two ways:
+ *   1. SEO and Best Practices are nearly free to max, so they prop a weak site
+ *      up. Mobile performance is the hardest number and the one every phone
+ *      visitor feels, so it carries the most weight here.
+ *   2. A site can be quick on desktop and slow on a phone. Phones are where the
+ *      traffic is, so the grade is gated on mobile performance: a site that is
+ *      slow on a phone cannot earn a top grade no matter how clean the rest is.
+ *
+ * Security (Mozilla Observatory) is folded in too, so missing HSTS, CSP and the
+ * like pull the grade down instead of sitting off to the side.
+ */
+function overallGrade(
+  lh: AuditResult['lighthouse'],
+  sec: AuditResult['security'],
+): 'A' | 'B' | 'C' | 'D' | 'F' | null {
+  const pick = (a: number | null, b: number | null): number | null =>
+    a != null && !Number.isNaN(a) ? a : b != null && !Number.isNaN(b) ? b : null;
+
+  // Per category, mobile preferred, desktop as the fallback when a PSI run is
+  // missing. Keeps the grade stable whether or not the mobile run came back.
+  const perfM = lh.mobile.performance;
+  const perfD = lh.desktop.performance;
+  const perf = pick(perfM, perfD);
+  const a11y = pick(lh.mobile.accessibility, lh.desktop.accessibility);
+  const bp = pick(lh.mobile.bestPractices, lh.desktop.bestPractices);
+  const seo = pick(lh.mobile.seo, lh.desktop.seo);
+
+  // Lighthouse composite. Performance and accessibility carry the weight. SEO
+  // and Best Practices are nearly free to max, so they count for less.
+  const parts: Array<{ v: number | null; w: number }> = [
+    { v: perf, w: 0.45 },
+    { v: a11y, w: 0.25 },
+    { v: bp, w: 0.15 },
+    { v: seo, w: 0.15 },
+  ];
+  const present = parts.filter((p) => p.v != null && !Number.isNaN(p.v));
+  if (present.length === 0) return null;
+  const wsum = present.reduce((a, p) => a + p.w, 0);
+  const composite = present.reduce((a, p) => a + (p.v as number) * p.w, 0) / wsum;
+
+  let grade = letterFromScore(composite);
+
+  // Gate on mobile performance: the number every phone visitor feels, and most
+  // customers are on phones. When the mobile run is missing, estimate it from
+  // desktop (mobile usually scores lower) so the gate still applies.
+  const perfForGate = perfM != null ? perfM : perfD != null ? perfD - 12 : null;
+  if (perfForGate != null) {
+    let cap: 'A' | 'B' | 'C' | 'D' | 'F';
+    if (perfForGate >= 90) cap = 'A';
+    else if (perfForGate >= 75) cap = 'B';
+    else if (perfForGate >= 50) cap = 'C';
+    else if (perfForGate >= 35) cap = 'D';
+    else cap = 'F';
+    if (GRADE_RANK[grade] > GRADE_RANK[cap]) grade = cap;
+  }
+
+  // Gate on security (Mozilla Observatory). Missing headers cap the grade
+  // instead of being shown off to the side.
+  let secScore: number | null = null;
+  if (sec.source === 'live') {
+    if (typeof sec.score === 'number') secScore = Math.max(0, Math.min(100, sec.score));
+    else if (sec.grade) secScore = gradeStringToScore(sec.grade);
+  }
+  if (secScore != null) {
+    let cap: 'A' | 'B' | 'C' | 'D' | 'F' = 'A';
+    if (secScore < 50) cap = 'C';
+    else if (secScore < 70) cap = 'B';
+    if (GRADE_RANK[grade] > GRADE_RANK[cap]) grade = cap;
+  }
+
+  return grade;
+}
+
+const PSI_CACHE_TTL_S = 1800; // 30 min. Repeat audits of the same URL return instantly and complete.
+
+function psiCacheUrl(target: string, strategy: 'mobile' | 'desktop'): string {
+  // Synthetic Cache API key, never actually fetched.
+  return `https://psi.internal/${strategy}/${encodeURIComponent(target)}`;
+}
+
+async function psiCacheGet(target: string, strategy: 'mobile' | 'desktop'): Promise<LighthouseScores | null> {
   try {
-    const psiUrl = `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?${params}`;
-    let res = await fetchWithTimeout(psiUrl, {}, PSI_TIMEOUT_MS);
-    // PSI quota hiccups (429) and transient 5xx return fast; one short-fuse
-    // retry rescues most of them. Timeouts land in catch and never retry,
-    // so the Worker's 30s request budget holds.
-    if (res.status === 429 || res.status >= 500) {
-      await new Promise((r) => setTimeout(r, 1200 + Math.random() * 800));
-      res = await fetchWithTimeout(psiUrl, {}, 20000);
+    // @ts-ignore : caches is available in Workers runtime
+    const cache = caches.default;
+    const hit = await cache.match(psiCacheUrl(target, strategy));
+    if (!hit) return null;
+    const j = (await hit.json()) as Partial<LighthouseScores>;
+    if (j && typeof j.performance === 'number') {
+      return {
+        performance: j.performance ?? null,
+        accessibility: j.accessibility ?? null,
+        bestPractices: j.bestPractices ?? null,
+        seo: j.seo ?? null,
+        source: 'live',
+      };
+    }
+  } catch {
+    // cache miss or parse failure: treat as no cache
+  }
+  return null;
+}
+
+async function psiCachePut(target: string, strategy: 'mobile' | 'desktop', s: LighthouseScores): Promise<void> {
+  // Only cache a run that actually produced a performance number.
+  if (s.performance == null) return;
+  try {
+    // @ts-ignore
+    const cache = caches.default;
+    await cache.put(
+      psiCacheUrl(target, strategy),
+      new Response(JSON.stringify(s), {
+        headers: { 'cache-control': `max-age=${PSI_CACHE_TTL_S}`, 'content-type': 'application/json' },
+      }),
+    );
+  } catch {
+    // non-fatal
+  }
+}
+
+// One PSI fetch plus parse. 429/5xx get one short retry. Timeouts surface as unavailable.
+async function runPsi(
+  target: string,
+  key: string,
+  strategy: 'mobile' | 'desktop',
+  timeoutMs: number,
+): Promise<LighthouseScores> {
+  const params = new URLSearchParams({ url: target, strategy, key });
+  for (const c of ['performance', 'accessibility', 'best-practices', 'seo']) params.append('category', c);
+  const psiUrl = `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?${params}`;
+  try {
+    const t0 = Date.now();
+    let res = await fetchWithTimeout(psiUrl, {}, timeoutMs);
+    // Retry once on a FAST 429/5xx only. A slow upstream already spent the
+    // request budget, and retrying then risks the Worker being cut off
+    // mid-response (which returns nothing at all).
+    if ((res.status === 429 || res.status >= 500) && Date.now() - t0 < 8000) {
+      await new Promise((r) => setTimeout(r, 1200));
+      res = await fetchWithTimeout(psiUrl, {}, 12000);
     }
     if (!res.ok) {
       return { performance: null, accessibility: null, bestPractices: null, seo: null, source: 'unavailable' };
@@ -258,12 +393,42 @@ async function probeLighthouse(target: string, key: string, strategy: 'mobile' |
 }
 
 /**
+ * Lighthouse for one strategy, with a read-through cache.
+ *
+ * PSI mobile runs on a 4x CPU throttle and can take longer than a single Worker
+ * request should wait. Serve a cached result when we have one; otherwise make
+ * exactly one PSI call within budget and cache it. If it times out, scores are
+ * unavailable for that run and the cache fills on a re-run. No second call.
+ */
+async function probeLighthouse(
+  target: string,
+  key: string,
+  strategy: 'mobile' | 'desktop',
+): Promise<LighthouseScores> {
+  const cached = await psiCacheGet(target, strategy);
+  if (cached) return cached;
+
+  // One PSI call per run, never a second. If it lands, cache it for next time.
+  // If it times out, scores are simply unavailable for this run and the cache
+  // fills on a re-run; the page's single retry grabs a slow mobile score from
+  // Google's own cache without us firing a parallel call.
+  const result = await runPsi(target, key, strategy, PSI_TIMEOUT_MS);
+  if (result.source === 'live' && result.performance != null) {
+    await psiCachePut(target, strategy, result);
+  }
+  return result;
+}
+
+/**
  * Run mobile AND desktop PSI in parallel. Returns the combined shape with both
  * sets of scores. Legacy fields (performance/accessibility/etc on the top
  * level) mirror mobile for back-compat. mobile is the harder test, so it's
  * the default surface.
  */
-async function probeLighthouseBoth(target: string, key: string): Promise<AuditResult['lighthouse']> {
+async function probeLighthouseBoth(
+  target: string,
+  key: string,
+): Promise<AuditResult['lighthouse']> {
   const [mobile, desktop] = await Promise.all([
     probeLighthouse(target, key, 'mobile'),
     probeLighthouse(target, key, 'desktop'),
@@ -558,6 +723,15 @@ function buildFindings(r: Omit<AuditResult, 'findings' | 'overall' | 'overallSou
         'Pages this slow lose more than half their mobile visitors before the page finishes loading. Most of your customers are on phones, and this is the score that matters.',
       fix: 'Compress images (Squoosh.app is free), defer non-critical scripts, switch to a modern stack if the site is on WordPress.',
     });
+  } else if (mp != null && mp < 70) {
+    out.push({
+      impact: 'high',
+      area: 'Performance',
+      summary: `Mobile performance: ${mp}/100.`,
+      detail:
+        'This is the score every phone visitor feels, and most of your customers are on phones. Below 70 means a real share of them give up before the page finishes loading.',
+      fix: 'Compress images (Squoosh.app is free), lazy-load below-the-fold images, defer non-critical scripts. If the site runs on WordPress, a modern stack removes most of the weight.',
+    });
   } else if (mp != null && mp < 80) {
     out.push({
       impact: 'medium',
@@ -630,7 +804,7 @@ function buildFindings(r: Omit<AuditResult, 'findings' | 'overall' | 'overallSou
   return out;
 }
 
-const RATE_LIMIT_PER_DAY = 5;
+const RATE_LIMIT_PER_DAY = 15;
 
 /**
  * Rate limit: 5 audits per IP per UTC day. Bypass via X-WC-Bypass header
@@ -711,7 +885,7 @@ export const POST: APIRoute = async ({ request }) => {
     return new Response(
       JSON.stringify({
         error: 'rate_limit_exceeded',
-        message: `Audited a lot today (5/day cap). Try again tomorrow, or text me at 541-551-0731 and I will run it by hand.`,
+        message: `Audited a lot today (15/day cap). Try again tomorrow, or text me at 541-551-0731 and I will run it by hand.`,
         resetAt: rl.resetAt,
       }),
       {
@@ -810,7 +984,7 @@ export const POST: APIRoute = async ({ request }) => {
   let overall: AuditResult['overall'] = null;
   let overallSource: AuditResult['overallSource'] = 'unavailable';
   if (scoreInputs.length > 0) {
-    overall = scoreToGrade(scoreInputs);
+    overall = overallGrade(lighthouse, security);
     overallSource = 'lighthouse';
   } else if (anyUpstreamSignal) {
     overall = structuralGrade(partial);

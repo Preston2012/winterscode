@@ -17,7 +17,7 @@ import Divider from '../components/ui/Divider.astro';
     eyebrow="Audit · Free Site Check"
     h1="See what your site is doing right (and what it isn't)."
     sub="Plug in any site. I'll run it through a core set of the checks I use when I build."
-    sub2="Takes 30 seconds. No email needed."
+    sub2="Takes up to 60 seconds. No email needed."
     showStamp={false}
   />
 
@@ -121,7 +121,6 @@ import Divider from '../components/ui/Divider.astro';
       <div class="au-scores-col">
         <header class="au-scores-col-head">
           <span class="au-scores-col-label">Desktop</span>
-          <span class="au-scores-col-note">usually 2-5 points higher</span>
         </header>
         <ul class="au-scores-grid">
           <li><span class="au-score-num" data-au-perf-d>…</span><span class="au-score-label">Perf</span></li>
@@ -349,7 +348,8 @@ import Divider from '../components/ui/Divider.astro';
       currentUrl = url;
       submitBtn.disabled = true;
       submitBtn.textContent = 'Running…';
-      if (note) note.textContent = 'Running checks. Takes about 30 seconds…';
+      window._auRetried = false;
+      if (note) note.textContent = 'Running checks. Takes up to 60 seconds…';
       // Hide empty state, show real-results container
       if (emptyEl) emptyEl.hidden = true;
       if (resultsRealEl) resultsRealEl.hidden = false;
@@ -372,7 +372,7 @@ import Divider from '../components/ui/Divider.astro';
         'Almost there…',
       ];
       const loadingTimeouts = [];
-      [3000, 7000, 14000, 22000].forEach((ms, i) => {
+      [4000, 10000, 22000, 40000].forEach((ms, i) => {
         const t = setTimeout(() => {
           const el = document.getElementById('au-loading-msg');
           if (el) el.textContent = loadingMsgs[i + 1];
@@ -433,6 +433,48 @@ import Divider from '../components/ui/Divider.astro';
         renderFindings(r.findings);
         if (ctaEl) ctaEl.hidden = false;
         if (note) note.textContent = 'Done. Scroll down for the findings.';
+
+        // PSI mobile is the slow test and sometimes misses the first request.
+        // If desktop returned but mobile did not, the background warm is
+        // finishing the mobile run; re-fetch once to pick up the cached result.
+        const mobileBlank = !(lhM && lhM.performance != null);
+        const desktopLive = !!(lhD && lhD.performance != null);
+        if (mobileBlank && desktopLive && !window._auRetried) {
+          window._auRetried = true;
+          if (note) note.textContent = 'Measuring mobile now (Google is slow on the hard test). Updating in about 30 seconds…';
+          setTimeout(async () => {
+            try {
+              const r2res = await fetch('/api/audit', {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ url }),
+              });
+              if (!r2res.ok) return;
+              const r2 = await r2res.json();
+              const m2 = (r2.lighthouse && r2.lighthouse.mobile) || {};
+              if (m2.performance == null) {
+                if (note) note.textContent = 'Done. Scroll down for the findings.';
+                return;
+              }
+              if (gradeEl) gradeEl.textContent = r2.overall || '-';
+              if (labelEl) labelEl.textContent = gradeLabel(r2.overall, r2.overallSource);
+              const d2 = (r2.lighthouse && r2.lighthouse.desktop) || {};
+              setScore(scores.mobile.perf, m2.performance);
+              setScore(scores.mobile.a11y, m2.accessibility);
+              setScore(scores.mobile.bp, m2.bestPractices);
+              setScore(scores.mobile.seo, m2.seo);
+              setScore(scores.desktop.perf, d2.performance);
+              setScore(scores.desktop.a11y, d2.accessibility);
+              setScore(scores.desktop.bp, d2.bestPractices);
+              setScore(scores.desktop.seo, d2.seo);
+              renderTopFixes(r2.topFixes);
+              renderFindings(r2.findings);
+              if (note) note.textContent = 'Done. Scroll down for the findings.';
+            } catch (err) {
+              /* keep the desktop-only result already on screen */
+            }
+          }, 32000);
+        }
       } catch (e) {
         if (labelEl) labelEl.textContent = 'Audit failed';
         if (findingsEl) {
@@ -440,7 +482,7 @@ import Divider from '../components/ui/Divider.astro';
           const msg = (e && e.message) ? String(e.message) : '';
           if (msg === 'rate_limit_exceeded') {
             findingsEl.innerHTML =
-              '<p class="au-no-findings">Audited a lot today (5 per day cap). Try again tomorrow, or text me at 541-551-0731 and I will run it by hand.</p>';
+              '<p class="au-no-findings">Audited a lot today (15 per day cap). Try again tomorrow, or text me at 541-551-0731 and I will run it by hand.</p>';
           } else {
             findingsEl.innerHTML =
               '<p class="au-no-findings">Could not run the audit. The site might be blocking checks, or the URL might be wrong. Try again, or text me at 541-551-0731 if you want me to run it by hand.</p>';
