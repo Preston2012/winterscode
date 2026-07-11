@@ -96,8 +96,44 @@ export const portfolio: PortfolioItem[] = [
     ],
   },
   {
-    slug: 'sogn-contracting',
+    slug: 'seabreeze',
     numeral: 'ii.',
+    name: 'SeaBreeze Landscape & Home Repair',
+    category: 'site',
+    meta: 'seabreeze.llc · landscape care + home repair · 7-day build',
+    tags: ['ASTRO', 'TAILWIND', 'CLOUDFLARE'],
+    status: 'live',
+    order: 7,
+    image: {
+      src: '/work/seabreeze-card.webp',
+      srcSmall: '/work/seabreeze-card-720.webp',
+      srcXSmall: '/work/seabreeze-card-480.webp',
+      alt: 'SeaBreeze Landscape and Home Repair, Bandon Oregon: coastal logo in cream and teal on a deep green field.',
+      width: 1200,
+      height: 630,
+    },
+    details: [
+      {
+        label: 'Stack',
+        value: 'Astro · Tailwind v4 · Cloudflare Pages · React islands · Turnstile',
+      },
+      {
+        label: 'Scope',
+        value:
+          'Full site for a Bandon landscape-care and home-repair business. Services, project photos, a service-area map, and a spam-guarded contact form. Built in 7 days from kickoff to live.',
+      },
+      {
+        label: 'Result',
+        value: 'Live and mobile-first, with Lighthouse and an A+ security grade both measured live on the wall above.',
+      },
+    ],
+    links: [
+      { label: 'Visit site →', href: 'https://seabreeze.llc', primary: true },
+    ],
+  },
+  {
+    slug: 'sogn-contracting',
+    numeral: 'iii.',
     name: 'Sogn Contracting',
     category: 'site',
     meta: 'sogncontracting.com · contractor · 3-day build',
@@ -138,7 +174,7 @@ export const portfolio: PortfolioItem[] = [
   },
   {
     slug: 'baseline-marketing',
-    numeral: 'iii.',
+    numeral: 'iv.',
     name: 'Baseline Marketing',
     category: 'site',
     meta: 'baseline.marketing · 13 pages · 22 custom widgets',

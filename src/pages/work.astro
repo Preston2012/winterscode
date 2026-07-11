@@ -86,6 +86,7 @@ import Instrument from '../components/sections/Instrument.astro';
               {p.slug === 'demiurge-mykonos' ? (
                 <Instrument />
               ) : p.image ? (
+                <a class="wk-preview-link" href={(p.links.find((l) => l.primary) ?? p.links[0])?.href} target="_blank" rel="noopener" aria-label={`Visit ${p.name}`}>
                 <picture>
                   {p.image.srcSmall && (
                     <source
@@ -104,6 +105,7 @@ import Instrument from '../components/sections/Instrument.astro';
                     class="wk-img"
                   />
                 </picture>
+                </a>
               ) : (
                 <span class="wk-mark" aria-hidden="true">{p.numeral}</span>
               )}
@@ -111,7 +113,7 @@ import Instrument from '../components/sections/Instrument.astro';
 
             <div class="wk-body">
               <div class="wk-title-row">
-                <h3 class="wk-title">{p.name}</h3>
+                <h3 class="wk-title">{p.slug === 'demiurge-mykonos' ? p.name : <a class="wk-title-link" href={(p.links.find((l) => l.primary) ?? p.links[0])?.href} target="_blank" rel="noopener">{p.name}</a>}</h3>
                 {p.slug !== 'demiurge-mykonos' && (
                   <span class={`wk-status wk-status-${p.status}`}>
                     {p.status.toUpperCase()}
@@ -126,6 +128,11 @@ import Instrument from '../components/sections/Instrument.astro';
                 ))}
               </div>
 
+              {(p.links.find((l) => l.primary) ?? p.links[0]) && (
+                <a class="wk-visit" href={(p.links.find((l) => l.primary) ?? p.links[0]).href} target="_blank" rel="noopener">
+                  {(p.links.find((l) => l.primary) ?? p.links[0]).label}
+                </a>
+              )}
               <button
                 type="button"
                 class="wk-expand-btn"
@@ -207,7 +214,7 @@ import Instrument from '../components/sections/Instrument.astro';
           >
             <div class="wk-body">
               <div class="wk-title-row">
-                <h3 class="wk-title">{p.name}</h3>
+                <h3 class="wk-title">{p.slug === 'demiurge-mykonos' ? p.name : <a class="wk-title-link" href={(p.links.find((l) => l.primary) ?? p.links[0])?.href} target="_blank" rel="noopener">{p.name}</a>}</h3>
                 {p.slug !== 'demiurge-mykonos' && (
                   <span class={`wk-status wk-status-${p.status}`}>
                     {p.status.toUpperCase()}
@@ -239,6 +246,24 @@ import Instrument from '../components/sections/Instrument.astro';
                 <span class="wk-lh-measured" data-lh-measured></span>
               </div>
 
+              <div class="wk-cta-row">
+                {(p.links.find((l) => l.primary) ?? p.links[0]) && (
+                  <a class="wk-visit" href={(p.links.find((l) => l.primary) ?? p.links[0]).href} target="_blank" rel="noopener">
+                    {(p.links.find((l) => l.primary) ?? p.links[0]).label}
+                  </a>
+                )}
+                <div class="wk-security" data-sec-site={p.slug} aria-live="polite">
+                  <span class="wk-sec-label">
+                    MOZILLA
+                    <Explainer label="?">
+                      Mozilla Observatory grade for HTTP security headers like HSTS and CSP. A+ is the top grade; most small-business sites score C or lower. Re-checked live when you load this page.
+                    </Explainer>
+                  </span>
+                  <span class="wk-sec-grade" data-sec-grade>
+                    <span class="wk-sec-pending">checking...</span>
+                  </span>
+                </div>
+              </div>
               <button
                 type="button"
                 class="wk-expand-btn"
@@ -332,7 +357,7 @@ import Instrument from '../components/sections/Instrument.astro';
             Build, review, polish, ship. Final 50% on launch. Hosting
             and maintenance optional, never required.
           </p>
-          <p class="wk-step-time">Starter sites: 3 to 7 business days.</p>
+          <p class="wk-step-time">Most sites: 3 to 7 business days.</p>
         </div>
       </li>
     </ol>
@@ -416,6 +441,33 @@ import Instrument from '../components/sections/Instrument.astro';
         if (lh.bbtd) fill('bandon-by-the-dunes', lh.bbtd);
         if (lh.baseline) fill('baseline-marketing', lh.baseline);
         if (lh.sogn) fill('sogn-contracting', lh.sogn);
+        if (lh.seabreeze) fill('seabreeze', lh.seabreeze);
+
+        // ----- per-site security grade (Mozilla Observatory)
+        const sec = data.security && data.security.sites;
+        if (sec) {
+          const SEC_MAP = {
+            'bandon-by-the-dunes': 'bbtd',
+            'baseline-marketing': 'baseline',
+            'sogn-contracting': 'sogn',
+            'seabreeze': 'seabreeze',
+          };
+          for (const slug in SEC_MAP) {
+            const info = sec[SEC_MAP[slug]];
+            if (!info || !info.grade) continue;
+            const root = document.querySelector('[data-sec-site="' + slug + '"]');
+            if (!root) continue;
+            const target = root.querySelector('[data-sec-grade]');
+            if (!target) continue;
+            target.textContent = '';
+            const pill = document.createElement('span');
+            const g = String(info.grade);
+            const tier = g.charAt(0) === 'A' ? 'good' : (g.charAt(0) === 'B' || g.charAt(0) === 'C') ? 'ok' : 'low';
+            pill.className = 'wk-sec-pill wk-sec-pill-' + tier;
+            pill.textContent = typeof info.score === 'number' ? (g + ' (' + info.score + ')') : g;
+            target.appendChild(pill);
+          }
+        }
       } catch (e) {
         // Silent fail. Lighthouse panel falls back to "measuring..." text.
       }
@@ -735,7 +787,102 @@ import Instrument from '../components/sections/Instrument.astro';
     letter-spacing: 0.04em;
   }
 
+  /* CTA row: Visit button + live Mozilla security grade in the same line */
+  .wk-cta-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px 16px;
+    margin-top: 6px;
+  }
+  .wk-cta-row .wk-visit { align-self: center; margin-top: 0; }
+  .wk-security {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-left: auto;
+  }
+  .wk-sec-label {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    color: var(--color-copper);
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .wk-sec-grade { display: flex; align-items: center; }
+  .wk-sec-pending {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--color-ash-500);
+    font-style: italic;
+  }
+  .wk-sec-pill {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    padding: 3px 9px;
+    border-radius: 3px;
+    font-weight: 600;
+  }
+  .wk-sec-pill-good {
+    background: rgba(77, 216, 168, 0.12);
+    color: var(--color-wc-green);
+    border: 1px solid rgba(77, 216, 168, 0.3);
+  }
+  .wk-sec-pill-ok {
+    background: rgba(240, 184, 120, 0.12);
+    color: var(--color-amber);
+    border: 1px solid rgba(240, 184, 120, 0.3);
+  }
+  .wk-sec-pill-low {
+    background: rgba(217, 107, 94, 0.12);
+    color: #d96b5e;
+    border: 1px solid rgba(217, 107, 94, 0.3);
+  }
+
   /* Expand button */
+  .wk-preview-link {
+    display: block;
+    width: 100%;
+    height: 100%;
+    line-height: 0;
+  }
+  .wk-title-link {
+    color: inherit;
+    text-decoration: none;
+    transition: color 200ms;
+  }
+  .wk-title-link:hover,
+  .wk-title-link:focus-visible {
+    color: var(--color-wc-green);
+    outline: none;
+  }
+  .wk-visit {
+    display: inline-flex;
+    align-items: center;
+    align-self: flex-start;
+    gap: 6px;
+    font-family: var(--font-sans);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-wc-green);
+    border: 1px solid rgba(77, 216, 168, 0.4);
+    border-radius: 6px;
+    padding: 7px 14px;
+    margin-top: 6px;
+    text-decoration: none;
+    transition: background 160ms, border-color 160ms;
+  }
+  .wk-visit:hover,
+  .wk-visit:focus-visible {
+    background: rgba(77, 216, 168, 0.12);
+    border-color: var(--color-wc-green);
+    outline: none;
+  }
   .wk-expand-btn {
     display: flex;
     align-items: center;

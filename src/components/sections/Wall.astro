@@ -31,10 +31,11 @@ interface WallRow {
   secondary?: string;
   tertiary?: string;
   quaternary?: string;
+  quinary?: string;
   meta?: string;
   featured?: boolean;
   /** API source key used to look up live/cached/fallback state. */
-  sourceKey: 'deploys' | 'lighthouse' | 'engine' | 'calendar';
+  sourceKey: 'deploys' | 'lighthouse' | 'security' | 'engine' | 'calendar';
   /** Plain-English explainer shown when visitor hovers the "?". */
   explain: string;
 }
@@ -59,8 +60,21 @@ const ROWS: WallRow[] = [
     secondary: 'sogn 99/100/100/100',
     tertiary: 'baseline 92/100/100/100',
     quaternary: 'bandon 96/100/100/100',
+    quinary: 'seabreeze 93/100/100/100',
     explain:
       'Google\'s scorecard for any website. Four numbers, 0 to 100 each: speed, accessibility, security, and how well Google can read the page. 100 is perfect. Most small-business sites score 50-70. Scores shown are mobile (the harder test). Desktop usually runs 2 to 5 points higher.',
+  },
+  {
+    glyph: '⬢',
+    label: 'SECURITY',
+    sourceKey: 'security',
+    primary: 'winterscode A+ (115)',
+    secondary: 'sogn A+ (115)',
+    tertiary: 'baseline A+ (115)',
+    quaternary: 'bandon A+ (125)',
+    quinary: 'seabreeze A+ (115)',
+    explain:
+      'Mozilla Observatory grade for HTTP security headers like HSTS and CSP. A plus is the top grade. Most small-business sites score C or lower. Checked live when you load the page.',
   },
   {
     glyph: '◉',
@@ -116,6 +130,7 @@ const ROWS: WallRow[] = [
           {row.secondary && !row.tertiary && <span class="row-secondary"> · {row.secondary}</span>}
           {row.tertiary && <span class="row-tertiary">{row.tertiary}</span>}
           {row.quaternary && <span class="row-quaternary">{row.quaternary}</span>}
+          {row.quinary && <span class="row-quinary">{row.quinary}</span>}
         </span>
         {row.meta && <span class="row-meta">{row.meta}</span>}
       </li>
@@ -147,7 +162,7 @@ const ROWS: WallRow[] = [
       badge.textContent = source;
     }
 
-    function setRow(label, primary, secondary, meta, tertiary, quaternary) {
+    function setRow(label, primary, secondary, meta, tertiary, quaternary, quinary) {
       const rows = wall.querySelectorAll('.wall-row');
       rows.forEach(function (row) {
         const lbl = row.querySelector('.row-label');
@@ -173,6 +188,8 @@ const ROWS: WallRow[] = [
         if (ter && tertiary) ter.textContent = tertiary;
         var quat = row.querySelector('.row-quaternary');
         if (quat && quaternary) quat.textContent = quaternary;
+        var quin = row.querySelector('.row-quinary');
+        if (quin && quinary) quin.textContent = quinary;
       });
     }
 
@@ -193,6 +210,7 @@ const ROWS: WallRow[] = [
         if (d.lighthouse) setRowSource('lighthouse', d.lighthouse.source);
         if (d.engine) setRowSource('engine', d.engine.source);
         if (d.calendar) setRowSource('calendar', d.calendar.source);
+        if (d.security) setRowSource('security', d.security.source);
 
         if (d.deploys) {
           setRow('DEPLOYS',
@@ -205,8 +223,12 @@ const ROWS: WallRow[] = [
           var sogn = fmtLh(d.lighthouse.sogn);
           var base = fmtLh(d.lighthouse.baseline);
           var bbtd = fmtLh(d.lighthouse.bbtd);
-          // Each site on its own line. setRow signature: (label, primary, secondary, meta, tertiary, quaternary).
-          if (wc && sogn && base && bbtd) {
+          var sb = fmtLh(d.lighthouse.seabreeze);
+          // Each site on its own line. setRow: (label, primary, secondary, meta, tertiary, quaternary, quinary).
+          if (wc && sogn && base && bbtd && sb) {
+            // 5 sites on 5 lines.
+            setRow('LIGHTHOUSE', 'winterscode ' + wc, 'sogn ' + sogn, null, 'baseline ' + base, 'bandon ' + bbtd, 'seabreeze ' + sb);
+          } else if (wc && sogn && base && bbtd) {
             // 4 sites on 4 lines.
             setRow('LIGHTHOUSE', 'winterscode ' + wc, 'sogn ' + sogn, null, 'baseline ' + base, 'bandon ' + bbtd);
           } else if (wc && sogn && base) {
@@ -235,6 +257,24 @@ const ROWS: WallRow[] = [
         }
         if (d.calendar) {
           setRow('CALENDAR', 'next consult: ' + d.calendar.next, null, 'book →');
+        }
+        if (d.security && d.security.sites) {
+          var ss = d.security.sites;
+          var secG = function (k) {
+            var x = ss[k];
+            if (!x || !x.grade) return null;
+            return typeof x.score === 'number' ? x.grade + ' (' + x.score + ')' : x.grade;
+          };
+          var gWC = secG('winterscode');
+          if (gWC) {
+            setRow('SECURITY',
+              'winterscode ' + gWC,
+              (function (v) { return v ? 'sogn ' + v : null; })(secG('sogn')),
+              null,
+              (function (v) { return v ? 'baseline ' + v : null; })(secG('baseline')),
+              (function (v) { return v ? 'bandon ' + v : null; })(secG('bbtd')),
+              (function (v) { return v ? 'seabreeze ' + v : null; })(secG('seabreeze')));
+          }
         }
         if (statusEl) {
           // Three states: all upstreams live (best), any cached (KV-fresh
@@ -522,6 +562,13 @@ const ROWS: WallRow[] = [
     color: var(--color-ash-400);
     display: block;
     margin-top: 2px;
+  }
+  /* SeaBreeze line: newest client build, gently featured in copper. */
+  .row-quinary {
+    color: var(--color-copper, #c88a5a);
+    display: block;
+    margin-top: 2px;
+    font-weight: 600;
   }
   .row-secondary-block {
     display: block;

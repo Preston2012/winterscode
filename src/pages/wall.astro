@@ -51,8 +51,8 @@ try {
 
 // Safe extractors with sensible fallbacks
 const deploys = initialData?.deploys ?? { last: '.', last_message: '.', count_30d: 0, repo_count: 0, source: 'fallback' };
-const lighthouse = initialData?.lighthouse ?? { winterscode: [0,0,0,0], sogn: [0,0,0,0], baseline: [0,0,0,0], bbtd: [0,0,0,0], measured: '.', source: 'fallback' };
-const security = initialData?.security ?? { grade: '.', headers_ok: [], source: 'fallback' };
+const lighthouse = initialData?.lighthouse ?? { winterscode: [0,0,0,0], sogn: [0,0,0,0], baseline: [0,0,0,0], bbtd: [0,0,0,0], seabreeze: [0,0,0,0], measured: '.', source: 'fallback' };
+const security = initialData?.security ?? { grade: '.', score: 0, headers_ok: [], sites: {}, source: 'fallback' };
 const engine = initialData?.engine ?? { memories: 0, added_last_7d: 0, uptime_30d_pct: 0, source: 'fallback' };
 const calendar = initialData?.calendar ?? { next: '.', source: 'fallback' };
 const speed = initialData?.speed ?? { last_three: '.', source: 'fallback' };
@@ -62,6 +62,7 @@ const lhWC = Array.isArray(lighthouse.winterscode) ? lighthouse.winterscode : [0
 const lhSogn = Array.isArray(lighthouse.sogn) ? lighthouse.sogn : [0,0,0,0];
 const lhBaseline = Array.isArray(lighthouse.baseline) ? lighthouse.baseline : [0,0,0,0];
 const lhBbtd = Array.isArray(lighthouse.bbtd) ? lighthouse.bbtd : [0,0,0,0];
+const lhSeabreeze = Array.isArray(lighthouse.seabreeze) ? lighthouse.seabreeze : [0,0,0,0];
 
 // LH average (P/A/SEO/BP). easier to scan at a glance
 function avg(arr: number[]): number {
@@ -72,6 +73,30 @@ const lhWCAvg = avg(lhWC);
 const lhSognAvg = avg(lhSogn);
 const lhBaselineAvg = avg(lhBaseline);
 const lhBbtdAvg = avg(lhBbtd);
+const lhSeabreezeAvg = avg(lhSeabreeze);
+
+// Per-site Observatory grade + score for the SECURITY module rows.
+const secSites: Record<string, { grade?: string; score?: number }> = (security as any).sites ?? {};
+function secOf(k: string): { grade: string; score: number | null } {
+  const st = secSites[k] ?? {};
+  const grade = st.grade ?? (security.grade ?? '.');
+  const score = typeof st.score === 'number' ? st.score : null;
+  return { grade, score };
+}
+function secTier(grade: string): string {
+  const c = (grade || '?').charAt(0);
+  return c === 'A' ? 'a' : (c === 'B' || c === 'C') ? 'bc' : 'low';
+}
+function secLabel(g: { grade: string; score: number | null }): string {
+  return g.score != null ? g.grade + ' (' + g.score + ')' : g.grade;
+}
+const secRows = [
+  { key: 'winterscode', name: 'winterscode' },
+  { key: 'sogn', name: 'sogn' },
+  { key: 'baseline', name: 'baseline' },
+  { key: 'bbtd', name: 'bandon' },
+  { key: 'seabreeze', name: 'seabreeze' },
+].map((r) => ({ ...r, ...secOf(r.key) }));
 
 // Engine memory format with thousands separator
 const memCount = (engine.memories ?? 0).toLocaleString();
@@ -184,6 +209,14 @@ const updatedAt = initialData?.updated_at ?? new Date().toISOString();
               <td class="wall-num" data-lh-bbtd-3>{lhBbtd[3]}</td>
               <td class="wall-num wall-num-strong" data-lh-bbtd-avg>{lhBbtdAvg}</td>
             </tr>
+            <tr>
+              <th scope="row">seabreeze</th>
+              <td class="wall-num" data-lh-seabreeze-0>{lhSeabreeze[0]}</td>
+              <td class="wall-num" data-lh-seabreeze-1>{lhSeabreeze[1]}</td>
+              <td class="wall-num" data-lh-seabreeze-2>{lhSeabreeze[2]}</td>
+              <td class="wall-num" data-lh-seabreeze-3>{lhSeabreeze[3]}</td>
+              <td class="wall-num wall-num-strong" data-lh-seabreeze-avg>{lhSeabreezeAvg}</td>
+            </tr>
           </tbody>
         </table>
         <p class="wall-mod-detail">Mobile · measured <span data-lh-measured>{lighthouse.measured}</span> · desktop typically 2-5 points higher</p>
@@ -199,15 +232,15 @@ const updatedAt = initialData?.updated_at ?? new Date().toISOString();
         <span class="wall-mod-badge" data-mod-source={security.source}>{security.source}</span>
       </header>
       <div class="wall-mod-body">
-        <div class="wall-stat-big">
-          <span class={`wall-grade wall-grade-${(security.grade || '?').toLowerCase().replace('+','plus').replace('-','minus')}`} data-sec-grade>{security.grade}</span>
-          <span class="wall-stat-label">observatory grade</span>
-        </div>
-        <ul class="wall-list" data-sec-headers>
-          {(security.headers_ok || []).map((h: string) => (
-            <li class="wall-list-ok"><span class="wall-list-icon">✓</span> {h}</li>
+        <ul class="wall-sec-list" data-sec-rows>
+          {secRows.map((r) => (
+            <li class="wall-sec-row">
+              <span class="wall-sec-site">{r.name}</span>
+              <span class={`wall-sec-pill wall-sec-tier-${secTier(r.grade)}`} data-sec-grade-site={r.key}>{secLabel(r)}</span>
+            </li>
           ))}
         </ul>
+        <p class="wall-mod-detail">Mozilla Observatory · live · A+ is the top grade</p>
       </div>
     </article>
 
@@ -315,7 +348,7 @@ const updatedAt = initialData?.updated_at ?? new Date().toISOString();
           <span class="wall-stat-num" data-speed-last>{speed.last_three}</span>
           <span class="wall-stat-label">first client build · <a class="wall-mod-sogn" href="https://sogncontracting.com" target="_blank" rel="noopener">Sogn Contracting</a></span>
         </div>
-        <p class="wall-mod-detail">Contract to live, in business days. Sogn Contracting (May 2026) shipped in 3 days. Starter sites typically 3-7 days. Pro sites 1-2 weeks. App MVP 2-4 weeks. Custom builds quoted in consult.</p>
+        <p class="wall-mod-detail">Contract to live, in business days. Sogn Contracting (May 2026) shipped in 3 days. Most sites typically 3-7 days. Larger sites 1-2 weeks. App MVP 2-4 weeks. Custom builds quoted in consult.</p>
       </div>
     </article>
   </section>
@@ -391,21 +424,27 @@ const updatedAt = initialData?.updated_at ?? new Date().toISOString();
                 var avgBbtd = Math.round(lh.bbtd.reduce(function(a,b){return a+b;},0) / 4);
                 setText('[data-lh-bbtd-avg]', avgBbtd);
               }
+              if (Array.isArray(lh.seabreeze)) {
+                for (var i = 0; i < 4; i++) setText('[data-lh-seabreeze-' + i + ']', lh.seabreeze[i]);
+                var avgSeabreeze = Math.round(lh.seabreeze.reduce(function(a,b){return a+b;},0) / 4);
+                setText('[data-lh-seabreeze-avg]', avgSeabreeze);
+              }
               setText('[data-lh-measured]', lh.measured);
             }
-            if (d.security) {
-              setText('[data-sec-grade]', d.security.grade);
-              // Update headers list
-              var headersList = document.querySelector('[data-sec-headers]');
-              if (headersList && Array.isArray(d.security.headers_ok)) {
-                headersList.innerHTML = '';
-                d.security.headers_ok.forEach(function (h) {
-                  var li = document.createElement('li');
-                  li.className = 'wall-list-ok';
-                  li.innerHTML = '<span class="wall-list-icon">✓</span> ' + h;
-                  headersList.appendChild(li);
-                });
-              }
+            if (d.security && d.security.sites) {
+              var secSitesLive = d.security.sites;
+              var secTierOf = function (g) {
+                var c = String(g || '?').charAt(0);
+                return c === 'A' ? 'a' : (c === 'B' || c === 'C') ? 'bc' : 'low';
+              };
+              ['winterscode','sogn','baseline','bbtd','seabreeze'].forEach(function (k) {
+                var info = secSitesLive[k];
+                if (!info || !info.grade) return;
+                var el = document.querySelector('[data-sec-grade-site="' + k + '"]');
+                if (!el) return;
+                el.textContent = typeof info.score === 'number' ? (info.grade + ' (' + info.score + ')') : info.grade;
+                el.className = 'wall-sec-pill wall-sec-tier-' + secTierOf(info.grade);
+              });
             }
             if (d.engine) {
               setText('[data-engine-mem]', (d.engine.memories || 0).toLocaleString());
@@ -875,4 +914,13 @@ const updatedAt = initialData?.updated_at ?? new Date().toISOString();
     .wall-zone-name { font-size: 14px; }
     .wall-zone-cost { font-size: 11px; }
   }
+
+  /* Per-site Observatory grades (SECURITY module) */
+  .wall-sec-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 7px; }
+  .wall-sec-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .wall-sec-site { font-family: var(--font-mono, monospace); font-size: 12px; color: var(--color-ash-300, #c9d1ce); letter-spacing: 0.02em; }
+  .wall-sec-pill { font-family: var(--font-mono, monospace); font-size: 11px; font-weight: 600; letter-spacing: 0.03em; padding: 2px 8px; border-radius: 3px; white-space: nowrap; }
+  .wall-sec-tier-a { background: rgba(77,216,168,0.12); color: var(--color-wc-green, #4dd8a8); border: 1px solid rgba(77,216,168,0.3); }
+  .wall-sec-tier-bc { background: rgba(240,184,120,0.12); color: var(--color-amber, #f0b878); border: 1px solid rgba(240,184,120,0.3); }
+  .wall-sec-tier-low { background: rgba(217,107,94,0.12); color: #d96b5e; border: 1px solid rgba(217,107,94,0.3); }
 </style>

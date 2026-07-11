@@ -39,12 +39,21 @@ interface WorkshopData {
     sogn:        [number, number, number, number];
     baseline:    [number, number, number, number];
     bbtd:        [number, number, number, number];
+    seabreeze:   [number, number, number, number];
     measured: string; // "8m ago"
     source: 'live' | 'fallback';
   };
   security: {
-    grade: string;       // "A+", "A", "B"
-    headers_ok: string[]; // ["HSTS", "CSP", "X-Frame-Options", "Referrer-Policy"]
+    grade: string;        // winterscode grade, kept for existing consumers
+    score: number;        // winterscode numeric score
+    headers_ok: string[]; // winterscode header checklist
+    sites: {
+      winterscode: { grade: string; score: number };
+      sogn:        { grade: string; score: number };
+      baseline:    { grade: string; score: number };
+      bbtd:        { grade: string; score: number };
+      seabreeze:   { grade: string; score: number };
+    };
     source: 'live' | 'fallback';
   };
   calendar: {
@@ -88,12 +97,26 @@ const FALLBACK: WorkshopData = {
     // Bandon By The Dunes Realtee (Astro on Cloudflare). Confirmed live PSI
     // median (mobile), measured 2026-06-24: perf 95, a11y/seo/best 100.
     bbtd:        [95, 100, 100, 100],
+    // SeaBreeze Landscape and Home Repair (seabreeze.llc), Astro on Cloudflare.
+    // PSI mobile median measured 2026-07-09: perf 93-94, a11y/seo/best 100.
+    seabreeze:   [93, 100, 100, 100],
     measured: '8m ago',
     source: 'fallback',
   },
   security: {
-    grade: 'A',
-    headers_ok: ['HSTS', 'CSP', 'X-Frame-Options', 'Referrer-Policy'],
+    // Observatory grade + score. Top-level = winterscode (kept for existing
+    // consumers). Per-site map drives the per-card + wall security rows.
+    // Fallbacks are real grades measured 2026-07-09 (all A+; bbtd 125, rest 115).
+    grade: 'A+',
+    score: 115,
+    headers_ok: ['HSTS', 'CSP', 'X-Frame-Options', 'Referrer-Policy', 'X-Content-Type-Options'],
+    sites: {
+      winterscode: { grade: 'A+', score: 115 },
+      sogn:        { grade: 'A+', score: 115 },
+      baseline:    { grade: 'A+', score: 115 },
+      bbtd:        { grade: 'A+', score: 125 },
+      seabreeze:   { grade: 'A+', score: 115 },
+    },
     source: 'fallback',
   },
   calendar: {
@@ -298,7 +321,7 @@ async function fetchPSI(
   // KV cache: PSI runs take 10-30s, well outside per-request budget.
   // Read cached value if present (12h TTL); if absent/stale, fall back
   // and let a background refresh (ctx.waitUntil) populate KV for next hit.
-  const CACHE_KEY = 'workshop:psi:v1';
+  const CACHE_KEY = 'workshop:psi:v2';
   const CACHE_TTL = 60 * 60 * 12;
 
   if (kv && !skipCache) {
@@ -363,11 +386,12 @@ async function fetchPSI(
   // Measure the canonical www directly. The old PSI Lighthouse-500 on www is
   // resolved (verified May 2026, www PSI ~96). Measuring the bare apex paid the
   // 301 to www redirect penalty (~92 vs ~96 on www); www matches the sogn entry.
-  const [wc, sogn, baseline, bbtd] = await Promise.all([
+  const [wc, sogn, baseline, bbtd, seabreeze] = await Promise.all([
     auditSite('https://winterscode.com', FALLBACK.lighthouse.winterscode),
     auditSite('https://www.sogncontracting.com', FALLBACK.lighthouse.sogn),
     auditSite('https://www.baseline.marketing', FALLBACK.lighthouse.baseline),
     auditSite('https://www.bandonbythedunesrealtee.net', FALLBACK.lighthouse.bbtd),
+    auditSite('https://seabreeze.llc', FALLBACK.lighthouse.seabreeze),
   ]);
   // Source flag is 'live' if any site returned non-fallback data.
   // UI shows "live · partial" when not all 3 succeeded.
@@ -375,14 +399,15 @@ async function fetchPSI(
     JSON.stringify(wc) !== JSON.stringify(FALLBACK.lighthouse.winterscode) ||
     JSON.stringify(sogn) !== JSON.stringify(FALLBACK.lighthouse.sogn) ||
     JSON.stringify(baseline) !== JSON.stringify(FALLBACK.lighthouse.baseline) ||
-    JSON.stringify(bbtd) !== JSON.stringify(FALLBACK.lighthouse.bbtd);
+    JSON.stringify(bbtd) !== JSON.stringify(FALLBACK.lighthouse.bbtd) ||
+    JSON.stringify(seabreeze) !== JSON.stringify(FALLBACK.lighthouse.seabreeze);
 
   // Rolling-best display. Keep the last N live runs per site in KV and show the
   // element-wise best-of-N per category, so a single cold/throttled PSI run (or
   // a stale cached low) never tanks the public number. AGG='avg' for a rolling
   // average instead of best-of-N.
   type Quad = [number, number, number, number];
-  const HIST_KEY = 'workshop:psi:hist:v1';
+  const HIST_KEY = 'workshop:psi:hist:v2';
   const HIST_TTL = 60 * 60 * 24 * 30;
   const HIST_N = 7;
   const AGG: 'max' | 'avg' = 'max';
@@ -397,8 +422,8 @@ async function fetchPSI(
     };
     return [pick(0), pick(1), pick(2), pick(3)];
   };
-  let hist: { winterscode: Quad[]; sogn: Quad[]; baseline: Quad[]; bbtd: Quad[] } =
-    { winterscode: [], sogn: [], baseline: [], bbtd: [] };
+  let hist: { winterscode: Quad[]; sogn: Quad[]; baseline: Quad[]; bbtd: Quad[]; seabreeze: Quad[] } =
+    { winterscode: [], sogn: [], baseline: [], bbtd: [], seabreeze: [] };
   if (kv) {
     try { const h = await kv.get<typeof hist>(HIST_KEY, 'json'); if (h) hist = h; } catch { /* non-fatal */ }
   }
@@ -410,6 +435,7 @@ async function fetchPSI(
     sogn: roll(hist.sogn, sogn, FALLBACK.lighthouse.sogn),
     baseline: roll(hist.baseline, baseline, FALLBACK.lighthouse.baseline),
     bbtd: roll(hist.bbtd, bbtd, FALLBACK.lighthouse.bbtd),
+    seabreeze: roll(hist.seabreeze, seabreeze, FALLBACK.lighthouse.seabreeze),
   };
   if (kv && isLive) {
     try { await kv.put(HIST_KEY, JSON.stringify(hist), { expirationTtl: HIST_TTL }); } catch { /* non-fatal */ }
@@ -420,6 +446,7 @@ async function fetchPSI(
     sogn: aggregate(hist.sogn, sogn),
     baseline: aggregate(hist.baseline, baseline),
     bbtd: aggregate(hist.bbtd, bbtd),
+    seabreeze: aggregate(hist.seabreeze, seabreeze),
     measured: 'just now',
     source: isLive ? 'live' : 'fallback',
   };
@@ -438,60 +465,94 @@ async function fetchPSI(
 }
 
 async function fetchObservatory(kv?: KVNamespace): Promise<WorkshopData['security']> {
-  // KV cache: 6h TTL. Observatory rescans are infrequent; we just need the
-  // last grade. If Observatory API is down, return cached value as 'cached'
-  // instead of falling back. Grade rarely changes.
-  const CACHE_KEY = 'workshop:obs:v1';
+  // KV cache: 6h TTL, 30min refresh. Grades FIVE hosts (per-site rows on the
+  // wall + each /work card). The cached object holds all five grades; if the
+  // API is down we serve the cached object as 'cached'. Grades change rarely.
+  const CACHE_KEY = 'workshop:obs:v2'; // v2: per-site shape
   const CACHE_TTL = 60 * 60 * 6;
   let lastCached: (WorkshopData['security'] & { _cachedAt?: number }) | undefined;
   let cacheAgeSec = Infinity;
   if (kv) {
     try {
       const c = await kv.get<WorkshopData['security'] & { _cachedAt?: number }>(CACHE_KEY, 'json');
-      if (c) {
+      if (c && c.sites) {
         lastCached = c;
         cacheAgeSec = c._cachedAt ? (Date.now() - c._cachedAt) / 1000 : Infinity; // legacy = stale
       }
     } catch { /* KV read failure non-fatal */ }
   }
-  // Short-circuit: Mozilla Observatory grade changes rarely. If we have a
-  // cached value <30min old, return it as 'live' without hitting Observatory.
-  // This prevents per-visitor fan-out on a hot homepage.
   const REFRESH_AFTER_SEC = 30 * 60;
   if (lastCached && cacheAgeSec < REFRESH_AFTER_SEC) {
     return { ...lastCached, source: 'live' as const };
   }
   const cachedOrFallback = (): WorkshopData['security'] =>
     lastCached ? { ...lastCached, source: 'cached' as const } : FALLBACK.security;
+
+  // Canonical host per site (match the PSI hosts so grade + perf line up).
+  const HOSTS: Record<keyof WorkshopData['security']['sites'], string> = {
+    winterscode: 'winterscode.com',
+    sogn:        'www.sogncontracting.com',
+    baseline:    'www.baseline.marketing',
+    bbtd:        'www.bandonbythedunesrealtee.net',
+    seabreeze:   'seabreeze.llc',
+  };
+  const analyze = async (
+    host: string,
+  ): Promise<{ grade: string; score: number; rh: Record<string, string> } | null> => {
+    try {
+      const r = await fetch(
+        `https://observatory-api.mdn.mozilla.net/api/v2/analyze?host=${host}`,
+        { signal: AbortSignal.timeout(4000), headers: { 'Accept': 'application/json' } },
+      );
+      if (!r.ok) return null;
+      const data: any = await r.json();
+      const scan = data?.scan ?? (Array.isArray(data?.history) ? data.history[0] : null);
+      if (!scan || typeof scan.grade !== 'string') return null;
+      return {
+        grade: scan.grade,
+        score: typeof scan.score === 'number' ? scan.score : 0,
+        rh: scan.response_headers ?? {},
+      };
+    } catch {
+      return null;
+    }
+  };
+
   try {
-    // Mozilla Observatory v2 (MDN-hosted). Returns latest cached scan immediately.
-    // Old v1 host (http-observatory.security.mozilla.org) is deprecated / 502.
-    const host = 'winterscode.com';
-    const r = await fetch(
-      `https://observatory-api.mdn.mozilla.net/api/v2/analyze?host=${host}`,
-      { headers: { 'Accept': 'application/json' } }
-    );
-    if (!r.ok) return cachedOrFallback();
-    const data: any = await r.json();
-    // Schema: { history: [...], scan: { grade, score, response_headers, ... } }
-    const scan = data?.scan ?? (Array.isArray(data?.history) ? data.history[0] : null);
-    if (!scan) return cachedOrFallback();
-    const grade = scan.grade ?? FALLBACK.security.grade;
-    // Derive headers_ok from response_headers presence
-    const rh = scan.response_headers ?? {};
+    const keys = Object.keys(HOSTS) as (keyof typeof HOSTS)[];
+    const results = await Promise.all(keys.map((k) => analyze(HOSTS[k])));
+    const sites = {} as WorkshopData['security']['sites'];
+    let anyLive = false;
+    let wcRh: Record<string, string> = {};
+    keys.forEach((k, i) => {
+      const res = results[i];
+      if (res) {
+        anyLive = true;
+        sites[k] = { grade: res.grade, score: res.score };
+        if (k === 'winterscode') wcRh = res.rh;
+      } else {
+        sites[k] = FALLBACK.security.sites[k];
+      }
+    });
+    if (!anyLive) return cachedOrFallback();
+
+    // Header checklist derived from winterscode's live headers (top-level compat).
     const headersOk: string[] = [];
-    if (rh['strict-transport-security']) headersOk.push('HSTS');
-    if (rh['content-security-policy'])   headersOk.push('CSP');
-    if (rh['x-frame-options'] ||
-        (rh['content-security-policy'] || '').includes('frame-ancestors')) {
+    if (wcRh['strict-transport-security']) headersOk.push('HSTS');
+    if (wcRh['content-security-policy'])   headersOk.push('CSP');
+    if (wcRh['x-frame-options'] ||
+        (wcRh['content-security-policy'] || '').includes('frame-ancestors')) {
       headersOk.push('X-Frame-Options');
     }
-    if (rh['referrer-policy'])           headersOk.push('Referrer-Policy');
-    if (rh['x-content-type-options'])    headersOk.push('X-Content-Type-Options');
-    if (rh['permissions-policy'])        headersOk.push('Permissions-Policy');
+    if (wcRh['referrer-policy'])         headersOk.push('Referrer-Policy');
+    if (wcRh['x-content-type-options'])  headersOk.push('X-Content-Type-Options');
+    if (wcRh['permissions-policy'])      headersOk.push('Permissions-Policy');
+
     const result: WorkshopData['security'] = {
-      grade,
+      grade: sites.winterscode.grade,
+      score: sites.winterscode.score,
       headers_ok: headersOk.length ? headersOk : FALLBACK.security.headers_ok,
+      sites,
       source: 'live',
     };
     if (kv) {
@@ -644,8 +705,18 @@ async function refreshPSIBackground(
   kv: KVNamespace | undefined,
 ): Promise<void> {
   if (!key || !kv) return;
-  const CACHE_KEY = 'workshop:psi:v1';
+  const CACHE_KEY = 'workshop:psi:v2';
   const CACHE_TTL = 60 * 60 * 12;
+  // Throttle: every pageview schedules this refresher, and a live run is 4 PSI
+  // calls (one per site). Without a gate that is 4 calls per visitor, which is
+  // what drained the daily quota. Run a live refresh at most once every 30 min;
+  // the 12h cache serves every request in between.
+  const GATE_KEY = 'workshop:psi:lastrun:v2';
+  try {
+    const last = await kv.get(GATE_KEY);
+    if (last && Date.now() - Number(last) < 30 * 60 * 1000) return;
+    await kv.put(GATE_KEY, String(Date.now()), { expirationTtl: 3600 });
+  } catch { /* gate failure: skip this refresh rather than risk a stampede */ }
   try {
     // Force live PSI (skipCache) but KEEP kv so the rolling-best history
     // (HIST_KEY) reads + writes. Without kv the per-category max never engages
@@ -682,7 +753,7 @@ export const GET: APIRoute = async ({ locals }) => {
   const [deploys, lighthouse, security, calendar, engine] = await Promise.all([
     withTimeout(fetchGitHub(githubToken, kv), 5000, FALLBACK.deploys),
     withTimeout(fetchPSI(psiKey, kv), 6500, FALLBACK.lighthouse),
-    withTimeout(fetchObservatory(kv), 3000, FALLBACK.security),
+    withTimeout(fetchObservatory(kv), 5000, FALLBACK.security),
     withTimeout(fetchCal(calUsername, kv), 3000, FALLBACK.calendar),
     withTimeout(fetchEngine(kv), 2000, FALLBACK.engine),
   ]);
