@@ -57,12 +57,14 @@ const PHRASES = [
 // data sources (PSI API, internal build tracker, securityheaders.com)
 // once Preston rotates leaked keys and provisions PSI. Wire-up: S10.
 const TRUST_TIPS = {
+  price:
+    'Most local business sites start at $1,750 flat, with the pages, the words, real photos, branding, and top Google scores included. One number, everything in. Bigger jobs cost more and I say so up front. The price I quote is the price you pay.',
   speed:
     'Site builds typically go live in 3 to 7 business days from the day you sign. App builds run 2 to 4 weeks for an MVP, 4 to 8 weeks for a full build. Compare to 6 to 8 weeks just for a site at most agencies.',
   lighthouse:
     'Google\'s Lighthouse scores any website 0 to 100 on speed, accessibility, security, and SEO. 100 is perfect. Most small-business sites score 50 to 70. Mine sit around a 95 average across every page (some checks dip a few points on heavy interactive pages, but the rolling average holds). Scores shown are mobile (the harder test). Desktop usually runs 2 to 5 points higher.',
   security:
-    'Every site I ship has the standard browser security headers turned on (HSTS, CSP, X-Frame-Options, Referrer-Policy, Permissions-Policy) and scores B+ or higher on Mozilla Observatory. Client sites typically score A+ since they\'re simpler.',
+    'Every site I build has the standard browser security headers turned on (HSTS, CSP, X-Frame-Options, Referrer-Policy, Permissions-Policy) and scores B+ or higher on Mozilla Observatory. Client sites typically score A+ since they\'re simpler.',
 };
 
 // Workshop preview card stub (desktop right column). 4 lines, sampled
@@ -90,8 +92,8 @@ const WORKSHOP_PREVIEW = [
     </div>
 
     <h1 class="hero-h1">
-      You didn't go into business<br class="desktop-break" />
-      <span class="hero-h1-line2"> to manage software.</span>
+      Built for your business.<br class="desktop-break" />
+      <span class="hero-h1-line2"> Not from a template.</span>
     </h1>
 
     <p class="hero-sub">
@@ -116,6 +118,11 @@ const WORKSHOP_PREVIEW = [
     </div>
 
     <div class="hero-trust">
+      <span class="trust-item" tabindex="0" data-tip>
+        <span class="dot" aria-hidden="true"></span>
+        From $1,750, everything in
+        <span class="tip" role="tooltip">{TRUST_TIPS.price}</span>
+      </span>
       <span class="trust-item" tabindex="0" data-tip>
         <span class="dot" aria-hidden="true"></span>
         Starts at 3 business days
