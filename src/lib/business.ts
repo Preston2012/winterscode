@@ -64,7 +64,7 @@ export const services: ServiceEntry[] = [
     name: 'Web Development',
     shortLabel: 'Web Development',
     blurb:
-      'Hand-written front-end and back-end code. No WordPress, no page builders. Fast, secure, and yours to own.',
+      'Custom front-end and back-end code. No WordPress, no page builders. Fast, secure, and yours to keep.',
     serviceType: 'Web development',
   },
   {
@@ -272,7 +272,7 @@ export const towns: TownEntry[] = [
     faq: [
       {
         q: 'Can you build a site that handles bookings for a North Bend business?',
-        a: 'Yes. Booking widgets, reservation forms, and calendar integrations are part of a Pro site build. For travel and hospitality businesses near the airport and casino, I can wire the booking flow so a visitor can act in one or two taps.',
+        a: 'Yes. Booking widgets, reservation forms, and calendar integrations are part of a site build. For travel and hospitality businesses near the airport and casino, I can wire the booking flow so a visitor can act in one or two taps.',
       },
       {
         q: 'How far is North Bend from your shop?',
@@ -350,7 +350,7 @@ export const towns: TownEntry[] = [
       },
       {
         q: 'My business is seasonal. Does a custom site still make sense?',
-        a: 'Yes, and arguably more so. A seasonal business has a narrow window to capture searches, so the site has to be fast and findable when the visitors are actually here. I build it once, it stays fast year round, and the maintenance plan keeps it current without you touching it.',
+        a: 'Yes, and arguably more so. A seasonal business has a narrow window to capture searches, so the site has to be fast and findable when the visitors are actually here. I build it once, and it stays fast year round. A care plan can keep it current without you touching it, if you want one.',
       },
       {
         q: 'Do you work with Bandon Dunes area lodging and rentals?',
@@ -419,7 +419,7 @@ export const towns: TownEntry[] = [
       },
       {
         q: 'I run a trade or service out of Coquille. What kind of site fits?',
-        a: 'Usually a straightforward Starter or Pro site: what you do, where you work, how to reach you, fast on a phone and easy for Google to read. No bloat, no plugins to babysit. For a valley trade, that is plenty to rank and turn searches into calls.',
+        a: 'Usually a straightforward site: what you do, where you work, how to reach you, fast on a phone and easy for Google to read. No bloat, no plugins to babysit. For a valley trade, that is plenty to rank and turn searches into calls.',
       },
     ],
     neighbors: ['myrtle-point', 'coos-bay'],
@@ -611,7 +611,7 @@ export const towns: TownEntry[] = [
       },
       {
         q: 'I run a small seafood or fishing business off the dock. What fits?',
-        a: 'Usually a clean Starter or Pro site: what you catch or sell, how to buy or book, how to reach you, fast on a phone. The dolly dock and the fishery are a real story worth telling plainly. I keep it quick-loading so it works even on the spotty signal out at the port.',
+        a: 'Usually a clean, simple site: what you catch or sell, how to buy or book, how to reach you, fast on a phone. The dolly dock and the fishery are a real story worth telling plainly. I keep it quick-loading so it works even on the spotty signal out at the port.',
       },
     ],
     neighbors: ['bandon', 'gold-beach'],

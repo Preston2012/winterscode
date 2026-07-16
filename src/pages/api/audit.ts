@@ -46,19 +46,19 @@ interface AuditResult {
   /** Top 3 highest-impact findings, repeated here for "Start here" summary. */
   topFixes: AuditFinding[];
   /**
-   * Lighthouse scores from PageSpeed Insights, run twice. once with mobile
-   * strategy (the harder test, what most visitors actually experience), once
-   * with desktop strategy. Both surfaced so prospects can see both pictures.
+   * Lighthouse scores from PageSpeed Insights, mobile strategy only. Mobile is
+   * the harder test and what most visitors actually experience, so it is the
+   * one number the audit reports. A single strategy also halves PSI calls per
+   * audit, which keeps the tool inside Google daily quota under load.
    */
   lighthouse: {
     mobile: LighthouseScores;
-    desktop: LighthouseScores;
     /** Legacy compat: same as .mobile for older clients. */
     performance: number | null;
     accessibility: number | null;
     bestPractices: number | null;
     seo: number | null;
-    source: 'live' | 'unavailable' | 'mixed';
+    source: 'live' | 'unavailable';
   };
   security: {
     grade: string | null;
@@ -245,17 +245,13 @@ function overallGrade(
   lh: AuditResult['lighthouse'],
   sec: AuditResult['security'],
 ): 'A' | 'B' | 'C' | 'D' | 'F' | null {
-  const pick = (a: number | null, b: number | null): number | null =>
-    a != null && !Number.isNaN(a) ? a : b != null && !Number.isNaN(b) ? b : null;
-
-  // Per category, mobile preferred, desktop as the fallback when a PSI run is
-  // missing. Keeps the grade stable whether or not the mobile run came back.
+  // Mobile only. The number every phone visitor feels, and most customers are
+  // on phones.
   const perfM = lh.mobile.performance;
-  const perfD = lh.desktop.performance;
-  const perf = pick(perfM, perfD);
-  const a11y = pick(lh.mobile.accessibility, lh.desktop.accessibility);
-  const bp = pick(lh.mobile.bestPractices, lh.desktop.bestPractices);
-  const seo = pick(lh.mobile.seo, lh.desktop.seo);
+  const perf = perfM;
+  const a11y = lh.mobile.accessibility;
+  const bp = lh.mobile.bestPractices;
+  const seo = lh.mobile.seo;
 
   // Lighthouse composite. Performance and accessibility carry the weight. SEO
   // and Best Practices are nearly free to max, so they count for less.
@@ -272,10 +268,8 @@ function overallGrade(
 
   let grade = letterFromScore(composite);
 
-  // Gate on mobile performance: the number every phone visitor feels, and most
-  // customers are on phones. When the mobile run is missing, estimate it from
-  // desktop (mobile usually scores lower) so the gate still applies.
-  const perfForGate = perfM != null ? perfM : perfD != null ? perfD - 12 : null;
+  // Gate on mobile performance: the number every phone visitor feels.
+  const perfForGate = perfM;
   if (perfForGate != null) {
     let cap: 'A' | 'B' | 'C' | 'D' | 'F';
     if (perfForGate >= 90) cap = 'A';
@@ -404,50 +398,59 @@ async function probeLighthouse(
   target: string,
   key: string,
   strategy: 'mobile' | 'desktop',
+  kv: KVNamespace | undefined,
 ): Promise<LighthouseScores> {
+  // L1: per-colo Cache API (fast, ephemeral).
   const cached = await psiCacheGet(target, strategy);
   if (cached) return cached;
+  // L2: durable KV, shared across edge locations, holds for hours. This is what
+  // stops a viral or repeat-audited URL from re-hitting PSI on every request,
+  // which is what drains the daily quota under load.
+  const kvKey = `audit:psi:${strategy}:${encodeURIComponent(target)}`;
+  if (kv) {
+    try {
+      const hit = await kv.get<LighthouseScores>(kvKey, 'json');
+      if (hit && typeof hit.performance === 'number') {
+        await psiCachePut(target, strategy, hit);
+        return { ...hit, source: 'live' };
+      }
+    } catch { /* non-fatal: treat as miss */ }
+  }
 
-  // One PSI call per run, never a second. If it lands, cache it for next time.
-  // If it times out, scores are simply unavailable for this run and the cache
-  // fills on a re-run; the page's single retry grabs a slow mobile score from
-  // Google's own cache without us firing a parallel call.
+  // One PSI call per run, never a second. If it lands, cache it in both layers.
+  // If it times out or the daily quota is spent, scores are unavailable for
+  // this run and the structural read carries the grade.
   const result = await runPsi(target, key, strategy, PSI_TIMEOUT_MS);
   if (result.source === 'live' && result.performance != null) {
     await psiCachePut(target, strategy, result);
+    if (kv) {
+      try { await kv.put(kvKey, JSON.stringify(result), { expirationTtl: 21600 }); }
+      catch { /* non-fatal */ }
+    }
   }
   return result;
 }
 
 /**
- * Run mobile AND desktop PSI in parallel. Returns the combined shape with both
- * sets of scores. Legacy fields (performance/accessibility/etc on the top
- * level) mirror mobile for back-compat. mobile is the harder test, so it's
- * the default surface.
+ * Run mobile PSI only. Desktop is dropped on purpose: mobile is the number that
+ * matters for the people who actually visit, and one strategy instead of two
+ * halves PSI usage so the tool survives public load inside the daily quota.
+ * Read-through cached, so repeat audits of the same URL cost zero PSI.
  */
 async function probeLighthouseBoth(
   target: string,
   key: string,
+  kv: KVNamespace | undefined,
 ): Promise<AuditResult['lighthouse']> {
-  const [mobile, desktop] = await Promise.all([
-    probeLighthouse(target, key, 'mobile'),
-    probeLighthouse(target, key, 'desktop'),
-  ]);
-  // Source logic: 'live' if both succeeded, 'unavailable' if both failed,
-  // 'mixed' if one of the two failed (still useful, but flagged).
-  let source: 'live' | 'unavailable' | 'mixed';
-  if (mobile.source === 'live' && desktop.source === 'live') source = 'live';
-  else if (mobile.source === 'unavailable' && desktop.source === 'unavailable') source = 'unavailable';
-  else source = 'mixed';
+  const mobile = await probeLighthouse(target, key, 'mobile', kv);
   return {
     mobile,
-    desktop,
     // Legacy/back-compat surface. mirrors mobile.
     performance: mobile.performance,
     accessibility: mobile.accessibility,
     bestPractices: mobile.bestPractices,
     seo: mobile.seo,
-    source,
+    source: mobile.source === 'live' ? 'live' : 'unavailable',
   };
 }
 
@@ -609,24 +612,10 @@ function buildFindings(r: Omit<AuditResult, 'findings' | 'overall' | 'overallSou
     out.push({
       impact: 'medium',
       area: 'Audit',
-      summary: 'Performance scan didn\'t complete.',
+      summary: 'Live performance scores did not load this time.',
       detail:
-        'This usually happens with slower sites. Google\'s speed tool gives up after about 18 seconds, so if the site takes longer to load, it times out. The structural checks below still apply.',
-      fix: 'Try the retry button below. If it still times out, shoot me a text at 541-551-0731 and I\'ll run it manually.',
-      retry: true,
-    });
-  } else if (r.lighthouse.source === 'mixed') {
-    // Only one of mobile/desktop succeeded. Note it so the visitor knows the
-    // picture is partial.
-    const which = r.lighthouse.mobile.source === 'live' ? 'desktop' : 'mobile';
-    const other = which === 'desktop' ? 'mobile' : 'desktop';
-    out.push({
-      impact: 'low',
-      area: 'Audit',
-      summary: `${which.charAt(0).toUpperCase() + which.slice(1)} scan didn\'t complete.`,
-      detail:
-        `We got the ${other} numbers but the ${which} check timed out, which happens with slower sites. The findings below still apply.`,
-      fix: 'Try the retry button below. If it still times out, shoot me a text at 541-551-0731 and I\'ll run it manually.',
+        'This tool runs Google PageSpeed in real time to score performance. Under heavy traffic Google rate-limits those requests, so the scores can drop out for a bit. That is on Google, not your site, and it is outside our control. Every structural check below still ran.',
+      fix: 'Give it a few minutes and hit retry, or text me at 541-551-0731 and I will run the full scan by hand.',
       retry: true,
     });
   }
@@ -743,20 +732,6 @@ function buildFindings(r: Omit<AuditResult, 'findings' | 'overall' | 'overallSou
     });
   }
 
-  // Lighthouse: desktop perf. only flag if BOTH mobile and desktop are slow
-  // (a site that's only slow on mobile is fixable via image work; a site
-  // that's slow on desktop too has deeper issues).
-  const dp = r.lighthouse.desktop.performance;
-  if (mp != null && mp < 80 && dp != null && dp < 70) {
-    out.push({
-      impact: 'medium',
-      area: 'Performance',
-      summary: `Desktop performance also weak: ${dp}/100.`,
-      detail:
-        'Slow on mobile is usually images. Slow on desktop AND mobile means the site has heavier issues like too many scripts, render-blocking CSS, or a sluggish hosting setup. Fixing this is more involved than image compression alone.',
-      fix: 'Full performance audit: server response time, JS bundle size, render-blocking resources, third-party tags.',
-    });
-  }
 
   // Lighthouse: a11y
   if (r.lighthouse.accessibility != null && r.lighthouse.accessibility < 90) {
@@ -932,13 +907,13 @@ export const POST: APIRoute = async ({ request }) => {
   }
 
   const psiKey = env.PSI_KEY;
+  const kv = (cfEnv as Record<string, unknown>).SESSION as KVNamespace | undefined;
 
   const [lighthouse, security, head] = await Promise.all([
     psiKey
-      ? probeLighthouseBoth(target.toString(), psiKey)
+      ? probeLighthouseBoth(target.toString(), psiKey, kv)
       : Promise.resolve<AuditResult['lighthouse']>({
           mobile: { performance: null, accessibility: null, bestPractices: null, seo: null, source: 'unavailable' },
-          desktop: { performance: null, accessibility: null, bestPractices: null, seo: null, source: 'unavailable' },
           performance: null,
           accessibility: null,
           bestPractices: null,
@@ -958,17 +933,13 @@ export const POST: APIRoute = async ({ request }) => {
   };
   const findings = buildFindings(partial);
 
-  // Grade across BOTH mobile + desktop Lighthouse runs. gives a fuller picture
-  // than mobile-only. Mobile usually dominates because it's the harder test.
+  // Grade on the mobile Lighthouse run. Mobile is what phone visitors feel and
+  // the number this tool reports.
   const scoreInputs: number[] = [
     lighthouse.mobile.performance,
     lighthouse.mobile.accessibility,
     lighthouse.mobile.bestPractices,
     lighthouse.mobile.seo,
-    lighthouse.desktop.performance,
-    lighthouse.desktop.accessibility,
-    lighthouse.desktop.bestPractices,
-    lighthouse.desktop.seo,
   ].filter((n): n is number => typeof n === 'number');
 
   // Grade strategy: prefer Lighthouse, fall back to structural read, last resort null.

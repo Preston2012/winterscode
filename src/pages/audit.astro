@@ -97,17 +97,15 @@ import Divider from '../components/ui/Divider.astro';
       <p class="au-results-time" data-au-time></p>
     </header>
 
-    <!-- Lighthouse scores: mobile + desktop side by side. Mobile leads because
-         it's the harder test and what most visitors actually experience. Desktop
-         shown next so prospects with a "but it looks fine on my computer" defense
-         can see the full picture. -->
+    <!-- Lighthouse scores, mobile only. Mobile is the harder test and what most
+         visitors actually experience, so it is the single number we report. -->
     <div class="au-scores-section" data-au-scores>
 
       <!-- Mobile column -->
       <div class="au-scores-col">
         <header class="au-scores-col-head">
           <span class="au-scores-col-label">Mobile</span>
-          <span class="au-scores-col-note">the harder test</span>
+          <span class="au-scores-col-note">what your visitors feel on a phone</span>
         </header>
         <ul class="au-scores-grid">
           <li><span class="au-score-num" data-au-perf-m>…</span><span class="au-score-label">Perf</span></li>
@@ -117,24 +115,11 @@ import Divider from '../components/ui/Divider.astro';
         </ul>
       </div>
 
-      <!-- Desktop column -->
-      <div class="au-scores-col">
-        <header class="au-scores-col-head">
-          <span class="au-scores-col-label">Desktop</span>
-        </header>
-        <ul class="au-scores-grid">
-          <li><span class="au-score-num" data-au-perf-d>…</span><span class="au-score-label">Perf</span></li>
-          <li><span class="au-score-num" data-au-a11y-d>…</span><span class="au-score-label">A11y</span></li>
-          <li><span class="au-score-num" data-au-bp-d>…</span><span class="au-score-label">Best practices</span></li>
-          <li><span class="au-score-num" data-au-seo-d>…</span><span class="au-score-label">SEO</span></li>
-        </ul>
-      </div>
-
     </div>
 
     <!-- Structural-grade banner (only shown when PSI failed and we fell back to structural) -->
     <aside class="au-banner au-banner-structural" data-au-banner-structural hidden>
-      <strong>Heads up:</strong> Lighthouse couldn&apos;t reach this site, so the grade above is a structural read (HTTPS, mobile, title, meta tags, security headers). Performance and accessibility numbers are missing for this run.
+      <strong>Heads up:</strong> The live speed scores run through Google&apos;s PageSpeed test. Under heavy traffic Google rate-limits it, so the performance numbers can drop out for a bit. That is on Google, not your site. The grade above is a structural read (HTTPS, mobile, title, meta tags, security headers), and everything below still ran. Give it a few minutes and try again.
     </aside>
 
     <!-- Start here: top 3 highest-impact fixes -->
@@ -387,10 +372,6 @@ import Divider from '../components/ui/Divider.astro';
       setScore(scores.mobile.a11y, null);
       setScore(scores.mobile.bp, null);
       setScore(scores.mobile.seo, null);
-      setScore(scores.desktop.perf, null);
-      setScore(scores.desktop.a11y, null);
-      setScore(scores.desktop.bp, null);
-      setScore(scores.desktop.seo, null);
 
       // Scroll the results into view so users see progress.
       resultsSection?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -420,26 +401,20 @@ import Divider from '../components/ui/Divider.astro';
           bannerStructural.hidden = !(r.overallSource === 'structural');
         }
         const lhM = (r.lighthouse && r.lighthouse.mobile) || {};
-        const lhD = (r.lighthouse && r.lighthouse.desktop) || {};
         setScore(scores.mobile.perf, lhM.performance);
         setScore(scores.mobile.a11y, lhM.accessibility);
         setScore(scores.mobile.bp, lhM.bestPractices);
         setScore(scores.mobile.seo, lhM.seo);
-        setScore(scores.desktop.perf, lhD.performance);
-        setScore(scores.desktop.a11y, lhD.accessibility);
-        setScore(scores.desktop.bp, lhD.bestPractices);
-        setScore(scores.desktop.seo, lhD.seo);
         renderTopFixes(r.topFixes);
         renderFindings(r.findings);
         if (ctaEl) ctaEl.hidden = false;
         if (note) note.textContent = 'Done. Scroll down for the findings.';
 
         // PSI mobile is the slow test and sometimes misses the first request.
-        // If desktop returned but mobile did not, the background warm is
-        // finishing the mobile run; re-fetch once to pick up the cached result.
+        // If the mobile run did not come back, re-fetch once after a beat to
+        // pick up the result the cache will have by then.
         const mobileBlank = !(lhM && lhM.performance != null);
-        const desktopLive = !!(lhD && lhD.performance != null);
-        if (mobileBlank && desktopLive && !window._auRetried) {
+        if (mobileBlank && !window._auRetried) {
           window._auRetried = true;
           if (note) note.textContent = 'Measuring mobile now (Google is slow on the hard test). Updating in about 30 seconds…';
           setTimeout(async () => {
@@ -458,20 +433,15 @@ import Divider from '../components/ui/Divider.astro';
               }
               if (gradeEl) gradeEl.textContent = r2.overall || '-';
               if (labelEl) labelEl.textContent = gradeLabel(r2.overall, r2.overallSource);
-              const d2 = (r2.lighthouse && r2.lighthouse.desktop) || {};
               setScore(scores.mobile.perf, m2.performance);
               setScore(scores.mobile.a11y, m2.accessibility);
               setScore(scores.mobile.bp, m2.bestPractices);
               setScore(scores.mobile.seo, m2.seo);
-              setScore(scores.desktop.perf, d2.performance);
-              setScore(scores.desktop.a11y, d2.accessibility);
-              setScore(scores.desktop.bp, d2.bestPractices);
-              setScore(scores.desktop.seo, d2.seo);
               renderTopFixes(r2.topFixes);
               renderFindings(r2.findings);
               if (note) note.textContent = 'Done. Scroll down for the findings.';
             } catch (err) {
-              /* keep the desktop-only result already on screen */
+              /* keep the result already on screen */
             }
           }, 32000);
         }
@@ -783,7 +753,7 @@ import Divider from '../components/ui/Divider.astro';
     margin: 0 0 24px;
   }
   @media (min-width: 740px) {
-    .au-scores-section { grid-template-columns: 1fr 1fr; gap: 18px; }
+    .au-scores-section { gap: 18px; max-width: 560px; margin-left: auto; margin-right: auto; }
   }
   .au-scores-col {
     background: rgba(255, 255, 255, 0.01);

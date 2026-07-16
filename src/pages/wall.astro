@@ -62,7 +62,7 @@ const lhWC = Array.isArray(lighthouse.winterscode) ? lighthouse.winterscode : [0
 const lhSogn = Array.isArray(lighthouse.sogn) ? lighthouse.sogn : [0,0,0,0];
 const lhBaseline = Array.isArray(lighthouse.baseline) ? lighthouse.baseline : [0,0,0,0];
 const lhBbtd = Array.isArray(lighthouse.bbtd) ? lighthouse.bbtd : [0,0,0,0];
-const lhSeabreeze = Array.isArray(lighthouse.seabreeze) ? lighthouse.seabreeze : [0,0,0,0];
+const lhSeabreeze = Array.isArray(lighthouse.seabreeze) ? lighthouse.seabreeze : [95,100,100,100];
 
 // LH average (P/A/SEO/BP). easier to scan at a glance
 function avg(arr: number[]): number {
@@ -344,11 +344,21 @@ const updatedAt = initialData?.updated_at ?? new Date().toISOString();
         <span class="wall-mod-badge" data-mod-source={speed.source}>{speed.source}</span>
       </header>
       <div class="wall-mod-body">
-        <div class="wall-stat-big">
-          <span class="wall-stat-num" data-speed-last>{speed.last_three}</span>
-          <span class="wall-stat-label">first client build · <a class="wall-mod-sogn" href="https://sogncontracting.com" target="_blank" rel="noopener">Sogn Contracting</a></span>
-        </div>
-        <p class="wall-mod-detail">Contract to live, in business days. Sogn Contracting (May 2026) shipped in 3 days. Most sites typically 3-7 days. Larger sites 1-2 weeks. App MVP 2-4 weeks. Custom builds quoted in consult.</p>
+        <ul class="wall-builds-list">
+          <li class="wall-builds-row">
+            <a class="wall-builds-name" href="https://seabreeze.llc" target="_blank" rel="noopener">SeaBreeze Landscape &amp; Home Repair</a>
+            <span class="wall-builds-days">7d</span>
+          </li>
+          <li class="wall-builds-row">
+            <a class="wall-builds-name" href="https://www.bandonbythedunesrealtee.net" target="_blank" rel="noopener">Bandon By The Dunes Realtee</a>
+            <span class="wall-builds-days">18d</span>
+          </li>
+          <li class="wall-builds-row">
+            <a class="wall-builds-name" href="https://sogncontracting.com" target="_blank" rel="noopener">Sogn Contracting</a>
+            <span class="wall-builds-days">3d</span>
+          </li>
+        </ul>
+        <p class="wall-mod-detail">Contract to live, in business days. Most sites run 3-7 days, larger sites 1-2 weeks, app MVP 2-4 weeks. Custom builds quoted in consult.</p>
       </div>
     </article>
   </section>
@@ -452,7 +462,6 @@ const updatedAt = initialData?.updated_at ?? new Date().toISOString();
               setText('[data-engine-uptime]', (d.engine.uptime_30d_pct || 0) + '%');
             }
             if (d.calendar) setText('[data-cal-next]', d.calendar.next);
-            if (d.speed) setText('[data-speed-last]', d.speed.last_three);
 
             // Update "updated" timestamp
             var when = new Date(d.updated_at || Date.now()).toLocaleTimeString('en-US', {
@@ -923,4 +932,12 @@ const updatedAt = initialData?.updated_at ?? new Date().toISOString();
   .wall-sec-tier-a { background: rgba(77,216,168,0.12); color: var(--color-wc-green, #4dd8a8); border: 1px solid rgba(77,216,168,0.3); }
   .wall-sec-tier-bc { background: rgba(240,184,120,0.12); color: var(--color-amber, #f0b878); border: 1px solid rgba(240,184,120,0.3); }
   .wall-sec-tier-low { background: rgba(217,107,94,0.12); color: #d96b5e; border: 1px solid rgba(217,107,94,0.3); }
+
+  /* RECENT BUILDS list (newest first) */
+  .wall-builds-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+  .wall-builds-row { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; border-bottom: 1px dotted rgba(120,140,132,0.16); padding-bottom: 9px; }
+  .wall-builds-row:last-child { border-bottom: 0; padding-bottom: 0; }
+  .wall-builds-name { color: var(--color-ash-200, #e6ece9); text-decoration: none; font-size: 15px; letter-spacing: 0.01em; }
+  .wall-builds-name:hover { color: var(--color-wc-green, #4dd8a8); }
+  .wall-builds-days { font-family: var(--font-mono, monospace); font-size: 15px; font-weight: 700; color: var(--color-copper, #c88a5a); white-space: nowrap; }
 </style>

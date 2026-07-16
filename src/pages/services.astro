@@ -9,7 +9,7 @@ import Contact from '../components/sections/Contact.astro';
 
 <BaseLayout
   title="Services · Winters Code"
-  description="Custom websites, custom apps, integrations, and ongoing maintenance starting at $75/mo. Sites live in days, apps in weeks. From questionnaire to launch."
+  description="Custom websites from $1,750 with photos, copy, branding, top Google scores, and security all included. Custom apps, integrations, and optional maintenance from $75/mo."
 >
   <Header />
   <MobileMenu />
@@ -17,9 +17,9 @@ import Contact from '../components/sections/Contact.astro';
   <PageHero
     eyebrow="Services · The Menu"
     h1="What I'm hired for."
-    sub="Custom sites, custom apps, integrations between systems you already use, and ongoing maintenance starting at $75/mo."
-    sub2="Custom code. Direct line to the builder."
-    sub3="You own what I build."
+    sub="Custom sites that start at $1,750 with everything in, custom apps, integrations between systems you already use, and optional maintenance from $75 a month."
+    sub2="Custom code. Built by the person you call."
+    sub3="One price. Everything in."
     bgImage="/photo/local/services-coast-wash"
     bgOpacity={0.4}
   />
@@ -73,43 +73,59 @@ import Contact from '../components/sections/Contact.astro';
       <p class="sv-block-sub">Custom code, custom design, mobile-first. Built for your business, not stamped from a template.</p>
     </header>
 
-    <div class="sv-tier-grid">
-      <article class="sv-tier" id="sites-starter">
-        <h3 class="sv-tier-h">Starter site</h3>
-        <ul class="sv-tier-features">
-          <li>3-5 pages</li>
-          <li>Mobile responsive</li>
-          <li>Contact form</li>
-          <li>SEO basics</li>
-          <li>1 revision round</li>
-        </ul>
-        <p class="sv-tier-timeline">Live in 3-7 business days, typically</p>
-        <a href="/contact?type=site&amp;tier=starter" class="sv-tier-cta">Get a quote →</a>
-      </article>
+    <div class="sv-floor">
+      <p class="sv-floor-price">Most local business sites start at <strong>$1,750</strong>.</p>
+      <p class="sv-floor-intro">
+        One number, everything below included. No per-page fees, no surprise
+        add-ons, no monthly anything you didn't ask for. The price I quote is the
+        price you pay. Bigger jobs cost more and I tell you that up front, but the
+        floor is a real, finished website, not a demo you keep buying pieces of.
+      </p>
+    </div>
 
-      <article class="sv-tier" id="sites-pro">
-        <h3 class="sv-tier-h">Pro site</h3>
-        <ul class="sv-tier-features">
-          <li>6-12 pages</li>
-          <li>Custom widget (booking, gallery, calculator)</li>
-          <li>Advanced SEO</li>
-          <li>2 revision rounds</li>
+    <div class="sv-floor-groups">
+      <div class="sv-fg">
+        <h3 class="sv-fg-h">Your website</h3>
+        <ul class="sv-fg-list">
+          <li>A custom site made for your business, not a template with your name dropped in.</li>
+          <li>The pages you actually need: home, about, your services or work, and contact.</li>
+          <li>Real photos. Bill Bailey or I come out and shoot your business. No stock photos of a storefront that isn't yours.</li>
+          <li>The words written for you. I write the headlines, your story, and your service descriptions, so you don't have to.</li>
+          <li>Photo galleries to show your work.</li>
+          <li>A contact form that reaches you.</li>
+          <li>An email on your own domain if you want one (you@yourbusiness.com).</li>
+          <li>Privacy and terms pages, standard and ready to go.</li>
+          <li>Looks right on every phone, tablet, and computer. I keep tuning it until you're happy with it.</li>
         </ul>
-        <p class="sv-tier-timeline">Live in 1-2 weeks</p>
-        <a href="/contact?type=site&amp;tier=pro" class="sv-tier-cta">Get a quote →</a>
-      </article>
+      </div>
 
-      <article class="sv-tier" id="sites-custom">
-        <h3 class="sv-tier-h">Custom build</h3>
-        <ul class="sv-tier-features">
-          <li>E-commerce</li>
-          <li>Member portals</li>
-          <li>Custom integrations</li>
-          <li>Complex business logic</li>
+      <div class="sv-fg">
+        <h3 class="sv-fg-h">Your brand</h3>
+        <ul class="sv-fg-list">
+          <li>A logo and brand identity if you don't have one yet. I create it as part of the project, because I can't do the site right without it. You get real vector files you can put on signs, shirts, business cards, and print, not just the website. I do the whole thing, start to finish.</li>
         </ul>
-        <p class="sv-tier-timeline">2-4 weeks typical</p>
-        <a href="/contact?type=site&amp;tier=custom" class="sv-tier-cta">Get a quote →</a>
-      </article>
+      </div>
+
+      <div class="sv-fg">
+        <h3 class="sv-fg-h">Getting found</h3>
+        <ul class="sv-fg-list">
+          <li>Top Google scores for speed, accessibility, and search, up in the 90s and 100s, proven on Google's own test. Most cheap sites sit near 60 on a phone. Yours won't.</li>
+          <li>Set up in Google Search Console with your sitemap submitted, so Google finds and lists you correctly from day one.</li>
+          <li>Readable by AI, not just Google. ChatGPT and the new AI assistants can find your business and point people to it. Scrapers and junk bots get shut out.</li>
+          <li>Your whole presence lined up: your website, your Google listing, and your socials all saying the same thing and pointing the same way.</li>
+          <li>Your socials wired right into the site.</li>
+        </ul>
+      </div>
+
+      <div class="sv-fg">
+        <h3 class="sv-fg-h">Safe and yours</h3>
+        <ul class="sv-fg-list">
+          <li>Real security baked in from the start: HTTPS, a hardened setup, and spam-protected forms. Not bolt-on plugins you have to babysit.</li>
+          <li>No WordPress lock-in, no monthly plugin licenses, no being tied to whoever made it.</li>
+          <li>When it's done, it's yours to keep, free and clear. No contract and no required monthly fee.</li>
+          <li>If you ever want me to keep it updated, make changes, or just be on call, I do that starting at $75 a month, up to $250 for the works.</li>
+        </ul>
+      </div>
     </div>
   </section>
 
@@ -163,55 +179,46 @@ import Contact from '../components/sections/Contact.astro';
 
   <Divider label="04" />
 
-  <!-- ─────────── Section 04 · Add-ons ─────────── -->
-  <section class="sv-block" aria-labelledby="sv-addons-h">
+  <!-- Section 04 - When it costs more -->
+  <section class="sv-block" aria-labelledby="sv-more-h">
     <header class="sv-block-head">
-      <h2 class="sv-block-h" id="sv-addons-h">Add-ons</h2>
-      <p class="sv-block-sub">Smaller pieces. Bolt on to any build.</p>
+      <h2 class="sv-block-h" id="sv-more-h">When it costs more</h2>
+      <p class="sv-block-sub">The floor covers a complete core site. These add to it, and I quote them clearly.</p>
     </header>
 
     <dl class="sv-addons">
       <div class="sv-addon-row">
-        <dt class="sv-addon-name">Workflow audit</dt>
-        <dd class="sv-addon-desc">
-          90 min walk-through. Free for active clients. Custom quote
-          standalone.
-        </dd>
+        <dt class="sv-addon-name">Bigger sites</dt>
+        <dd class="sv-addon-desc">A lot more pages, or sections well beyond a core site.</dd>
       </div>
       <div class="sv-addon-row">
-        <dt class="sv-addon-name">Integration build</dt>
-        <dd class="sv-addon-desc">
-          Custom scope. Stripe ↔ QuickBooks ↔ your site. Whatever you
-          already use, wired together.
-        </dd>
+        <dt class="sv-addon-name">SEO expansion</dt>
+        <dd class="sv-addon-desc">More reach and stronger local search, beyond the strong baseline that ships with every site.</dd>
+      </div>
+      <div class="sv-addon-row">
+        <dt class="sv-addon-name">Booking, payments, or a store</dt>
+        <dd class="sv-addon-desc">Online scheduling, taking payments, or selling products.</dd>
+      </div>
+      <div class="sv-addon-row">
+        <dt class="sv-addon-name">Listing feeds</dt>
+        <dd class="sv-addon-desc">MLS or RMLS feeds for real estate.</dd>
+      </div>
+      <div class="sv-addon-row">
+        <dt class="sv-addon-name">Integrations</dt>
+        <dd class="sv-addon-desc">Stripe, QuickBooks, or whatever you already use, wired together.</dd>
       </div>
       <div class="sv-addon-row">
         <dt class="sv-addon-name">AI workflow design</dt>
-        <dd class="sv-addon-desc">
-          Automating intake, replies, lead routing. Practical AI, not
-          the buzzword kind.
-        </dd>
-      </div>
-      <div class="sv-addon-row">
-        <dt class="sv-addon-name">Brand and logo design</dt>
-        <dd class="sv-addon-desc">
-          Custom marks made for your business. Logos, brand kit, the
-          look of the thing.
-        </dd>
-      </div>
-      <div class="sv-addon-row">
-        <dt class="sv-addon-name">Photography</dt>
-        <dd class="sv-addon-desc">
-          Real photos of your business for the site. Not stock.
-        </dd>
-      </div>
-      <div class="sv-addon-row">
-        <dt class="sv-addon-name">Help on demand</dt>
-        <dd class="sv-addon-desc">
-          Text Preston. Real human. <em>Included with maintenance.</em>
-        </dd>
+        <dd class="sv-addon-desc">Automating intake, replies, and lead routing. Practical AI, not the buzzword kind.</dd>
       </div>
     </dl>
+
+    <p class="sv-leaveout">
+      <strong>What I leave out, on purpose.</strong> Banner sliders and filler
+      nobody reads. Newsletters you'll never send. A pile of throwaway email
+      accounts. Stock photos. Fake "verified" badges (my proof is your live
+      Google score, not a sticker).
+    </p>
   </section>
 
   <Divider label="05" />
@@ -220,7 +227,7 @@ import Contact from '../components/sections/Contact.astro';
   <section class="sv-block" aria-labelledby="sv-maint-h">
     <header class="sv-block-head">
       <h2 class="sv-block-h" id="sv-maint-h">Keeping it running</h2>
-      <p class="sv-block-sub">Monthly plans. Cancel anytime. The person who built it is the person who maintains it.</p>
+      <p class="sv-block-sub">Optional. Monthly plans, cancel anytime. The person who built it is the person who maintains it.</p>
     </header>
 
     <div class="sv-tier-grid sv-tier-grid--2">
@@ -233,7 +240,7 @@ import Contact from '../components/sections/Contact.astro';
           <li>Hosting + SSL</li>
           <li>Daily backups</li>
           <li>Security patches</li>
-          <li>2 content edits / month</li>
+          <li>10 content edits / month</li>
           <li>Uptime monitoring</li>
         </ul>
         <a href="/contact?type=maintenance&amp;tier=basic" class="sv-tier-cta">Start a plan →</a>
@@ -247,9 +254,9 @@ import Contact from '../components/sections/Contact.astro';
         <ul class="sv-tier-features">
           <li>Everything in Basic</li>
           <li>Unlimited reasonable edits</li>
-          <li>Monthly performance report</li>
-          <li>Priority response</li>
-          <li>Text Preston direct</li>
+          <li>Priority same-day turnaround</li>
+          <li>Quarterly performance + SEO pass, fixes made</li>
+          <li>Improvements rolled in as you grow</li>
         </ul>
         <a href="/contact?type=maintenance&amp;tier=pro" class="sv-tier-cta">Start a plan →</a>
       </article>
@@ -297,13 +304,15 @@ import Contact from '../components/sections/Contact.astro';
         </summary>
         <div class="sv-faq-a">
           <p>
-            Agency quality, priced under a freelancer. National agencies typically start at
-            <span class="strike">$5,000+</span> and run 6+ weeks. Hourly
-            freelancers often bill <span class="strike">$2,500+</span>
-            over a month. A starter site with me starts around <strong>$1,750</strong>. Same
-            modern stack, live in days, and yours to own.
+            One price, everything in. Most local business sites start at
+            <strong>$1,750</strong>, with the pages, the words, real photos,
+            branding, top Google scores, and security all included. National
+            agencies typically start at <span class="strike">$5,000+</span> and
+            run six weeks or more. Hourly freelancers often bill
+            <span class="strike">$2,500+</span> over a month. Same modern stack,
+            live in days, and it's yours to keep.
           </p>
-          <p><em>Free consult, custom quote. I can steer it start to finish, or you can co-pilot with me.</em></p>
+          <p><em>Free consult and a written quote that holds for 14 days. Bigger jobs cost more, and I tell you up front.</em></p>
         </div>
       </details>
 
@@ -317,7 +326,7 @@ import Contact from '../components/sections/Contact.astro';
           <p>
             WordPress is mass-produced software with plugins stacked on top. <em>Slow.
             Plugin-dependent. Breaks at 2 AM when something auto-updates.</em>
-            I write the actual code. <strong>Loads faster. Ranks better.
+            It's custom code. <strong>Loads faster. Ranks better.
             Stays secure.</strong> ~95 Lighthouse average across every page I ship. No plugins to babysit, no "the dashboard is broken
             again" calls.
           </p>
@@ -332,11 +341,11 @@ import Contact from '../components/sections/Contact.astro';
         </summary>
         <div class="sv-faq-a">
           <p>
-            Yes. Monthly plans <strong>starting at $75/mo</strong>.
-            Hosting, SSL, daily backups, security patches, content edits.
-            The site stays alive, the phone number stays the same, the
-            person who built it is the person who maintains it.
-            <em>No "ticket has been escalated" emails.</em>
+            Yes, and it's optional. Monthly plans <strong>starting at $75/mo</strong>,
+            up to $250 for the works. Hosting, SSL, daily backups, security
+            patches, content edits. The site stays alive, the phone number stays
+            the same, the person who built it is the person who maintains it.
+            <em>You text a real person, not a ticket queue.</em>
           </p>
         </div>
       </details>
@@ -377,7 +386,7 @@ import Contact from '../components/sections/Contact.astro';
             vision AI stain analysis, live on App Store and Play Store.
             <strong>Baseline</strong> runs multi-model political
             intelligence across 4 providers. <strong>MyKonos</strong> is
-            an AI companion running on Demiurge. I write every line myself. The
+            an AI companion running on Demiurge. The
             speed is real.
           </p>
         </div>
@@ -862,4 +871,84 @@ import Contact from '../components/sections/Contact.astro';
     text-decoration-color: rgba(240, 160, 110, 0.5);
     color: var(--color-ash-500);
   }
+
+  /* Sites floor */
+  .sv-floor { max-width: 640px; margin: 4px 0 0; }
+  .sv-floor-price {
+    font-family: var(--font-sans);
+    font-size: 15px;
+    color: var(--color-ash-300);
+    margin: 0 0 10px;
+  }
+  .sv-floor-price strong {
+    font-family: var(--font-serif);
+    font-size: 38px;
+    color: var(--color-wc-green);
+    font-weight: 600;
+    margin: 0 4px;
+    line-height: 1;
+  }
+  @media (min-width: 740px) { .sv-floor-price strong { font-size: 46px; } }
+  .sv-floor-intro {
+    font-family: var(--font-sans);
+    font-size: 15px;
+    line-height: 1.68;
+    color: var(--color-ash-300);
+    margin: 0;
+    max-width: 60ch;
+  }
+  @media (min-width: 740px) { .sv-floor-intro { font-size: 16px; } }
+
+  .sv-floor-groups { margin: 30px 0 0; }
+  @media (min-width: 740px) {
+    .sv-floor-groups { column-count: 2; column-gap: 30px; }
+  }
+  .sv-fg {
+    background: var(--color-bg-card);
+    border: 1px solid var(--copper-hairline);
+    border-radius: var(--radius-card, 10px);
+    padding: 18px 18px 16px;
+    margin: 0 0 22px;
+    break-inside: avoid;
+  }
+  .sv-fg-h {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 19px;
+    font-weight: 600;
+    color: var(--color-copper-bright);
+    margin: 0 0 10px;
+  }
+  @media (min-width: 740px) { .sv-fg-h { font-size: 21px; } }
+  .sv-fg-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-family: var(--font-sans);
+    font-size: 13.5px;
+    color: var(--color-ash-300);
+    line-height: 1.6;
+  }
+  @media (min-width: 740px) { .sv-fg-list { font-size: 14px; } }
+  .sv-fg-list li { padding: 4px 0 4px 16px; position: relative; }
+  .sv-fg-list li::before {
+    content: "\00B7";
+    position: absolute;
+    left: 2px;
+    top: 2px;
+    color: var(--color-copper);
+    font-weight: 700;
+  }
+
+  /* When it costs more: leave-out note */
+  .sv-leaveout {
+    font-family: var(--font-sans);
+    font-size: 13.5px;
+    line-height: 1.6;
+    color: var(--color-ash-400);
+    margin: 22px 0 0;
+    max-width: 60ch;
+  }
+  @media (min-width: 740px) { .sv-leaveout { font-size: 14px; } }
+  .sv-leaveout strong { color: var(--color-ash-100); }
 </style>

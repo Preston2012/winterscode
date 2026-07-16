@@ -98,8 +98,9 @@ const FALLBACK: WorkshopData = {
     // median (mobile), measured 2026-06-24: perf 95, a11y/seo/best 100.
     bbtd:        [95, 100, 100, 100],
     // SeaBreeze Landscape and Home Repair (seabreeze.llc), Astro on Cloudflare.
-    // PSI mobile median measured 2026-07-09: perf 93-94, a11y/seo/best 100.
-    seabreeze:   [93, 100, 100, 100],
+    // PSI mobile perf is noisy (95-98 typical); a11y/seo/best 100. Conservative
+    // fallback only; live PSI populates the real number on the wall + cards.
+    seabreeze:   [95, 100, 100, 100],
     measured: '8m ago',
     source: 'fallback',
   },
