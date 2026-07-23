@@ -27,14 +27,14 @@ const articleLd = {
   dateModified: published,
   author: { '@id': BUSINESS_ID },
   publisher: { '@id': BUSINESS_ID },
-  image: absUrl('/insights/coos-county-audit-1200.webp'),
+  image: absUrl('/insights/rental-platforms-1200.webp'),
   mainEntityOfPage: absUrl(path),
 };
 ---
 
 <BaseLayout
   title="The Coos County Website Audit · Winters Code"
-  description="I audited 169 Coos County small-business websites with Lighthouse and Mozilla Observatory. Average mobile speed: 61/100. Not one was both fast and secure."
+  description="I audited 169 Coos County small-business websites with Lighthouse and Mozilla Observatory. Not one was both fast and secure. The best security grade in the county was a B."
   canonicalPath={path}
 >
   <Fragment slot="head">
@@ -67,17 +67,6 @@ const articleLd = {
       which grades security. Here is what came back.
     </p>
 
-    <figure class="ins-fig">
-      <img
-        src="/insights/coos-county-audit-800.webp"
-        srcset="/insights/coos-county-audit-800.webp 800w, /insights/coos-county-audit-1200.webp 1200w"
-        sizes="(min-width: 740px) 640px, 100vw"
-        alt="Field report: of 169 Coos County sites audited, zero scored both fast and secure. Average mobile speed 61 of 100, 36 percent had HTTPS with no defenses, and 2 percent had a working sitemap."
-        width="1200" height="2133" loading="lazy" decoding="async"
-      />
-      <figcaption>Of 169 audited sites, not one scored both fast and secure.</figcaption>
-    </figure>
-
     <h2 class="ins-h">The headline number: zero</h2>
     <p>
       Across all 169 sites, <strong>not a single one scored both fast and
@@ -86,10 +75,11 @@ const articleLd = {
       at least one.
     </p>
 
-    <h2 class="ins-h">Speed: an average of 61 out of 100</h2>
+    <h2 class="ins-h">Speed: 61 out of 100 among the sites we could score</h2>
     <p>
-      The average Lighthouse mobile speed score was <strong>61 out of
-      100</strong>. On the phone, where most local searches actually happen,
+      Among the <strong>96 sites Lighthouse returned a score for</strong>, the
+      average mobile speed was <strong>61 out of 100</strong>. On the phone,
+      where most local searches actually happen,
       that is the difference between a page that feels instant and one a visitor
       abandons before it loads. Google treats speed as a ranking signal, so slow
       sites lose twice: once in the rankings, and again with the people who do
@@ -112,12 +102,12 @@ const articleLd = {
       the easiest SEO win on the table.
     </p>
 
-    <h2 class="ins-h">Why: 88 percent are renting</h2>
+    <h2 class="ins-h">Why: most of them are renting</h2>
     <p>
-      The reason is structural. <strong>88 percent of the sites were rented from
-      a template platform</strong> rather than built. WordPress, Squarespace, and
-      Wix made up the bulk of the sample, and the pattern in their scores is hard
-      to miss.
+      The reason is structural. <strong>More than half of the sites were rented
+      from a template platform</strong> rather than built. WordPress alone was
+      <strong>63 of the 169</strong>, with Squarespace at 13 and Wix at 10, and
+      the pattern in their scores is hard to miss.
     </p>
 
     <figure class="ins-fig">
@@ -155,9 +145,11 @@ const articleLd = {
     </p>
 
     <p class="ins-note">
-      Methodology: 169 publicly reachable Coos County small-business websites,
-      scored with Google Lighthouse (mobile) and Mozilla Observatory in 2026.
-      Platform identified by site fingerprint.
+      Methodology: 219 Coos County small businesses surveyed across nine towns.
+      50 had no website. The 169 with a site were graded by Mozilla Observatory.
+      Google Lighthouse returned a mobile score for 96 of them, and the speed
+      average above is drawn from those 96. Platform identified by site
+      fingerprint. Scored in 2026.
     </p>
   </article>
 

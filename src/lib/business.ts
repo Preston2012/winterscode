@@ -203,7 +203,7 @@ export const towns: TownEntry[] = [
         'The commercial core runs along Highway 101 through downtown, with the Coos History Museum and the boardwalk on the waterfront and the broader retail strip stretching toward the Pony Village area in neighboring North Bend. Bay Area Hospital anchors a whole cluster of clinics and practices, Southwestern Oregon Community College brings steady foot traffic, and the port and Coos Bay Rail Line anchor the industrial side. Charleston, just west, adds the working marina and seafood trade. It is the one place on the south coast where multiple businesses chase the same search, which is exactly why being the fast, well-built option pays here when it would not matter in a smaller town.',
     },
     auditNote:
-      'I audited 169 Coos County small-business websites with Google Lighthouse and Mozilla Observatory. The average mobile speed score was 61 out of 100, and not one site scored both fast and secure. Coos Bay has the most businesses and the most competition in that sample, which means it also has the most room to win by simply being the fast, secure option.',
+      'I audited 169 Coos County small-business websites with Google Lighthouse and Mozilla Observatory. Not one site scored both fast and secure, and the best security grade in the county was a B. Coos Bay has the most businesses and the most competition in that sample, which means it also has the most room to win by simply being the fast, secure option.',
     faq: [
       {
         q: 'Do you work with Coos Bay businesses in person?',
@@ -268,7 +268,7 @@ export const towns: TownEntry[] = [
         'North Bend\u2019s commercial weight sits in two places: the Pony Village Mall area, the largest enclosed shopping center on the coast and the retail hub for the whole region, and the Highway 101 corridor running down toward the McCullough Bridge. The Mill Casino Hotel on the bay is a destination economy of its own, drawing lodging, dining, and event traffic. The Southwest Oregon Regional Airport and the businesses around it serve arriving travelers directly. Because so many North Bend customers are passing through or flying in rather than local regulars, the first thing they see is a phone screen, which makes a fast, clear site the actual front door.',
     },
     auditNote:
-      'Across the 169 Coos County sites I audited with Google Lighthouse, the average mobile speed score was 61 out of 100. That number stings more in North Bend than most places, because so many businesses here are pitching to travelers on phones and slow airport or rental-car connections. The site that loads first is the one that gets the booking.',
+      'Across the Coos County sites Google Lighthouse could score, the average mobile speed was 61 out of 100. That number stings more in North Bend than most places, because so many businesses here are pitching to travelers on phones and slow airport or rental-car connections. The site that loads first is the one that gets the booking.',
     faq: [
       {
         q: 'Can you build a site that handles bookings for a North Bend business?',
