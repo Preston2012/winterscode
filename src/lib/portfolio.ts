@@ -169,7 +169,6 @@ export const portfolio: PortfolioItem[] = [
     },
     links: [
       { label: 'Visit site →', href: 'https://sogncontracting.com', primary: true },
-      { label: 'GitHub →', href: 'https://github.com/Preston2012/Sogncontracting' },
     ],
   },
   {
