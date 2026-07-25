@@ -107,7 +107,7 @@ const FALLBACK: WorkshopData = {
   security: {
     // Observatory grade + score. Top-level = winterscode (kept for existing
     // consumers). Per-site map drives the per-card + wall security rows.
-    // Fallbacks are real grades measured 2026-07-09 (all A+; bbtd 125, rest 115).
+    // Fallbacks are real grades measured 2026-07-24 (all A+; bbtd 130, rest 115).
     grade: 'A+',
     score: 115,
     headers_ok: ['HSTS', 'CSP', 'X-Frame-Options', 'Referrer-Policy', 'X-Content-Type-Options'],
@@ -115,7 +115,7 @@ const FALLBACK: WorkshopData = {
       winterscode: { grade: 'A+', score: 115 },
       sogn:        { grade: 'A+', score: 115 },
       baseline:    { grade: 'A+', score: 115 },
-      bbtd:        { grade: 'A+', score: 125 },
+      bbtd:        { grade: 'A+', score: 130 },
       seabreeze:   { grade: 'A+', score: 115 },
     },
     source: 'fallback',
