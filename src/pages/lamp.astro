@@ -4,6 +4,8 @@
 // Do NOT add a nav or footer link to it anywhere on the main site. It is
 // indexable and included in the sitemap, so search can find it; the site cannot.
 // Fonts are self-hosted from /public/_fonts per the site standard, no external CDN.
+// NOTE: the build injects a CSP with a sha256 hash of the inline module script.
+// If you edit that script you MUST rebuild, or the hash breaks and it stops running.
 ---
 <!DOCTYPE html>
 <html lang="en">
@@ -35,8 +37,8 @@
 :root{
   --ink:#12100E; --ink-soft:#1D1A16; --ink-line:#332D25;
   --paper:#F5F0E6; --paper-warm:#EDE5D6; --paper-edge:#DED3BE;
-  --text:#1A1714; --mute:#6C6257; --faint:#948A7C;
-  --amber:#B0801F; --amber-lit:#E0AE4E; --ox:#8A3324;
+  --text:#1A1714; --mute:#6C6257; --faint:#6D665B;
+  --amber:#B0801F; --amber-ink:#856117; --amber-lit:#E0AE4E; --ox:#8A3324;
   --measure:36rem;
 }
 *{box-sizing:border-box;}
@@ -128,7 +130,7 @@ section{margin-bottom:clamp(52px,9vh,104px);}
 }
 .post h3 b{
   font-family:"JetBrains Mono",ui-monospace,monospace;font-size:.66em;font-weight:500;
-  color:var(--amber);letter-spacing:.1em;margin-right:.6em;vertical-align:.08em;
+  color:var(--amber-ink);letter-spacing:.1em;margin-right:.6em;vertical-align:.08em;
 }
 .post .body>p:last-child{margin-bottom:0;}
 .post .cite{color:var(--mute);font-style:italic;}
@@ -151,9 +153,9 @@ section{margin-bottom:clamp(52px,9vh,104px);}
   margin:0 0 .5em;letter-spacing:-.015em;
 }
 .plain h2{margin-top:0;}
-h4{
+.kick{
   font-family:"JetBrains Mono",ui-monospace,monospace;font-size:10px;font-weight:500;
-  letter-spacing:.24em;text-transform:uppercase;color:var(--amber);
+  letter-spacing:.24em;text-transform:uppercase;color:var(--amber-ink);
   margin:2em 0 .7em;
 }
 .refusals{list-style:none;margin:0;padding:0;}
@@ -196,11 +198,8 @@ h4{
 .byline a{border-bottom-color:#5E5343;}
 .byline .name{color:var(--paper);font-weight:600;}
 @media(prefers-reduced-motion:no-preference){
-  .hero .col>*{animation:up .8s cubic-bezier(.2,.7,.2,1) both;}
-  .hero .col>*:nth-child(2){animation-delay:.07s}
-  .hero .col>*:nth-child(3){animation-delay:.14s}
-  .hero .col>*:nth-child(4){animation-delay:.2s}
-  @keyframes up{from{opacity:0;transform:translateY(13px)}to{opacity:1;transform:none}}
+  .hero .col>*{animation:up .42s cubic-bezier(.2,.7,.2,1) both;}
+  @keyframes up{from{opacity:0;transform:translateY(9px);}to{opacity:1;transform:none;}}
 }
 </style>
 </head>
@@ -457,7 +456,7 @@ h4{
 </section>
 
 <section class="panel">
-  <h4>What it will never do</h4>
+  <h3 class="kick">What it will never do</h3>
   <p class="small" style="margin-bottom:1.6em">The refusals are the load-bearing part. Most of them are written as descriptions of what the thing is rather than as policies it holds, so no emergency can suspend them.</p>
   <ul class="refusals">
     <li><b>No power over your body, your movement, your home, your business, your school, or your church.</b> Not at any tier, not under any emergency, not ever.</li>
@@ -474,7 +473,7 @@ h4{
 </section>
 
 <section class="plain col">
-  <h4>What's still open</h4>
+  <h3 class="kick">What's still open</h3>
   <p>How the first audit consortia get chosen. The economic transition mechanics. The verification protocol specification. What happens when religious authority and the architecture's principles conflict. What it does against organized authoritarian opposition.</p>
   <p>The hardest one is named plainly in the document: somebody has to start it, and there's no perfectly fair way to do that.</p>
   <p style="margin-top:1.8em">Read it and tear into it. Specific sections, specific problems, specific fixes. Or take whatever is useful and build something else with it. <a href="https://github.com/Preston2012/ouroboros">The whole thing sits on GitHub</a> under CC BY-SA. Five minutes for the brief, a long afternoon for the rest.</p>
@@ -485,7 +484,7 @@ h4{
 <section class="plain col creed" style="margin-top:26px">
   <p>I was baptized and raised Christian, and then spent part of a college stint on religious studies, ancient and modern, and on mythology alongside it. I was not looking for a way out. I wanted to know what else was out there and whether the thing I had been handed would hold up against it. It held up. I came back carrying more than I left with.</p>
 
-  <h4>What I hold</h4>
+  <h3 class="kick">What I hold</h3>
   <p>Christ is the center. Father, Son, Spirit. I am not shopping for something easier, and I am not going to soften that in order to make the rest of this go down more smoothly.</p>
   <p>What I do not hold is that the Bible is the only place God ever spoke, or that we are reading it exactly as it was given. Sixty-six books, three languages, copied by hand across centuries, then translated by men working with kings and committees at their shoulders. Some of it moved in transit. The King James takes four separate words and prints hell for all four, and those four did not mean the same thing. None of that shakes me. It means I read slowly.</p>
   <p>Nor do I think that goes around Scripture. I think Scripture says it. Hebrews opens with God speaking in many portions and many ways before He ever spoke through the Son. Paul stands up in Athens, quotes pagan poets back to pagans, and tells them the God they had been reaching for in the dark is the one he came to name. John says the true Light gives light to every man coming into the world. Read plainly, the rest of the world was not sitting in total darkness for four thousand years. It had fragments.</p>
@@ -498,14 +497,14 @@ h4{
   <p>One more piece, and it is the one that sounds strangest, so I will put it carefully. I think there is a single consciousness underneath all of us and that it is his. Not that we are God. That everything is inside him and he is inside everything, and that he is more than the sum of what he is inside. Paul says in him we live and move and have our being. And I think every person carries a spark of him, breathed in back at Genesis 2:7 and waiting to be lit. The image is not mine. It is his.</p>
   <p>I also think spiritual danger is real rather than metaphorical, and that a good deal of what gets called enlightenment is a man walking into it with the lights off.</p>
 
-  <h4>Where the confidence runs out</h4>
+  <h3 class="kick">Where the confidence runs out</h3>
   <p>The experiences are real. I have had encounters, and I do not mean a good feeling in a service. Personal, intelligent, and cooperative rather than overriding. It does not take my hands off the wheel. It drives alongside and waits for me to stop fighting it.</p>
   <p>The frameworks built on top of experiences like that are human, mine among them. What sits on the far side of it I cannot verify from in here, and neither can anyone else, because the one instrument that would settle the question is standing outside your own perceptual system to check it, and nobody has that instrument. I lean toward something rather than nothing, and I hold the lean loosely.</p>
   <p>That is not a hedge. The uncertainty is the position.</p>
 </section>
 
 <section class="plain col">
-  <h4>Conflict of interest</h4>
+  <h3 class="kick">Conflict of interest</h3>
   <p class="small">I build and sell AI software, a memory engine and a personal companion among it, and the architecture above describes a personal companion as public infrastructure. I stand to gain if this direction wins. That is a conflict and you should weigh it accordingly. I wrote the architecture to be provider-neutral, and if somebody builds a better version of that layer than mine, they should win it.</p>
 </section>
 
@@ -532,16 +531,18 @@ h4{
 (function(){
   var t=document.getElementById('thread');
   if(!t)return;
-  var raf=null;
+  var raf=null,max=0;
+  function measure(){max=document.documentElement.scrollHeight-window.innerHeight;}
   function upd(){
     raf=null;
-    var h=document.documentElement.scrollHeight-window.innerHeight;
-    var p=h>0?window.scrollY/h:0;
+    var p=max>0?window.scrollY/max:0;
+    if(p<0)p=0;else if(p>1)p=1;
     t.style.setProperty('--lit',(p*74)+'vh');
   }
   addEventListener('scroll',function(){if(!raf)raf=requestAnimationFrame(upd);},{passive:true});
-  addEventListener('resize',upd,{passive:true});
-  upd();
+  addEventListener('resize',function(){measure();upd();},{passive:true});
+  addEventListener('load',function(){measure();upd();});
+  measure();upd();
 })();
 </script>
 </body>
