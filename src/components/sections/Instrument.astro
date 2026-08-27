@@ -149,6 +149,10 @@
         Array.from(thread.querySelectorAll('.in-msg')).forEach(function (n) {
           n.parentNode && n.parentNode.removeChild(n);
         });
+        // S106: and the turns the model sees. Reset means the model forgets and
+        // Demiurge does not, which is the whole point of the button.
+        turns = [];
+        lastUserText = '';
         // Re-insert the empty-state node fresh (it was removed by hideEmpty)
         var existing = thread.querySelector('[data-empty]');
         if (!existing) {
@@ -186,6 +190,21 @@
     let activeBotEl = null;
     let activeCursor = null;
     let isStreaming = false;
+
+    /*
+     * S106: the turns the visitor can see.
+     *
+     * The model used to receive only the current message, so it repeated itself
+     * inside one visible conversation. Observed live: a visitor answered "A new
+     * website" and was asked what brought them here for the second time.
+     *
+     * Held in the browser on purpose. Reset chat has to mean reset: dropping
+     * this array is what makes the model go blank while Demiurge memory keeps
+     * the fact. That contrast IS the demo this page promises.
+     */
+    var turns = [];
+    var lastUserText = '';
+    var MAX_TURNS = 8;
     let drainMode = false;
 
     function flushChunk() {
@@ -222,6 +241,16 @@
     }
 
     function finalizeBotMessage() {
+      // Record the completed exchange from what the visitor actually saw, not
+      // from what was requested, so a truncated or interrupted reply is stored
+      // exactly as rendered.
+      if (activeBotEl) {
+        var replyText = (activeBotEl.textContent || '').trim();
+        if (lastUserText) turns.push({ role: 'user', content: lastUserText });
+        if (replyText) turns.push({ role: 'assistant', content: replyText });
+        if (turns.length > MAX_TURNS) turns = turns.slice(-MAX_TURNS);
+        lastUserText = '';
+      }
       if (activeCursor && activeCursor.parentNode) {
         activeCursor.parentNode.removeChild(activeCursor);
       }
@@ -363,6 +392,9 @@
 
     async function sendMessage(text) {
       addUserMessage(text);
+      // Recorded AFTER the body is built below, so the current message is not
+      // duplicated as both history and message.
+      lastUserText = text;
       addBotMessage();
       isStreaming = true;
       startRender();
@@ -374,7 +406,7 @@
             'content-type': 'application/json',
             accept: 'text/event-stream',
           },
-          body: JSON.stringify({ message: text }),
+          body: JSON.stringify({ message: text, history: turns.slice(-MAX_TURNS) }),
         });
 
         if (res.status === 429) {

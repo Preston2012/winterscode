@@ -27,6 +27,8 @@ import { env as cfEnv } from 'cloudflare:workers';
 
 const DEFAULT_UPSTREAM = 'https://demi.baseline.marketing';
 const MAX_MESSAGE_CHARS = 4_000;
+const MAX_HISTORY_MESSAGES = 8;
+const MAX_HISTORY_CHARS = 800;
 
 export const POST: APIRoute = async ({ request }) => {
   let body: unknown;
@@ -42,6 +44,31 @@ export const POST: APIRoute = async ({ request }) => {
   }
   if (message.length > MAX_MESSAGE_CHARS) {
     return jsonError('message too long', 400);
+  }
+
+  /*
+   * S106: forward the recent turns the browser is showing.
+   *
+   * This proxy used to rebuild the upstream body as {message} alone, so the
+   * model never saw the transcript on screen and repeated itself. Observed
+   * live: a visitor answered "A new website" and was asked what brought them
+   * here for the second time in a row.
+   *
+   * Shape-checked here and again upstream. Both ends validate because this one
+   * is reachable from any browser, and the upstream cap is what actually bounds
+   * the bill.
+   */
+  const rawHistory = (body as { history?: unknown } | null)?.history;
+  const history: Array<{ role: string; content: string }> = [];
+  if (Array.isArray(rawHistory)) {
+    for (const item of rawHistory.slice(-MAX_HISTORY_MESSAGES)) {
+      const entry = item as { role?: unknown; content?: unknown } | null;
+      if (!entry || (entry.role !== 'user' && entry.role !== 'assistant')) continue;
+      if (typeof entry.content !== 'string') continue;
+      const content = entry.content.trim().slice(0, MAX_HISTORY_CHARS);
+      if (content.length === 0) continue;
+      history.push({ role: entry.role, content });
+    }
   }
 
   const token = (cfEnv as Record<string, string | undefined>).WC_DEMO_TOKEN;
@@ -72,7 +99,7 @@ export const POST: APIRoute = async ({ request }) => {
       'cf-connecting-ip': clientIp,
       'x-forwarded-for': clientIp,
     },
-    body: JSON.stringify({ message }),
+    body: JSON.stringify(history.length > 0 ? { message, history } : { message }),
   });
 
   let upstreamRes: Response;
