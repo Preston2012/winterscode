@@ -115,6 +115,7 @@ export const POST: APIRoute = async ({ request }) => {
       status: upstreamRes.status,
       headers: {
         'content-type': 'text/event-stream',
+        // trap-waiver: I-310 an event stream, not a page. no-transform here stops a proxy buffering or rewriting the stream; the rule is about using it to suppress a beacon on a compressible page.
         'cache-control': 'no-cache, no-transform',
         connection: 'keep-alive',
         'x-accel-buffering': 'no',
