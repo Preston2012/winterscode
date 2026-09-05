@@ -123,9 +123,7 @@ const ROWS: WallRow[] = [
         <Explainer label="?">{row.explain}</Explainer>
         <span class="row-content">
           {row.sites && WALL_SITES.map((site, i) => (
-            <span class={i === 0 ? 'row-primary' : 'row-line'} data-site-key={site.key}>
-              {site.label} {row.sites === 'lighthouse' ? fmtQuad(site.lhFallback) : fmtGrade(site.secFallback)}
-            </span>
+            <span class={i === 0 ? 'row-primary' : 'row-line'} data-site-key={site.key} data-site-label={site.label}>{site.label} {row.sites === 'lighthouse' ? fmtQuad(site.lhFallback) : fmtGrade(site.secFallback)}</span>
           ))}
           {!row.sites && <span class="row-primary">{row.primary}</span>}
           {row.secondary && row.tertiary && <span class="row-secondary row-secondary-block">{row.secondary}</span>}
@@ -228,7 +226,7 @@ const ROWS: WallRow[] = [
           row.querySelectorAll('[data-site-key]').forEach(function (line) {
             var key = line.getAttribute('data-site-key');
             var text = fmt(key);
-            if (text) line.textContent = line.textContent.split(' ')[0] + ' ' + text;
+            if (text) line.textContent = line.getAttribute('data-site-label') + ' ' + text;
           });
         }
         if (d.lighthouse) {
