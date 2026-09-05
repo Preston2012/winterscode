@@ -19,13 +19,14 @@ export interface Props {
 
 const { homepage = false } = Astro.props;
 
-// Primary nav points to the 5 main pages (locked S6+ doctrine).
+// Primary nav points to the 6 main pages (S6+ doctrine, The Wall added S168 at Preston's ruling).
 // Order matches the homepage emotional arc.
 const navItems = [
   { href: '/work',     label: 'Work',     num: '01' },
   { href: '/services', label: 'Services', num: '02' },
   { href: '/about',    label: 'About',    num: '03' },
-  { href: '/contact',  label: 'Contact',  num: '04' },
+  { href: '/wall',     label: 'The Wall', num: '04' },
+  { href: '/contact',  label: 'Contact',  num: '05' },
 ];
 ---
 

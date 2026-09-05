@@ -45,6 +45,8 @@ export interface PortfolioItem {
   tags: string[];
   /** Current status. */
   status: PortfolioStatus;
+  /** Rebuild of a site the client already had, or a first site. Shown as a pill. */
+  build: 'rebuild' | 'new';
   /** Hero image for the card. */
   image?: PortfolioImage;
   /** Expanded detail rows (label/value pairs). */
@@ -69,6 +71,7 @@ export const portfolio: PortfolioItem[] = [
     meta: 'ussurveysupply.com · surveying equipment dealer · 39 pages',
     tags: ['ASTRO', 'TAILWIND', 'CLOUDFLARE'],
     status: 'live',
+    build: 'rebuild',
     order: 1,
     // Hidden until ussurveysupply.com serves the site (tracks/wc-taylor-cutover.md
     // W9). Set published: true at cutover; the link already points at the real
@@ -109,6 +112,7 @@ export const portfolio: PortfolioItem[] = [
     meta: 'bandonbythedunesrealtee.net · real estate · live RMLS listings',
     tags: ['ASTRO', 'RMLS API', 'CLOUDFLARE'],
     status: 'live',
+    build: 'rebuild',
     order: 6,
     image: {
       src: '/work/bbtd-card.webp',
@@ -145,6 +149,7 @@ export const portfolio: PortfolioItem[] = [
     meta: 'seabreeze.llc · landscape care + home repair · 7-day build',
     tags: ['ASTRO', 'TAILWIND', 'CLOUDFLARE'],
     status: 'live',
+    build: 'rebuild',
     order: 5,
     image: {
       src: '/work/seabreeze-card.webp',
@@ -178,9 +183,10 @@ export const portfolio: PortfolioItem[] = [
     numeral: 'iv.',
     name: 'Professors Golf',
     category: 'site',
-    meta: 'professorsgolf.com · golf service · one page',
+    meta: 'professorsgolf.com · golf service · 1-day build',
     tags: ['ASTRO', 'CLOUDFLARE'],
     status: 'live',
+    build: 'new',
     order: 8,
     image: {
       src: '/work/golf-card.webp',
@@ -198,7 +204,7 @@ export const portfolio: PortfolioItem[] = [
       {
         label: 'Scope',
         value:
-          'One-page site for a Bandon golf service: club fitting, PGA-certified instruction, caddy referrals, local tee times and all-inclusive golf trips, with a click-to-call header and a sharecard built for the group text.',
+          'Site for a Bandon golf service, built in one business day: homepage plus the VIP Mexico Open events page. Club fitting, PGA-certified instruction, caddy referrals, local tee times and all-inclusive golf trips, with a click-to-call header and a sharecard built for the group text.',
       },
       {
         label: 'Result',
@@ -217,6 +223,7 @@ export const portfolio: PortfolioItem[] = [
     meta: 'sogncontracting.com · contractor · 3-day build',
     tags: ['NEXT.JS', 'VERCEL', 'TYPESCRIPT'],
     status: 'live',
+    build: 'new',
     order: 10,
     image: {
       src: '/work/sogn-card.webp',
@@ -257,6 +264,7 @@ export const portfolio: PortfolioItem[] = [
     meta: 'baseline.marketing · 13 pages · 22 custom widgets',
     tags: ['NEXT.JS', 'TYPESCRIPT', 'CLOUDFLARE'],
     status: 'live',
+    build: 'new',
     order: 20,
     details: [
       {
@@ -285,6 +293,7 @@ export const portfolio: PortfolioItem[] = [
     meta: 'Political intelligence · 106 figures · 28 screens · 4 AI models',
     tags: ['FLUTTER', 'SUPABASE', 'DEMIURGE'],
     status: 'beta',
+    build: 'new',
     order: 30,
     image: {
       src: '/work/baseline-card.webp',
@@ -323,6 +332,7 @@ export const portfolio: PortfolioItem[] = [
     meta: 'AI stain ID · 4 modes · live on App Store + Play Store',
     tags: ['FLUTTER', 'VISION', 'IN-APP PURCHASES'],
     status: 'live',
+    build: 'new',
     order: 20,
     image: {
       src: '/work/stainslayer-card.webp',
@@ -367,6 +377,7 @@ export const portfolio: PortfolioItem[] = [
     meta: 'Motion-activated flashlight · gesture detection · subscription tier',
     tags: ['FLUTTER', 'SENSORS', 'IN-APP PURCHASES'],
     status: 'beta',
+    build: 'new',
     order: 40,
     image: {
       src: '/work/choplight-card.webp',
@@ -403,6 +414,7 @@ export const portfolio: PortfolioItem[] = [
     meta: 'Memory engine · powering the MyKonos AI companion',
     tags: ['DEMIURGE', 'FLUTTER', 'CLAUDE'],
     status: 'beta',
+    build: 'new',
     order: 10,
     image: {
       src: '/work/demiurge-card.webp',

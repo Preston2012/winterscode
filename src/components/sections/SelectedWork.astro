@@ -19,6 +19,8 @@ interface WorkCard {
   desc: string;
   stack: [string, string];
   status: 'LIVE' | 'BETA' | 'PROD';
+  /** Rebuild of a site the client already had, or a first build. */
+  build: 'rebuild' | 'new';
   built_in_days?: number;
   external_url?: string;
   /** False keeps the card off the homepage until the site's own domain is live. */
@@ -41,6 +43,7 @@ const CARDS: WorkCard[] = [
     desc: 'Site for a Bandon surveying-equipment dealer shipping nationwide.',
     stack: ['Astro', 'Cloudflare'],
     status: 'LIVE',
+    build: 'rebuild',
     // Flip to true at the ussurveysupply.com cutover (tracks/wc-taylor-cutover.md W9).
     published: false,
     external_url: 'https://ussurveysupply.com',
@@ -59,6 +62,7 @@ const CARDS: WorkCard[] = [
     desc: 'Site for a Bandon landscape-care and home-repair business.',
     stack: ['Astro', 'Cloudflare'],
     status: 'LIVE',
+    build: 'rebuild',
     built_in_days: 7,
     external_url: 'https://seabreeze.llc',
     image: {
@@ -76,6 +80,7 @@ const CARDS: WorkCard[] = [
     desc: 'Real estate site with listings live from the RMLS feed.',
     stack: ['Astro', 'RMLS API'],
     status: 'LIVE',
+    build: 'rebuild',
     built_in_days: 18,
     external_url: 'https://www.bandonbythedunesrealtee.net',
     image: {
@@ -93,6 +98,7 @@ const CARDS: WorkCard[] = [
     desc: 'One-page site for a Bandon golf service: fitting, instruction, tee times.',
     stack: ['Astro', 'Cloudflare'],
     status: 'LIVE',
+    build: 'new',
     external_url: 'https://professorsgolf.com',
     image: {
       src: '/work/golf-card.webp',
@@ -109,6 +115,7 @@ const CARDS: WorkCard[] = [
     desc: 'Marketing site for a 30-year Bandon contractor.',
     stack: ['Next.js', 'Vercel'],
     status: 'LIVE',
+    build: 'new',
     built_in_days: 3,
     external_url: 'https://sogncontracting.com',
     image: {
@@ -126,6 +133,7 @@ const CARDS: WorkCard[] = [
     desc: 'Vision AI stain analysis. App Store + Play Store.',
     stack: ['Flutter', 'Supabase'],
     status: 'LIVE',
+    build: 'new',
     built_in_days: 30,
     image: {
       src: '/work/stainslayer-card.webp',
@@ -142,6 +150,7 @@ const CARDS: WorkCard[] = [
     desc: 'Memory engine powering the MyKonos AI companion.',
     stack: ['Demiurge', 'Flutter'],
     status: 'BETA',
+    build: 'new',
     built_in_days: 14,
     image: {
       src: '/work/demiurge-card.webp',
@@ -203,6 +212,7 @@ const CARDS: WorkCard[] = [
             <div class="sw-title-row">
               <span class="sw-title">{card.title}</span>
               <span class={`sw-status sw-status-${card.status.toLowerCase()}`}>{card.status}</span>
+              <span class={`sw-status sw-build-${card.build}`}>{card.build === 'rebuild' ? 'REBUILD' : 'NEW BUILD'}</span>
             </div>
             <p class="sw-desc">{card.desc}</p>
             <div class="sw-stack">
@@ -404,6 +414,18 @@ const CARDS: WorkCard[] = [
     background: rgba(216, 144, 90, 0.15);
     color: var(--color-copper-bright);
     border: 1px solid var(--copper-hairline);
+  }
+  /* Rebuild vs new build. Three of the client sites replaced a site the
+     business already had; the pill says so, because that is a different job. */
+  .sw-build-rebuild {
+    background: rgba(216, 144, 90, 0.15);
+    color: var(--color-copper-bright);
+    border: 1px solid var(--copper-hairline);
+  }
+  .sw-build-new {
+    background: transparent;
+    color: var(--color-ash-400);
+    border: 1px solid rgba(255, 255, 255, 0.14);
   }
 
   .sw-desc {

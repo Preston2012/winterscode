@@ -83,6 +83,9 @@ import Instrument from '../components/sections/Instrument.astro';
                   <span class={`wk-status wk-status-${p.status}`}>
                     {p.status.toUpperCase()}
                   </span>
+                  <span class={`wk-status wk-build-${p.build}`}>
+                    {p.build === 'rebuild' ? 'REBUILD' : 'NEW BUILD'}
+                  </span>
                 )}
               </div>
               <p class="wk-meta-line">{p.meta}</p>
@@ -244,6 +247,9 @@ import Instrument from '../components/sections/Instrument.astro';
                 {p.slug !== 'demiurge-mykonos' && (
                   <span class={`wk-status wk-status-${p.status}`}>
                     {p.status.toUpperCase()}
+                  </span>
+                  <span class={`wk-status wk-build-${p.build}`}>
+                    {p.build === 'rebuild' ? 'REBUILD' : 'NEW BUILD'}
                   </span>
                 )}
               </div>
@@ -706,6 +712,18 @@ import Instrument from '../components/sections/Instrument.astro';
     background: rgba(200, 128, 74, 0.10);
     color: var(--color-copper);
     border: 1px solid var(--copper-hairline);
+  }
+  /* Rebuild vs new build. Three client sites replaced one the business already
+     had; the pill says so, because a rebuild is a different job from a first site. */
+  .wk-build-rebuild {
+    background: rgba(216, 144, 90, 0.15);
+    color: var(--color-copper-bright);
+    border: 1px solid var(--copper-hairline);
+  }
+  .wk-build-new {
+    background: transparent;
+    color: var(--color-ash-400);
+    border: 1px solid rgba(255, 255, 255, 0.14);
   }
 
   .wk-meta-line {

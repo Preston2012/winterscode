@@ -65,6 +65,10 @@
         <dd>About</dd>
       </div>
       <div class="kbd-row">
+        <dt><kbd>g</kbd><kbd>l</kbd></dt>
+        <dd>The Wall</dd>
+      </div>
+      <div class="kbd-row">
         <dt><kbd>g</kbd><kbd>c</kbd></dt>
         <dd>Contact</dd>
       </div>
@@ -257,7 +261,7 @@
 </style>
 
 <script is:inline type="module">
-  // Vanilla keybindings for the 5-page nav + ? + Esc + /.
+  // Vanilla keybindings for the 6-page nav + ? + Esc + /.
   // No framework, no dependencies. ~1.5 KB minified.
   //
   // Design rules:
@@ -363,6 +367,7 @@
           w: '/work',
           s: '/services',
           a: '/about',
+          l: '/wall',
           c: '/contact',
         };
         const dest = map[key];

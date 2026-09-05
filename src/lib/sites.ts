@@ -9,9 +9,8 @@
  *
  * `key` is the field name in /api/workshop lighthouse and security.sites.
  * `published: false` hides a site everywhere until its own domain serves it.
- * `builtDays` is contract to live in business days and is only set where the
- * number was recorded; a site without one stays off the recent-builds list
- * rather than carry a guess.
+ * `builtDays` is contract to live in business days, from Preston; a site
+ * without one stays off the recent-builds list rather than carry a guess.
  * Fallbacks are the last real reads, dated, used only when the API is down.
  */
 export type SiteKey = 'taylor' | 'seabreeze' | 'bbtd' | 'golf' | 'sogn' | 'baseline' | 'winterscode';
@@ -36,7 +35,7 @@ export const SITES: MeasuredSite[] = [
   {
     // Cutover pending (tracks/wc-taylor-cutover.md W9). Flip published there.
     key: 'taylor', label: 'ussurveysupply', name: 'US Survey Supply',
-    href: 'https://ussurveysupply.com', portfolioSlug: 'us-survey-supply',
+    href: 'https://ussurveysupply.com', portfolioSlug: 'us-survey-supply', builtDays: 5,
     published: false,
   },
   {
@@ -50,9 +49,9 @@ export const SITES: MeasuredSite[] = [
     published: true, lhFallback: [97, 100, 100, 100], secFallback: { grade: 'A+', score: 130 },
   },
   {
-    // PSI 2026-09-05 after the contrast pass. Build duration not recorded.
+    // PSI 2026-09-05 after the contrast pass. One business day, per Preston.
     key: 'golf', label: 'professorsgolf', name: 'Professors Golf',
-    href: 'https://professorsgolf.com', portfolioSlug: 'professors-golf',
+    href: 'https://professorsgolf.com', portfolioSlug: 'professors-golf', builtDays: 1,
     published: true, lhFallback: [100, 100, 100, 100], secFallback: { grade: 'A+', score: 140 },
   },
   {
