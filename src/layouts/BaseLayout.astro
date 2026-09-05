@@ -181,7 +181,7 @@ const isPreviewDeploy = !!cfBranch && cfBranch !== prodBranch;
   {!bare && <Footer />}
 
   <!-- Inline scroll-progress updater. ~250 bytes, no framework cost. -->
-  <script is:inline>
+  <script is:inline type="module">
     (function () {
       const bar = document.getElementById('scroll-progress');
       if (!bar) return;

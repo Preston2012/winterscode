@@ -193,7 +193,11 @@ const id = `xp-${Math.random().toString(36).slice(2, 9)}`;
   .xp::after { content: ''; position: absolute; inset: -15px; }
 </style>
 
-<script is:inline>
+<script>
+  // Hoisted, not is:inline: Astro emits it once per page as a deferred
+  // module. As is:inline it rode inside every Explainer, seven copies on the
+  // homepage, each a parser-blocking sync script and each binding its own
+  // document listeners (S168).
   // Tap-to-toggle on touch devices. CSS handles hover/focus on desktop;
   // mobile users need an explicit interaction since hover doesn't exist.
   // Tapping anywhere outside the trigger closes the popover.

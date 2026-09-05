@@ -68,7 +68,7 @@ const ROWS: StatusRow[] = [
   </ul>
 </section>
 
-<script is:inline>
+<script is:inline type="module">
   (function () {
     // Live data refresh from /api/workshop. Falls back to baked-in stubs.
     fetch('/api/workshop', { signal: AbortSignal.timeout(4000) })

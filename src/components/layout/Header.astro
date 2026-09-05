@@ -376,7 +376,7 @@ const navItems = [
 </style>
 
 
-<script is:inline>
+<script is:inline type="module">
   // Workshop status pill. fetches /api/workshop after FCP, fills in the
   // "LAST DEPLOY · {N}m ago" timestamp. Uses requestIdleCallback when
   // available so we don't compete with critical-path work; falls back to
