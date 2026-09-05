@@ -109,7 +109,7 @@ export const portfolio: PortfolioItem[] = [
     meta: 'bandonbythedunesrealtee.net · real estate · live RMLS listings',
     tags: ['ASTRO', 'RMLS API', 'CLOUDFLARE'],
     status: 'live',
-    order: 5,
+    order: 6,
     image: {
       src: '/work/bbtd-card.webp',
       srcSmall: '/work/bbtd-card-720.webp',
@@ -145,7 +145,7 @@ export const portfolio: PortfolioItem[] = [
     meta: 'seabreeze.llc · landscape care + home repair · 7-day build',
     tags: ['ASTRO', 'TAILWIND', 'CLOUDFLARE'],
     status: 'live',
-    order: 7,
+    order: 5,
     image: {
       src: '/work/seabreeze-card.webp',
       srcSmall: '/work/seabreeze-card-720.webp',

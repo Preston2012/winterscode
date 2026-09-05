@@ -7,6 +7,10 @@
  * real hero images. Sogn keeps the editorial glyph (mark + 2 heroes mix).
  * Demiurge + MyKonos merges engine + product into one card per Preston.
  * Locked S7+ (2026-05-12).
+ * S168 (2026-09-05), Preston's ruling: client sites first, newest client first,
+ * then the apps. Order matches src/lib/sites.ts. Taylor sits first behind
+ * published: false until ussurveysupply.com serves; when it publishes, drop
+ * StainSlayer from this teaser so the grid stays at six (it stays on /work).
  */
 
 interface WorkCard {
@@ -50,6 +54,23 @@ const CARDS: WorkCard[] = [
     },
   },
   {
+    id: 'seabreeze',
+    title: 'SeaBreeze Landscape & Home Repair',
+    desc: 'Site for a Bandon landscape-care and home-repair business.',
+    stack: ['Astro', 'Cloudflare'],
+    status: 'LIVE',
+    built_in_days: 7,
+    external_url: 'https://seabreeze.llc',
+    image: {
+      src: '/work/seabreeze-card.webp',
+      srcSmall: '/work/seabreeze-card-720.webp',
+      srcXSmall: '/work/seabreeze-card-480.webp',
+      alt: 'SeaBreeze Landscape and Home Repair, Bandon Oregon: coastal logo in cream and teal on a deep green field.',
+      width: 1200,
+      height: 630,
+    },
+  },
+  {
     id: 'bandon-by-the-dunes',
     title: 'Bandon By The Dunes Realtee',
     desc: 'Real estate site with listings live from the RMLS feed.',
@@ -67,18 +88,17 @@ const CARDS: WorkCard[] = [
     },
   },
   {
-    id: 'seabreeze',
-    title: 'SeaBreeze Landscape & Home Repair',
-    desc: 'Site for a Bandon landscape-care and home-repair business.',
+    id: 'professors-golf',
+    title: 'Professors Golf',
+    desc: 'One-page site for a Bandon golf service: fitting, instruction, tee times.',
     stack: ['Astro', 'Cloudflare'],
     status: 'LIVE',
-    built_in_days: 7,
-    external_url: 'https://seabreeze.llc',
+    external_url: 'https://professorsgolf.com',
     image: {
-      src: '/work/seabreeze-card.webp',
-      srcSmall: '/work/seabreeze-card-720.webp',
-      srcXSmall: '/work/seabreeze-card-480.webp',
-      alt: 'SeaBreeze Landscape and Home Repair, Bandon Oregon: coastal logo in cream and teal on a deep green field.',
+      src: '/work/golf-card.webp',
+      srcSmall: '/work/golf-card-720.webp',
+      srcXSmall: '/work/golf-card-480.webp',
+      alt: 'Professors Golf, Bandon Oregon: dark green grid with a gold starburst beside Professional Golf Service in green serif on cream.',
       width: 1200,
       height: 630,
     },

@@ -23,6 +23,7 @@
  */
 
 import Explainer from '../ui/Explainer.astro';
+import { WALL_SITES, fmtQuad, fmtGrade } from '../../lib/sites.ts';
 
 interface WallRow {
   glyph: string;
@@ -32,6 +33,8 @@ interface WallRow {
   tertiary?: string;
   quaternary?: string;
   quinary?: string;
+  /** Render one line per measured site from src/lib/sites.ts, filled live by key. */
+  sites?: 'lighthouse' | 'security';
   meta?: string;
   featured?: boolean;
   /** API source key used to look up live/cached/fallback state. */
@@ -56,11 +59,8 @@ const ROWS: WallRow[] = [
     glyph: '▲',
     label: 'LIGHTHOUSE',
     sourceKey: 'lighthouse',
-    primary: 'winterscode 94/100/100/100',
-    secondary: 'sogn 99/100/100/100',
-    tertiary: 'baseline 99/100/100/100',
-    quaternary: 'bandon 97/100/100/100',
-    quinary: 'seabreeze 98/100/100/100',
+    sites: 'lighthouse',
+    primary: '',
     explain:
       'Google\'s scorecard for any website. Four numbers, 0 to 100 each: speed, accessibility, security, and how well Google can read the page. 100 is perfect. Most small-business sites score 50-70. Scores shown are mobile (the harder test). Desktop usually runs 2 to 5 points higher.',
   },
@@ -68,11 +68,8 @@ const ROWS: WallRow[] = [
     glyph: '⬢',
     label: 'SECURITY',
     sourceKey: 'security',
-    primary: 'winterscode A+ (115)',
-    secondary: 'sogn A+ (115)',
-    tertiary: 'baseline A+ (115)',
-    quaternary: 'bandon A+ (130)',
-    quinary: 'seabreeze A+ (115)',
+    sites: 'security',
+    primary: '',
     explain:
       'Mozilla Observatory grade for HTTP security headers like HSTS and CSP. A plus is the top grade. Most small-business sites score C or lower. Checked live when you load the page.',
   },
@@ -125,7 +122,12 @@ const ROWS: WallRow[] = [
         <span class="row-badge" data-row-badge data-source="fallback" aria-label={`${row.label} data source`}>fallback</span>
         <Explainer label="?">{row.explain}</Explainer>
         <span class="row-content">
-          <span class="row-primary">{row.primary}</span>
+          {row.sites && WALL_SITES.map((site, i) => (
+            <span class={i === 0 ? 'row-primary' : 'row-line'} data-site-key={site.key}>
+              {site.label} {row.sites === 'lighthouse' ? fmtQuad(site.lhFallback) : fmtGrade(site.secFallback)}
+            </span>
+          ))}
+          {!row.sites && <span class="row-primary">{row.primary}</span>}
           {row.secondary && row.tertiary && <span class="row-secondary row-secondary-block">{row.secondary}</span>}
           {row.secondary && !row.tertiary && <span class="row-secondary"> · {row.secondary}</span>}
           {row.tertiary && <span class="row-tertiary">{row.tertiary}</span>}
@@ -218,26 +220,19 @@ const ROWS: WallRow[] = [
             d.deploys.repo_count + ' repos',
             'last: ' + d.deploys.last);
         }
+        // One line per site, filled by key. A site the API did not return keeps
+        // its dated fallback text; nothing is reordered or dropped.
+        function fillSiteLines(sourceKey, fmt) {
+          var row = wall.querySelector('[data-source-key="' + sourceKey + '"]');
+          if (!row) return;
+          row.querySelectorAll('[data-site-key]').forEach(function (line) {
+            var key = line.getAttribute('data-site-key');
+            var text = fmt(key);
+            if (text) line.textContent = line.textContent.split(' ')[0] + ' ' + text;
+          });
+        }
         if (d.lighthouse) {
-          var wc = fmtLh(d.lighthouse.winterscode);
-          var sogn = fmtLh(d.lighthouse.sogn);
-          var base = fmtLh(d.lighthouse.baseline);
-          var bbtd = fmtLh(d.lighthouse.bbtd);
-          var sb = fmtLh(d.lighthouse.seabreeze);
-          // Each site on its own line. setRow: (label, primary, secondary, meta, tertiary, quaternary, quinary).
-          if (wc && sogn && base && bbtd && sb) {
-            // 5 sites on 5 lines.
-            setRow('LIGHTHOUSE', 'winterscode ' + wc, 'sogn ' + sogn, null, 'baseline ' + base, 'bandon ' + bbtd, 'seabreeze ' + sb);
-          } else if (wc && sogn && base && bbtd) {
-            // 4 sites on 4 lines.
-            setRow('LIGHTHOUSE', 'winterscode ' + wc, 'sogn ' + sogn, null, 'baseline ' + base, 'bandon ' + bbtd);
-          } else if (wc && sogn && base) {
-            // bbtd failed PSI, keep the other three live.
-            setRow('LIGHTHOUSE', 'winterscode ' + wc, 'sogn ' + sogn, null, 'baseline ' + base);
-          } else if (wc && sogn) {
-            // Only wc + sogn live.
-            setRow('LIGHTHOUSE', 'winterscode ' + wc, 'sogn ' + sogn, null);
-          }
+          fillSiteLines('lighthouse', function (k) { return fmtLh(d.lighthouse[k]); });
         }
         if (d.engine) {
           var memStr = d.engine.memories >= 1000
@@ -265,16 +260,7 @@ const ROWS: WallRow[] = [
             if (!x || !x.grade) return null;
             return typeof x.score === 'number' ? x.grade + ' (' + x.score + ')' : x.grade;
           };
-          var gWC = secG('winterscode');
-          if (gWC) {
-            setRow('SECURITY',
-              'winterscode ' + gWC,
-              (function (v) { return v ? 'sogn ' + v : null; })(secG('sogn')),
-              null,
-              (function (v) { return v ? 'baseline ' + v : null; })(secG('baseline')),
-              (function (v) { return v ? 'bandon ' + v : null; })(secG('bbtd')),
-              (function (v) { return v ? 'seabreeze ' + v : null; })(secG('seabreeze')));
-          }
+          fillSiteLines('security', secG);
         }
         if (statusEl) {
           // Three states: all upstreams live (best), any cached (KV-fresh
@@ -563,7 +549,8 @@ const ROWS: WallRow[] = [
     display: block;
     margin-top: 2px;
   }
-  .row-quinary {
+  .row-quinary,
+  .row-line {
     color: var(--color-ash-400);
     display: block;
     margin-top: 2px;

@@ -29,6 +29,7 @@ import MobileMenu from '../components/layout/MobileMenu.astro';
 import PageHero from '../components/sections/PageHero.astro';
 import Divider from '../components/ui/Divider.astro';
 import Contact from '../components/sections/Contact.astro';
+import { WALL_SITES, RECENT_BUILDS } from '../lib/sites.ts';
 
 // Server-side fetch at build / SSR time. Failures fall back to safe defaults.
 // The page hydrates with these values, then client JS refreshes from the
@@ -51,29 +52,24 @@ try {
 
 // Safe extractors with sensible fallbacks
 const deploys = initialData?.deploys ?? { last: '.', last_message: '.', count_30d: 0, repo_count: 0, source: 'fallback' };
-const lighthouse = initialData?.lighthouse ?? { winterscode: [0,0,0,0], sogn: [0,0,0,0], baseline: [0,0,0,0], bbtd: [0,0,0,0], seabreeze: [0,0,0,0], measured: '.', source: 'fallback' };
+const lighthouse = initialData?.lighthouse ?? { measured: '.', source: 'fallback' };
 const security = initialData?.security ?? { grade: '.', score: 0, headers_ok: [], sites: {}, source: 'fallback' };
 const engine = initialData?.engine ?? { memories: 0, added_last_7d: 0, uptime_30d_pct: 0, source: 'fallback' };
 const calendar = initialData?.calendar ?? { next: '.', source: 'fallback' };
 const speed = initialData?.speed ?? { last_three: '.', source: 'fallback' };
-
-// Format Lighthouse arrays for display
-const lhWC = Array.isArray(lighthouse.winterscode) ? lighthouse.winterscode : [0,0,0,0];
-const lhSogn = Array.isArray(lighthouse.sogn) ? lighthouse.sogn : [0,0,0,0];
-const lhBaseline = Array.isArray(lighthouse.baseline) ? lighthouse.baseline : [0,0,0,0];
-const lhBbtd = Array.isArray(lighthouse.bbtd) ? lighthouse.bbtd : [0,0,0,0];
-const lhSeabreeze = Array.isArray(lighthouse.seabreeze) ? lighthouse.seabreeze : [95,100,100,100];
 
 // LH average (P/A/SEO/BP). easier to scan at a glance
 function avg(arr: number[]): number {
   if (!arr.length) return 0;
   return Math.round(arr.reduce((a, b) => a + b, 0) / arr.length);
 }
-const lhWCAvg = avg(lhWC);
-const lhSognAvg = avg(lhSogn);
-const lhBaselineAvg = avg(lhBaseline);
-const lhBbtdAvg = avg(lhBbtd);
-const lhSeabreezeAvg = avg(lhSeabreeze);
+// One row per measured site, in the order src/lib/sites.ts fixes. The API quad
+// wins; the dated fallback stands in when the API did not return the site.
+const lhRows = WALL_SITES.map((site) => {
+  const live = (lighthouse as Record<string, unknown>)[site.key];
+  const quad: number[] = Array.isArray(live) && live.length === 4 ? (live as number[]) : (site.lhFallback ?? [0, 0, 0, 0]);
+  return { key: site.key, name: site.label, quad, avg: avg(quad) };
+});
 
 // Per-site Observatory grade + score for the SECURITY module rows.
 const secSites: Record<string, { grade?: string; score?: number }> = (security as any).sites ?? {};
@@ -90,13 +86,13 @@ function secTier(grade: string): string {
 function secLabel(g: { grade: string; score: number | null }): string {
   return g.score != null ? g.grade + ' (' + g.score + ')' : g.grade;
 }
-const secRows = [
-  { key: 'winterscode', name: 'winterscode' },
-  { key: 'sogn', name: 'sogn' },
-  { key: 'baseline', name: 'baseline' },
-  { key: 'bbtd', name: 'bandon' },
-  { key: 'seabreeze', name: 'seabreeze' },
-].map((r) => ({ ...r, ...secOf(r.key) }));
+const secRows = WALL_SITES.map((site) => {
+  const got = secOf(site.key);
+  const fb = site.secFallback;
+  const grade = got.grade && got.grade !== '.' ? got.grade : (fb?.grade ?? '.');
+  const score = got.score ?? (fb?.score ?? null);
+  return { key: site.key, name: site.label, grade, score };
+});
 
 // Engine memory format with thousands separator
 const memCount = (engine.memories ?? 0).toLocaleString();
@@ -177,46 +173,13 @@ const updatedAt = initialData?.updated_at ?? new Date().toISOString();
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <th scope="row">winterscode</th>
-              <td class="wall-num" data-lh-wc-0>{lhWC[0]}</td>
-              <td class="wall-num" data-lh-wc-1>{lhWC[1]}</td>
-              <td class="wall-num" data-lh-wc-2>{lhWC[2]}</td>
-              <td class="wall-num" data-lh-wc-3>{lhWC[3]}</td>
-              <td class="wall-num wall-num-strong" data-lh-wc-avg>{lhWCAvg}</td>
-            </tr>
-            <tr>
-              <th scope="row">sogn</th>
-              <td class="wall-num" data-lh-sogn-0>{lhSogn[0]}</td>
-              <td class="wall-num" data-lh-sogn-1>{lhSogn[1]}</td>
-              <td class="wall-num" data-lh-sogn-2>{lhSogn[2]}</td>
-              <td class="wall-num" data-lh-sogn-3>{lhSogn[3]}</td>
-              <td class="wall-num wall-num-strong" data-lh-sogn-avg>{lhSognAvg}</td>
-            </tr>
-            <tr>
-              <th scope="row">baseline</th>
-              <td class="wall-num" data-lh-baseline-0>{lhBaseline[0]}</td>
-              <td class="wall-num" data-lh-baseline-1>{lhBaseline[1]}</td>
-              <td class="wall-num" data-lh-baseline-2>{lhBaseline[2]}</td>
-              <td class="wall-num" data-lh-baseline-3>{lhBaseline[3]}</td>
-              <td class="wall-num wall-num-strong" data-lh-baseline-avg>{lhBaselineAvg}</td>
-            </tr>
-            <tr>
-              <th scope="row">bandon</th>
-              <td class="wall-num" data-lh-bbtd-0>{lhBbtd[0]}</td>
-              <td class="wall-num" data-lh-bbtd-1>{lhBbtd[1]}</td>
-              <td class="wall-num" data-lh-bbtd-2>{lhBbtd[2]}</td>
-              <td class="wall-num" data-lh-bbtd-3>{lhBbtd[3]}</td>
-              <td class="wall-num wall-num-strong" data-lh-bbtd-avg>{lhBbtdAvg}</td>
-            </tr>
-            <tr>
-              <th scope="row">seabreeze</th>
-              <td class="wall-num" data-lh-seabreeze-0>{lhSeabreeze[0]}</td>
-              <td class="wall-num" data-lh-seabreeze-1>{lhSeabreeze[1]}</td>
-              <td class="wall-num" data-lh-seabreeze-2>{lhSeabreeze[2]}</td>
-              <td class="wall-num" data-lh-seabreeze-3>{lhSeabreeze[3]}</td>
-              <td class="wall-num wall-num-strong" data-lh-seabreeze-avg>{lhSeabreezeAvg}</td>
-            </tr>
+            {lhRows.map((r) => (
+              <tr data-lh-site={r.key}>
+                <th scope="row">{r.name}</th>
+                {r.quad.map((n, i) => <td class="wall-num" data-lh-i={i}>{n}</td>)}
+                <td class="wall-num wall-num-strong" data-lh-avg>{r.avg}</td>
+              </tr>
+            ))}
           </tbody>
         </table>
         <p class="wall-mod-detail">Mobile · measured <span data-lh-measured>{lighthouse.measured}</span> · desktop typically 2-5 points higher</p>
@@ -345,18 +308,12 @@ const updatedAt = initialData?.updated_at ?? new Date().toISOString();
       </header>
       <div class="wall-mod-body">
         <ul class="wall-builds-list">
-          <li class="wall-builds-row">
-            <a class="wall-builds-name" href="https://seabreeze.llc" target="_blank" rel="noopener">SeaBreeze Landscape &amp; Home Repair</a>
-            <span class="wall-builds-days">7d</span>
-          </li>
-          <li class="wall-builds-row">
-            <a class="wall-builds-name" href="https://www.bandonbythedunesrealtee.net" target="_blank" rel="noopener">Bandon By The Dunes Realtee</a>
-            <span class="wall-builds-days">18d</span>
-          </li>
-          <li class="wall-builds-row">
-            <a class="wall-builds-name" href="https://sogncontracting.com" target="_blank" rel="noopener">Sogn Contracting</a>
-            <span class="wall-builds-days">3d</span>
-          </li>
+          {RECENT_BUILDS.map((site) => (
+            <li class="wall-builds-row">
+              <a class="wall-builds-name" href={site.href} target="_blank" rel="noopener">{site.name}</a>
+              <span class="wall-builds-days">{site.builtDays}d</span>
+            </li>
+          ))}
         </ul>
         <p class="wall-mod-detail">Contract to live, in business days. Most sites run 3-7 days, larger sites 1-2 weeks, app MVP 2-4 weeks. Custom builds quoted in consult.</p>
       </div>
@@ -414,31 +371,13 @@ const updatedAt = initialData?.updated_at ?? new Date().toISOString();
             }
             if (d.lighthouse) {
               var lh = d.lighthouse;
-              if (Array.isArray(lh.winterscode)) {
-                for (var i = 0; i < 4; i++) setText('[data-lh-wc-' + i + ']', lh.winterscode[i]);
-                var avgWC = Math.round(lh.winterscode.reduce(function(a,b){return a+b;},0) / 4);
-                setText('[data-lh-wc-avg]', avgWC);
-              }
-              if (Array.isArray(lh.sogn)) {
-                for (var i = 0; i < 4; i++) setText('[data-lh-sogn-' + i + ']', lh.sogn[i]);
-                var avgSogn = Math.round(lh.sogn.reduce(function(a,b){return a+b;},0) / 4);
-                setText('[data-lh-sogn-avg]', avgSogn);
-              }
-              if (Array.isArray(lh.baseline)) {
-                for (var i = 0; i < 4; i++) setText('[data-lh-baseline-' + i + ']', lh.baseline[i]);
-                var avgBaseline = Math.round(lh.baseline.reduce(function(a,b){return a+b;},0) / 4);
-                setText('[data-lh-baseline-avg]', avgBaseline);
-              }
-              if (Array.isArray(lh.bbtd)) {
-                for (var i = 0; i < 4; i++) setText('[data-lh-bbtd-' + i + ']', lh.bbtd[i]);
-                var avgBbtd = Math.round(lh.bbtd.reduce(function(a,b){return a+b;},0) / 4);
-                setText('[data-lh-bbtd-avg]', avgBbtd);
-              }
-              if (Array.isArray(lh.seabreeze)) {
-                for (var i = 0; i < 4; i++) setText('[data-lh-seabreeze-' + i + ']', lh.seabreeze[i]);
-                var avgSeabreeze = Math.round(lh.seabreeze.reduce(function(a,b){return a+b;},0) / 4);
-                setText('[data-lh-seabreeze-avg]', avgSeabreeze);
-              }
+              document.querySelectorAll('[data-lh-site]').forEach(function (tr) {
+                var q = lh[tr.getAttribute('data-lh-site')];
+                if (!Array.isArray(q) || q.length !== 4) return;
+                tr.querySelectorAll('[data-lh-i]').forEach(function (td) { td.textContent = q[Number(td.getAttribute('data-lh-i'))]; });
+                var avgEl = tr.querySelector('[data-lh-avg]');
+                if (avgEl) avgEl.textContent = Math.round(q.reduce(function (a, b) { return a + b; }, 0) / 4);
+              });
               setText('[data-lh-measured]', lh.measured);
             }
             if (d.security && d.security.sites) {
@@ -447,7 +386,7 @@ const updatedAt = initialData?.updated_at ?? new Date().toISOString();
                 var c = String(g || '?').charAt(0);
                 return c === 'A' ? 'a' : (c === 'B' || c === 'C') ? 'bc' : 'low';
               };
-              ['winterscode','sogn','baseline','bbtd','seabreeze'].forEach(function (k) {
+              Object.keys(secSitesLive).forEach(function (k) {
                 var info = secSitesLive[k];
                 if (!info || !info.grade) return;
                 var el = document.querySelector('[data-sec-grade-site="' + k + '"]');
