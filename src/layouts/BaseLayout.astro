@@ -128,7 +128,7 @@ const isPreviewDeploy = !!cfBranch && cfBranch !== prodBranch;
        extended the critical path chain to 4.2s in Lighthouse desktop trace.
        They still load promptly via @font-face during CSS parse with
        font-display: swap, so body text never blocks paint. -->
-    <link rel="preload" href="/_fonts/fraunces-normal.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/_fonts/fraunces-normal-400-700.woff2" as="font" type="font/woff2" crossorigin />
 
   <!-- Print stylesheet, loaded non-render-blocking via media="print". -->
   <link rel="stylesheet" media="print" href={printCssUrl} />
@@ -163,7 +163,7 @@ const isPreviewDeploy = !!cfBranch && cfBranch !== prodBranch;
 
   <!--
     No-script fallback. Astro emits zero JS by default; this only fires
-    if a user-agent disables JS AND we've shipped JS to it. Currently the
+    if a user-agent disables JS AND we've sent JS to it. Currently the
     site works fully without JS, this is informational only.
   -->
   <noscript>
