@@ -53,6 +53,8 @@ export interface PortfolioItem {
   quote?: { text: string; attr: string };
   /** Links shown at the bottom of expanded detail. */
   links: { label: string; href: string; primary?: boolean }[];
+  /** False keeps the item out of every list until its domain is live. Default true. */
+  published?: boolean;
   /** Display order within category, lower = first. */
   order: number;
 }
@@ -60,8 +62,48 @@ export interface PortfolioItem {
 export const portfolio: PortfolioItem[] = [
   // ─────────── SITES ───────────
   {
-    slug: 'bandon-by-the-dunes',
+    slug: 'us-survey-supply',
     numeral: 'i.',
+    name: 'US Survey Supply',
+    category: 'site',
+    meta: 'ussurveysupply.com · surveying equipment dealer · 39 pages',
+    tags: ['ASTRO', 'TAILWIND', 'CLOUDFLARE'],
+    status: 'live',
+    order: 1,
+    // Hidden until ussurveysupply.com serves the site (tracks/wc-taylor-cutover.md
+    // W9). Set published: true at cutover; the link already points at the real
+    // domain, never the staging host.
+    published: false,
+    image: {
+      src: '/work/taylor-card.webp',
+      srcSmall: '/work/taylor-card-720.webp',
+      srcXSmall: '/work/taylor-card-480.webp',
+      alt: 'US Survey Supply, a Carlson Centric Dealer in Bandon, Oregon: white condensed wordmark and red-and-white survey target on navy beside the Coquille River Lighthouse.',
+      width: 1200,
+      height: 630,
+    },
+    details: [
+      {
+        label: 'Stack',
+        value: 'Astro · Tailwind v4 · Cloudflare Pages · Pages Functions quote form · per-page CSP',
+      },
+      {
+        label: 'Scope',
+        value:
+          'Full site for a Bandon surveying-equipment dealer shipping nationwide. New and used GNSS, total stations, data collectors and Carlson software, plus a rental fleet, brochure library, repair and training pages, and a quote request form. 39 pages against a 32-page contract.',
+      },
+      {
+        label: 'Result',
+        value: 'Live and mobile-first, Mozilla Observatory A+ with a perfect 140, Lighthouse measured on the wall above.',
+      },
+    ],
+    links: [
+      { label: 'Visit site →', href: 'https://ussurveysupply.com', primary: true },
+    ],
+  },
+  {
+    slug: 'bandon-by-the-dunes',
+    numeral: 'ii.',
     name: 'Bandon By The Dunes Realtee',
     category: 'site',
     meta: 'bandonbythedunesrealtee.net · real estate · live RMLS listings',
@@ -97,7 +139,7 @@ export const portfolio: PortfolioItem[] = [
   },
   {
     slug: 'seabreeze',
-    numeral: 'ii.',
+    numeral: 'iii.',
     name: 'SeaBreeze Landscape & Home Repair',
     category: 'site',
     meta: 'seabreeze.llc · landscape care + home repair · 7-day build',
@@ -133,7 +175,7 @@ export const portfolio: PortfolioItem[] = [
   },
   {
     slug: 'sogn-contracting',
-    numeral: 'iii.',
+    numeral: 'iv.',
     name: 'Sogn Contracting',
     category: 'site',
     meta: 'sogncontracting.com · contractor · 3-day build',
@@ -173,7 +215,7 @@ export const portfolio: PortfolioItem[] = [
   },
   {
     slug: 'baseline-marketing',
-    numeral: 'iv.',
+    numeral: 'v.',
     name: 'Baseline Marketing',
     category: 'site',
     meta: 'baseline.marketing · 13 pages · 22 custom widgets',
@@ -306,7 +348,7 @@ export const portfolio: PortfolioItem[] = [
       {
         label: 'Scope',
         value:
-          'Flashlight that turns on with a chop gesture, no button tap. For anyone with their hands full: parents carrying kids, contractors on a job, dog walkers at night. Calibration, sensitivity tuning, pocket lock, battery guard, SOS pattern. Subscription tier shipped. Zero analytics.',
+          'Flashlight that turns on with a chop gesture, no button tap. For anyone with their hands full: parents carrying kids, contractors on a job, dog walkers at night. Calibration, sensitivity tuning, pocket lock, battery guard, SOS pattern. Subscription tier built. Zero analytics.',
       },
       {
         label: 'Status',
@@ -356,9 +398,9 @@ export const portfolio: PortfolioItem[] = [
 ];
 
 export const sites = portfolio
-  .filter((p) => p.category === 'site')
+  .filter((p) => p.category === 'site' && p.published !== false)
   .sort((a, b) => a.order - b.order);
 
 export const apps = portfolio
-  .filter((p) => p.category === 'app')
+  .filter((p) => p.category === 'app' && p.published !== false)
   .sort((a, b) => a.order - b.order);

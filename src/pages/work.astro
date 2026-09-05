@@ -1,14 +1,14 @@
 ---
 /**
- * /work : full apps + sites gallery.
+ * /work : full sites + apps gallery. Sites lead: they are what sells.
  *
  * Spec ref: docs/design/S6_PLUS.md "/work page spec" (~line 1175).
  * Design soul: dense/dashboard. Proof-via-density. Live numbers
  * (Lighthouse scores, store badges, build durations).
  *
  * Sections:
- *   01 APPS GRID    : 4 cards (Baseline, StainSlayer, ChopLight, Demi+MyKonos)
- *   02 SITES GRID   : 2 cards (Sogn, Baseline Marketing) with live Lighthouse
+ *   01 SITES GRID   : every site in portfolio.ts, live Lighthouse per card
+ *   02 APPS GRID    : 4 cards (Baseline, StainSlayer, ChopLight, Demi+MyKonos)
  *   03 PROCESS      : 3-step (questionnaire + consult, SOW + 50%, live in days)
  *   04 CONTACT      : reusable section
  *
@@ -30,35 +30,162 @@ import Instrument from '../components/sections/Instrument.astro';
 
 <BaseLayout
   title="Work · Winters Code"
-  description="Apps and sites I've built. Live Lighthouse on every site. One app on the stores, three in beta. Days for sites, weeks for apps."
+  description="Sites and apps I've built. Live Lighthouse on every site. One app on the stores, three in beta. Days for sites, weeks for apps."
 >
   <Header />
   <MobileMenu />
 
   <PageHero
-    eyebrow="WORK · APPS + SITES"
-    h1="Apps and sites I've built."
-    sub="One app live on App Store and Play Store. Three more in private beta. Sites live and serving traffic. Lighthouse scores and build durations from real data."
+    eyebrow="WORK · SITES + APPS"
+    h1="Sites and apps I've built."
+    sub="Sites live and serving traffic, Lighthouse measured on every one when you load this page. One app live on App Store and Play Store, three more in private beta. Scores and build durations from real data."
     sub2="I design and I build, end to end."
   />
 
   <nav class="wk-index" aria-label="On this page">
     <p class="wk-index-k">On this page</p>
     <ol>
-      <li><span class="wk-ix-num">01</span><span class="wk-ix-name">Mobile apps</span><span class="wk-ix-meta">iOS &amp; Android</span></li>
-      <li><span class="wk-ix-num">02</span><span class="wk-ix-name">Sites</span><span class="wk-ix-meta">Live Lighthouse</span></li>
+      <li><span class="wk-ix-num">01</span><span class="wk-ix-name">Sites</span><span class="wk-ix-meta">Live Lighthouse</span></li>
+      <li><span class="wk-ix-num">02</span><span class="wk-ix-name">Mobile apps</span><span class="wk-ix-meta">iOS &amp; Android</span></li>
       <li><span class="wk-ix-num">03</span><span class="wk-ix-name">How I work</span><span class="wk-ix-meta">Days, not weeks</span></li>
     </ol>
   </nav>
 
   <Divider label="01" />
 
+  <!-- SITES GRID with live Lighthouse -->
+  <section class="wk-section" aria-labelledby="wk-sites-h">
+    <header class="wk-head">
+      <div class="wk-eyebrow">
+        <span class="line" aria-hidden="true"></span>
+        <h2 class="wk-h" id="wk-sites-h">01 · SITES</h2>
+        <span class="wk-meta">
+          live Lighthouse on every one
+          <Explainer label="?">
+            Each card below shows real-time Lighthouse scores fetched fresh when you load this page. No screenshots, no hard-coded numbers. If a score drops on a client site I built, you'll see it here.
+          </Explainer>
+        </span>
+      </div>
+    </header>
+
+    <ul class="wk-grid wk-grid-sites" role="list">
+      {sites.map((p) => (
+        <li class="wk-card-wrap" role="listitem" id={p.slug}>
+          <article
+            class="wk-card wk-card-site"
+            data-slug={p.slug}
+            data-status={p.status}
+          >
+            <div class="wk-body">
+              <div class="wk-title-row">
+                <h3 class="wk-title">{p.slug === 'demiurge-mykonos' ? p.name : <a class="wk-title-link" href={(p.links.find((l) => l.primary) ?? p.links[0])?.href} target="_blank" rel="noopener">{p.name}</a>}</h3>
+                {p.slug !== 'demiurge-mykonos' && (
+                  <span class={`wk-status wk-status-${p.status}`}>
+                    {p.status.toUpperCase()}
+                  </span>
+                )}
+              </div>
+              <p class="wk-meta-line">{p.meta}</p>
+
+              <div class="wk-tags" role="list">
+                {p.tags.map((t) => (
+                  <span class="wk-tag" role="listitem">{t}</span>
+                ))}
+              </div>
+
+              <div
+                class="wk-lighthouse"
+                data-lh-site={p.slug}
+                aria-live="polite"
+              >
+                <span class="wk-lh-label">
+                  LIGHTHOUSE
+                  <Explainer label="?">
+                    Google's scorecard for any website. Four numbers, 0 to 100 each: speed, accessibility, security, and how well Google can read the page. 100 is perfect. Most small-business sites score 50-70. These numbers re-measure every time you load this page. Scores shown are mobile (the harder test). Desktop usually runs 2 to 5 points higher.
+                  </Explainer>
+                </span>
+                <span class="wk-lh-scores" data-lh-scores>
+                  <span class="wk-lh-pending">measuring...</span>
+                </span>
+                <span class="wk-lh-measured" data-lh-measured></span>
+              </div>
+
+              <div class="wk-cta-row">
+                {(p.links.find((l) => l.primary) ?? p.links[0]) && (
+                  <a class="wk-visit" href={(p.links.find((l) => l.primary) ?? p.links[0]).href} target="_blank" rel="noopener">
+                    {(p.links.find((l) => l.primary) ?? p.links[0]).label}
+                  </a>
+                )}
+                <div class="wk-security" data-sec-site={p.slug} aria-live="polite">
+                  <span class="wk-sec-label">
+                    MOZILLA
+                    <Explainer label="?">
+                      Mozilla Observatory grade for HTTP security headers like HSTS and CSP. A+ is the top grade; most small-business sites score C or lower. Re-checked live when you load this page.
+                    </Explainer>
+                  </span>
+                  <span class="wk-sec-grade" data-sec-grade>
+                    <span class="wk-sec-pending">checking...</span>
+                  </span>
+                </div>
+              </div>
+              <button
+                type="button"
+                class="wk-expand-btn"
+                data-toggle-target={p.slug}
+                aria-expanded="false"
+                aria-controls={`${p.slug}-detail`}
+              >
+                <span data-toggle-label>more details</span>
+                <span class="wk-expand-icon" aria-hidden="true">+</span>
+              </button>
+
+              <div class="wk-detail" id={`${p.slug}-detail`} hidden>
+                <dl class="wk-detail-rows">
+                  {p.details.map((d) => (
+                    <div class="wk-detail-row">
+                      <dt>{d.label}</dt>
+                      <dd>{d.value}</dd>
+                    </div>
+                  ))}
+                </dl>
+
+                {p.quote && (
+                  <blockquote class="wk-quote">
+                    <p>{p.quote.text}</p>
+                    <cite>{p.quote.attr}</cite>
+                  </blockquote>
+                )}
+
+                {p.links.length > 0 && (
+                  <div class="wk-links">
+                    {p.links.map((link) => (
+                      <a
+                        href={link.href}
+                        class={link.primary ? 'wk-link wk-link-primary' : 'wk-link'}
+                        target="_blank"
+                        rel="noopener"
+                      >
+                        {link.label}
+                      </a>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </article>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <Divider label="02" />
+
   <!-- APPS GRID -->
   <section class="wk-section" aria-labelledby="wk-apps-h">
     <header class="wk-head">
       <div class="wk-eyebrow">
         <span class="line" aria-hidden="true"></span>
-        <h2 class="wk-h" id="wk-apps-h">01 · MOBILE APPS</h2>
+        <h2 class="wk-h" id="wk-apps-h">02 · MOBILE APPS</h2>
         <span class="wk-meta">{apps.length} built on iOS & Android</span>
       </div>
     </header>
@@ -149,133 +276,6 @@ import Instrument from '../components/sections/Instrument.astro';
                 id={`${p.slug}-detail`}
                 hidden
               >
-                <dl class="wk-detail-rows">
-                  {p.details.map((d) => (
-                    <div class="wk-detail-row">
-                      <dt>{d.label}</dt>
-                      <dd>{d.value}</dd>
-                    </div>
-                  ))}
-                </dl>
-
-                {p.quote && (
-                  <blockquote class="wk-quote">
-                    <p>{p.quote.text}</p>
-                    <cite>{p.quote.attr}</cite>
-                  </blockquote>
-                )}
-
-                {p.links.length > 0 && (
-                  <div class="wk-links">
-                    {p.links.map((link) => (
-                      <a
-                        href={link.href}
-                        class={link.primary ? 'wk-link wk-link-primary' : 'wk-link'}
-                        target="_blank"
-                        rel="noopener"
-                      >
-                        {link.label}
-                      </a>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
-          </article>
-        </li>
-      ))}
-    </ul>
-  </section>
-
-  <Divider label="02" />
-
-  <!-- SITES GRID with live Lighthouse -->
-  <section class="wk-section" aria-labelledby="wk-sites-h">
-    <header class="wk-head">
-      <div class="wk-eyebrow">
-        <span class="line" aria-hidden="true"></span>
-        <h2 class="wk-h" id="wk-sites-h">02 · SITES</h2>
-        <span class="wk-meta">
-          live Lighthouse on every one
-          <Explainer label="?">
-            Each card below shows real-time Lighthouse scores fetched fresh when you load this page. No screenshots, no hard-coded numbers. If a score drops on a client site I shipped, you'll see it here.
-          </Explainer>
-        </span>
-      </div>
-    </header>
-
-    <ul class="wk-grid wk-grid-sites" role="list">
-      {sites.map((p) => (
-        <li class="wk-card-wrap" role="listitem" id={p.slug}>
-          <article
-            class="wk-card wk-card-site"
-            data-slug={p.slug}
-            data-status={p.status}
-          >
-            <div class="wk-body">
-              <div class="wk-title-row">
-                <h3 class="wk-title">{p.slug === 'demiurge-mykonos' ? p.name : <a class="wk-title-link" href={(p.links.find((l) => l.primary) ?? p.links[0])?.href} target="_blank" rel="noopener">{p.name}</a>}</h3>
-                {p.slug !== 'demiurge-mykonos' && (
-                  <span class={`wk-status wk-status-${p.status}`}>
-                    {p.status.toUpperCase()}
-                  </span>
-                )}
-              </div>
-              <p class="wk-meta-line">{p.meta}</p>
-
-              <div class="wk-tags" role="list">
-                {p.tags.map((t) => (
-                  <span class="wk-tag" role="listitem">{t}</span>
-                ))}
-              </div>
-
-              <div
-                class="wk-lighthouse"
-                data-lh-site={p.slug}
-                aria-live="polite"
-              >
-                <span class="wk-lh-label">
-                  LIGHTHOUSE
-                  <Explainer label="?">
-                    Google's scorecard for any website. Four numbers, 0 to 100 each: speed, accessibility, security, and how well Google can read the page. 100 is perfect. Most small-business sites score 50-70. These numbers re-measure every time you load this page. Scores shown are mobile (the harder test). Desktop usually runs 2 to 5 points higher.
-                  </Explainer>
-                </span>
-                <span class="wk-lh-scores" data-lh-scores>
-                  <span class="wk-lh-pending">measuring...</span>
-                </span>
-                <span class="wk-lh-measured" data-lh-measured></span>
-              </div>
-
-              <div class="wk-cta-row">
-                {(p.links.find((l) => l.primary) ?? p.links[0]) && (
-                  <a class="wk-visit" href={(p.links.find((l) => l.primary) ?? p.links[0]).href} target="_blank" rel="noopener">
-                    {(p.links.find((l) => l.primary) ?? p.links[0]).label}
-                  </a>
-                )}
-                <div class="wk-security" data-sec-site={p.slug} aria-live="polite">
-                  <span class="wk-sec-label">
-                    MOZILLA
-                    <Explainer label="?">
-                      Mozilla Observatory grade for HTTP security headers like HSTS and CSP. A+ is the top grade; most small-business sites score C or lower. Re-checked live when you load this page.
-                    </Explainer>
-                  </span>
-                  <span class="wk-sec-grade" data-sec-grade>
-                    <span class="wk-sec-pending">checking...</span>
-                  </span>
-                </div>
-              </div>
-              <button
-                type="button"
-                class="wk-expand-btn"
-                data-toggle-target={p.slug}
-                aria-expanded="false"
-                aria-controls={`${p.slug}-detail`}
-              >
-                <span data-toggle-label>more details</span>
-                <span class="wk-expand-icon" aria-hidden="true">+</span>
-              </button>
-
-              <div class="wk-detail" id={`${p.slug}-detail`} hidden>
                 <dl class="wk-detail-rows">
                   {p.details.map((d) => (
                     <div class="wk-detail-row">
@@ -442,6 +442,7 @@ import Instrument from '../components/sections/Instrument.astro';
         if (lh.baseline) fill('baseline-marketing', lh.baseline);
         if (lh.sogn) fill('sogn-contracting', lh.sogn);
         if (lh.seabreeze) fill('seabreeze', lh.seabreeze);
+        if (lh.taylor) fill('us-survey-supply', lh.taylor);
 
         // ----- per-site security grade (Mozilla Observatory)
         const sec = data.security && data.security.sites;
@@ -451,6 +452,7 @@ import Instrument from '../components/sections/Instrument.astro';
             'baseline-marketing': 'baseline',
             'sogn-contracting': 'sogn',
             'seabreeze': 'seabreeze',
+            'us-survey-supply': 'taylor',
           };
           for (const slug in SEC_MAP) {
             const info = sec[SEC_MAP[slug]];

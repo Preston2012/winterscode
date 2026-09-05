@@ -17,6 +17,8 @@ interface WorkCard {
   status: 'LIVE' | 'BETA' | 'PROD';
   built_in_days?: number;
   external_url?: string;
+  /** False keeps the card off the homepage until the site's own domain is live. */
+  published?: boolean;
   /** Optional hero image (overrides editorial glyph). */
   image?: {
     src: string;
@@ -29,6 +31,24 @@ interface WorkCard {
 }
 
 const CARDS: WorkCard[] = [
+  {
+    id: 'us-survey-supply',
+    title: 'US Survey Supply',
+    desc: 'Site for a Bandon surveying-equipment dealer shipping nationwide.',
+    stack: ['Astro', 'Cloudflare'],
+    status: 'LIVE',
+    // Flip to true at the ussurveysupply.com cutover (tracks/wc-taylor-cutover.md W9).
+    published: false,
+    external_url: 'https://ussurveysupply.com',
+    image: {
+      src: '/work/taylor-card.webp',
+      srcSmall: '/work/taylor-card-720.webp',
+      srcXSmall: '/work/taylor-card-480.webp',
+      alt: 'US Survey Supply, a Carlson Centric Dealer in Bandon, Oregon: white wordmark and red-and-white survey target on navy beside the Coquille River Lighthouse.',
+      width: 1200,
+      height: 630,
+    },
+  },
   {
     id: 'bandon-by-the-dunes',
     title: 'Bandon By The Dunes Realtee',
@@ -126,7 +146,7 @@ const CARDS: WorkCard[] = [
   </header>
 
   <ul class="selected-grid" role="list">
-    {CARDS.map((card) => (
+    {CARDS.filter((card) => card.published !== false).map((card) => (
       <li class="sw-card-wrap" role="listitem">
         <a
           href={card.external_url ?? `/work#${card.id}`}
@@ -142,7 +162,7 @@ const CARDS: WorkCard[] = [
                   <source
                     type="image/webp"
                     srcset={`${card.image.srcXSmall ? card.image.srcXSmall + " 480w, " : ""}${card.image.srcSmall} 720w, ${card.image.src} 1280w`}
-                    sizes="(min-width: 1024px) 320px, (min-width: 740px) 50vw, 100vw"
+                    sizes="(min-width: 1024px) 320px, (min-width: 740px) 50vw, calc(100vw - 8px)"
                   />
                 )}
                 <img
