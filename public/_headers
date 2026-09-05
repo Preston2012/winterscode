@@ -55,3 +55,13 @@
   Cache-Control: public, max-age=0, must-revalidate, s-maxage=600
 /404
   Cache-Control: public, max-age=0, must-revalidate, s-maxage=600
+
+# Self-hosted fonts under /_fonts are built by scripts/subset-fonts.py and are
+# not content-hashed, so a change gets a new file name (the wght range is in
+# it) rather than a purge. 30 days keeps repeat visits off the network.
+/_fonts/*
+  Cache-Control: public, max-age=2592000, immutable
+
+# Portfolio card images change only when a card is re-cut. A week.
+/work/*
+  Cache-Control: public, max-age=604800, must-revalidate
