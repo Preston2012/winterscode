@@ -40,6 +40,7 @@ interface WorkshopData {
     baseline:    [number, number, number, number];
     bbtd:        [number, number, number, number];
     seabreeze:   [number, number, number, number];
+    golf:        [number, number, number, number];
     measured: string; // "8m ago"
     source: 'live' | 'fallback';
   };
@@ -53,6 +54,7 @@ interface WorkshopData {
       baseline:    { grade: string; score: number };
       bbtd:        { grade: string; score: number };
       seabreeze:   { grade: string; score: number };
+      golf:        { grade: string; score: number };
     };
     source: 'live' | 'fallback';
   };
@@ -101,6 +103,10 @@ const FALLBACK: WorkshopData = {
     // PSI mobile perf is noisy (95-98 typical); a11y/seo/best 100. Conservative
     // fallback only; live PSI populates the real number on the wall + cards.
     seabreeze:   [95, 100, 100, 100],
+    // Professors Golf (professorsgolf.com), Astro on Cloudflare Pages in the
+    // client's account. PSI mobile 2026-09-05: perf 100, seo 100, best 100;
+    // a11y 100 read by local Lighthouse after the contrast pass the same day.
+    golf:        [100, 100, 100, 100],
     measured: '8m ago',
     source: 'fallback',
   },
@@ -117,6 +123,7 @@ const FALLBACK: WorkshopData = {
       baseline:    { grade: 'A+', score: 115 },
       bbtd:        { grade: 'A+', score: 130 },
       seabreeze:   { grade: 'A+', score: 115 },
+      golf:        { grade: 'A+', score: 140 }, // Observatory 2026-09-05, 12 of 12
     },
     source: 'fallback',
   },
@@ -387,12 +394,13 @@ async function fetchPSI(
   // Measure the canonical www directly. The old PSI Lighthouse-500 on www is
   // resolved (verified May 2026, www PSI ~96). Measuring the bare apex paid the
   // 301 to www redirect penalty (~92 vs ~96 on www); www matches the sogn entry.
-  const [wc, sogn, baseline, bbtd, seabreeze] = await Promise.all([
+  const [wc, sogn, baseline, bbtd, seabreeze, golf] = await Promise.all([
     auditSite('https://winterscode.com', FALLBACK.lighthouse.winterscode),
     auditSite('https://www.sogncontracting.com', FALLBACK.lighthouse.sogn),
     auditSite('https://www.baseline.marketing', FALLBACK.lighthouse.baseline),
     auditSite('https://www.bandonbythedunesrealtee.net', FALLBACK.lighthouse.bbtd),
     auditSite('https://seabreeze.llc', FALLBACK.lighthouse.seabreeze),
+    auditSite('https://professorsgolf.com', FALLBACK.lighthouse.golf),
   ]);
   // Source flag is 'live' if any site returned non-fallback data.
   // UI shows "live · partial" when not all 3 succeeded.
@@ -401,7 +409,8 @@ async function fetchPSI(
     JSON.stringify(sogn) !== JSON.stringify(FALLBACK.lighthouse.sogn) ||
     JSON.stringify(baseline) !== JSON.stringify(FALLBACK.lighthouse.baseline) ||
     JSON.stringify(bbtd) !== JSON.stringify(FALLBACK.lighthouse.bbtd) ||
-    JSON.stringify(seabreeze) !== JSON.stringify(FALLBACK.lighthouse.seabreeze);
+    JSON.stringify(seabreeze) !== JSON.stringify(FALLBACK.lighthouse.seabreeze) ||
+    JSON.stringify(golf) !== JSON.stringify(FALLBACK.lighthouse.golf);
 
   // Rolling-best display. Keep the last N live runs per site in KV and show the
   // element-wise best-of-N per category, so a single cold/throttled PSI run (or
@@ -423,8 +432,8 @@ async function fetchPSI(
     };
     return [pick(0), pick(1), pick(2), pick(3)];
   };
-  let hist: { winterscode: Quad[]; sogn: Quad[]; baseline: Quad[]; bbtd: Quad[]; seabreeze: Quad[] } =
-    { winterscode: [], sogn: [], baseline: [], bbtd: [], seabreeze: [] };
+  let hist: { winterscode: Quad[]; sogn: Quad[]; baseline: Quad[]; bbtd: Quad[]; seabreeze: Quad[]; golf: Quad[] } =
+    { winterscode: [], sogn: [], baseline: [], bbtd: [], seabreeze: [], golf: [] };
   if (kv) {
     try { const h = await kv.get<typeof hist>(HIST_KEY, 'json'); if (h) hist = h; } catch { /* non-fatal */ }
   }
@@ -437,6 +446,7 @@ async function fetchPSI(
     baseline: roll(hist.baseline, baseline, FALLBACK.lighthouse.baseline),
     bbtd: roll(hist.bbtd, bbtd, FALLBACK.lighthouse.bbtd),
     seabreeze: roll(hist.seabreeze, seabreeze, FALLBACK.lighthouse.seabreeze),
+    golf: roll(hist.golf, golf, FALLBACK.lighthouse.golf),
   };
   if (kv && isLive) {
     try { await kv.put(HIST_KEY, JSON.stringify(hist), { expirationTtl: HIST_TTL }); } catch { /* non-fatal */ }
@@ -448,6 +458,7 @@ async function fetchPSI(
     baseline: aggregate(hist.baseline, baseline),
     bbtd: aggregate(hist.bbtd, bbtd),
     seabreeze: aggregate(hist.seabreeze, seabreeze),
+    golf: aggregate(hist.golf, golf),
     measured: 'just now',
     source: isLive ? 'live' : 'fallback',
   };
@@ -496,6 +507,7 @@ async function fetchObservatory(kv?: KVNamespace): Promise<WorkshopData['securit
     baseline:    'www.baseline.marketing',
     bbtd:        'www.bandonbythedunesrealtee.net',
     seabreeze:   'seabreeze.llc',
+    golf:        'professorsgolf.com',
   };
   const analyze = async (
     host: string,

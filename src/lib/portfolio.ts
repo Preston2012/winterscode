@@ -174,6 +174,42 @@ export const portfolio: PortfolioItem[] = [
     ],
   },
   {
+    slug: 'professors-golf',
+    numeral: 'iv.',
+    name: 'Professors Golf',
+    category: 'site',
+    meta: 'professorsgolf.com · golf service · one page',
+    tags: ['ASTRO', 'CLOUDFLARE'],
+    status: 'live',
+    order: 8,
+    image: {
+      src: '/work/golf-card.webp',
+      srcSmall: '/work/golf-card-720.webp',
+      srcXSmall: '/work/golf-card-480.webp',
+      alt: 'Professors Golf, Bandon Oregon: dark green grid with a gold starburst, the words Professional Golf Service in green serif on cream, 25+ years of PGA Tour experience in gold.',
+      width: 1200,
+      height: 630,
+    },
+    details: [
+      {
+        label: 'Stack',
+        value: "Astro 6 · Cloudflare Pages, deployed into the client's own Cloudflare account",
+      },
+      {
+        label: 'Scope',
+        value:
+          'One-page site for a Bandon golf service: club fitting, PGA-certified instruction, caddy referrals, local tee times and all-inclusive golf trips, with a click-to-call header and a sharecard built for the group text.',
+      },
+      {
+        label: 'Result',
+        value: 'Live and mobile-first, Mozilla Observatory A+ with a perfect 140, Lighthouse measured on the wall above.',
+      },
+    ],
+    links: [
+      { label: 'Visit site →', href: 'https://professorsgolf.com', primary: true },
+    ],
+  },
+  {
     slug: 'sogn-contracting',
     numeral: 'iv.',
     name: 'Sogn Contracting',

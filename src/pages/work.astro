@@ -443,6 +443,7 @@ import Instrument from '../components/sections/Instrument.astro';
         if (lh.sogn) fill('sogn-contracting', lh.sogn);
         if (lh.seabreeze) fill('seabreeze', lh.seabreeze);
         if (lh.taylor) fill('us-survey-supply', lh.taylor);
+        if (lh.golf) fill('professors-golf', lh.golf);
 
         // ----- per-site security grade (Mozilla Observatory)
         const sec = data.security && data.security.sites;
@@ -453,6 +454,7 @@ import Instrument from '../components/sections/Instrument.astro';
             'sogn-contracting': 'sogn',
             'seabreeze': 'seabreeze',
             'us-survey-supply': 'taylor',
+            'professors-golf': 'golf',
           };
           for (const slug in SEC_MAP) {
             const info = sec[SEC_MAP[slug]];
