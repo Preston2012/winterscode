@@ -81,7 +81,7 @@ export const portfolio: PortfolioItem[] = [
       src: '/work/taylor-card.webp',
       srcSmall: '/work/taylor-card-720.webp',
       srcXSmall: '/work/taylor-card-480.webp',
-      alt: 'US Survey Supply, a Carlson Centric Dealer in Bandon, Oregon: white condensed wordmark and red-and-white survey target on navy beside the Coquille River Lighthouse.',
+      alt: 'US Survey Supply, Bandon, Oregon: white condensed wordmark and red-and-white survey target on navy over an American flag. Surveying equipment, rentals, and service.',
       width: 1200,
       height: 630,
     },
