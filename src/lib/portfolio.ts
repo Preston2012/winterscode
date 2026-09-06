@@ -51,7 +51,13 @@ export interface PortfolioItem {
   image?: PortfolioImage;
   /** Expanded detail rows (label/value pairs). */
   details: { label: string; value: string }[];
-  /** Optional pull quote shown inside the expanded detail. */
+  /** Optional pull quote shown inside the expanded detail. Renders as a
+   *  <blockquote> with a <cite>, so whatever goes here reads as something
+   *  a person said. Sogn's field held 'Built for Sogn Contracting.'
+   *  attributed to '30-year Oregon Professional Contractor', which is
+   *  true as a fact and a testimonial as a shape, and nobody said it.
+   *  Only a real quote from a real named client goes in here. An empty
+   *  field renders nothing, which is the correct state until there is one. */
   quote?: { text: string; attr: string };
   /** Links shown at the bottom of expanded detail. */
   links: { label: string; href: string; primary?: boolean }[];
@@ -257,10 +263,6 @@ export const portfolio: PortfolioItem[] = [
         value: 'Lighthouse 95+ average across all four categories. Live, indexed, and earning local search visibility.',
       },
     ],
-    quote: {
-      text: 'Built for Sogn Contracting.',
-      attr: '30-year Oregon Professional Contractor · Live since 2026',
-    },
     links: [
       { label: 'Visit site →', href: 'https://sogncontracting.com', primary: true },
     ],
@@ -276,6 +278,14 @@ export const portfolio: PortfolioItem[] = [
     status: 'live',
     build: 'new',
     order: 20,
+    image: {
+      src: '/work/baseline-marketing-card.webp',
+      srcSmall: '/work/baseline-marketing-card-720.webp',
+      srcXSmall: '/work/baseline-marketing-card-480.webp',
+      alt: 'Baseline Marketing: the BASELINE wordmark in white with a teal underglow on a dark navy grid, over the counts 13 pages, 22 custom widgets, 0 UI kits.',
+      width: 1200,
+      height: 630,
+    },
     details: [
       {
         label: 'Stack',

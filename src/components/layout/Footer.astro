@@ -8,6 +8,7 @@
  * so Services + Locations stay in sync.
  */
 import { services, towns, business } from '../../lib/business';
+import { sites } from '../../lib/portfolio';
 
 const year = new Date().getFullYear();
 
@@ -28,8 +29,11 @@ const columns: { title: string; links: { label: string; href: string; external?:
     title: 'Work',
     links: [
       { label: 'All work', href: '/work' },
-      { label: 'Sogn Contracting', href: '/work/sogn-contracting' },
-      { label: 'Baseline Marketing', href: '/work/baseline-marketing' },
+      // Read off the portfolio rather than hand-listed. The hand-listed
+      // version named two case studies on the day there were four.
+      ...sites
+        .filter((p) => p.caseStudy)
+        .map((p) => ({ label: p.name, href: p.caseStudy! })),
     ],
   },
   {
