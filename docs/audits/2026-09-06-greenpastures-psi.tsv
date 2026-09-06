@@ -1,0 +1,11 @@
+# PageSpeed Insights, mobile, https://greenpasturesco.co/
+# PROVENANCE: run by Preston 2026-09-06, screenshot 76263.png supplied to Claude in S183.
+# Transcribed from the artifact, NOT independently re-run. The PSI public API returned
+# HTTP 429 quota-exceeded on 2026-09-06 17:29 UTC, so no keyless re-run was possible.
+# Re-run before reusing these numbers in any later message.
+strategy	mobile
+performance	73
+accessibility	91
+best-practices	92
+seo	85
+crux-field-data	No Data
