@@ -5,14 +5,24 @@ import MobileMenu from '../components/layout/MobileMenu.astro';
 import PageHero from '../components/sections/PageHero.astro';
 import Divider from '../components/ui/Divider.astro';
 import Contact from '../components/sections/Contact.astro';
+import Breadcrumbs from '../components/ui/Breadcrumbs.astro';
+import { breadcrumbSchema } from '../lib/schema';
 ---
 
 <BaseLayout
   title="Contact · Winters Code"
   description="Free consult. No pitch deck. Bandon-based, serving Coos and Curry counties. Send a brief, book on Cal, call, or text."
 >
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema([
+      { name: 'Home', path: '/' },
+      { name: 'Contact', path: '/contact' },
+    ]))} />
+  </Fragment>
+
   <Header />
   <MobileMenu />
+  <Breadcrumbs items={[{ name: 'Home', path: '/' }, { name: 'Contact', path: '/contact' }]} />
 
   <PageHero
     eyebrow="Contact · Get In Touch"

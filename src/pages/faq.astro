@@ -4,6 +4,7 @@ import Header from '../components/layout/Header.astro';
 import MobileMenu from '../components/layout/MobileMenu.astro';
 import PageHero from '../components/sections/PageHero.astro';
 import Divider from '../components/ui/Divider.astro';
+import Breadcrumbs from '../components/ui/Breadcrumbs.astro';
 import Contact from '../components/sections/Contact.astro';
 import { breadcrumbSchema, faqSchema } from '../lib/schema';
 
@@ -52,10 +53,11 @@ const faqs = [
 ];
 
 const faqLd = faqSchema(faqs);
-const breadcrumbLd = breadcrumbSchema([
+const crumbs = [
   { name: 'Home', path: '/' },
   { name: 'FAQ', path: '/faq' },
-]);
+];
+const breadcrumbLd = breadcrumbSchema(crumbs);
 ---
 
 <BaseLayout
@@ -70,6 +72,7 @@ const breadcrumbLd = breadcrumbSchema([
 
   <Header />
   <MobileMenu />
+  <Breadcrumbs items={crumbs} />
 
   <PageHero
     eyebrow="FAQ"

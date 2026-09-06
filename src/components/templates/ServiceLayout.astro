@@ -12,6 +12,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Header from '../layout/Header.astro';
 import MobileMenu from '../layout/MobileMenu.astro';
+import Breadcrumbs from '../ui/Breadcrumbs.astro';
 import PageHero from '../sections/PageHero.astro';
 import Divider from '../ui/Divider.astro';
 import RelatedLinks from '../sections/RelatedLinks.astro';
@@ -115,13 +116,12 @@ const serviceLd = serviceSchema({
   path,
   areaName,
 });
-const breadcrumbLd = breadcrumbSchema(
-  breadcrumb ?? [
-    { name: 'Home', path: '/' },
-    { name: 'Services', path: '/services' },
-    { name: service.name, path },
-  ]
-);
+const crumbs = breadcrumb ?? [
+  { name: 'Home', path: '/' },
+  { name: 'Services', path: '/services' },
+  { name: service.name, path },
+];
+const breadcrumbLd = breadcrumbSchema(crumbs);
 const faqLd = faq.length ? faqSchema(faq) : null;
 ---
 
@@ -134,6 +134,7 @@ const faqLd = faq.length ? faqSchema(faq) : null;
 
   <Header />
   <MobileMenu />
+  <Breadcrumbs items={crumbs} />
 
   <PageHero
     eyebrow={eyebrow}

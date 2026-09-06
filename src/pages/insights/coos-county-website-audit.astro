@@ -4,6 +4,7 @@ import Header from '../../components/layout/Header.astro';
 import MobileMenu from '../../components/layout/MobileMenu.astro';
 import PageHero from '../../components/sections/PageHero.astro';
 import Divider from '../../components/ui/Divider.astro';
+import Breadcrumbs from '../../components/ui/Breadcrumbs.astro';
 import Contact from '../../components/sections/Contact.astro';
 import { breadcrumbSchema, absUrl, BUSINESS_ID } from '../../lib/schema';
 
@@ -11,11 +12,12 @@ const path = '/insights/coos-county-website-audit';
 const published = '2026-06-05';
 const headline = 'I audited 169 Coos County websites. Here is what I found.';
 
-const breadcrumbLd = breadcrumbSchema([
+const crumbs = [
   { name: 'Home', path: '/' },
   { name: 'Insights', path: '/insights' },
   { name: 'The Coos County website audit', path },
-]);
+];
+const breadcrumbLd = breadcrumbSchema(crumbs);
 const articleLd = {
   '@context': 'https://schema.org',
   '@type': 'Article',
@@ -34,7 +36,7 @@ const articleLd = {
 
 <BaseLayout
   title="The Coos County Website Audit · Winters Code"
-  description="I audited 169 Coos County small-business websites with Lighthouse and Mozilla Observatory. Not one was both fast and secure. The best security grade in the county was a B."
+  description="I measured 169 Coos County small-business websites with Lighthouse and Mozilla Observatory. Not one was both fast and secure. The best grade was a B."
   canonicalPath={path}
 >
   <Fragment slot="head">
@@ -44,6 +46,7 @@ const articleLd = {
 
   <Header />
   <MobileMenu />
+  <Breadcrumbs items={crumbs} />
 
   <PageHero
     eyebrow="Insights · Field Report"

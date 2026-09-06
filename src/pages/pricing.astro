@@ -4,18 +4,20 @@ import Header from '../components/layout/Header.astro';
 import MobileMenu from '../components/layout/MobileMenu.astro';
 import PageHero from '../components/sections/PageHero.astro';
 import Divider from '../components/ui/Divider.astro';
+import Breadcrumbs from '../components/ui/Breadcrumbs.astro';
 import Contact from '../components/sections/Contact.astro';
 import { breadcrumbSchema } from '../lib/schema';
 
-const breadcrumbLd = breadcrumbSchema([
+const crumbs = [
   { name: 'Home', path: '/' },
   { name: 'Pricing', path: '/pricing' },
-]);
+];
+const breadcrumbLd = breadcrumbSchema(crumbs);
 ---
 
 <BaseLayout
   title="Pricing · Winters Code"
-  description="One price, everything in. Local business sites start at $1,750 with photos, copy, branding, top Google scores, and security all included. Care plans optional from $75/mo. No tiers, no surprise add-ons."
+  description="What a Winters Code site costs and what is in the price. Local business sites start at $1,750. No tiers, no add-ons, care plans optional from $75/mo."
   canonicalPath="/pricing"
 >
   <Fragment slot="head">
@@ -24,6 +26,7 @@ const breadcrumbLd = breadcrumbSchema([
 
   <Header />
   <MobileMenu />
+  <Breadcrumbs items={crumbs} />
 
   <PageHero
     eyebrow="Pricing"

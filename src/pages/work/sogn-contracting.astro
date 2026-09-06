@@ -4,18 +4,56 @@ import CaseStudyLayout from '../../components/templates/CaseStudyLayout.astro';
 <CaseStudyLayout
   slug="sogn-contracting"
   title="Sogn Contracting Case Study · Winters Code"
-  description="How a 30-year Bandon contractor got a custom marketing site built in 3 days, live and indexed with a 95+ Lighthouse average across every category."
+  description="A 30-year Bandon contractor live in three business days, now 23 pages: eight services, six service areas, a before-and-after gallery and a cost page."
   eyebrow="Work · Case Study"
-  h1="Sogn Contracting, live in three days."
-  sub="A custom marketing site for a 30-year Bandon contractor. Built, launched, and indexed in three days, with a 95+ Lighthouse average."
+  h1="Live in three days. Still growing."
+  sub="A licensed Oregon general contractor building since 1995, online in three business days and expanded ever since. Eight service pages, six service areas, and a page that publishes what things cost."
   intro={[
-    "Sogn Contracting is a 30-year professional contractor in Bandon. They needed a real marketing presence: somewhere to show the work, list services, and capture leads, without the slow, plugin-heavy site most contractors end up with.",
-    "I built it custom on a modern stack, from kickoff to live in <span class='hl-copper'>three days</span>. A before-and-after gallery to show the craftsmanship, clear services pages, and <span class='hl-green'>a lead form that actually delivers</span>. It launched fast, indexed, and earning local search visibility.",
-    "The result is the proof: a <span class='stat'>95+</span> Lighthouse average across all four categories, the kind of speed and quality most local contractor sites never reach. This is real, indexed, local work you can go look at.",
+    "Sogn Contracting has been building in Oregon since 1995. It started as one carpenter with a truck and is now a licensed, bonded and insured general contractor doing custom homes, additions, remodels, roofing, decks, concrete and commercial work out of Bandon. Faith, integrity and craftsmanship is how they describe the way they take a job, and it is on the site in their words, not smoothed into marketing language.",
+    "The first version went live in <span class='hl-copper'>three business days</span>. That was the core: home, services, gallery, contact, enough to be findable and callable. What happened after is the part worth showing.",
+    "It kept growing. The site is <span class='hl-green'>23 pages now</span>, added over six months as we worked out which searches were worth owning. That is not a three-day site that stopped. It is a three-day site that started.",
+  ]}
+  stats={[
+    { value: '3', label: 'business days, kickoff to live' },
+    { value: '23', label: 'pages today, from 6 months of work' },
+    { value: '14', label: 'service and service-area pages' },
+    { value: 'A+', label: 'Mozilla Observatory, HSTS preloaded' },
+  ]}
+  sections={[
+    {
+      h: 'Eight services, six towns',
+      body: [
+        "A general contractor does not have one job, they have eight, and each one is a different person searching a different phrase in a different mood. Somebody planning a custom home has been thinking about it for two years. Somebody with a leaking roof has been thinking about it since this morning. Putting both on a page called Services and hoping means the page is a compromise for everyone.",
+        "So there are eight service pages, one each for remodeling, custom homes, additions, roofing, decks, commercial, concrete and repairs. Then six service-area pages for Bandon, Coos Bay, North Bend, Coquille, Myrtle Point and Port Orford, because in a rural county the second half of the search is nearly always the town.",
+        "Fourteen pages doing that work is the whole reason a small local contractor can show up against a franchise. The franchise has one page for the region. He has one for each town he actually drives to.",
+      ],
+    },
+    {
+      h: 'The gallery is the estimate before the estimate',
+      body: [
+        "Nobody hires a contractor off a paragraph. The gallery is built around before-and-after pairs, eleven of them, on real jobs: a kitchen taken back to studs, a home exterior renovation, a custom home addition. Same angle, same framing, before and after, so the change is the thing you see rather than something you have to be told about.",
+        "Every photo is their own work. No stock, no supplier catalogue shots, no borrowed job from a franchise library. That is a hard rule on everything I build, and on a trades site it is not a scruple, it is the product.",
+      ],
+    },
+    {
+      h: 'Publishing what it costs',
+      body: [
+        "There is a page on this site that lists project costs, which most contractors will not do. The argument against it is that a number scares people off. The argument for it is that the people a number scares off were never going to sign, and everybody else is sitting there with their phone trying to work out whether a call is worth making. Ranges answer that question. Silence just moves it to a phone call nobody enjoys.",
+        "There is a FAQ page for the same reason. Both of them exist to answer the questions a homeowner is already asking, which is also, not by accident, what search engines are ranking for.",
+      ],
+    },
+    {
+      h: 'What it runs on',
+      body: [
+        "Next.js with TypeScript, statically rendered and served from Vercel behind Cloudflare, with strict transport security preloaded. Lighthouse sits in the high nineties on mobile and the security grade is A+, both measured live on <a href='/wall'>the wall</a> rather than quoted from a screenshot taken on a good day.",
+        "The repository has 105 commits across six months, which is the honest picture of what maintaining a site looks like when the person who built it is still the person answering the phone.",
+      ],
+    },
   ]}
   relatedLinks={[
-    { href: '/web-design-bandon', label: 'Web Design in Bandon', sub: 'Same local work' },
-    { href: '/services/web-design', label: 'Web Design', sub: 'The full service' },
+    { href: '/web-design-for-contractors', label: 'Web Design for Contractors', sub: 'The same work, offered' },
+    { href: '/work/seabreeze', label: 'SeaBreeze', sub: 'Another Bandon contractor' },
+    { href: '/web-design-bandon', label: 'Web Design in Bandon', sub: 'Local work' },
     { href: '/work', label: 'All work', sub: 'More projects' },
   ]}
 />

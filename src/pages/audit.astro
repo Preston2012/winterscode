@@ -4,14 +4,24 @@ import Header from '../components/layout/Header.astro';
 import MobileMenu from '../components/layout/MobileMenu.astro';
 import PageHero from '../components/sections/PageHero.astro';
 import Divider from '../components/ui/Divider.astro';
+import Breadcrumbs from '../components/ui/Breadcrumbs.astro';
+import { breadcrumbSchema } from '../lib/schema';
 ---
 
 <BaseLayout
   title="Audit · Free Site Check · Winters Code"
-  description="Plug in a site, see what's broken. Free. No email required. A core set of the checks I use when I build."
+  description="Plug in any website and see what is broken: speed, security headers, metadata and mobile layout. Free, instant, and no email address required."
 >
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema([
+      { name: 'Home', path: '/' },
+      { name: 'Audit', path: '/audit' },
+    ]))} />
+  </Fragment>
+
   <Header />
   <MobileMenu />
+  <Breadcrumbs items={[{ name: 'Home', path: '/' }, { name: 'Audit', path: '/audit' }]} />
 
   <PageHero
     eyebrow="Audit · Free Site Check"

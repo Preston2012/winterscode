@@ -29,6 +29,8 @@ import MobileMenu from '../components/layout/MobileMenu.astro';
 import PageHero from '../components/sections/PageHero.astro';
 import Divider from '../components/ui/Divider.astro';
 import Contact from '../components/sections/Contact.astro';
+import Breadcrumbs from '../components/ui/Breadcrumbs.astro';
+import { breadcrumbSchema } from '../lib/schema';
 import { WALL_SITES, RECENT_BUILDS } from '../lib/sites.ts';
 
 // Server-side fetch at build / SSR time. Failures fall back to safe defaults.
@@ -104,8 +106,16 @@ const updatedAt = initialData?.updated_at ?? new Date().toISOString();
   title="The Wall · Workshop Broadcast · Winters Code"
   description="Live broadcast from the workshop. Deploys, Lighthouse, security grade, engine state, and next consult slot. Refreshes when you focus the tab."
 >
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema([
+      { name: 'Home', path: '/' },
+      { name: 'The Wall', path: '/wall' },
+    ]))} />
+  </Fragment>
+
   <Header />
   <MobileMenu />
+  <Breadcrumbs items={[{ name: 'Home', path: '/' }, { name: 'The Wall', path: '/wall' }]} />
 
   <PageHero
     eyebrow="The Wall · Workshop Broadcast"

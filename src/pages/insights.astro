@@ -4,6 +4,7 @@ import Header from '../components/layout/Header.astro';
 import MobileMenu from '../components/layout/MobileMenu.astro';
 import PageHero from '../components/sections/PageHero.astro';
 import Divider from '../components/ui/Divider.astro';
+import Breadcrumbs from '../components/ui/Breadcrumbs.astro';
 import Contact from '../components/sections/Contact.astro';
 import { breadcrumbSchema, absUrl } from '../lib/schema';
 
@@ -18,10 +19,11 @@ const posts = [
   },
 ];
 
-const breadcrumbLd = breadcrumbSchema([
+const crumbs = [
   { name: 'Home', path: '/' },
   { name: 'Insights', path: '/insights' },
-]);
+];
+const breadcrumbLd = breadcrumbSchema(crumbs);
 const blogLd = {
   '@context': 'https://schema.org',
   '@type': 'Blog',
@@ -43,6 +45,7 @@ const blogLd = {
 
   <Header />
   <MobileMenu />
+  <Breadcrumbs items={crumbs} />
 
   <PageHero
     eyebrow="Insights"

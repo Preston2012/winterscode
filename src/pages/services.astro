@@ -5,14 +5,45 @@ import MobileMenu from '../components/layout/MobileMenu.astro';
 import PageHero from '../components/sections/PageHero.astro';
 import Divider from '../components/ui/Divider.astro';
 import Contact from '../components/sections/Contact.astro';
+import Breadcrumbs from '../components/ui/Breadcrumbs.astro';
+import { breadcrumbSchema, absUrl } from '../lib/schema';
+import { services } from '../lib/business';
+
+const crumbs = [
+  { name: 'Home', path: '/' },
+  { name: 'Services', path: '/services' },
+];
+const breadcrumbLd = breadcrumbSchema(crumbs);
+const servicesLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: 'Winters Code services',
+  numberOfItems: services.length,
+  itemListElement: services.map((s, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    item: {
+      '@type': 'Service',
+      name: s.name,
+      serviceType: s.serviceType,
+      url: absUrl(`/services/${s.slug}`),
+    },
+  })),
+};
 ---
 
 <BaseLayout
   title="Services · Winters Code"
-  description="Custom websites from $1,750 with photos, copy, branding, top Google scores, and security all included. Custom apps, integrations, and optional maintenance from $75/mo."
+  description="Websites, apps, custom software, AI automation, SEO and branding for Oregon coast businesses. Six services, one builder, one price with everything in."
 >
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbLd)} />
+    <script type="application/ld+json" set:html={JSON.stringify(servicesLd)} />
+  </Fragment>
+
   <Header />
   <MobileMenu />
+  <Breadcrumbs items={crumbs} />
 
   <PageHero
     eyebrow="Services · The Menu"

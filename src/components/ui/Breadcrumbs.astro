@@ -1,0 +1,103 @@
+---
+/**
+ * Breadcrumbs, the visible trail.
+ *
+ * WHY THIS EXISTS. Every template on this site already emitted a
+ * BreadcrumbList in JSON-LD and rendered nothing a reader could see. Google's
+ * structured data policy is that markup describes content on the page, so a
+ * crumb list with no trail is markup asserting a hierarchy the page never
+ * shows. Thirty-three pages were in that state.
+ *
+ * ONE ARRAY, BOTH OUTPUTS. This takes the exact `{name, path}[]` that goes to
+ * breadcrumbSchema(). Pass the same variable to both and the trail and the
+ * markup cannot drift, which is the whole point: two hand-kept copies of a
+ * hierarchy is how they disagree.
+ *
+ * The last item is the current page. It is not a link and carries
+ * aria-current="page", so a screen reader announces position rather than
+ * offering a link to where the reader already is.
+ */
+interface Crumb { name: string; path: string }
+interface Props {
+  items: Crumb[];
+  /** Extra top padding when the trail sits directly under the header. */
+  tight?: boolean;
+}
+const { items, tight = false } = Astro.props;
+const last = items.length - 1;
+---
+
+{items.length > 1 && (
+  <nav class:list={['bc', { tight }]} aria-label="Breadcrumb">
+    <ol class="bc-list">
+      {items.map((c, i) => (
+        <li class="bc-item">
+          {i === last ? (
+            <span class="bc-current" aria-current="page">{c.name}</span>
+          ) : (
+            <>
+              <a class="bc-link" href={c.path}>{c.name}</a>
+              <span class="bc-sep" aria-hidden="true">/</span>
+            </>
+          )}
+        </li>
+      ))}
+    </ol>
+  </nav>
+)}
+
+<style>
+  .bc {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 6px 16px 0;
+  }
+  .bc.tight { padding-top: 2px; }
+  @media (min-width: 740px) { .bc { padding: 10px 24px 0; } }
+
+  .bc-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    /* Wraps rather than scrolls. A three-level trail plus a long town name
+       overflows 320px on one line, and a horizontal scrollbar on a
+       navigation aid is worse than a second line. */
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    row-gap: 0;
+  }
+  .bc-item { display: flex; align-items: center; }
+
+  .bc-link,
+  .bc-current {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    line-height: 20px;
+    /* 20px line + 12px top + 12px bottom = 44px touch target. */
+    padding: 12px 0;
+    display: inline-block;
+  }
+  .bc-link {
+    color: var(--color-ash-300);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: color 0.15s ease, border-color 0.15s ease;
+  }
+  .bc-link:hover,
+  .bc-link:focus-visible {
+    color: var(--color-wc-green);
+    border-bottom-color: var(--color-wc-green);
+    outline: none;
+  }
+  .bc-current { color: var(--color-copper); }
+  .bc-sep {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--copper-hairline, rgba(184, 115, 51, 0.4));
+    padding: 0 8px;
+    user-select: none;
+  }
+</style>

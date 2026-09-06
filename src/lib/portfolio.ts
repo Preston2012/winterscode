@@ -55,6 +55,12 @@ export interface PortfolioItem {
   quote?: { text: string; attr: string };
   /** Links shown at the bottom of expanded detail. */
   links: { label: string; href: string; primary?: boolean }[];
+  /** Internal path to this project's case study, when one exists. The /work
+   *  cards render it as an internal link; every other card link is an
+   *  outbound target=_blank, so this needs its own field rather than a
+   *  seventh entry in `links`. Without it the case studies were reachable
+   *  from the footer and nowhere else. */
+  caseStudy?: string;
   /** False keeps the item out of every list until its domain is live. Default true. */
   published?: boolean;
   /** Display order within category, lower = first. */
@@ -106,6 +112,7 @@ export const portfolio: PortfolioItem[] = [
   },
   {
     slug: 'bandon-by-the-dunes',
+    caseStudy: '/work/bandon-by-the-dunes',
     numeral: 'ii.',
     name: 'Bandon By The Dunes Realtee',
     category: 'site',
@@ -143,6 +150,7 @@ export const portfolio: PortfolioItem[] = [
   },
   {
     slug: 'seabreeze',
+    caseStudy: '/work/seabreeze',
     numeral: 'iii.',
     name: 'SeaBreeze Landscape & Home Repair',
     category: 'site',
@@ -162,7 +170,7 @@ export const portfolio: PortfolioItem[] = [
     details: [
       {
         label: 'Stack',
-        value: 'Astro · Tailwind v4 · Cloudflare Pages · React islands · Turnstile',
+        value: 'Astro · Tailwind v4 · Cloudflare Pages · Turnstile-guarded estimate form · no framework runtime served',
       },
       {
         label: 'Scope',
@@ -217,6 +225,7 @@ export const portfolio: PortfolioItem[] = [
   },
   {
     slug: 'sogn-contracting',
+    caseStudy: '/work/sogn-contracting',
     numeral: 'iv.',
     name: 'Sogn Contracting',
     category: 'site',
@@ -258,6 +267,7 @@ export const portfolio: PortfolioItem[] = [
   },
   {
     slug: 'baseline-marketing',
+    caseStudy: '/work/baseline-marketing',
     numeral: 'v.',
     name: 'Baseline Marketing',
     category: 'site',
@@ -269,7 +279,7 @@ export const portfolio: PortfolioItem[] = [
     details: [
       {
         label: 'Stack',
-        value: 'Next.js 14 · TypeScript strict · Cloudflare Pages · zero UI dependencies',
+        value: 'Next.js app router · TypeScript strict · Vercel behind Cloudflare · zero UI dependencies',
       },
       {
         label: 'Scope',

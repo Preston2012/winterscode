@@ -5,14 +5,24 @@ import MobileMenu from '../components/layout/MobileMenu.astro';
 import PageHero from '../components/sections/PageHero.astro';
 import Divider from '../components/ui/Divider.astro';
 import Contact from '../components/sections/Contact.astro';
+import Breadcrumbs from '../components/ui/Breadcrumbs.astro';
+import { breadcrumbSchema } from '../lib/schema';
 ---
 
 <BaseLayout
   title="About · Winters Code"
   description="Preston Winters. 6th generation Bandon, Oregon. Solo software shop. I've owned small businesses. I know what it's like to drown in software you didn't choose."
 >
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema([
+      { name: 'Home', path: '/' },
+      { name: 'About', path: '/about' },
+    ]))} />
+  </Fragment>
+
   <Header />
   <MobileMenu />
+  <Breadcrumbs items={[{ name: 'Home', path: '/' }, { name: 'About', path: '/about' }]} />
 
   <Fragment slot="head">
     <!-- Preload the about hero wash (page LCP). Mirrors the homepage stamp

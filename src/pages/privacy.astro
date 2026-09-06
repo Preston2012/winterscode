@@ -1,14 +1,25 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumbs from '../components/ui/Breadcrumbs.astro';
+import { breadcrumbSchema } from '../lib/schema';
 
 const lastUpdated = '2026-05-13';
 ---
 
 <BaseLayout
   title="Privacy Policy · Winters Code"
-  description="What I collect, why, and how I keep it safe. Plain English. No tracking pixels. No data sales. No surprises."
+  description="What this site collects, why it collects it, and how it is kept safe. Plain English, no tracking pixels, no data sales, and no surprises."
   canonicalPath="/privacy"
 >
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema([
+      { name: 'Home', path: '/' },
+      { name: 'Privacy', path: '/privacy' },
+    ]))} />
+  </Fragment>
+
+  <Breadcrumbs items={[{ name: 'Home', path: '/' }, { name: 'Privacy', path: '/privacy' }]} />
+
   <article class="legal-page">
     <div class="legal-eyebrow mono">LEGAL · PRIVACY POLICY</div>
     <h1 class="h1 legal-h1">Privacy, in plain English.</h1>

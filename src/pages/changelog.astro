@@ -24,6 +24,8 @@ import MobileMenu from '../components/layout/MobileMenu.astro';
 import PageHero from '../components/sections/PageHero.astro';
 import Divider from '../components/ui/Divider.astro';
 import Contact from '../components/sections/Contact.astro';
+import Breadcrumbs from '../components/ui/Breadcrumbs.astro';
+import { breadcrumbSchema } from '../lib/schema';
 
 interface Commit {
   sha: string;
@@ -102,15 +104,23 @@ const lastDate = commits[0]?.date || '';
 ---
 
 <BaseLayout
-  title="Changelog · What I've shipped · Winters Code"
-  description="Auto-generated from git log. Every public commit to the Winters Code site, in chronological order."
+  title="Changelog · What I've built · Winters Code"
+  description="Every public commit to the Winters Code site in order, generated from git at build time. What I built, when I built it, and what changed."
 >
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema([
+      { name: 'Home', path: '/' },
+      { name: 'Changelog', path: '/changelog' },
+    ]))} />
+  </Fragment>
+
   <Header />
   <MobileMenu />
+  <Breadcrumbs items={[{ name: 'Home', path: '/' }, { name: 'Changelog', path: '/changelog' }]} />
 
   <PageHero
     eyebrow="Changelog · Git log"
-    h1="What I've shipped."
+    h1="What I've built."
     sub={`${totalCommits} substantive commits since ${firstDate}. Auto-built from git, newest first.`}
     sub2="No marketing wrap. The repo is the source of truth."
     showStamp={false}

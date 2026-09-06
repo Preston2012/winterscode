@@ -4,13 +4,15 @@ import Header from '../components/layout/Header.astro';
 import MobileMenu from '../components/layout/MobileMenu.astro';
 import PageHero from '../components/sections/PageHero.astro';
 import Divider from '../components/ui/Divider.astro';
+import Breadcrumbs from '../components/ui/Breadcrumbs.astro';
 import Contact from '../components/sections/Contact.astro';
 import { breadcrumbSchema } from '../lib/schema';
 
-const breadcrumbLd = breadcrumbSchema([
+const crumbs = [
   { name: 'Home', path: '/' },
   { name: 'Process', path: '/process' },
-]);
+];
+const breadcrumbLd = breadcrumbSchema(crumbs);
 
 const steps = [
   {
@@ -57,6 +59,7 @@ const steps = [
 
   <Header />
   <MobileMenu />
+  <Breadcrumbs items={crumbs} />
 
   <PageHero
     eyebrow="The Process"

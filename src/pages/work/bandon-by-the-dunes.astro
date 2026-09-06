@@ -1,0 +1,53 @@
+---
+import CaseStudyLayout from '../../components/templates/CaseStudyLayout.astro';
+---
+<CaseStudyLayout
+  slug="bandon-by-the-dunes"
+  title="Bandon By The Dunes Realtee Case Study · Winters Code"
+  description="A Bandon brokerage with the whole South Coast market on its own pages, pulled straight from the RMLS feed with no third-party IDX widget. Built in 18 days."
+  eyebrow="Work · Case Study"
+  h1="The whole market, on their own pages."
+  sub="A Bandon real estate brokerage running live RMLS listings with no third-party IDX widget in sight. Astro on Cloudflare Workers, built in 18 business days."
+  intro={[
+    "Barry Winters and Jodie VanLeuven are Bandon natives, both Bandon High graduates, both licensed brokers, business partners and life partners. They run a cranberry farm here too. Between them they cover homes, land, commercial and farms across Coos and Curry counties, and the thing they say about themselves is the thing that turned out to matter for the site: <em>they know the houses, the land, and the people.</em>",
+    "The hard part of a real estate site is never the design. It is the listings. Almost every brokerage solves it by renting an IDX widget, which drops someone else's search tool into a box on your page. It loads slowly, it looks like a different website, and the listing pages it makes are not yours.",
+    "This site does not have one. The RMLS feed lands in a <span class='hl-copper'>Cloudflare D1 database</span> and renders as ordinary pages on their own domain, with their own design, their own URLs, and <span class='hl-green'>their own search built on top of it</span>.",
+  ]}
+  stats={[
+    { value: '1,326', label: 'South Coast properties live on the site' },
+    { value: '18', label: 'business days, kickoff to live' },
+    { value: '0', label: 'third-party IDX widgets' },
+    { value: 'A+ 130', label: 'Mozilla Observatory' },
+  ]}
+  sections={[
+    {
+      h: 'What a rented widget costs you',
+      body: [
+        "An IDX widget is a business decision disguised as a technical one. The listings inside it are not on your site in any way search engines count, so the traffic they earn is not yours. The look is set by the vendor, so it drifts from your brand every time they redesign. It loads after everything else, so the slowest thing on the page is the one thing the visitor came for. And you pay for it monthly, forever, to have a worse version of your own inventory.",
+        "Pulling the feed directly costs more to build once and nothing after that. Every property becomes a real page at a real address on their domain. The search strip filters by price, type, beds, baths and area across nine South Coast towns, and it filters against the brokerage's own database rather than someone else's server.",
+      ],
+    },
+    {
+      h: 'How the listings work',
+      body: [
+        "The feed lands in D1, Cloudflare's SQL database, running at the edge next to the site itself. Pages render on demand from that data, so a price change or a new listing shows up without a rebuild and without anyone touching the site.",
+        "Their own listings lead. Below them sits the rest of the market, currently <span class='stat'>1,326</span> properties, so a visitor who arrives looking for one house can see everything else without leaving. Grid and map views share one filter state. Each property has its own URL, its own photos and its own page, which is what makes it findable at all.",
+        "It fails soft. If the feed is unreachable the page still renders with the brokerage's own listings rather than showing an error where the inventory should be, because a real estate site that looks broken looks like a brokerage that is not paying attention.",
+      ],
+    },
+    {
+      h: 'The bug that only showed on the homepage',
+      body: [
+        "Two months after launch the security grade dropped from A+ to B on this site alone, with no code change to any header. The cause was worth the afternoon it took to find. Cloudflare applies the headers declared in a <code>_headers</code> file to static files only, never to pages the worker generates on demand. When the homepage converted to on-demand rendering so it could show live listings, it silently stopped receiving five of its security headers. Nothing had broken. The page had simply moved out from under the rule.",
+        "The fix was to set the headers in middleware, where every response passes through regardless of how it was made, and to gap-fill only so nothing already correct gets overwritten. The grade came back at <span class='stat'>A+ 130</span>, higher than it had been before the regression.",
+        "That is the part of maintenance nobody sells and everybody needs. A rented site would have shown the same drop and nobody would have looked.",
+      ],
+    },
+  ]}
+  relatedLinks={[
+    { href: '/web-design-for-real-estate', label: 'Web Design for Real Estate', sub: 'The same work, offered' },
+    { href: '/services/web-development', label: 'Web Development', sub: 'Custom code, not a plugin stack' },
+    { href: '/web-design-bandon', label: 'Web Design in Bandon', sub: 'Local work' },
+    { href: '/work', label: 'All work', sub: 'More projects' },
+  ]}
+/>

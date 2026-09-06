@@ -1,8 +1,106 @@
 // @ts-check
+import { execSync } from 'node:child_process';
+import { readFileSync, existsSync } from 'node:fs';
+import { dirname, resolve, relative } from 'node:path';
 import { defineConfig } from 'astro/config';
 import cloudflare from '@astrojs/cloudflare';
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
+
+// ─────────── sitemap metadata, derived not guessed ───────────
+// ONE git call, not one per page. `git log --name-only` over src/ yields
+// every commit's date and the files it touched, walked newest first, so the
+// first sighting of a path is its newest commit. 44 separate `git log -1`
+// calls would do the same job and add seconds to every build.
+let FILE_DATE = new Map();
+try {
+  const raw = execSync('git log --pretty=format:%cs --name-only --no-renames -- src astro.config.mjs',
+    { cwd: import.meta.dirname, encoding: 'utf8', maxBuffer: 32 * 1024 * 1024 });
+  let d = null;
+  for (const line of raw.split('\n')) {
+    if (/^\d{4}-\d{2}-\d{2}$/.test(line)) { d = line; continue; }
+    if (line && d && !FILE_DATE.has(line)) FILE_DATE.set(line, d);
+  }
+} catch {
+  // No git in this environment. lastmod is then omitted entirely rather
+  // than filled with a build stamp, because a wrong date is worse than none.
+  FILE_DATE = new Map();
+}
+
+const SRC = resolve(import.meta.dirname, 'src/pages');
+const dateCache = new Map();
+
+/** Newest commit touching a page file or any local file it imports. */
+function lastmodFor(route) {
+  if (dateCache.has(route)) return dateCache.get(route);
+  if (FILE_DATE.size === 0) { dateCache.set(route, null); return null; }
+  const base = route === '/' ? 'index' : route.slice(1);
+  const file = [`${base}.astro`, `${base}/index.astro`, `${base}.mdx`]
+    .map((f) => resolve(SRC, f)).find((f) => existsSync(f));
+  if (!file) { dateCache.set(route, null); return null; }
+
+  // A page git has never seen is new and uncommitted. Inheriting a date from
+  // one of its imports would stamp a brand new page with an old one, which is
+  // the wrong-date-is-worse-than-none case this whole function exists to
+  // avoid. Omit it; the next build after the commit picks up the real date.
+  const own = relative(import.meta.dirname, file);
+  if (!FILE_DATE.has(own)) { dateCache.set(route, null); return null; }
+
+  const dates = [];
+  const push = (abs) => {
+    const rel = relative(import.meta.dirname, abs);
+    if (FILE_DATE.has(rel)) dates.push(FILE_DATE.get(rel));
+  };
+  push(file);
+  // One level of local imports: the template and the data module a page
+  // renders from are as much its content as its own frontmatter.
+  try {
+    const src = readFileSync(file, 'utf8');
+    for (const m of src.matchAll(/from\s+'(\.[^']+)'/g)) {
+      const bare = resolve(dirname(file), m[1]);
+      for (const cand of [bare, `${bare}.astro`, `${bare}.ts`, `${bare}/index.ts`]) {
+        if (existsSync(cand)) { push(cand); break; }
+      }
+    }
+  } catch { /* unreadable page, its own date still stands */ }
+
+  const out = dates.length ? dates.sort().at(-1) : null;
+  dateCache.set(route, out);
+  return out;
+}
+
+function routeOf(url) {
+  const p = url.replace('https://winterscode.com', '').replace(/\/$/, '');
+  return p === '' ? '/' : p;
+}
+
+// Named routes whose weight is not derivable from their shape.
+const ROUTE_META = {
+  '/': { priority: 1.0, changefreq: 'weekly' },
+  '/work': { priority: 0.9, changefreq: 'weekly' },
+  '/services': { priority: 0.9, changefreq: 'monthly' },
+  '/pricing': { priority: 0.9, changefreq: 'monthly' },
+  '/contact': { priority: 0.9, changefreq: 'monthly' },
+  '/wall': { priority: 0.6, changefreq: 'daily' },
+  '/changelog': { priority: 0.5, changefreq: 'daily' },
+  '/audit': { priority: 0.7, changefreq: 'monthly' },
+  '/about': { priority: 0.7, changefreq: 'monthly' },
+  '/process': { priority: 0.7, changefreq: 'monthly' },
+  '/faq': { priority: 0.7, changefreq: 'monthly' },
+  '/insights': { priority: 0.6, changefreq: 'monthly' },
+  '/credits': { priority: 0.3, changefreq: 'yearly' },
+  '/privacy': { priority: 0.3, changefreq: 'yearly' },
+  '/terms': { priority: 0.3, changefreq: 'yearly' },
+  '/lamp': { priority: 0.5, changefreq: 'yearly' },
+};
+
+/** Everything else falls out of the route shape. */
+function classify(route) {
+  if (route.startsWith('/services/')) return { priority: 0.8, changefreq: 'monthly' };
+  if (route.startsWith('/work/')) return { priority: 0.8, changefreq: 'monthly' };
+  if (route.startsWith('/insights/')) return { priority: 0.7, changefreq: 'yearly' };
+  return { priority: 0.8, changefreq: 'monthly' };  // location + industry pages
+}
 
 // https://astro.build/config
 export default defineConfig({
@@ -63,9 +161,15 @@ export default defineConfig({
     // real interactive island worth that weight.
     mdx(),
     sitemap({
-      changefreq: 'weekly',
-      priority: 0.8,
       filter: (page) => !page.includes('/404'),
+      serialize: (item) => {
+        const route = routeOf(item.url);
+        return {
+          ...item,
+          ...(ROUTE_META[route] ?? classify(route)),
+          ...(lastmodFor(route) ? { lastmod: lastmodFor(route) } : {}),
+        };
+      },
     }),
   ],
 

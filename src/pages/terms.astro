@@ -1,14 +1,25 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumbs from '../components/ui/Breadcrumbs.astro';
+import { breadcrumbSchema } from '../lib/schema';
 
 const lastUpdated = '2026-05-13';
 ---
 
 <BaseLayout
   title="Terms of Service · Winters Code"
-  description="The rules for using this website and talking to me about a project. Short, plain English, no surprises."
+  description="The rules for using this website and for talking to me about a project. Short, in plain English, with nothing surprising buried in it."
   canonicalPath="/terms"
 >
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema([
+      { name: 'Home', path: '/' },
+      { name: 'Terms', path: '/terms' },
+    ]))} />
+  </Fragment>
+
+  <Breadcrumbs items={[{ name: 'Home', path: '/' }, { name: 'Terms', path: '/terms' }]} />
+
   <article class="legal-page">
     <div class="legal-eyebrow mono">LEGAL · TERMS OF SERVICE</div>
     <h1 class="h1 legal-h1">Terms, in plain English.</h1>

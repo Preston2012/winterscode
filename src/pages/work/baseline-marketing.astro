@@ -4,18 +4,49 @@ import CaseStudyLayout from '../../components/templates/CaseStudyLayout.astro';
 <CaseStudyLayout
   slug="baseline-marketing"
   title="Baseline Marketing Case Study · Winters Code"
-  description="A 13-page marketing site with 22 custom interactive widgets, built from scratch with no chart libraries, no Tailwind, and no UI kits. Next.js on Cloudflare."
+  description="A 13-page marketing site with 22 custom interactive widgets and no chart library, UI kit or CSS framework in any bundle it serves. Next.js with strict TypeScript."
   eyebrow="Work · Case Study"
-  h1="Baseline: 22 widgets, zero UI kits."
-  sub="A 13-page marketing and portfolio site with 22 custom interactive widgets, built from scratch. No chart libraries, no Tailwind, no UI kits."
+  h1="22 widgets, nothing off a shelf."
+  sub="A 13-page marketing site where every chart, gauge and map was written from scratch, because the widgets are the product demo and a stock chart cannot demo a product nobody has built before."
   intro={[
-    "Baseline is my own product, and its marketing site is a showcase of what custom code can do when nothing is pulled off a shelf. Thirteen pages, and <span class='stat'>22</span> custom interactive widgets built from scratch: radar charts, timelines, signal gauges, heatmaps, constellation maps.",
-    "No chart libraries. No Tailwind. No UI kits. Every widget is custom-built, which is why <span class='hl-green'>the site stays fast despite how much it does</span>. Next.js with strict TypeScript on Cloudflare Pages, zero UI dependencies.",
-    "It is the clearest answer to <em>why build custom?</em> The things that make this site distinct could not have come from a template or a plugin. They had to be written.",
+    "Baseline is my own product: a political speech analysis tool that runs the same statement through Claude, GPT and Grok independently and treats their <em>disagreement</em> as the signal. Its marketing site had a problem most marketing sites do not. There was nothing to screenshot that would mean anything, and no stock chart that shows four AI models arguing.",
+    "So the site does not describe the product. It runs it. The features page is a working demo of the production app interface, and every visualisation on it was <span class='hl-copper'>built from nothing</span>: radar charts, signal gauges, heatmaps, timelines, constellation maps.",
+    "Twenty-two of them, across thirteen pages, with <span class='hl-green'>no chart library, no UI kit, no CSS framework and no component library</span> anywhere in what the browser downloads.",
+  ]}
+  stats={[
+    { value: '22', label: 'custom interactive widgets' },
+    { value: '13', label: 'pages, all statically rendered' },
+    { value: '0', label: 'chart libraries or UI kits loaded' },
+    { value: 'A+', label: 'Mozilla Observatory, HSTS preloaded' },
+  ]}
+  sections={[
+    {
+      h: 'Why nothing came off a shelf',
+      body: [
+        "Reach for a chart library and you get its opinions along with its code. Its axis conventions, its tooltip, its animation curve, its idea of what a data point is. That is fine when you are plotting revenue by quarter. It is useless when the thing you need to show is three language models scored against each other on one sentence, because no library has a component for that, and the closest thing it has will quietly reshape your product into something it already knows how to draw.",
+        "Writing them meant every widget could be the exact shape of the idea underneath it. The Framing Radar is a radar because framing genuinely has axes. Crossfire is a split view because two models genuinely disagree. Constellation Nav is a node map because the relationships genuinely are a graph. Each one is a named feature of the product, not decoration on a page about the product.",
+        "The second effect is weight. Twenty-two interactive visualisations would normally mean a large charting dependency plus a component library plus whatever they both pull in. This site ships nine JavaScript chunks total and the visuals are inline SVG, which the browser already knows how to draw.",
+      ],
+    },
+    {
+      h: 'Checked, not claimed',
+      body: [
+        "Anyone can write no dependencies on a portfolio page. So before publishing this, I pulled every JavaScript bundle the homepage requests and searched all nine of them for the names: chart libraries, D3, Highcharts, Plotly, component kits, Tailwind, Bootstrap. Nothing. The one hit was <code>appBootstrap</code>, which is the Next.js router's own hydration function and has nothing to do with the CSS framework of the same name.",
+        "That is a small thing to do and it is the whole difference between a claim and a fact. It is also the same check I run on client sites, which is why the audit tool on this site exists at all.",
+      ],
+    },
+    {
+      h: 'What the site is made of',
+      body: [
+        "Next.js with the app router and strict TypeScript, statically rendered, served from Vercel behind Cloudflare. Strict transport security with preload, frame options locked to same-origin, Lighthouse in the high nineties on mobile and an A+ on Mozilla Observatory. Those two are measured live on <a href='/wall'>the wall</a> alongside every client site, on the same schedule and with the same tools, because a portfolio that grades itself more gently than its clients is not a portfolio.",
+        "Thirteen pages covers features, methodology, ethos, pricing, a page about what the product deliberately does not do, a build page, press, support, and the four legal documents an app on the stores has to have. It is the clearest answer I have to <em>why build custom</em>, because the parts that make it worth looking at are exactly the parts no template could have produced.",
+      ],
+    },
   ]}
   relatedLinks={[
-    { href: '/services/web-development', label: 'Web Development', sub: 'The full service' },
+    { href: '/services/web-development', label: 'Web Development', sub: 'Custom code, not a plugin stack' },
     { href: '/services/custom-software', label: 'Custom Software', sub: 'When it gets complex' },
+    { href: '/work/bandon-by-the-dunes', label: 'Bandon By The Dunes', sub: 'Live data, custom built' },
     { href: '/work', label: 'All work', sub: 'More projects' },
   ]}
 />

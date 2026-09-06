@@ -1,0 +1,52 @@
+---
+import CaseStudyLayout from '../../components/templates/CaseStudyLayout.astro';
+---
+<CaseStudyLayout
+  slug="seabreeze"
+  title="SeaBreeze Landscape & Home Repair Case Study · Winters Code"
+  description="A Bandon contractor off WordPress in seven days: six service pages instead of one, 46 real job photos, and no JavaScript framework loaded on any page."
+  eyebrow="Work · Case Study"
+  h1="Off WordPress in seven days."
+  sub="A licensed Bandon landscape-care and home-repair contractor, rebuilt from the ground up. Six service pages instead of one, and not a single framework file loaded."
+  intro={[
+    "SeaBreeze is a licensed general contractor, landscape contractor and pesticide operator working Bandon and the South Coast. Stacy Winters founded the LLC in 2023 on the back of thirty-plus years of building, landscaping and repair, and the crew does everything from monthly lawn care to full remodels.",
+    "The old site was WordPress, and it had the problem almost every contractor site has: <span class='hl-copper'>one page called Services</span> with everything on it. Landscaping, decks, drainage, remodels, gutters, hauling, all in one list. A page like that can only ever rank for one thing, and it is usually the wrong thing.",
+    "The rebuild took <span class='hl-green'>seven business days</span> from kickoff to live and produced fourteen pages, six of which do nothing but own a single service in a single town.",
+  ]}
+  stats={[
+    { value: '7', label: 'business days, kickoff to live' },
+    { value: '6', label: 'service pages, one per trade' },
+    { value: '46', label: 'real job photos, no stock' },
+    { value: '0', label: 'framework files loaded' },
+  ]}
+  sections={[
+    {
+      h: 'Six pages instead of one',
+      body: [
+        "Somebody with a flooded side yard does not search for a contractor. They search for drainage, in the town they live in. Somebody whose deck is going soft searches for decks. Those are different people with different problems, and a single Services page has to try to be the answer to all of them at once, which means it is the best answer to none of them.",
+        "So the site has six: landscaping, home repair, property maintenance, remodeling, decks and fencing, and drainage. Each one is a full page about that one job, at a URL that says what it is, with photos of that work and its own way in to a free estimate. The Services page still exists and still lists everything, because a visitor who does not know what to call their problem needs somewhere to browse. It just is not carrying the whole building any more.",
+      ],
+    },
+    {
+      h: 'The gallery does the selling',
+      body: [
+        "A contractor's website has one job that no amount of copy can do, which is to prove the work is good. So the gallery is not a decoration on this site, it is the argument. Forty-six real job photos, sorted into landscaping, construction, decks and fencing, drainage and a featured set: an arched gate, a golf simulator built into a shed, a putting green, a cedar raised bed, a hillside drain line in the trench before it was covered.",
+        "Every one is their own work on a real South Coast property. None of it is stock, and none of it is a photo of somebody else's job. That rule is not negotiable on anything I build, and on a trades site it is also the entire point.",
+      ],
+    },
+    {
+      h: 'What the pages do not load',
+      body: [
+        "Across all fourteen pages the site requests <span class='stat'>zero</span> external JavaScript files. The one exception is the Cloudflare Turnstile widget on the contact form, which is there to keep the estimate form from filling up with spam. Everything else the site does, it does with the HTML and CSS it already sent.",
+        "That is not a stunt, it is what removing WordPress buys you. No plugin stack, no jQuery, no page builder shipping its own runtime to every visitor. Photos load as WebP at the size the screen actually needs. The result is <span class='hl-green'>a contractor site that opens instantly on a phone with two bars in the Coquille valley</span>, which is where most of these visitors are.",
+        "The security grade is A+ on Mozilla Observatory and the Lighthouse numbers are measured live, not quoted from a screenshot. Both are on <a href='/wall'>the wall</a>.",
+      ],
+    },
+  ]}
+  relatedLinks={[
+    { href: '/web-design-for-contractors', label: 'Web Design for Contractors', sub: 'The same work, offered' },
+    { href: '/website-redesign', label: 'Website Redesign', sub: 'Getting off WordPress' },
+    { href: '/web-design-bandon', label: 'Web Design in Bandon', sub: 'Local work' },
+    { href: '/work', label: 'All work', sub: 'More projects' },
+  ]}
+/>

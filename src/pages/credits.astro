@@ -4,13 +4,15 @@ import Header from '../components/layout/Header.astro';
 import MobileMenu from '../components/layout/MobileMenu.astro';
 import PageHero from '../components/sections/PageHero.astro';
 import Divider from '../components/ui/Divider.astro';
+import Breadcrumbs from '../components/ui/Breadcrumbs.astro';
 import Contact from '../components/sections/Contact.astro';
 import { breadcrumbSchema } from '../lib/schema';
 
-const breadcrumbLd = breadcrumbSchema([
+const crumbs = [
   { name: 'Home', path: '/' },
   { name: 'Credits', path: '/credits' },
-]);
+];
+const breadcrumbLd = breadcrumbSchema(crumbs);
 
 // Town hero photography licensed under Creative Commons (attribution required).
 const ccPhotos = [
@@ -26,7 +28,7 @@ const ccPhotos = [
 
 <BaseLayout
   title="Photo Credits · Winters Code"
-  description="Photography credits and Creative Commons attributions for the Winters Code website."
+  description="Photography credits and Creative Commons attributions for the town and coast photographs used across the Winters Code website."
   canonicalPath="/credits"
 >
   <Fragment slot="head">
@@ -35,6 +37,7 @@ const ccPhotos = [
 
   <Header />
   <MobileMenu />
+  <Breadcrumbs items={crumbs} />
 
   <PageHero
     eyebrow="Colophon"

@@ -26,14 +26,48 @@ import Contact from '../components/sections/Contact.astro';
 import { sites, apps } from '../lib/portfolio.ts';
 import Explainer from '../components/ui/Explainer.astro';
 import Instrument from '../components/sections/Instrument.astro';
+import Breadcrumbs from '../components/ui/Breadcrumbs.astro';
+import { breadcrumbSchema, absUrl } from '../lib/schema';
+
+const crumbs = [
+  { name: 'Home', path: '/' },
+  { name: 'Work', path: '/work' },
+];
+const breadcrumbLd = breadcrumbSchema(crumbs);
+
+// ItemList over the real published portfolio. Position follows the order the
+// page renders, and each entry points at its case study when it has one, so
+// the list and the internal links on the cards agree.
+const workLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: 'Sites and apps built by Winters Code',
+  numberOfItems: sites.length + apps.length,
+  itemListElement: [...sites, ...apps].map((p, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    item: {
+      '@type': 'CreativeWork',
+      name: p.name,
+      url: p.caseStudy ? absUrl(p.caseStudy) : (p.links.find((l) => l.primary) ?? p.links[0])?.href,
+      ...(p.image ? { image: absUrl(p.image.src) } : {}),
+    },
+  })),
+};
 ---
 
 <BaseLayout
   title="Work · Winters Code"
   description="Sites and apps I've built. Live Lighthouse on every site. One app on the stores, three in beta. Days for sites, weeks for apps."
 >
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbLd)} />
+    <script type="application/ld+json" set:html={JSON.stringify(workLd)} />
+  </Fragment>
+
   <Header />
   <MobileMenu />
+  <Breadcrumbs items={crumbs} />
 
   <PageHero
     eyebrow="WORK · SITES + APPS"
@@ -118,6 +152,9 @@ import Instrument from '../components/sections/Instrument.astro';
                   <a class="wk-visit" href={(p.links.find((l) => l.primary) ?? p.links[0]).href} target="_blank" rel="noopener">
                     {(p.links.find((l) => l.primary) ?? p.links[0]).label}
                   </a>
+                )}
+                {p.caseStudy && (
+                  <a class="wk-case" href={p.caseStudy}>Read the case study</a>
                 )}
                 <div class="wk-security" data-sec-site={p.slug} aria-live="polite">
                   <span class="wk-sec-label">
@@ -881,6 +918,22 @@ import Instrument from '../components/sections/Instrument.astro';
   .wk-title-link:hover,
   .wk-title-link:focus-visible {
     color: var(--color-wc-green);
+    outline: none;
+  }
+  .wk-case {
+    font-family: var(--font-sans);
+    font-size: 13px;
+    color: var(--color-copper-bright);
+    text-decoration: none;
+    border: 1px solid var(--copper-hairline);
+    border-radius: 6px;
+    padding: 11px 13px;
+    line-height: 20px;
+    transition: background-color 0.15s ease, color 0.15s ease;
+  }
+  .wk-case:hover, .wk-case:focus-visible {
+    background-color: var(--color-copper-bright);
+    color: var(--color-bg-deep);
     outline: none;
   }
   .wk-visit {

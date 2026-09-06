@@ -8,7 +8,7 @@ const townLinks = towns.map((t) => ({ href: `/web-design-${t.slug}`, label: `${t
 
 <ServiceLayout
   service={service}
-  title="SEO & Performance · Core Web Vitals Fix · Winters Code"
+  title="SEO & Performance for Oregon Coast Sites · Winters Code"
   description="Core Web Vitals and SEO for Oregon coast businesses. Fix slow loads, weak security, and missing metadata. Lighthouse gains measured before and after."
   eyebrow="Services · SEO & Performance"
   h1="Fast sites rank. Most local sites are slow."
@@ -49,5 +49,8 @@ const townLinks = towns.map((t) => ({ href: `/web-design-${t.slug}`, label: `${t
   ]}
   relatedTitle="SEO and performance across the south coast"
   relatedIntro="Local pages for the towns I serve."
-  relatedLinks={townLinks}
+  relatedLinks={[
+    { href: '/core-web-vitals-fix', label: 'Core Web Vitals Fix', sub: 'The specific repair' },
+    ...townLinks,
+  ]}
 />
