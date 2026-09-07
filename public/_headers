@@ -63,5 +63,34 @@
   Cache-Control: public, max-age=2592000, immutable
 
 # Portfolio card images change only when a card is re-cut. A week.
-/work/*
+#
+# S199: this was /work/* and it caught the four case-study HTML pages, which
+# are served at /work/<slug> with no extension. Measured on production: the
+# case studies came back max-age=604800 while every other document came back
+# max-age=0, must-revalidate. A visitor held a case study in their own browser
+# for a week and the deploy purge only clears the edge, so a corrected price or
+# a removed client claim did not reach anyone who had already read it.
+#
+# The fix is to narrow the pattern, never to add an overriding rule: Cloudflare
+# joins duplicate header values with a comma rather than replacing them, so a
+# second Cache-Control rule on the same path yields one merged header. Only one
+# splat is allowed per pattern, so the two asset extensions get one rule each.
+/work/*.webp
   Cache-Control: public, max-age=604800, must-revalidate
+
+/work/*.png
+  Cache-Control: public, max-age=604800, must-revalidate
+
+# The case-study documents, now carrying the same policy as their siblings
+# above rather than the image policy they were inheriting by accident.
+/work/bandon-by-the-dunes
+  Cache-Control: public, max-age=0, must-revalidate, s-maxage=600
+
+/work/baseline-marketing
+  Cache-Control: public, max-age=0, must-revalidate, s-maxage=600
+
+/work/seabreeze
+  Cache-Control: public, max-age=0, must-revalidate, s-maxage=600
+
+/work/sogn-contracting
+  Cache-Control: public, max-age=0, must-revalidate, s-maxage=600
