@@ -21,6 +21,7 @@
 import { readFileSync, writeFileSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { createHash } from 'node:crypto';
+import { SCRIPT_HOSTS } from './csp-hosts.mjs';
 
 const DIST = process.argv[2] || 'dist/client';
 const VERBOSE = process.env.CSP_VERBOSE === '1';
@@ -76,9 +77,9 @@ function processHtml(html, label) {
   // sufficient; either is fine). Allows the CF Web Analytics beacon Preston
   // keeps active for visitor data, while still blocking arbitrary XSS via
   // strict per-script hashes for everything inline.
-  const CF_INSIGHTS = "https://static.cloudflareinsights.com";
+  const HOSTS = SCRIPT_HOSTS.join(' ');
   if (scriptIdx === -1) {
-    directives.push(`script-src 'self' ${CF_INSIGHTS} ${[...hashes].join(' ')}`);
+    directives.push(`script-src 'self' ${HOSTS} ${[...hashes].join(' ')}`);
   } else {
     const existing = directives[scriptIdx];
     const missing = [...hashes].filter((h) => !existing.includes(h));
@@ -90,12 +91,16 @@ function processHtml(html, label) {
       .replace(/\s+'strict-dynamic'/g, '')
       .replace(/\s+'unsafe-inline'/g, '')
       .replace(/\s+https:(?=\s|;|$)/g, '');
-    // Ensure CF Insights host is allowlisted (for the auto-injected beacon).
-    if (!directives[scriptIdx].includes(CF_INSIGHTS)) {
-      directives[scriptIdx] = directives[scriptIdx].replace(
-        /^script-src\s+/,
-        `script-src 'self' ${CF_INSIGHTS} `
-      );
+    // Ensure every allowlisted host survives. Astro emits them from the same
+    // list via scriptDirective, so this is the belt on the braces: a page
+    // whose directive was rebuilt without them still gets them back.
+    for (const host of SCRIPT_HOSTS) {
+      if (!directives[scriptIdx].includes(host)) {
+        directives[scriptIdx] = directives[scriptIdx].replace(
+          /^script-src\s+/,
+          `script-src 'self' ${host} `
+        );
+      }
     }
     // Dedupe any repeated tokens. Walk, keep unique.
     {

@@ -4,5 +4,12 @@
   "compatibility_date": "2026-04-15",
   "r2_buckets": [
     { "binding": "LEADS", "bucket_name": "winterscode-leads" }
+  ],
+  // Cloudflare Email Routing is already enabled on winterscode.com and this
+  // address is the one verified destination on the account. The binding can
+  // only deliver there, so no code path can mail anyone else. No provider,
+  // no API key, no third party holding a lead.
+  "send_email": [
+    { "name": "NOTIFY", "destination_address": "droiddna2013@gmail.com" }
   ]
 }

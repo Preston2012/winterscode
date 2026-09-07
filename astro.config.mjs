@@ -6,6 +6,7 @@ import { defineConfig } from 'astro/config';
 import cloudflare from '@astrojs/cloudflare';
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
+import { SCRIPT_HOSTS, TURNSTILE } from './scripts/csp-hosts.mjs';
 
 // ─────────── sitemap metadata, derived not guessed ───────────
 // ONE git call, not one per page. `git log --name-only` over src/ yields
@@ -139,14 +140,20 @@ export default defineConfig({
         "default-src 'self'",
         "img-src 'self' data: https:",
         "font-src 'self' data:",
-        "connect-src 'self' https://transit.baseline.marketing https://demi.baseline.marketing https://api.cal.com https://www.googleapis.com https://api.github.com https://observatory-api.mdn.mozilla.net https://www.sogncontracting.com https://sogncontracting.com",
+        `connect-src 'self' ${TURNSTILE} https://transit.baseline.marketing https://demi.baseline.marketing https://api.cal.com https://www.googleapis.com https://api.github.com https://observatory-api.mdn.mozilla.net https://www.sogncontracting.com https://sogncontracting.com`,
         // frame-ancestors omitted: ignored when delivered via <meta>.
         // X-Frame-Options: SAMEORIGIN at the response header handles this.
         "form-action 'self'",
+        // Turnstile renders its challenge in an iframe. default-src 'self'
+        // would block it, and the failure is silent in the widget.
+        `frame-src 'self' ${TURNSTILE}`,
         "base-uri 'self'",
         "object-src 'none'",
         "upgrade-insecure-requests",
       ],
+      scriptDirective: {
+        resources: ["'self'", ...SCRIPT_HOSTS],
+      },
       styleDirective: {
         resources: ["'self'", "'unsafe-inline'"],
       },

@@ -13,9 +13,11 @@
  * plain-English findings. Bill's job is to point prospects at the page,
  * not to harvest leads.
  *
- * Rate limit: 5 audits per IP per UTC day, enforced client-side via the
- * same Demiurge wc-demo-counters table reused for the chat. Future hard-
- * enforcement at this Worker layer can use Cloudflare Rate Limiting rules.
+ * Rate limit: RATE_LIMIT_PER_DAY audits per IP per UTC day, enforced HERE
+ * at the Worker through lib/ratelimit, the same limiter /api/brief uses.
+ * The counter is the edge Cache API, so it is eventually consistent across
+ * colos. For a hard count, swap in a Durable Object or a Rate Limiting
+ * binding. The constant is the only place the number lives.
  *
  * Env required:
  *   - PSI_KEY: PageSpeed Insights API key (already set, shared with Wall)
@@ -28,6 +30,7 @@ export const prerender = false;
 import type { APIRoute } from 'astro';
 // @ts-ignore : virtual module from @astrojs/cloudflare adapter
 import { env as cfEnv } from 'cloudflare:workers';
+import { checkDayLimit } from '../../lib/ratelimit';
 
 interface LighthouseScores {
   performance: number | null;
@@ -782,73 +785,21 @@ function buildFindings(r: Omit<AuditResult, 'findings' | 'overall' | 'overallSou
 const RATE_LIMIT_PER_DAY = 15;
 
 /**
- * Rate limit: 5 audits per IP per UTC day. Bypass via X-WC-Bypass header
- * matching the WC_AUDIT_BYPASS env secret (Preston / Claude in audit runs).
- *
- * Storage: Cloudflare Cache API. The cache key is a hashed bucket combining
- * IP + UTC date. We GET the cache, parse the count, increment, PUT back.
- * Eventually-consistent at the edge but good enough for a low-volume tool.
- * if a determined abuser racks up parallel requests across edge locations,
- * they will burn some budget but Cloudflare\'s built-in DDoS protection
- * catches the rest. For hard enforcement at scale, swap in a Durable Object
- * or Cloudflare Rate Limiting binding.
+ * Per-IP daily limit for this route. The mechanism, the fail-open policy and
+ * the bypass header live in lib/ratelimit; this wrapper only supplies the
+ * numbers that are specific to /api/audit. Bypass via X-WC-Bypass matching
+ * the WC_AUDIT_BYPASS env secret.
  */
-async function checkRateLimit(request: Request, env: Record<string, string | undefined>): Promise<{ allowed: boolean; remaining: number; resetAt: string }> {
-  const bypassHeader = request.headers.get('x-wc-bypass') || '';
-  const bypassSecret = env.WC_AUDIT_BYPASS || '';
-  if (bypassSecret && bypassHeader && bypassHeader === bypassSecret) {
-    return { allowed: true, remaining: -1, resetAt: 'bypass' };
-  }
-
-  const ip = request.headers.get('cf-connecting-ip') || request.headers.get('x-real-ip') || 'unknown';
-  const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD UTC
-  const bucketKey = `wc-audit-rl:${ip}:${today}`;
-  // Synthetic cache URL. Cache API requires a Request-like URL, never actually fetched.
-  const cacheUrl = `https://rl.internal/${encodeURIComponent(bucketKey)}`;
-
-  let count = 0;
-  try {
-    // @ts-ignore : caches is available in Workers runtime
-    const cache = caches.default;
-    const hit = await cache.match(cacheUrl);
-    if (hit) {
-      const text = await hit.text();
-      const parsed = parseInt(text, 10);
-      if (Number.isFinite(parsed)) count = parsed;
-    }
-  } catch {
-    // If cache lookup fails, fail-open. better to let one through than block honest users.
-  }
-
-  // Compute end-of-UTC-day for reset timestamp
-  const now = new Date();
-  const tomorrow = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1, 0, 0, 0));
-  const resetAt = tomorrow.toISOString();
-
-  if (count >= RATE_LIMIT_PER_DAY) {
-    return { allowed: false, remaining: 0, resetAt };
-  }
-
-  // Increment + write back with TTL until end of UTC day
-  const newCount = count + 1;
-  const ttlSeconds = Math.max(60, Math.floor((tomorrow.getTime() - now.getTime()) / 1000));
-  try {
-    // @ts-ignore
-    const cache = caches.default;
-    await cache.put(
-      cacheUrl,
-      new Response(String(newCount), {
-        headers: {
-          'cache-control': `max-age=${ttlSeconds}`,
-          'content-type': 'text/plain',
-        },
-      }),
-    );
-  } catch {
-    // Cache write failure is non-fatal; rate limit may drift but request proceeds
-  }
-
-  return { allowed: true, remaining: Math.max(0, RATE_LIMIT_PER_DAY - newCount), resetAt };
+async function checkRateLimit(
+  request: Request,
+  env: Record<string, string | undefined>,
+): Promise<{ allowed: boolean; remaining: number; resetAt: string }> {
+  return checkDayLimit({
+    request,
+    limit: RATE_LIMIT_PER_DAY,
+    prefix: 'wc-audit-rl',
+    bypassSecret: env.WC_AUDIT_BYPASS,
+  });
 }
 
 export const POST: APIRoute = async ({ request }) => {
@@ -860,7 +811,7 @@ export const POST: APIRoute = async ({ request }) => {
     return new Response(
       JSON.stringify({
         error: 'rate_limit_exceeded',
-        message: `Audited a lot today (15/day cap). Try again tomorrow, or text me at 541-551-0731 and I will run it by hand.`,
+        message: `Audited a lot today (${RATE_LIMIT_PER_DAY}/day cap). Try again tomorrow, or text me at 541-551-0731 and I will run it by hand.`,
         resetAt: rl.resetAt,
       }),
       {

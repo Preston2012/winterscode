@@ -129,7 +129,23 @@ import { breadcrumbSchema } from '../lib/schema';
         ></textarea>
       </div>
 
-      <div class="ct-actions">
+            <div class="ct-turnstile">
+        <div class="cf-turnstile" data-sitekey="0x4AAAAAAErqpIxNFp37Ylha" data-theme="light" data-size="flexible" data-ct-widget></div>
+        <p class="ct-nojs" data-ct-nojs hidden>
+          The spam check did not load. Email
+          <a href="mailto:preston@winterscode.com">preston@winterscode.com</a>
+          or text <a href="sms:5415510731">541-551-0731</a> and it reaches me the same way.
+        </p>
+        <noscript>
+          <p class="ct-nojs">
+            This form needs JavaScript for its spam check. Email
+            <a href="mailto:preston@winterscode.com">preston@winterscode.com</a>
+            or text <a href="sms:5415510731">541-551-0731</a> instead.
+          </p>
+        </noscript>
+      </div>
+
+<div class="ct-actions">
         <button type="submit" class="ct-submit" data-ct-submit>Send brief →</button>
         <span class="ct-actions-note" data-ct-note></span>
       </div>
@@ -269,6 +285,7 @@ import { breadcrumbSchema } from '../lib/schema';
       </div>
     </dl>
   </section>
+<script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </BaseLayout>
 
 <script is:inline>
@@ -285,6 +302,19 @@ import { breadcrumbSchema } from '../lib/schema';
         if (note) { note.textContent = ''; note.classList.remove('ct-note-err'); }
         const fd = new FormData(form);
         const body = Object.fromEntries(fd.entries());
+        // Turnstile writes cf-turnstile-response into the form on its own, so
+        // FormData already carries it. An empty value means the widget never
+        // solved: posting would earn a 403 and read to the visitor as a broken
+        // form, so say the true thing and give them the direct path instead.
+        if (!body['cf-turnstile-response']) {
+          const nojs = document.querySelector('[data-ct-nojs]');
+          if (nojs) nojs.hidden = false;
+          if (note) {
+            note.textContent = 'Waiting on the spam check. If it does not clear, use the email or text link above.';
+            note.classList.add('ct-note-err');
+          }
+          return;
+        }
         submit.disabled = true;
         submit.textContent = 'Sending…';
         try {
@@ -306,6 +336,8 @@ import { breadcrumbSchema } from '../lib/schema';
           }
           submit.disabled = false;
           submit.textContent = 'Send brief →';
+          // @ts-ignore : global from the Turnstile script
+          if (window.turnstile) window.turnstile.reset();
         }
       });
     }
@@ -381,6 +413,14 @@ import { breadcrumbSchema } from '../lib/schema';
   @media (min-width: 740px) { .ct-block-sub { font-size: 15px; } }
 
   /* ─── Section 02: Brief form ─── */
+  .ct-turnstile { margin: 4px 0 18px; }
+  .ct-nojs {
+    margin: 8px 0 0;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  .ct-nojs[hidden] { display: none !important; }
+
   .ct-form-wrap {
     padding: 32px 4px 24px;
     max-width: 760px;
