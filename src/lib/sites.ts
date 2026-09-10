@@ -39,7 +39,7 @@ export const SITES: MeasuredSite[] = [
     published: false,
   },
   {
-    key: 'seabreeze', label: 'seabreeze', name: 'SeaBreeze Landscape & Home Repair',
+    key: 'seabreeze', label: 'seabreeze', name: 'SeaBreeze Landscape Care and Home Repair',
     href: 'https://seabreeze.llc', portfolioSlug: 'seabreeze', builtDays: 7,
     published: true, lhFallback: [98, 100, 100, 100], secFallback: { grade: 'A+', score: 115 },
   },

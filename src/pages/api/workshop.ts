@@ -99,7 +99,7 @@ const FALLBACK: WorkshopData = {
     // Bandon By The Dunes Realtee (Astro on Cloudflare). Confirmed live PSI
     // median (mobile), measured 2026-06-24: perf 95, a11y/seo/best 100.
     bbtd:        [95, 100, 100, 100],
-    // SeaBreeze Landscape and Home Repair (seabreeze.llc), Astro on Cloudflare.
+    // SeaBreeze Landscape Care and Home Repair (seabreeze.llc), Astro on Cloudflare.
     // PSI mobile perf is noisy (95-98 typical); a11y/seo/best 100. Conservative
     // fallback only; live PSI populates the real number on the wall + cards.
     seabreeze:   [95, 100, 100, 100],
