@@ -465,7 +465,14 @@ const workLd = {
           const measured = root.querySelector('[data-lh-measured]');
           if (!Array.isArray(scores) || scores.length !== 4) return;
           target.textContent = '';
-          const labels = ['perf', 'a11y', 'best', 'seo'];
+          // ORDER MATCHES THE API TUPLE, and it did not. workshop.ts builds
+          // [performance, accessibility, seo, best-practices] and this labelled
+          // position 3 best and position 4 seo, so every card on the wall showed
+          // those two numbers under each other's names. Sogn read seo 92 while a
+          // direct Lighthouse run gave it seo 100 and best-practices 92, which
+          // is how it was caught: a client's real score was on public display
+          // under the wrong name for as long as this wall has been up.
+          const labels = ['perf', 'a11y', 'seo', 'best'];
           scores.forEach((n, i) => {
             const pill = document.createElement('span');
             pill.className = 'wk-lh-pill';
