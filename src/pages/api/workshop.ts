@@ -271,7 +271,14 @@ async function fetchGitHub(
     const showable = pushEvents.find(
       e => (e.public === true && e.payload?.commits?.length) || e.repo?.name === WC_REPO,
     ) ?? pushEvents[0];
-    const last = relativeTime(showable.created_at);
+    // THE TIME AND THE MESSAGE COME FROM THE SAME COMMIT, and they did not.
+    // The message for winterscode is pulled live from the commits API because
+    // the events feed omits commits for a private repo, while this line took
+    // its timestamp from the EVENT. So the card paired tonight's commit subject
+    // with "2d ago since last push", which Preston caught on the live wall
+    // 2026-09-10. A timestamp from one source and a message from another is two
+    // facts pretending to be one.
+    let last = relativeTime(showable.created_at);
     let last_message: string;
     if (showable.public === true && showable.payload?.commits?.length) {
       last_message = firstLine(showable.payload.commits[0].message);
@@ -284,6 +291,11 @@ async function fetchGitHub(
         if (cr.ok) {
           const commits: any[] = await cr.json();
           msg = firstLine(commits?.[0]?.commit?.message ?? '');
+          // Same commit, so the same clock. Author date over committer date is
+          // deliberate: a rebase rewrites the committer date and the wall would
+          // report work as newer than it is.
+          const when = commits?.[0]?.commit?.author?.date;
+          if (when && !Number.isNaN(new Date(when).getTime())) last = relativeTime(when);
         }
       } catch { /* fall back to masked label */ }
       last_message = msg || 'winterscode · main';
