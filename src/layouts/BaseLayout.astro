@@ -82,23 +82,12 @@ const isPreviewDeploy = !!cfBranch && cfBranch !== prodBranch;
   <link rel="canonical" href={canonical} />
   {isPreviewDeploy && <meta name="robots" content="noindex, nofollow" />}
 
-  <!-- Theme + favicons. Two marks, split by size, because one does not cover
-       both jobs.
-       32px and up is the color seal (wc-stamp PNGs). It matches the Google
-       Business Profile mark and it reads well in bookmarks, the Chrome omnibox
-       row and shortcut tiles. Measured S230 at 16, 20, 24, 32, 48 and 64.
-       16 and 24 is wc-mark, the same W on the seal's own green (22,50,40) and
-       cream (240,230,215), sampled from wc-stamp-256.png. A browser TAB renders
-       16 at 1x and 20 to 24 on most phones, and at those sizes the seal's rings
-       and ring text disappear while the Fraunces italic W breaks into a smear.
-       The simplified mark is a deliberate redraw for the size, not a resample.
-       Order matters: the browser takes the nearest declared size, so the small
-       pair must be declared. favicon.ico is the legacy fallback and carries the
-       seal at 16, 32, 48 and 64. mask-icon (Safari pinned tab) stays the
-       monochrome brandmark. -->
+  <!-- Theme + favicons. The color seal (wc-stamp PNGs) is the canonical favicon:
+       it matches the Google Business Profile mark, reads at tab size, and the
+       ring text reads as decorative chrome when small. Multiple sizes let the
+       browser pick the best; favicon.ico is the legacy fallback; mask-icon
+       (Safari pinned tab) stays the monochrome brandmark. -->
   <meta name="theme-color" content="#0a0d0c" />
-  <link rel="icon" type="image/png" sizes="16x16" href="/wc-mark-16.png" />
-  <link rel="icon" type="image/png" sizes="24x24" href="/wc-mark-24.png" />
   <link rel="icon" type="image/png" sizes="32x32" href="/wc-stamp-32.png" />
   <link rel="icon" type="image/png" sizes="64x64" href="/wc-stamp-64.png" />
   <link rel="icon" type="image/png" sizes="128x128" href="/wc-stamp-128.png" />
