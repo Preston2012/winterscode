@@ -21,6 +21,11 @@
 /wc-stamp-*
   Cache-Control: public, max-age=86400, must-revalidate
 
+# Tab-size marks, added S230. Same policy as the stamp: not content-hashed,
+# rarely changed, purgeable.
+/wc-mark-*
+  Cache-Control: public, max-age=86400, must-revalidate
+
 /wordmark.svg
   Cache-Control: public, max-age=86400, must-revalidate
 
