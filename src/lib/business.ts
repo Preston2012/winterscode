@@ -172,7 +172,7 @@ export const towns: TownEntry[] = [
     industriesDetail: [
       {
         name: 'Healthcare',
-        note: 'Bay Area Hospital is the largest employer on the south coast, and the clinics, practices, and specialists around it are some of the most-searched local businesses in the county. A clear, fast, trustworthy site matters more in healthcare than almost anywhere.',
+        note: 'Bay Area Hospital is the largest employer on the south coast, and the clinics, practices, and specialists around it are some of the most-searched local businesses in the county. A clear, fast, trustworthy website matters more in healthcare than almost anywhere.',
       },
       {
         name: 'Retail',
@@ -180,22 +180,22 @@ export const towns: TownEntry[] = [
       },
       {
         name: 'Commercial fishing and seafood',
-        note: 'Coos Bay is the best natural harbor between San Francisco and Puget Sound, and seafood businesses here sell fresh, frozen, and to markets across the country. A site that handles wholesale and retail clearly is worth building right.',
+        note: 'Coos Bay is the best natural harbor between San Francisco and Puget Sound, and seafood businesses here sell fresh, frozen, and to markets across the country. A website that handles wholesale and retail clearly is worth building right.',
       },
       {
         name: 'Port and logistics',
-        note: 'The deep-water port and rail line anchor a logistics economy that most of the coast does not have. The B2B businesses around it need sites that read as credible to partners, not just to walk-in customers.',
+        note: 'The deep-water port and rail line anchor a logistics economy that most of the coast does not have. The B2B businesses around it need websites that read as credible to partners, not just to walk-in customers.',
       },
       {
         name: 'Professional services',
-        note: 'Lawyers, accountants, agencies, and trades serving the regional hub compete on trust. A site that loads fast and looks like the real thing closes that trust gap before the first call.',
+        note: 'Lawyers, accountants, agencies, and trades serving the regional hub compete on trust. A website that loads fast and looks like the real thing closes that trust gap before the first call.',
       },
     ],
     context:
-      'Coos Bay is the largest city on the Oregon coast, around 16,000 people, and the commercial hub of the south coast. Between the deep-water port, Bay Area Hospital, Southwestern Oregon Community College, and the Highway 101 retail corridor, it has more small businesses competing for the same local searches than anywhere else in the county. Top employers run from the hospital and Walmart to The Mill Casino and Pacific Seafood. That density cuts both ways: more competition, but a bigger payoff when your site is the fast one that outranks the template sites around it.',
+      'Coos Bay is the largest city on the Oregon coast, around 16,000 people, and the commercial hub of the south coast. Between the deep-water port, Bay Area Hospital, Southwestern Oregon Community College, and the Highway 101 retail corridor, it has more small businesses competing for the same local searches than anywhere else in the county. Top employers run from the hospital and Walmart to The Mill Casino and Pacific Seafood. That density cuts both ways: more competition, but a bigger payoff when your website is the fast one that outranks the template sites around it.',
     localAngle: {
-      heading: 'Why it matters in Coos Bay',
-      body: 'Coos Bay is the one market on the coast big enough to have real local-search competition. In a small town you can rank by default. Here, a clinic, shop, or contractor is fighting a dozen others for the same query, and most of them are renting slow template sites. That is the opening: speed, clean structure, and security are a low bar in this market, and clearing it puts you ahead of competitors who never did the work.',
+      heading: 'Why website design matters in Coos Bay',
+      body: 'Coos Bay is the one market on the coast big enough to have real local-search competition. In a small town you can rank by default. Here, a clinic, shop, or contractor is fighting a dozen others for the same query, and most of them are renting slow template websites. That is the opening: speed, clean structure, and security are a low bar in this market, and clearing it puts you ahead of competitors who never did the work.',
     },
     localScene: {
       heading: 'The business scene in Coos Bay',
@@ -220,6 +220,10 @@ export const towns: TownEntry[] = [
       {
         q: 'Do you build for clinics and healthcare practices?',
         a: 'Yes. Healthcare is the biggest sector in Coos Bay and a good fit, because the whole job is loading fast and reading as trustworthy. I build with security defaults on every site, which matters more when patients are the audience.',
+      },
+      {
+        q: 'Are you the designer, or does the work get handed off?',
+        a: 'I am the website designer, the developer, and the person who picks up the phone. Nothing goes to a junior and nothing goes offshore. If you need logo design, or the type and color to go with it, that comes off the same desk in Bandon.',
       },
     ],
     neighbors: ['north-bend', 'coquille'],
