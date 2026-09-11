@@ -259,7 +259,7 @@ export const towns: TownEntry[] = [
     context:
       'North Bend sits directly against Coos Bay, the two cities running together as the largest urban area on the Oregon coast, and shares much of that economy. But North Bend has its own assets: the Southwest Oregon Regional Airport, the only one on the Oregon coast with scheduled airline service, The Mill Casino Hotel run by the Coquille Indian Tribe, and Pony Village Mall, the coast\u2019s largest enclosed shopping center. A lot of North Bend businesses serve travelers searching on their phones before they land or check in, which makes mobile speed and a clear booking path matter more here than almost anywhere on the coast.',
     localAngle: {
-      heading: 'Why it matters in North Bend',
+      heading: 'Why website design matters in North Bend',
       body: 'North Bend is a gateway town. The airport and the casino bring in people who do not live here and are deciding where to eat, stay, and shop from a phone, often before they have even landed. That is a different kind of visitor than a local who already knows you. They judge on the first screen, and a slow or confusing site loses them to whoever loads faster. For a North Bend business, mobile speed is not a nicety, it is the storefront.',
     },
     localScene: {
@@ -272,7 +272,7 @@ export const towns: TownEntry[] = [
     faq: [
       {
         q: 'Can you build a site that handles bookings for a North Bend business?',
-        a: 'Yes. Booking widgets, reservation forms, and calendar integrations are part of a site build. For travel and hospitality businesses near the airport and casino, I can wire the booking flow so a visitor can act in one or two taps.',
+        a: 'Yes. Booking widgets, reservation forms, and calendar integrations are part of a website build. For travel and hospitality businesses near the airport and casino, I can wire the booking flow so a visitor can act in one or two taps.',
       },
       {
         q: 'How far is North Bend from your shop?',
@@ -285,6 +285,14 @@ export const towns: TownEntry[] = [
       {
         q: 'My business is in both North Bend and Coos Bay searches. Is that a problem?',
         a: 'No, it is an advantage if the site is built right. The two cities share a trade area, so a well-structured site can show up for both. I set up the local signals and structure so you are not fighting yourself across the two markets.',
+      },
+      {
+        q: 'What does website creation actually involve on your end?',
+        a: 'Design, code, content, and launch, all by me. No handoff to a junior, no template underneath, and the website designer you talk to is the one writing it. Most North Bend builds are live in three to five business days from the day you sign.',
+      },
+      {
+        q: 'Do you do logo design for North Bend businesses, or only websites?',
+        a: 'Both. A mark, the type, and the color set come with a build when you need them, and I also take standalone logo design work for North Bend businesses that already have a site they are happy with. The logo design page covers what is included.',
       },
     ],
     neighbors: ['coos-bay', 'coquille'],
