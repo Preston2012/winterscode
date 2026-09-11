@@ -37,11 +37,12 @@ export const SITES: MeasuredSite[] = [
     key: 'taylor', label: 'ussurveysupply', name: 'US Survey Supply',
     href: 'https://ussurveysupply.com', portfolioSlug: 'us-survey-supply', builtDays: 5,
     published: true,
-    // Observatory measured against the live apex 2026-09-11, the day of the
-    // cutover. No lhFallback on purpose: PageSpeed has not sampled this domain
-    // yet, and a made-up quad on a public wall is worse than an honest blank.
-    // The background PSI refresh fills it, and until then the row shows the
-    // pending mark rather than zeros.
+    // Both measured against the live apex on 2026-09-11, the day of the
+    // cutover. Lighthouse is PSI mobile with the project key; Observatory is a
+    // direct scan. Neither is copied from the staging host or from an older
+    // record. The worker also measures this site live now, so these stand in
+    // only when the API is down.
+    lhFallback: [99, 100, 100, 100],
     secFallback: { grade: 'A+', score: 140 },
   },
   {

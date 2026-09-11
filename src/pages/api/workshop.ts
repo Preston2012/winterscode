@@ -41,6 +41,7 @@ interface WorkshopData {
     bbtd:        [number, number, number, number];
     seabreeze:   [number, number, number, number];
     golf:        [number, number, number, number];
+    taylor:      [number, number, number, number];
     measured: string; // "8m ago"
     source: 'live' | 'fallback';
   };
@@ -55,6 +56,7 @@ interface WorkshopData {
       bbtd:        { grade: string; score: number };
       seabreeze:   { grade: string; score: number };
       golf:        { grade: string; score: number };
+      taylor:      { grade: string; score: number };
     };
     source: 'live' | 'fallback';
   };
@@ -107,6 +109,10 @@ const FALLBACK: WorkshopData = {
     // client's account. PSI mobile 2026-09-05: perf 100, seo 100, best 100;
     // a11y 100 read by local Lighthouse after the contrast pass the same day.
     golf:        [100, 100, 100, 100],
+    // US Survey Supply (ussurveysupply.com), Astro on Cloudflare Pages.
+    // Measured against the live apex 2026-09-11, the day of the DNS cutover,
+    // PSI mobile with the project key. Not copied from the staging host.
+    taylor:      [99, 100, 100, 100],
     measured: '8m ago',
     source: 'fallback',
   },
@@ -123,6 +129,7 @@ const FALLBACK: WorkshopData = {
       baseline:    { grade: 'A+', score: 115 },
       bbtd:        { grade: 'A+', score: 130 },
       seabreeze:   { grade: 'A+', score: 115 },
+      taylor:      { grade: 'A+', score: 140 },
       golf:        { grade: 'A+', score: 140 }, // Observatory 2026-09-05, 12 of 12
     },
     source: 'fallback',
@@ -406,13 +413,16 @@ async function fetchPSI(
   // Measure the canonical www directly. The old PSI Lighthouse-500 on www is
   // resolved (verified May 2026, www PSI ~96). Measuring the bare apex paid the
   // 301 to www redirect penalty (~92 vs ~96 on www); www matches the sogn entry.
-  const [wc, sogn, baseline, bbtd, seabreeze, golf] = await Promise.all([
+  const [wc, sogn, baseline, bbtd, seabreeze, golf, taylor] = await Promise.all([
     auditSite('https://winterscode.com', FALLBACK.lighthouse.winterscode),
     auditSite('https://www.sogncontracting.com', FALLBACK.lighthouse.sogn),
     auditSite('https://www.baseline.marketing', FALLBACK.lighthouse.baseline),
     auditSite('https://www.bandonbythedunesrealtee.net', FALLBACK.lighthouse.bbtd),
     auditSite('https://seabreeze.llc', FALLBACK.lighthouse.seabreeze),
     auditSite('https://professorsgolf.com', FALLBACK.lighthouse.golf),
+    // Added 2026-09-11 at the cutover. The apex is canonical here: it serves the
+    // build directly and does not redirect, so there is no www penalty to dodge.
+    auditSite('https://ussurveysupply.com', FALLBACK.lighthouse.taylor),
   ]);
   // Source flag is 'live' if any site returned non-fallback data.
   // UI shows "live · partial" when not all 3 succeeded.
@@ -422,7 +432,8 @@ async function fetchPSI(
     JSON.stringify(baseline) !== JSON.stringify(FALLBACK.lighthouse.baseline) ||
     JSON.stringify(bbtd) !== JSON.stringify(FALLBACK.lighthouse.bbtd) ||
     JSON.stringify(seabreeze) !== JSON.stringify(FALLBACK.lighthouse.seabreeze) ||
-    JSON.stringify(golf) !== JSON.stringify(FALLBACK.lighthouse.golf);
+    JSON.stringify(golf) !== JSON.stringify(FALLBACK.lighthouse.golf) ||
+    JSON.stringify(taylor) !== JSON.stringify(FALLBACK.lighthouse.taylor);
 
   // Rolling-best display. Keep the last N live runs per site in KV and show the
   // element-wise best-of-N per category, so a single cold/throttled PSI run (or
@@ -444,8 +455,8 @@ async function fetchPSI(
     };
     return [pick(0), pick(1), pick(2), pick(3)];
   };
-  let hist: { winterscode: Quad[]; sogn: Quad[]; baseline: Quad[]; bbtd: Quad[]; seabreeze: Quad[]; golf: Quad[] } =
-    { winterscode: [], sogn: [], baseline: [], bbtd: [], seabreeze: [], golf: [] };
+  let hist: { winterscode: Quad[]; sogn: Quad[]; baseline: Quad[]; bbtd: Quad[]; seabreeze: Quad[]; golf: Quad[]; taylor: Quad[] } =
+    { winterscode: [], sogn: [], baseline: [], bbtd: [], seabreeze: [], golf: [], taylor: [] };
   if (kv) {
     try { const h = await kv.get<typeof hist>(HIST_KEY, 'json'); if (h) hist = h; } catch { /* non-fatal */ }
   }
@@ -459,6 +470,7 @@ async function fetchPSI(
     bbtd: roll(hist.bbtd, bbtd, FALLBACK.lighthouse.bbtd),
     seabreeze: roll(hist.seabreeze, seabreeze, FALLBACK.lighthouse.seabreeze),
     golf: roll(hist.golf, golf, FALLBACK.lighthouse.golf),
+    taylor: roll(hist.taylor ?? [], taylor, FALLBACK.lighthouse.taylor),
   };
   if (kv && isLive) {
     try { await kv.put(HIST_KEY, JSON.stringify(hist), { expirationTtl: HIST_TTL }); } catch { /* non-fatal */ }
@@ -471,6 +483,7 @@ async function fetchPSI(
     bbtd: aggregate(hist.bbtd, bbtd),
     seabreeze: aggregate(hist.seabreeze, seabreeze),
     golf: aggregate(hist.golf, golf),
+    taylor: aggregate(hist.taylor ?? [], taylor),
     measured: 'just now',
     source: isLive ? 'live' : 'fallback',
   };
@@ -520,6 +533,7 @@ async function fetchObservatory(kv?: KVNamespace): Promise<WorkshopData['securit
     bbtd:        'www.bandonbythedunesrealtee.net',
     seabreeze:   'seabreeze.llc',
     golf:        'professorsgolf.com',
+    taylor:      'ussurveysupply.com',
   };
   const analyze = async (
     host: string,
