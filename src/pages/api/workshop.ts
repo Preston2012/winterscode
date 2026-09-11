@@ -348,7 +348,7 @@ async function fetchPSI(
   // KV cache: PSI runs take 10-30s, well outside per-request budget.
   // Read cached value if present (12h TTL); if absent/stale, fall back
   // and let a background refresh (ctx.waitUntil) populate KV for next hit.
-  const CACHE_KEY = 'workshop:psi:v2';
+  const CACHE_KEY = 'workshop:psi:v3';
   const CACHE_TTL = 60 * 60 * 12;
 
   if (kv && !skipCache) {
@@ -744,13 +744,19 @@ async function refreshPSIBackground(
   kv: KVNamespace | undefined,
 ): Promise<void> {
   if (!key || !kv) return;
-  const CACHE_KEY = 'workshop:psi:v2';
+  // v3 (2026-09-11): the measured set went from six sites to seven when
+  // ussurveysupply joined at the DNS cutover. The v2 payload has no taylor key,
+  // so the /work card sat on "measuring..." forever: the client script already
+  // had the mapping, the cache simply had no row to give it. Changing the shape
+  // means changing the key. HIST_KEY stays at v2 on purpose so the other six
+  // keep their rolling history; the reader already tolerates a missing entry.
+  const CACHE_KEY = 'workshop:psi:v3';
   const CACHE_TTL = 60 * 60 * 12;
   // Throttle: every pageview schedules this refresher, and a live run is 4 PSI
   // calls (one per site). Without a gate that is 4 calls per visitor, which is
   // what drained the daily quota. Run a live refresh at most once every 30 min;
   // the 12h cache serves every request in between.
-  const GATE_KEY = 'workshop:psi:lastrun:v2';
+  const GATE_KEY = 'workshop:psi:lastrun:v3';
   try {
     const last = await kv.get(GATE_KEY);
     if (last && Date.now() - Number(last) < 30 * 60 * 1000) return;
