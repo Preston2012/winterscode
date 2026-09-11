@@ -148,6 +148,13 @@ export interface TownEntry {
   auditNote?: string;
   /** Town-specific FAQ. Real answers grounded in policy + practice. */
   faq: { q: string; a: string }[];
+  /**
+   * Alt text for the showcase hero photo. Describes what is actually in the
+   * frame, verified against the image, not guessed from the file name. Only
+   * used when the page is in showcase mode, where the photo is content rather
+   * than a background wash.
+   */
+  heroAlt?: string;
   /** Neighboring town slugs for the internal-link web. */
   neighbors: string[];
   /** Which service×town combo pages exist for this town (besides web-design). */
@@ -226,6 +233,8 @@ export const towns: TownEntry[] = [
         a: 'I am the website designer, the developer, and the person who picks up the phone. Nothing goes to a junior and nothing goes offshore. If you need logo design, or the type and color to go with it, that comes off the same desk in Bandon.',
       },
     ],
+    heroAlt:
+      'The Coos Bay waterfront boardwalk, flags along the walkway and boats at the docks.',
     neighbors: ['north-bend', 'coquille'],
     combos: ['ai-automation'],
   },
@@ -299,6 +308,8 @@ export const towns: TownEntry[] = [
         a: 'Both. A mark, the type, and the color set come with a build when you need them, and I also take standalone logo design work for North Bend businesses that already have a site they are happy with. The logo design page covers what is included.',
       },
     ],
+    heroAlt:
+      'The long bridge at North Bend, Oregon, mirrored in still water on a calm day.',
     neighbors: ['coos-bay', 'coquille'],
     combos: [],
   },
@@ -369,6 +380,8 @@ export const towns: TownEntry[] = [
         a: 'Yes. Lodging and vacation rentals are a good fit because the whole job is turning a search into a booking. I can wire a booking flow, keep the photos sharp, and make sure the site loads before a visitor on resort wifi gives up and books somewhere else.',
       },
     ],
+    heroAlt:
+      'Sea stacks standing off the beach at Bandon, Oregon, on a clear day.',
     neighbors: ['coquille', 'coos-bay'],
     combos: ['app-development'],
   },
@@ -434,6 +447,8 @@ export const towns: TownEntry[] = [
         a: 'Usually a straightforward site: what you do, where you work, how to reach you, fast on a phone and easy for Google to read. No bloat, no plugins to babysit. For a valley trade, that is plenty to rank and turn searches into calls.',
       },
     ],
+    heroAlt:
+      'Old pilings and a low wooden dock on the Coquille River, trees leaning over the water.',
     neighbors: ['myrtle-point', 'coos-bay'],
   },
   {
@@ -498,6 +513,8 @@ export const towns: TownEntry[] = [
         a: 'Yes. Booking widgets, trip calendars, and inquiry forms are part of a Pro build. For a dune or Umpqua business, I wire it so a visitor can check availability and reserve or message you in a tap or two, before they have left home.',
       },
     ],
+    heroAlt:
+      'Inside the green steel truss of the Umpqua River bridge at Reedsport, Oregon.',
     neighbors: ['coos-bay', 'north-bend'],
   },
   {
@@ -562,6 +579,8 @@ export const towns: TownEntry[] = [
         a: 'Keep it plain and useful: what you do, the area you cover, how fast you respond, how to reach you. Farm and ranch customers want reliable and reachable, not slick. I build it fast and simple so it loads anywhere, including out where the signal is weak.',
       },
     ],
+    heroAlt:
+      'A shingled dome roof and cupola under a clear sky in Myrtle Point, Oregon.',
     neighbors: ['coquille', 'coos-bay'],
   },
   {
@@ -626,6 +645,8 @@ export const towns: TownEntry[] = [
         a: 'Usually a clean, simple site: what you catch or sell, how to buy or book, how to reach you, fast on a phone. The dolly dock and the fishery are a real story worth telling plainly. I keep it quick-loading so it works even on the spotty signal out at the port.',
       },
     ],
+    heroAlt:
+      'Sunset over the Pacific from the bluff at Port Orford, Oregon.',
     neighbors: ['bandon', 'gold-beach'],
   },
   {
@@ -679,7 +700,7 @@ export const towns: TownEntry[] = [
       },
       {
         q: 'Can you build a site that takes bookings for a Rogue River business?',
-        a: 'Yes. Booking flows, trip calendars, and inquiry forms are core to a tourism build. I make it so a traveller planning a Rogue jet-boat or fishing trip can see availability and book or message you in a tap or two.',
+        a: 'Yes. Booking flows, trip calendars, and inquiry forms are core to a tourism build. I make it so a traveler planning a Rogue jet-boat or fishing trip can see availability and book or message you in a tap or two.',
       },
       {
         q: 'My season is only three months. Is a custom site worth it?',
@@ -690,6 +711,8 @@ export const towns: TownEntry[] = [
         a: 'It shapes it. Out-of-state visitors judge entirely on the site, with no local word of mouth to fall back on, and they are often on phones on the road. I build mobile-fast and make the trust signals and booking obvious, so a stranger planning a Rogue trip from three states away feels confident enough to book.',
       },
     ],
+    heroAlt:
+      'The concrete arch bridge carrying Highway 101 over the Rogue River at Gold Beach, Oregon.',
     neighbors: ['port-orford', 'bandon'],
     combos: ['app-development'],
   },

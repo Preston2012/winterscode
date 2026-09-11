@@ -42,19 +42,30 @@ interface Props {
    *  Pick the edges of the photo that have empty sky/water/sand so the text
    *  never covers the subject. */
   textPos?: 'top' | 'bottom' | 'split';
+  /** Alt text for a SHOWCASE photo. A wash at 8 percent opacity is decoration
+   *  and correctly carries an empty alt with the wrapper hidden from assistive
+   *  tech. A showcase photo renders at full opacity and is the page's main
+   *  image, so it is content and needs describing. Pass this only for showcase
+   *  heroes; the wash case is unchanged. */
+  bgAlt?: string;
 }
 
-const { eyebrow, h1, sub, sub2, sub3, showStamp = false, bgImage, bgOpacity = 0.3, bgPosition = 'center', lcp = false, showcase = false, textPos = 'bottom' } = Astro.props;
+const { eyebrow, h1, sub, sub2, sub3, showStamp = false, bgImage, bgOpacity = 0.3, bgPosition = 'center', lcp = false, showcase = false, textPos = 'bottom', bgAlt = '' } = Astro.props;
+
+// Described only when the photo is actually shown at full size AND a caption
+// was written for it. Anything else stays decorative, which is the honest
+// state for a background wash.
+const described = Boolean(showcase && bgImage && bgAlt);
 ---
 
 <section class:list={['page-hero', { showcase: showcase && bgImage, 'showcase-top': showcase && bgImage && textPos === 'top', 'showcase-split': showcase && bgImage && textPos === 'split' }]} aria-labelledby="page-hero-h1">
   {bgImage && (
-    <div class="ph-wash" aria-hidden="true" style={`--ph-wash-opacity:${bgOpacity}; --ph-wash-pos:${bgPosition}`}>
+    <div class="ph-wash" aria-hidden={described ? undefined : 'true'} style={`--ph-wash-opacity:${bgOpacity}; --ph-wash-pos:${bgPosition}`}>
       <img
         src={`${bgImage}-1600.webp`}
         srcset={`${bgImage}-768.webp 768w, ${bgImage}-1600.webp 1600w`}
         sizes="100vw"
-        alt=""
+        alt={described ? bgAlt : ''}
         decoding="async"
         fetchpriority={lcp ? 'high' : 'low'}
       />
