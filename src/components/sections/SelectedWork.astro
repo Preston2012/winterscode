@@ -170,6 +170,13 @@ const CARDS: WorkCard[] = [
   },
   {
     id: 'branding',
+    // OFF the homepage 2026-09-11 (S230), Preston's call, immediately after it
+    // went live. The teaser card is built for a site or an app: it renders a
+    // NEW BUILD badge and a stack row, and a logo board has neither. Putting
+    // brand work in that frame made it read as a botched build card. The
+    // branding work needs its own card shape before it goes back on the
+    // homepage. It keeps its section on /work.
+    published: false,
     title: 'Brand and graphic design',
     desc: 'Logos, wordmarks, and the color and type that go with them.',
     stack: ['Logos', 'Brand marks'],
