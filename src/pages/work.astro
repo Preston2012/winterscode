@@ -375,7 +375,7 @@ const workLd = {
     <ul class="wk-grid wk-grid-apps" role="list">
       {brand.map((p) => (
         <li class="wk-card-wrap" role="listitem" id={p.slug}>
-          <article class="wk-card" data-slug={p.slug} data-status={p.status}>
+          <article class="wk-card" data-slug={p.slug} data-status={p.status} data-fit="whole">
             <div class="wk-preview">
               {p.image && (
                 <a class="wk-preview-link" href={(p.links.find((l) => l.primary) ?? p.links[0])?.href} aria-label="Logo and brand design">
@@ -756,6 +756,21 @@ const workLd = {
      image), the 16/8 aspect-ratio and gradient bg fight the widget's
      own framing. Strip them so the widget sets its own height and
      visual treatment. */
+  /* The site cards crop to a 2:1 frame because a 1200x630 share card is that
+     shape. The graphic board is 3:2 and taller, so cover was cutting the top
+     and bottom rows of marks straight off. A board of logos has to be shown
+     whole or it is not proof of anything: follow the image's own ratio and
+     contain it. */
+  .wk-card[data-fit="whole"] .wk-preview {
+    aspect-ratio: 3 / 2;
+    background: var(--color-bg-card);
+    padding: 0;
+  }
+  .wk-card[data-fit="whole"] .wk-img {
+    object-fit: contain;
+    object-position: center;
+  }
+
   .wk-card[data-widget="true"] .wk-preview {
     aspect-ratio: auto;
     background: var(--color-bg-card);
