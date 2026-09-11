@@ -37,6 +37,12 @@ export const SITES: MeasuredSite[] = [
     key: 'taylor', label: 'ussurveysupply', name: 'US Survey Supply',
     href: 'https://ussurveysupply.com', portfolioSlug: 'us-survey-supply', builtDays: 5,
     published: true,
+    // Observatory measured against the live apex 2026-09-11, the day of the
+    // cutover. No lhFallback on purpose: PageSpeed has not sampled this domain
+    // yet, and a made-up quad on a public wall is worse than an honest blank.
+    // The background PSI refresh fills it, and until then the row shows the
+    // pending mark rather than zeros.
+    secFallback: { grade: 'A+', score: 140 },
   },
   {
     key: 'seabreeze', label: 'seabreeze', name: 'SeaBreeze Landscape Care and Home Repair',
@@ -75,7 +81,10 @@ export const WALL_SITES = SITES.filter((s) => s.published);
 export const RECENT_BUILDS = WALL_SITES.filter((s) => typeof s.builtDays === 'number');
 
 export function fmtQuad(q: Quad | undefined): string {
-  return q ? q.join('/') : '';
+  // An unsampled site is pending, not empty. A bare label with nothing after it
+  // reads as a rendering fault; the mark says the row is real and the number is
+  // not in yet.
+  return q ? q.join('/') : '\u00b7';
 }
 export function fmtGrade(g: { grade: string; score?: number | null } | undefined): string {
   if (!g || !g.grade) return '';

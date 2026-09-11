@@ -44,8 +44,8 @@ const CARDS: WorkCard[] = [
     stack: ['Astro', 'Cloudflare'],
     status: 'LIVE',
     build: 'rebuild',
-    // Flip to true at the ussurveysupply.com cutover (tracks/wc-taylor-cutover.md W9).
-    published: false,
+    // Published 2026-09-11 (S230) at the cutover. The apex serves this build.
+    published: true,
     external_url: 'https://ussurveysupply.com',
     image: {
       src: '/work/taylor-card.webp',
@@ -129,6 +129,10 @@ const CARDS: WorkCard[] = [
   },
   {
     id: 'stainslayer',
+    // Dropped from the homepage teaser 2026-09-11 (S230) when Taylor published,
+    // so the grid stays at six. This is the S168 ruling, not a new decision.
+    // StainSlayer keeps its full card on /work.
+    published: false,
     title: 'StainSlayer AI',
     desc: 'Vision AI stain analysis. App Store + Play Store.',
     stack: ['Flutter', 'Supabase'],

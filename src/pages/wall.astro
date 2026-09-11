@@ -67,10 +67,24 @@ function avg(arr: number[]): number {
 }
 // One row per measured site, in the order src/lib/sites.ts fixes. The API quad
 // wins; the dated fallback stands in when the API did not return the site.
+// A site the API has not returned yet, carrying no dated fallback, is
+// UNMEASURED. It is not a zero. Rendering 0/0/0/0 on a public wall is a claim
+// that a client's site scored nothing, which is the opposite of true for one
+// that just went live and has not been sampled. Show the pending mark instead
+// and let the background PSI refresh fill it.
+const PENDING = '\u00b7';
 const lhRows = WALL_SITES.map((site) => {
   const live = (lighthouse as Record<string, unknown>)[site.key];
-  const quad: number[] = Array.isArray(live) && live.length === 4 ? (live as number[]) : (site.lhFallback ?? [0, 0, 0, 0]);
-  return { key: site.key, name: site.label, quad, avg: avg(quad) };
+  const quad: number[] | null =
+    Array.isArray(live) && live.length === 4 ? (live as number[]) : (site.lhFallback ?? null);
+  const cells = quad ? quad.map((n) => String(n)) : [PENDING, PENDING, PENDING, PENDING];
+  return {
+    key: site.key,
+    name: site.label,
+    cells,
+    avg: quad ? String(avg(quad)) : PENDING,
+    pending: !quad,
+  };
 });
 
 // Per-site Observatory grade + score for the SECURITY module rows.
@@ -186,8 +200,8 @@ const updatedAt = initialData?.updated_at ?? new Date().toISOString();
             {lhRows.map((r) => (
               <tr data-lh-site={r.key}>
                 <th scope="row">{r.name}</th>
-                {r.quad.map((n, i) => <td class="wall-num" data-lh-i={i}>{n}</td>)}
-                <td class="wall-num wall-num-strong" data-lh-avg>{r.avg}</td>
+                {r.cells.map((n, i) => <td class="wall-num" data-lh-i={i} data-pending={r.pending ? '1' : undefined}>{n}</td>)}
+                <td class="wall-num wall-num-strong" data-lh-avg data-pending={r.pending ? '1' : undefined}>{r.avg}</td>
               </tr>
             ))}
           </tbody>
