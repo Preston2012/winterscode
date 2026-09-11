@@ -11,7 +11,14 @@
  * spec, magazine-style cover vs spread.
  */
 
-export type PortfolioCategory = 'site' | 'app';
+/**
+ * 'brand' added 2026-09-11 (S230). The graphic board was live on /logo-design
+ * only, so the 2 pages a prospect reads for proof, /work and the homepage,
+ * carried no branding work at all. A third value rather than folding it into
+ * 'site', because a logo has no Lighthouse score and the site cards are built
+ * around one.
+ */
+export type PortfolioCategory = 'site' | 'app' | 'brand';
 export type PortfolioStatus = 'live' | 'beta' | 'planned';
 
 export interface PortfolioImage {
@@ -466,6 +473,39 @@ export const portfolio: PortfolioItem[] = [
       { label: 'Engine on GitHub →', href: 'https://github.com/Preston2012/demi', primary: true },
     ],
   },
+  {
+    slug: 'branding',
+    numeral: 'xi.',
+    name: 'Brand and graphic design',
+    category: 'brand',
+    meta: 'logos, wordmarks, and full brand marks',
+    tags: ['LOGO DESIGN', 'WORDMARKS', 'BRAND MARKS'],
+    status: 'live',
+    build: 'new',
+    order: 1,
+    published: true,
+    image: {
+      src: '/work/graphic-work-800.webp',
+      alt: 'A grid of selected logo and brand work by Winters Code, including wordmarks, emblems, and full brand marks for a range of businesses.',
+      width: 800,
+      height: 600,
+    },
+    details: [
+      {
+        label: 'What it covers',
+        value:
+          'Logo design, wordmarks, and the type and color that go with them. A mark comes with a website build when one is needed, and it is also taken as standalone work for a business that already has a site.',
+      },
+      {
+        label: 'Where it runs',
+        value:
+          'Every mark on the board is in use. Several of these businesses also have their site on this page, so the mark and the build came off the same desk.',
+      },
+    ],
+    links: [
+      { label: 'Logo and brand design →', href: '/logo-design', primary: true },
+    ],
+  },
 ];
 
 export const sites = portfolio
@@ -474,4 +514,8 @@ export const sites = portfolio
 
 export const apps = portfolio
   .filter((p) => p.category === 'app' && p.published !== false)
+  .sort((a, b) => a.order - b.order);
+
+export const brand = portfolio
+  .filter((p) => p.category === 'brand' && p.published !== false)
   .sort((a, b) => a.order - b.order);

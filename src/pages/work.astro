@@ -9,6 +9,7 @@
  * Sections:
  *   01 SITES GRID   : every site in portfolio.ts, live Lighthouse per card
  *   02 APPS GRID    : 4 cards (Baseline, StainSlayer, ChopLight, Demi+MyKonos)
+ *   03 BRANDING     : the graphic board, added S230 so the proof pages carry it
  *   03 PROCESS      : 3-step (questionnaire + consult, SOW + 50%, live in days)
  *   04 CONTACT      : reusable section
  *
@@ -23,7 +24,7 @@ import MobileMenu from '../components/layout/MobileMenu.astro';
 import PageHero from '../components/sections/PageHero.astro';
 import Divider from '../components/ui/Divider.astro';
 import Contact from '../components/sections/Contact.astro';
-import { sites, apps } from '../lib/portfolio.ts';
+import { sites, apps, brand } from '../lib/portfolio.ts';
 import Explainer from '../components/ui/Explainer.astro';
 import Instrument from '../components/sections/Instrument.astro';
 import Breadcrumbs from '../components/ui/Breadcrumbs.astro';
@@ -41,9 +42,9 @@ const breadcrumbLd = breadcrumbSchema(crumbs);
 const workLd = {
   '@context': 'https://schema.org',
   '@type': 'ItemList',
-  name: 'Sites and apps built by Winters Code',
-  numberOfItems: sites.length + apps.length,
-  itemListElement: [...sites, ...apps].map((p, i) => ({
+  name: 'Sites, apps and brand work built by Winters Code',
+  numberOfItems: sites.length + apps.length + brand.length,
+  itemListElement: [...sites, ...apps, ...brand].map((p, i) => ({
     '@type': 'ListItem',
     position: i + 1,
     item: {
@@ -81,6 +82,7 @@ const workLd = {
     <ol>
       <li><span class="wk-ix-num">01</span><span class="wk-ix-name">Sites</span><span class="wk-ix-meta">Live Lighthouse</span></li>
       <li><span class="wk-ix-num">02</span><span class="wk-ix-name">Mobile apps</span><span class="wk-ix-meta">iOS &amp; Android</span></li>
+      <li><span class="wk-ix-num">03</span><span class="wk-ix-name">Branding</span><span class="wk-ix-meta">logos and brand marks</span></li>
       <li><span class="wk-ix-num">03</span><span class="wk-ix-name">How I work</span><span class="wk-ix-meta">Days, not weeks</span></li>
     </ol>
   </nav>
@@ -359,12 +361,78 @@ const workLd = {
 
   <Divider label="03" />
 
+  <!-- BRANDING. Added S230. No Lighthouse panel here on purpose: a logo has no
+       performance score, and a card built around one would be an empty frame. -->
+  <section class="wk-section" aria-labelledby="wk-brand-h">
+    <header class="wk-head">
+      <div class="wk-eyebrow">
+        <span class="line" aria-hidden="true"></span>
+        <h2 class="wk-h" id="wk-brand-h">03 · BRANDING</h2>
+        <span class="wk-meta">logos, wordmarks, brand marks</span>
+      </div>
+    </header>
+
+    <ul class="wk-grid wk-grid-apps" role="list">
+      {brand.map((p) => (
+        <li class="wk-card-wrap" role="listitem" id={p.slug}>
+          <article class="wk-card" data-slug={p.slug} data-status={p.status}>
+            <div class="wk-preview">
+              {p.image && (
+                <a class="wk-preview-link" href={(p.links.find((l) => l.primary) ?? p.links[0])?.href} aria-label="Logo and brand design">
+                  <img
+                    src={p.image.src}
+                    alt={p.image.alt}
+                    width={p.image.width}
+                    height={p.image.height}
+                    loading="lazy"
+                    decoding="async"
+                    class="wk-img"
+                  />
+                </a>
+              )}
+            </div>
+
+            <div class="wk-body">
+              <div class="wk-title-row">
+                <h3 class="wk-title"><a class="wk-title-link" href={(p.links.find((l) => l.primary) ?? p.links[0])?.href}>{p.name}</a></h3>
+              </div>
+              <p class="wk-meta-line">{p.meta}</p>
+
+              <div class="wk-tags" role="list">
+                {p.tags.map((t) => (
+                  <span class="wk-tag" role="listitem">{t}</span>
+                ))}
+              </div>
+
+              <div class="wk-detail-rows">
+                {p.details.map((d) => (
+                  <div class="wk-detail-row">
+                    <span class="wk-detail">{d.label}</span>
+                    <p class="wk-step-p">{d.value}</p>
+                  </div>
+                ))}
+              </div>
+
+              <div class="wk-links">
+                {p.links.map((l) => (
+                  <a class={l.primary ? 'wk-link wk-link-primary' : 'wk-link'} href={l.href}>{l.label}</a>
+                ))}
+              </div>
+            </div>
+          </article>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <Divider label="03" />
+
   <!-- PROCESS -->
   <section class="wk-section wk-process" aria-labelledby="wk-process-h">
     <header class="wk-head">
       <div class="wk-eyebrow">
         <span class="line" aria-hidden="true"></span>
-        <h2 class="wk-h" id="wk-process-h">03 · PROCESS</h2>
+        <h2 class="wk-h" id="wk-process-h">04 · PROCESS</h2>
         <span class="wk-meta">how a build actually runs</span>
       </div>
     </header>
@@ -408,7 +476,7 @@ const workLd = {
 
   <Divider label="04" />
 
-  <Contact sectionNumber="04" />
+  <Contact sectionNumber="05" />
 </BaseLayout>
 
 <script is:inline>
