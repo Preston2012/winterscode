@@ -80,15 +80,17 @@ export const portfolio: PortfolioItem[] = [
     numeral: 'i.',
     name: 'US Survey Supply',
     category: 'site',
-    meta: 'ussurveysupply.com · surveying equipment dealer · 39 pages',
+    meta: 'ussurveysupply.com · surveying equipment dealer · 42 pages',
     tags: ['ASTRO', 'TAILWIND', 'CLOUDFLARE'],
     status: 'live',
     build: 'rebuild',
     order: 1,
-    // Hidden until ussurveysupply.com serves the site (tracks/wc-taylor-cutover.md
-    // W9). Set published: true at cutover; the link already points at the real
-    // domain, never the staging host.
-    published: false,
+    // Published 2026-09-11 (S230). Gate condition met: ussurveysupply.com now
+    // serves this build. Verified by fetching the authoritative Cloudflare
+    // address directly, because the ops resolver still held the old host's A
+    // record and reported the previous site. Footer present, viewport present,
+    // canonical self-referential, server cloudflare.
+    published: true,
     image: {
       src: '/work/taylor-card.webp',
       srcSmall: '/work/taylor-card-720.webp',
@@ -105,11 +107,12 @@ export const portfolio: PortfolioItem[] = [
       {
         label: 'Scope',
         value:
-          'Full site for a Bandon surveying-equipment dealer shipping nationwide. New and used GNSS, total stations, data collectors and Carlson software, plus a rental fleet, brochure library, repair and training pages, and a quote request form. 39 pages against a 32-page contract.',
+          'Full site for a Bandon surveying-equipment dealer shipping nationwide. New and used GNSS, total stations, data collectors and Carlson software, plus a rental fleet, brochure library, repair and training pages, and a quote request form. 42 pages against a 32-page contract.',
       },
       {
         label: 'Result',
-        value: 'Live and mobile-first, Mozilla Observatory A+ with a perfect 140, Lighthouse measured on the wall above.',
+        value:
+          'Live and mobile-first. Mozilla Observatory A+ with a perfect 140, re-verified against the live domain on 2026-09-11. Lighthouse measured on the wall above.',
       },
     ],
     links: [

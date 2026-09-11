@@ -33,10 +33,10 @@ export interface MeasuredSite {
 
 export const SITES: MeasuredSite[] = [
   {
-    // Cutover pending (tracks/wc-taylor-cutover.md W9). Flip published there.
+    // Cutover done 2026-09-11 (S230): the apex serves this build.
     key: 'taylor', label: 'ussurveysupply', name: 'US Survey Supply',
     href: 'https://ussurveysupply.com', portfolioSlug: 'us-survey-supply', builtDays: 5,
-    published: false,
+    published: true,
   },
   {
     key: 'seabreeze', label: 'seabreeze', name: 'SeaBreeze Landscape Care and Home Repair',
