@@ -505,7 +505,7 @@ async function fetchObservatory(kv?: KVNamespace): Promise<WorkshopData['securit
   // KV cache: 6h TTL, 30min refresh. Grades FIVE hosts (per-site rows on the
   // wall + each /work card). The cached object holds all five grades; if the
   // API is down we serve the cached object as 'cached'. Grades change rarely.
-  const CACHE_KEY = 'workshop:obs:v2'; // v2: per-site shape
+  const CACHE_KEY = 'workshop:obs:v3'; // v3 (2026-09-11): seventh site, taylor
   const CACHE_TTL = 60 * 60 * 6;
   let lastCached: (WorkshopData['security'] & { _cachedAt?: number }) | undefined;
   let cacheAgeSec = Infinity;
