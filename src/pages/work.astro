@@ -379,15 +379,24 @@ const workLd = {
             <div class="wk-preview">
               {p.image && (
                 <a class="wk-preview-link" href={(p.links.find((l) => l.primary) ?? p.links[0])?.href} aria-label="Logo and brand design">
-                  <img
-                    src={p.image.src}
-                    alt={p.image.alt}
-                    width={p.image.width}
-                    height={p.image.height}
-                    loading="lazy"
-                    decoding="async"
-                    class="wk-img"
-                  />
+                  <picture>
+                    {p.image.srcSmall && (
+                      <source
+                        type="image/webp"
+                        srcset={`${p.image.srcXSmall ? p.image.srcXSmall + " 480w, " : ""}${p.image.srcSmall} 800w, ${p.image.src} 1200w`}
+                        sizes="(min-width: 1024px) 50vw, 100vw"
+                      />
+                    )}
+                    <img
+                      src={p.image.src}
+                      alt={p.image.alt}
+                      width={p.image.width}
+                      height={p.image.height}
+                      loading="lazy"
+                      decoding="async"
+                      class="wk-img"
+                    />
+                  </picture>
                 </a>
               )}
             </div>

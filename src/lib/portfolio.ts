@@ -485,10 +485,12 @@ export const portfolio: PortfolioItem[] = [
     order: 1,
     published: true,
     image: {
-      src: '/work/graphic-work-800.webp',
+      src: '/work/graphic-work-1200.webp',
+      srcSmall: '/work/graphic-work-800.webp',
+      srcXSmall: '/work/graphic-work-480.webp',
       alt: 'A grid of selected logo and brand work by Winters Code, including wordmarks, emblems, and full brand marks for a range of businesses.',
-      width: 800,
-      height: 600,
+      width: 1200,
+      height: 800,
     },
     details: [
       {

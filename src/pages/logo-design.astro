@@ -31,8 +31,10 @@ const service: ServiceEntry = {
   figure={{
     src: '/work/graphic-work-800.webp',
     srcLarge: '/work/graphic-work-1200.webp',
-    width: 1448,
-    height: 1086,
+    // 3:2, matching the 2026-09-11 board. The previous 1448x1086 was 4:3 and
+    // did not match any file on disk, so the browser reserved the wrong box.
+    width: 1200,
+    height: 800,
     alt: 'A grid of selected logo and brand work by Winters Code, including wordmarks, emblems, and full brand marks for a range of businesses.',
     caption: 'Selected graphic work.',
   }}

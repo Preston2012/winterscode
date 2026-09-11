@@ -8,9 +8,12 @@
  * Demiurge + MyKonos merges engine + product into one card per Preston.
  * Locked S7+ (2026-05-12).
  * S168 (2026-09-05), Preston's ruling: client sites first, newest client first,
- * then the apps. Order matches src/lib/sites.ts. Taylor sits first behind
- * published: false until ussurveysupply.com serves; when it publishes, drop
- * StainSlayer from this teaser so the grid stays at six (it stays on /work).
+ * then the apps. Order matches src/lib/sites.ts.
+ * S230 (2026-09-11), Preston's ruling: the grid goes to SEVEN. Taylor published
+ * at the DNS cutover and branding joins as the seventh, because the two pages a
+ * prospect reads for proof carried no brand work at all. The six-card cap and
+ * the instruction to drop StainSlayer when Taylor published are both retired by
+ * this ruling; StainSlayer stays off the teaser and keeps its card on /work.
  */
 
 interface WorkCard {
@@ -163,6 +166,23 @@ const CARDS: WorkCard[] = [
       alt: 'Project Demiurge: hexagonal node graph in teal with one node lit orange.',
       width: 1280,
       height: 640,
+    },
+  },
+  {
+    id: 'branding',
+    title: 'Brand and graphic design',
+    desc: 'Logos, wordmarks, and the color and type that go with them.',
+    stack: ['Logos', 'Brand marks'],
+    status: 'LIVE',
+    build: 'new',
+    external_url: '/logo-design',
+    image: {
+      src: '/work/graphic-work-1200.webp',
+      srcSmall: '/work/graphic-work-800.webp',
+      srcXSmall: '/work/graphic-work-480.webp',
+      alt: 'A grid of selected logo and brand work by Winters Code, including wordmarks, emblems, and full brand marks for a range of businesses.',
+      width: 1200,
+      height: 800,
     },
   },
 ];
