@@ -478,7 +478,7 @@ export const portfolio: PortfolioItem[] = [
     numeral: 'xi.',
     name: 'Brand and graphic design',
     category: 'brand',
-    meta: 'ten marks in use, from a one-line wordmark to a full seal',
+    meta: 'ten in circulation, from a one-line wordmark to a full seal',
     tags: ['LOGO DESIGN'],
     status: 'live',
     build: 'new',
@@ -496,12 +496,12 @@ export const portfolio: PortfolioItem[] = [
       {
         label: 'What it covers',
         value:
-          'A mark, the type that sits next to it, and the color it works in. It comes with a website build when one is needed, and it is taken on its own for a business that already has a site it likes.',
+          'The symbol, the lettering beside it, and the palette it has to survive in. It comes with a build when a company needs one, and it stands alone when the rest is already doing its job.',
       },
       {
         label: 'Where it runs',
         value:
-          'Every one of these is in use by a real business, not a concept sheet. Several of them also have their site on this page.',
+          'Every one of these is on a sign, a truck, a storefront or a website right now. Several of those owners appear higher up this page too.',
       },
     ],
     links: [
