@@ -9,7 +9,12 @@
  *
  * `key` is the field name in /api/workshop lighthouse and security.sites.
  * `published: false` hides a site everywhere until its own domain serves it.
- * `builtDays` is contract to live in business days, from Preston; a site
+ * `builtDays` is BUILD TIME in business days, from Preston: the days spent
+ * building once the client had handed over what the build needed. It is NOT
+ * contract to live. Corrected 2026-09-11 (S230) because the public caption said
+ * contract to live and that was false for every site on this list. Waiting on a
+ * client for photos, copy or access is not build time and was never counted; a
+ * site
  * without one stays off the recent-builds list rather than carry a guess.
  * Fallbacks are the last real reads, dated, used only when the API is down.
  */
@@ -35,7 +40,7 @@ export const SITES: MeasuredSite[] = [
   {
     // Cutover done 2026-09-11 (S230): the apex serves this build.
     key: 'taylor', label: 'ussurveysupply', name: 'US Survey Supply',
-    href: 'https://ussurveysupply.com', portfolioSlug: 'us-survey-supply', builtDays: 5,
+    href: 'https://ussurveysupply.com', portfolioSlug: 'us-survey-supply', builtDays: 8,
     published: true,
     // Both measured against the live apex on 2026-09-11, the day of the
     // cutover. Lighthouse is PSI mobile with the project key; Observatory is a
