@@ -479,7 +479,7 @@ export const portfolio: PortfolioItem[] = [
     name: 'Brand and graphic design',
     category: 'brand',
     meta: 'ten in circulation, from a one-line wordmark to a full seal',
-    tags: ['LOGO DESIGN'],
+    tags: [],
     status: 'live',
     build: 'new',
     order: 1,
@@ -505,7 +505,7 @@ export const portfolio: PortfolioItem[] = [
       },
     ],
     links: [
-      { label: 'Logo and brand design →', href: '/logo-design', primary: true },
+      { label: 'See how a mark gets made →', href: '/logo-design', primary: true },
     ],
   },
 ];
