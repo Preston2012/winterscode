@@ -24,6 +24,11 @@ interface WorkCard {
   status: 'LIVE' | 'BETA' | 'PROD';
   /** Rebuild of a site the client already had, or a first build. */
   build: 'rebuild' | 'new';
+  /** Which labelled group the card sits under. S245: the grid is no longer one
+      undivided run. Demiurge + MyKonos sitting in the same unlabelled row as
+      five client websites reads as a sixth website, which was Preston's own
+      read of his page. */
+  kind: 'site' | 'app';
   built_in_days?: number;
   external_url?: string;
   /** False keeps the card off the homepage until the site's own domain is live. */
@@ -42,6 +47,7 @@ interface WorkCard {
 const CARDS: WorkCard[] = [
   {
     id: 'us-survey-supply',
+    kind: 'site',
     title: 'US Survey Supply',
     desc: '42-page rebuild for a surveying-equipment dealer shipping nationwide from Bandon.',
     stack: ['Astro', 'Cloudflare'],
@@ -61,6 +67,7 @@ const CARDS: WorkCard[] = [
   },
   {
     id: 'seabreeze',
+    kind: 'site',
     title: 'SeaBreeze Landscape Care and Home Repair',
     desc: 'Site for a Bandon landscape-care and home-repair business.',
     stack: ['Astro', 'Cloudflare'],
@@ -79,6 +86,7 @@ const CARDS: WorkCard[] = [
   },
   {
     id: 'bandon-by-the-dunes',
+    kind: 'site',
     title: 'Bandon By The Dunes Realtee',
     desc: 'Real estate site with listings live from the RMLS feed.',
     stack: ['Astro', 'RMLS API'],
@@ -97,6 +105,7 @@ const CARDS: WorkCard[] = [
   },
   {
     id: 'professors-golf',
+    kind: 'site',
     title: 'Professors Golf',
     desc: 'One-page site for a Bandon golf service: fitting, instruction, tee times.',
     stack: ['Astro', 'Cloudflare'],
@@ -114,6 +123,7 @@ const CARDS: WorkCard[] = [
   },
   {
     id: 'sogn-contracting',
+    kind: 'site',
     title: 'Sogn Contracting',
     desc: 'Marketing site for a 30-year Bandon contractor.',
     stack: ['Next.js', 'Vercel'],
@@ -132,6 +142,7 @@ const CARDS: WorkCard[] = [
   },
   {
     id: 'stainslayer',
+    kind: 'app',
     // Dropped from the homepage teaser 2026-09-11 (S230) when Taylor published,
     // so the grid stays at six. This is the S168 ruling, not a new decision.
     // StainSlayer keeps its full card on /work.
@@ -153,6 +164,7 @@ const CARDS: WorkCard[] = [
   },
   {
     id: 'demiurge-mykonos',
+    kind: 'app',
     title: 'Demiurge + MyKonos',
     desc: 'Memory engine powering the MyKonos AI companion.',
     stack: ['Demiurge', 'Flutter'],
@@ -170,6 +182,7 @@ const CARDS: WorkCard[] = [
   },
   {
     id: 'branding',
+    kind: 'site',
     // OFF the homepage 2026-09-11 (S230), Preston's call, immediately after it
     // went live. The teaser card is built for a site or an app: it renders a
     // NEW BUILD badge and a stack row, and a logo board has neither. Putting
@@ -205,8 +218,13 @@ const CARDS: WorkCard[] = [
     <a href="/work" class="selected-link">see all →</a>
   </header>
 
+  <div class="sw-group-head">
+    <span class="line" aria-hidden="true"></span>
+    <h3 class="sw-group-label">Websites</h3>
+  </div>
+
   <ul class="selected-grid" role="list">
-    {CARDS.filter((card) => card.published !== false).map((card) => (
+    {CARDS.filter((card) => card.published !== false && card.kind === 'site').map((card) => (
       <li class="sw-card-wrap" role="listitem">
         <a
           href={card.external_url ?? `/work#${card.id}`}
@@ -255,6 +273,122 @@ const CARDS: WorkCard[] = [
       </li>
     ))}
   </ul>
+
+  <div class="sw-group-head">
+    <span class="line" aria-hidden="true"></span>
+    <h3 class="sw-group-label">Apps &amp; software</h3>
+  </div>
+
+  <ul class="selected-grid selected-grid-apps" role="list">
+    {CARDS.filter((card) => card.published !== false && card.kind === 'app').map((card) => (
+      <li class="sw-card-wrap" role="listitem">
+        <a
+          href={card.external_url ?? `/work#${card.id}`}
+          target={card.external_url ? '_blank' : undefined}
+          rel={card.external_url ? 'noopener' : undefined}
+          class="sw-card"
+          data-slug={card.id}
+        >
+          <div class="sw-preview" aria-hidden={card.image ? undefined : 'true'}>
+            {card.image ? (
+              <picture>
+                {card.image.srcSmall && (
+                  <source
+                    type="image/webp"
+                    srcset={`${card.image.srcXSmall ? card.image.srcXSmall + " 480w, " : ""}${card.image.srcSmall} 720w, ${card.image.src} 1280w`}
+                    sizes="(min-width: 1024px) 320px, (min-width: 740px) 50vw, calc(100vw - 8px)"
+                  />
+                )}
+                <img
+                  src={card.image.src}
+                  alt={card.image.alt}
+                  width={card.image.width ?? 1280}
+                  height={card.image.height ?? 640}
+                  loading="lazy"
+                  decoding="async"
+                  class="sw-img"
+                />
+              </picture>
+            ) : (
+              <span class="sw-mark">{card.title.charAt(0)}</span>
+            )}
+          </div>
+          <div class="sw-meta">
+            <div class="sw-title-row">
+              <span class="sw-title">{card.title}</span>
+              <span class={`sw-status sw-status-${card.status.toLowerCase()}`}>{card.status}</span>
+              <span class={`sw-status sw-build-${card.build}`}>{card.build === 'rebuild' ? 'REBUILD' : 'NEW BUILD'}</span>
+            </div>
+            <p class="sw-desc">{card.desc}</p>
+            <div class="sw-stack">
+              {card.stack.map((s) => <span class="sw-tag">{s}</span>)}
+              {card.built_in_days != null && <span class="sw-built">Built in {card.built_in_days}d</span>}
+            </div>
+          </div>
+        </a>
+      </li>
+    ))}
+  </ul>
+
+  <!--
+    BRAND BAND, S234. The S230 attempt put brand work in the teaser CARD,
+    which is built for a build: a 140px cover-cropped preview slot, a LIVE
+    badge, a NEW BUILD badge and a stack row. A logo board has none of those
+    and the cover crop sliced rows of marks off, so it read as a botched
+    build card and came off within minutes. This is not a card. No card
+    fill, no border box around the whole thing, no status badge, no build
+    badge, no stack tags, no built-in-days. A hairline band under the grid,
+    the board whole at its native 3:2, one line of what the work is.
+    "site" in the title, not "website", and that is deliberate. Preston's call:
+    the hero sub carries "Custom websites" at the top of the page, which is the
+    premium placement, so the word does not need forcing in again 2000px down.
+    "website" there also wrapped the title onto a second line with one orphaned
+    word on it at 393. Do not helpfully change it back.
+    No eyebrow label here on purpose: the board image carries SELECTED GRAPHIC
+    WORK across its own top edge, so a LOGO AND BRAND WORK eyebrow forty pixels
+    under it printed the same label twice.
+    Copy is NOT the /work entry. /work describes the offering to someone who
+    already scrolled a portfolio; the homepage has to make the offer to someone
+    who just landed. Same verified facts (ten in circulation, on signs, trucks
+    and storefronts, sold with a build or alone), different sentences, and no
+    line is shared between the two pages.
+  -->
+  <div class="sw-brand-block">
+  <div class="sw-brand-head">
+    <span class="line" aria-hidden="true"></span>
+    <h3 class="sw-brand-label">Logo &amp; graphic design</h3>
+  </div>
+
+  <a class="sw-brand" href="/logo-design">
+    <div class="sw-brand-board">
+      <picture>
+        <source
+          type="image/webp"
+          srcset="/work/graphic-work-480.webp 480w, /work/graphic-work-800.webp 800w, /work/graphic-work-1200.webp 1200w, /work/graphic-work-1536.webp 1536w"
+          sizes="(min-width: 1024px) 540px, calc(100vw - 8px)"
+        />
+        <img
+          src="/work/graphic-work-1200.webp"
+          alt="A grid of selected logo and brand work by Winters Code, including wordmarks, emblems, and full brand marks for a range of businesses."
+          width="1200"
+          height="800"
+          loading="lazy"
+          decoding="async"
+          class="sw-brand-img"
+        />
+      </picture>
+    </div>
+    <div class="sw-brand-meta">
+      <span class="sw-brand-title">I draw the mark, not just the site.</span>
+      <p class="sw-brand-desc">
+        These are out working on trucks, signs, storefronts and websites. Some
+        came with a build, some stand alone. All of them drawn here, not picked
+        off a shelf.
+      </p>
+      <span class="sw-brand-cta">See the logo work &rarr;</span>
+    </div>
+  </a>
+  </div>
 </section>
 
 <style>
@@ -336,6 +470,151 @@ const CARDS: WorkCard[] = [
       gap: 24px;
     }
     .sw-card-wrap:first-child { grid-column: auto; }
+  }
+
+
+  /* --- Brand band (S234) ---
+     Deliberately NOT .sw-card. The card is a fixed-height cover-cropped
+     preview plus badges plus a stack row; every one of those is wrong for
+     a logo board. Band rules: hairline above, no card fill, board renders
+     whole (height:auto, no object-fit), meta reads as a label not a spec. */
+  /* The label sits ABOVE the board, not under it, and that is the difference
+     that makes it work. Under the board it repeated SELECTED GRAPHIC WORK,
+     which the artwork already prints across its own top edge. Above it, with
+     the hairline, it does two jobs the board cannot: it breaks the band off
+     from the Demiurge card so the two do not read as one run of cards, and it
+     puts "graphic design" on the homepage, which carried the phrase zero times.
+     Preston's call, and the keyword check backed it. */
+  /* Three labels, one system: Websites, Apps and software, Logo and graphic
+     design. Same mono copper register as the section eyebrow so they read as
+     dividers inside section 02, not as three new sections. */
+  .sw-group-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0 0 14px;
+  }
+  .sw-group-head .line {
+    width: 28px;
+    height: 1px;
+    background: var(--color-copper);
+    flex: none;
+  }
+  .sw-group-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    color: var(--color-copper);
+    text-transform: uppercase;
+    margin: 0;
+  }
+  .selected-grid + .sw-group-head {
+    margin-top: 28px;
+    padding-top: 24px;
+    border-top: 1px solid var(--copper-hairline);
+  }
+  /* One app card in a 3-up grid leaves two dead columns on desktop. */
+  @media (min-width: 1024px) {
+    .sw-group-label { font-size: 13px; }
+    .sw-group-head .line { width: 40px; }
+    .selected-grid + .sw-group-head { margin-top: 40px; padding-top: 32px; }
+    .selected-grid-apps { grid-template-columns: 1fr 1fr; max-width: 640px; }
+  }
+  .sw-brand-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 28px;
+    padding-top: 24px;
+    border-top: 1px solid var(--copper-hairline);
+  }
+  .sw-brand-head .line {
+    width: 28px;
+    height: 1px;
+    background: var(--color-copper);
+    flex: none;
+  }
+  .sw-brand-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    color: var(--color-copper);
+    text-transform: uppercase;
+    margin: 0;
+  }
+  .sw-brand {
+    display: block;
+    margin-top: 16px;
+    text-decoration: none;
+    color: inherit;
+  }
+  .sw-brand-board {
+    border-radius: var(--radius-card);
+    overflow: hidden;
+    border: 1px solid var(--copper-hairline);
+    background: var(--color-bg-card);
+    line-height: 0;
+    transition: border-color 200ms;
+  }
+  .sw-brand-img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .sw-brand-meta {
+    margin-top: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .sw-brand-title {
+    font-family: var(--font-serif);
+    font-size: 19px;
+    font-weight: 600;
+    color: var(--color-ash-100);
+    letter-spacing: -0.01em;
+  }
+  .sw-brand-desc {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--color-ash-300);
+    max-width: 62ch;
+  }
+  .sw-brand-cta {
+    font-family: var(--font-sans);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-wc-green);
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+  .sw-brand:hover .sw-brand-board,
+  .sw-brand:focus-visible .sw-brand-board {
+    border-color: var(--color-wc-green);
+  }
+  .sw-brand:focus-visible {
+    outline: 2px solid var(--color-wc-green);
+    outline-offset: 4px;
+    border-radius: 4px;
+  }
+  @media (min-width: 1024px) {
+    .sw-brand-head { margin-top: 40px; padding-top: 32px; }
+    .sw-brand-head .line { width: 40px; }
+    .sw-brand-label { font-size: 13px; }
+    .sw-brand {
+      margin-top: 20px;
+      display: grid;
+      grid-template-columns: 1.35fr 1fr;
+      gap: 32px;
+      align-items: center;
+    }
+    .sw-brand-meta { margin-top: 0; }
+    .sw-brand-title { font-size: 22px; }
+    .sw-brand-desc { font-size: 14px; }
   }
 
   /* ─── Card ─── */

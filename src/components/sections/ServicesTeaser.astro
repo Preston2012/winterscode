@@ -7,24 +7,38 @@
  * but lives on /services, not the teaser.
  */
 
+/**
+ * S245. Two changes, both Preston's call.
+ *
+ * SITES became WEBSITES. This panel is the page's own price menu and it is the
+ * most valuable place on the homepage to spend the word people actually search.
+ *
+ * The third column was ADD-ONS / "Workflow audits, Integration builds, Help on
+ * demand", which sells none of what the add-on list on /services actually
+ * contains. Every bullet below is lifted from the real menu (services.astro,
+ * sv-addon-name rows): Bigger sites, SEO expansion, Booking payments or a
+ * store, Listing feeds, Integrations, AI workflow design. Nothing here is
+ * invented, and four bullets a column rather than three because a prospect
+ * scanning this panel is deciding whether to keep reading.
+ */
 const COLUMNS = [
   {
-    title: 'SITES',
+    title: 'WEBSITES',
     href: '/services#sites',
     timeline: '3-7 days starting',
-    bullets: ['custom code', 'mobile + SEO baked', 'yours to keep'],
+    bullets: ['custom code', 'mobile + SEO baked', 'branding included', 'yours to keep'],
   },
   {
     title: 'APPS',
     href: '/services#apps',
     timeline: '2-4 weeks MVP',
-    bullets: ['cross-platform', 'iOS + Android', 'real backends'],
+    bullets: ['cross-platform', 'iOS + Android', 'real backends', 'custom internal systems'],
   },
   {
-    title: 'ADD-ONS',
+    title: 'BIGGER JOBS',
     href: '/services#addons',
     timeline: 'Custom scope',
-    bullets: ['Workflow audits', 'Integration builds', 'Help on demand'],
+    bullets: ['Booking, payments, or a store', 'SEO expansion', 'Integrations', 'AI workflow design'],
   },
 ];
 ---

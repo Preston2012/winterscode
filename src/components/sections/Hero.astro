@@ -31,25 +31,25 @@ const PHRASES = [
   // is Fisher-Yates shuffled on page load so no two visitors see the
   // same cycle order. kills the loop pattern, makes each visit feel
   // freshly curated. Source order preserved for sane future edits.
-  'sites for restaurants',
-  'sites for contractors',
-  'apps for fishing charters',
-  'sites for vacation rentals',
-  'tools for property managers',
-  'sites for lodging',
+  'websites for restaurants',
+  'websites for contractors',
+  'mobile apps for fishing charters',
+  'websites for vacation rentals',
+  'software for property managers',
+  'websites for lodging',
   'tools for marinas',
-  'apps for tour guides',
-  'sites for breweries',
-  'sites for real estate agents',
-  'sites for salons',
+  'mobile apps for tour guides',
+  'websites for breweries',
+  'websites for real estate agents',
+  'websites for salons',
   'tools for landscapers',
-  'apps for food trucks',
-  'sites for retail shops',
-  'sites for photographers',
-  'tools for bookkeepers',
-  'apps for auto shops',
-  'sites for farms',
-  'sites for dispensaries',
+  'mobile apps for food trucks',
+  'websites for retail shops',
+  'websites for photographers',
+  'software for bookkeepers',
+  'web apps for auto shops',
+  'websites for farms',
+  'websites for dispensaries',
   'tools for cranberry growers',
 ];
 
@@ -97,7 +97,7 @@ const WORKSHOP_PREVIEW = [
     </h1>
 
     <p class="hero-sub">
-      Custom sites, apps, and tools for the Oregon coast.<br />
+      Custom websites, apps, and tools for the <span class="keep">Oregon coast.</span><br />
       <em>Help is just a text away.</em>
     </p>
 
@@ -118,22 +118,22 @@ const WORKSHOP_PREVIEW = [
     </div>
 
     <div class="hero-trust">
-      <span class="trust-item" tabindex="0" data-tip>
+      <span class="trust-item" tabindex="0" data-tip data-kind="price">
         <span class="dot" aria-hidden="true"></span>
         From $1,750, everything in
         <span class="tip" role="tooltip">{TRUST_TIPS.price}</span>
       </span>
-      <span class="trust-item" tabindex="0" data-tip>
+      <span class="trust-item" tabindex="0" data-tip data-kind="speed">
         <span class="dot" aria-hidden="true"></span>
         Starts at 3 business days
         <span class="tip" role="tooltip">{TRUST_TIPS.speed}</span>
       </span>
-      <span class="trust-item" tabindex="0" data-tip>
+      <span class="trust-item" tabindex="0" data-tip data-kind="lighthouse">
         <span class="dot" aria-hidden="true"></span>
         ~95 Lighthouse avg
         <span class="tip" role="tooltip">{TRUST_TIPS.lighthouse}</span>
       </span>
-      <span class="trust-item" tabindex="0" data-tip>
+      <span class="trust-item" tabindex="0" data-tip data-kind="security">
         <span class="dot" aria-hidden="true"></span>
         A+ security grade
         <span class="tip" role="tooltip">{TRUST_TIPS.security}</span>
@@ -285,30 +285,28 @@ const WORKSHOP_PREVIEW = [
       .then(function (d) {
         if (!d) return;
         // Trust tooltips
-        var items = document.querySelectorAll('.trust-item');
-        if (items.length >= 3) {
-          var tip0 = items[0].querySelector('.tip');
-          var tip1 = items[1].querySelector('.tip');
-          var tip2 = items[2].querySelector('.tip');
-          // Tooltips already render plain-English explainers from the
-          // Astro template. Live data appends a small "current value"
-          // line so the tip stays informative AND grounded in real
-          // measurements. Plain text first, mono data after a divider.
-          if (tip0 && d.speed && d.speed.last_three) {
-            tip0.insertAdjacentHTML('beforeend',
-              '<span class="tip-live">last 3 builds: ' +
-              d.speed.last_three + '</span>');
-          }
-          if (tip1 && d.lighthouse && Array.isArray(d.lighthouse.winterscode)) {
-            tip1.insertAdjacentHTML('beforeend',
-              '<span class="tip-live">winterscode.com today: ' +
-              d.lighthouse.winterscode.join('/') + '</span>');
-          }
-          if (tip2 && d.security && d.security.grade) {
-            tip2.insertAdjacentHTML('beforeend',
-              '<span class="tip-live">current grade: ' +
-              d.security.grade + '</span>');
-          }
+        // Looked up by WHAT THE ITEM IS, never by position. Until S245 this
+        // read items[0..2] while the markup order is price, speed, lighthouse,
+        // security, so every live line landed one tooltip to the left: the
+        // price tip ended with build days, the speed tip ended with Lighthouse
+        // scores. Both were live and both were visible to anyone who tapped.
+        function tipFor(kind) {
+          var el = document.querySelector('.trust-item[data-kind="' + kind + '"] .tip');
+          return el;
+        }
+        var tSpeed = tipFor('speed'), tLh = tipFor('lighthouse'), tSec = tipFor('security');
+        if (tSpeed && d.speed && d.speed.last_three) {
+          tSpeed.insertAdjacentHTML('beforeend',
+            '<span class="tip-live">last 3 builds: ' + d.speed.last_three + '</span>');
+        }
+        if (tLh && d.lighthouse && Array.isArray(d.lighthouse.winterscode)) {
+          tLh.insertAdjacentHTML('beforeend',
+            '<span class="tip-live">winterscode.com today: ' +
+            d.lighthouse.winterscode.join('/') + '</span>');
+        }
+        if (tSec && d.security && d.security.grade) {
+          tSec.insertAdjacentHTML('beforeend',
+            '<span class="tip-live">current grade: ' + d.security.grade + '</span>');
         }
         // Workshop preview card (desktop)
         var rows = document.querySelectorAll('.wp-row');
@@ -438,6 +436,10 @@ const WORKSHOP_PREVIEW = [
     color: var(--color-ash-300);
     line-height: 1.55;
   }
+  /* Preston's call: hold "Oregon coast." together so it drops to its own line
+     directly above "Help is just a text away." The two then read as one
+     sentence to anyone scanning, which is the whole point. */
+  .hero-sub .keep { white-space: nowrap; }
   .hero-sub em {
     color: var(--color-ash-100);
     font-style: italic;
@@ -550,6 +552,7 @@ const WORKSHOP_PREVIEW = [
 
   /* ─── Trust signals ─── */
   .hero-trust {
+    position: relative;
     display: flex;
     flex-wrap: wrap;
     gap: 8px 14px;
@@ -569,7 +572,9 @@ const WORKSHOP_PREVIEW = [
     color: var(--color-ash-400);
     font-weight: 500;
     cursor: help;
-    position: relative;
+    /* static on purpose: the tip resolves against .hero-trust, not against the
+       item, so it can never be pushed off an edge by where its item sits. */
+    position: static;
     border-bottom: 1px dashed rgba(255, 255, 255, 0.08);
     padding-bottom: 1px;
   }
@@ -591,8 +596,8 @@ const WORKSHOP_PREVIEW = [
   .trust-item .tip {
     position: absolute;
     bottom: calc(100% + 8px);
-    left: 50%;
-    transform: translateX(-50%);
+    left: 0;
+    right: 0;
     background: var(--color-bg-card);
     border: 1px solid var(--copper-hairline);
     color: var(--color-ash-100);
@@ -600,8 +605,7 @@ const WORKSHOP_PREVIEW = [
     border-radius: 6px;
     font-size: 12px;
     line-height: 1.45;
-    width: max-content;
-    max-width: min(300px, 80vw);
+    width: auto;
     white-space: normal;
     text-align: left;
     font-weight: 400;
@@ -614,8 +618,14 @@ const WORKSHOP_PREVIEW = [
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
     font-family: var(--font-sans);
   }
-  /* Live-data line appended after plain text by the workshop fetch. */
-  .trust-item .tip .tip-live {
+  /* Live-data line appended after plain text by the workshop fetch.
+     :global on the last step is load bearing. Astro scopes every selector with
+     a data-astro-cid attribute, and this span is created at runtime by
+     insertAdjacentHTML so it never gets one. Scoped, the rule matched nothing,
+     the span fell back to inline, and every tooltip ended with its live line
+     jammed onto the last sentence with no space: "the price you pay.last 3
+     builds: 3d". Preston caught it on the preview. */
+  .trust-item .tip :global(.tip-live) {
     display: block;
     margin-top: 6px;
     padding-top: 6px;
@@ -625,24 +635,19 @@ const WORKSHOP_PREVIEW = [
     color: var(--color-copper-bright);
     letter-spacing: 0.02em;
   }
-  /* Small viewports: clamp to viewport edge */
-  @media (max-width: 480px) {
-    .trust-item .tip {
-      left: 0;
-      transform: none;
-      max-width: calc(100vw - 32px);
-    }
-    .trust-item .tip::after {
-      left: 16px;
-      transform: none;
-    }
-  }
+  /* The tip spans the trust row at EVERY width. It used to be centred on its
+     own item with max-width min(300px, 80vw), which put the tip's position at
+     the mercy of where its item happened to sit: the first item pushed its tip
+     off the left edge, the last pushed off the right. Measured on production
+     before any change, that overflowed at 320, 360, 393, 430, 600, 739, 768,
+     1024 and 1280. Every width it was ever tested at. Pinning both edges to
+     .hero-trust makes the geometry independent of the item, so there is no
+     width at which it can fail. */
   .trust-item .tip::after {
     content: '';
     position: absolute;
     top: 100%;
-    left: 50%;
-    transform: translateX(-50%);
+    left: 16px;
     border: 5px solid transparent;
     border-top-color: var(--copper-hairline);
   }
