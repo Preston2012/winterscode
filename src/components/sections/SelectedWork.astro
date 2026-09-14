@@ -442,6 +442,12 @@ const CARDS: WorkCard[] = [
     font-style: italic;
   }
   .selected-link {
+    /* 44px touch minimum (G-027), S245 sweep. Negative margin holds the
+       original layout, so the measured box and the tappable box match. */
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    margin: -12px 0;
     font-family: var(--font-sans);
     font-size: 12px;
     color: var(--color-ash-400);

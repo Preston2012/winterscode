@@ -475,6 +475,12 @@ const WORKSHOP_PREVIEW = [
     .hero-morph-line { font-size: 15px; margin-top: 18px; }
   }
   .morph {
+    /* 44px touch minimum (G-027). Measured 22px tall on production at S245 while
+       carrying role="button" and tabindex, so it advertised itself as tappable
+       at half the size a finger needs. Padding grows the hit area, the matching
+       negative margin keeps the sentence on its original line. */
+    padding: 12px 0;
+    margin: -12px 0;
     display: inline-block;
     color: var(--color-wc-green);
     font-family: var(--font-serif);
@@ -482,10 +488,21 @@ const WORKSHOP_PREVIEW = [
     font-weight: 500;
     cursor: pointer;
     user-select: none;
-    border-bottom: 1px dashed rgba(77, 216, 168, 0.3);
-    padding-bottom: 1px;
+    position: relative;
   }
-  .morph:hover {
+  /* The dashed underline is a pseudo-element, not a border. A border sits on the
+     padding edge, and the padding is what buys the 44px hit area, so as a border
+     it dropped 11px below the text. This keeps it tight under the words while
+     the box stays 44 tall. */
+  .morph::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 10px;
+    border-bottom: 1px dashed rgba(77, 216, 168, 0.3);
+  }
+  .morph:hover::after {
     border-bottom-color: var(--color-wc-green);
   }
   .morph:focus-visible {

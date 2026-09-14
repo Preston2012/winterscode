@@ -250,6 +250,12 @@ const menuItems = [
   }
   .menu-contact-btn {
     flex: 1;
+    /* 44px touch minimum (G-027). Measured 116x39 on production at S245. These
+       two are Call and Email, so a missed tap here is a missed job. */
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     padding: 10px;
     text-align: center;
     background: var(--color-bg-raised);

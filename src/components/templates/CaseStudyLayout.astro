@@ -291,6 +291,12 @@ const nx = () => String(++n).padStart(2, '0');
 
   .cs-links { max-width: 720px; margin: 18px auto 0; padding: 0 4px; display: flex; flex-wrap: wrap; gap: 10px; }
   .cs-link {
+    /* 44px touch minimum (G-027), S245 site-wide sweep. Negative margin holds
+       the original layout so the measured box is the tappable box. */
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    margin: -12px 0;
     font-family: var(--font-sans);
     font-size: 14px;
     color: var(--color-wc-green);

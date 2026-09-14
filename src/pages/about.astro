@@ -519,6 +519,12 @@ import { breadcrumbSchema } from '../lib/schema';
     transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
   }
   .ab-cta-primary {
+    /* 44px touch minimum (G-027), S245 site-wide sweep. Negative margin holds
+       the original layout so the measured box is the tappable box. */
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    margin: -12px 0;
     background-color: var(--color-wc-green);
     color: var(--color-bg-deep);
     font-weight: 600;

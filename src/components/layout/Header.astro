@@ -140,6 +140,8 @@ const navItems = [
   .topmark-brand {
     display: flex;
     align-items: center;
+    /* 44px touch minimum (G-027). Measured 172x38 on production at S245. */
+    min-height: 44px;
     gap: 11px;
     cursor: pointer;
     transition: opacity 200ms;

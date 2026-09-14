@@ -1036,6 +1036,7 @@ const workLd = {
     outline: none;
   }
   .wk-visit {
+    min-height: 44px;
     display: inline-flex;
     align-items: center;
     align-self: flex-start;
@@ -1074,7 +1075,8 @@ const workLd = {
     cursor: pointer;
     margin-top: 8px;
     transition: border-color 200ms, color 200ms;
-    min-height: 38px;
+    /* 44px touch minimum (G-027). Was 38px, measured on production at S245. */
+    min-height: 44px;
   }
   .wk-expand-btn:hover {
     border-color: var(--color-wc-green);
@@ -1163,6 +1165,12 @@ const workLd = {
     margin-top: 12px;
   }
   .wk-link {
+    /* 44px touch minimum (G-027), S245 site-wide sweep. Negative margin holds
+       the original layout so the measured box is the tappable box. */
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    margin: -12px 0;
     font-family: var(--font-mono);
     font-size: 11px;
     letter-spacing: 0.08em;

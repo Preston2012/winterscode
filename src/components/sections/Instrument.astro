@@ -772,6 +772,12 @@
     border-top: 1px solid var(--copper-hairline);
   }
   .in-reset-btn {
+    /* 44px touch minimum (G-027), S245 site-wide sweep. Negative margin holds
+       the original layout so the measured box is the tappable box. */
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    margin: -12px 0;
     appearance: none;
     background: transparent;
     border: 1px solid var(--copper-hairline);
