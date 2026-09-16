@@ -27,7 +27,14 @@ import { breadcrumbSchema } from '../lib/schema';
   <Fragment slot="head">
     <!-- Preload the about hero wash (page LCP). Mirrors the homepage stamp
          preload pattern: the fetch starts during HTML parse, not after CSS. -->
-    <link rel="preload" as="image" imagesrcset="/photo/local/grass-coast-wash-768.webp 768w, /photo/local/grass-coast-wash-1600.webp 1600w" imagesizes="100vw" fetchpriority="high" />
+    <!-- Preload the LCP element, which is the portrait, not the wash. The wash
+         renders at 0.4 opacity behind the content and was holding the only
+         high-priority image slot on this page while the portrait sat on
+         loading="lazy". Verified with web/tests/lcp-element.mjs at 412w
+         dpr1.75: the LCP candidate is IMG.ab-photo-img. If this page's layout
+         changes, re-measure before changing this line. -->
+    <link rel="preload" as="image" imagesrcset="/photo/preston-560.webp 560w, /photo/preston-840.webp 840w, /photo/preston-1120.webp 1120w" imagesizes="(min-width: 1024px) 380px, (min-width: 740px) 300px, 84vw" fetchpriority="high" />
+    <link rel="preload" as="image" imagesrcset="/photo/local/grass-coast-wash-768.webp 768w, /photo/local/grass-coast-wash-1600.webp 1600w" imagesizes="100vw" />
   </Fragment>
 
   <PageHero
@@ -53,14 +60,15 @@ import { breadcrumbSchema } from '../lib/schema';
             /photo/preston-840.webp 840w,
             /photo/preston-1120.webp 1120w
           "
-          sizes="(min-width: 1024px) 380px, (min-width: 740px) 300px, 100vw"
+          sizes="(min-width: 1024px) 380px, (min-width: 740px) 300px, 84vw"
         />
         <img
           src="/photo/preston-840.webp"
           alt="Preston Winters with his daughter at the Coquille River Lighthouse, Bandon, Oregon."
           width="840"
           height="796"
-          loading="lazy"
+          loading="eager"
+          fetchpriority="high"
           decoding="async"
           class="ab-photo-img"
         />

@@ -72,7 +72,10 @@
             type="button"
             id="in-reset"
             class="in-reset-btn"
-            aria-label="Clear chat history. Memory survives."
+            <!-- WCAG 2.5.3 Label in Name: the accessible name must contain the
+                 visible text, which is "reset chat". It read "Clear chat history"
+                 so voice control users saying the words on the button missed it. -->
+            aria-label="Reset chat. Memory survives."
           >
             <span class="in-reset-icon" aria-hidden="true">↺</span>
             <span>reset chat</span>
