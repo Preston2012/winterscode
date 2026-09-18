@@ -1,5 +1,6 @@
 // @ts-check
 import { execSync } from 'node:child_process';
+import tailwindcss from '@tailwindcss/vite';
 import { readFileSync, existsSync } from 'node:fs';
 import { dirname, resolve, relative } from 'node:path';
 import { defineConfig } from 'astro/config';
@@ -181,11 +182,11 @@ export default defineConfig({
   ],
 
   // Tailwind v4 wired via PostCSS (Astro 6 / rolldown-vite compatibility).
-  // See GitHub astro/issues/16542 for why we don't use @tailwindcss/vite here.
+  // S283: back on @tailwindcss/vite. astro/issues/16542 was an Astro 6 problem,
+  // and Astro 7 bundles Vite 8 whose CSS resolver reads @import "tailwindcss" as a
+  // file path, so the PostCSS route is the one that breaks now.
   vite: {
-    css: {
-      transformer: 'postcss',
-    },
+    plugins: [tailwindcss({ optimize: false })],
     // Raise the inline-asset threshold from the Vite default of 4096
     // bytes to 65536 bytes (64KB). Lighthouse mobile run flagged ~1,580ms of
     // render-blocking CSS from four per-component chunks at 2-9KB each
@@ -195,6 +196,19 @@ export default defineConfig({
     // mobile networks. Net win on LCP (2.9s -> ~1.5s target).
     build: {
       assetsInlineLimit: 4096,  // back to default , inlineStylesheets:'always' handles CSS
+      // S283. Lightning CSS with no declared target emits Media Queries Level 4
+      // range syntax and drops the -webkit-backdrop-filter prefix. Measured
+      // against the live Astro 6 build across 44 pages: 3392 min-width queries
+      // became range syntax, which Safari reads from 16.4, and 252 backdrop
+      // prefixes became 209. An iPhone on iOS 15 would have received no
+      // responsive CSS at all. browserslist in package.json is not read by the
+      // Tailwind plugin, so the floor is declared here as well.
+      cssTarget: ['safari15', 'ios15', 'chrome100', 'firefox100', 'edge100'],
+    },
+    css: {
+      lightningcss: {
+        targets: { safari: (15 << 16), ios_saf: (15 << 16), chrome: (100 << 16), firefox: (100 << 16) },
+      },
     },
   },
 
