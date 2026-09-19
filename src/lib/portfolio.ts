@@ -501,7 +501,7 @@ export const portfolio: PortfolioItem[] = [
       {
         label: 'Where it runs',
         value:
-          'Every one of these is on a sign, a truck, a storefront or a website right now. Several of those owners appear higher up this page too.',
+          'Every one of these is on a sign, a truck, a storefront or a website right now. Several of those owners appear above, with the sites they came from.',
       },
     ],
     links: [
