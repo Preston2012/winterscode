@@ -730,7 +730,9 @@ const workLd = {
     flex-direction: column;
     transition: border-color 200ms;
   }
-  .wk-card:hover { border-color: var(--color-wc-green); }
+  @media (hover: hover) {
+
+    .wk-card:hover { border-color: var(--color-wc-green); }}
 
   .wk-preview {
     background:
@@ -1014,11 +1016,17 @@ const workLd = {
     text-decoration: none;
     transition: color 200ms;
   }
-  .wk-title-link:hover,
   .wk-title-link:focus-visible {
     color: var(--color-wc-green);
     outline: none;
   }
+
+  @media (hover: hover) {
+
+    .wk-title-link:hover {
+    color: var(--color-wc-green);
+    outline: none;
+  }}
   .wk-case {
     font-family: var(--font-sans);
     font-size: 13px;
@@ -1030,11 +1038,19 @@ const workLd = {
     line-height: 20px;
     transition: background-color 0.15s ease, color 0.15s ease;
   }
-  .wk-case:hover, .wk-case:focus-visible {
+  .wk-case:focus-visible {
     background-color: var(--color-copper-bright);
     color: var(--color-bg-deep);
     outline: none;
   }
+
+  @media (hover: hover) {
+
+    .wk-case:hover {
+    background-color: var(--color-copper-bright);
+    color: var(--color-bg-deep);
+    outline: none;
+  }}
   .wk-visit {
     min-height: 44px;
     display: inline-flex;
@@ -1052,12 +1068,19 @@ const workLd = {
     text-decoration: none;
     transition: background 160ms, border-color 160ms;
   }
-  .wk-visit:hover,
   .wk-visit:focus-visible {
     background: rgba(77, 216, 168, 0.12);
     border-color: var(--color-wc-green);
     outline: none;
   }
+
+  @media (hover: hover) {
+
+    .wk-visit:hover {
+    background: rgba(77, 216, 168, 0.12);
+    border-color: var(--color-wc-green);
+    outline: none;
+  }}
   .wk-expand-btn {
     display: flex;
     align-items: center;
@@ -1078,10 +1101,12 @@ const workLd = {
     /* 44px touch minimum (G-027). Was 38px, measured on production at S245. */
     min-height: 44px;
   }
-  .wk-expand-btn:hover {
+  @media (hover: hover) {
+
+    .wk-expand-btn:hover {
     border-color: var(--color-wc-green);
     color: var(--color-wc-green);
-  }
+  }}
   .wk-expand-icon {
     font-family: var(--font-mono);
     font-weight: 600;
@@ -1182,20 +1207,24 @@ const workLd = {
     border: 1px solid var(--copper-hairline);
     transition: border-color 200ms, color 200ms;
   }
-  .wk-link:hover {
+  @media (hover: hover) {
+
+    .wk-link:hover {
     border-color: var(--color-wc-green);
     color: var(--color-wc-green);
-  }
+  }}
   .wk-link-primary {
     background: var(--color-wc-green);
     border-color: var(--color-wc-green);
     color: var(--color-bg-deep);
     font-weight: 600;
   }
-  .wk-link-primary:hover {
+  @media (hover: hover) {
+
+    .wk-link-primary:hover {
     background: var(--color-wc-green);
     color: var(--color-bg-deep);
-  }
+  }}
 
   /* Process steps */
   .wk-steps {

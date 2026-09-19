@@ -578,14 +578,23 @@ const TREE_POSITIONS: Record<string, { x: number; y: number }> = {
     border-radius: 24px;
   }
 
-  .card:hover,
-  .card:focus-visible,
-  .card-active {
+  .card:focus-visible, .card-active {
     border-color: var(--color-copper);
     box-shadow: 0 0 16px rgba(240, 160, 110, 0.25);
     outline: none;
     z-index: 2;
   }
+
+
+  @media (hover: hover) {
+
+
+    .card:hover {
+    border-color: var(--color-copper);
+    box-shadow: 0 0 16px rgba(240, 160, 110, 0.25);
+    outline: none;
+    z-index: 2;
+  }}
   .card-active {
     background: rgba(200, 128, 74, 0.08);
   }
@@ -596,11 +605,17 @@ const TREE_POSITIONS: Record<string, { x: number; y: number }> = {
     opacity: 0.35;
     filter: saturate(0.6);
   }
-  .tangle[data-has-active='true'] .card:not(.card-active):hover,
   .tangle[data-has-active='true'] .card:not(.card-active):focus-visible {
     opacity: 0.7;
     filter: saturate(0.85);
   }
+
+  @media (hover: hover) {
+
+    .tangle[data-has-active='true'] .card:not(.card-active):hover {
+    opacity: 0.7;
+    filter: saturate(0.85);
+  }}
 
   /* ─── Wobble (subtle chaos animation) ─── */
   @keyframes card-wobble {

@@ -28,12 +28,12 @@
 {"@type":"CreativeWork","name":"The Second Frequency","author":{"@id":"https://winterscode.com/#preston"},"url":"https://winterscode.com/lamp","about":["Philosophy","Theology","Political architecture"],"inLanguage":"en-US","mainEntityOfPage":{"@type":"WebPage","@id":"https://winterscode.com/lamp"},"license":"https://creativecommons.org/licenses/by-sa/4.0/"}]}
 </script>
 <style>
-@font-face{font-family:'Fraunces';font-style:normal;font-display:swap;font-weight:100 900;src:url('/_fonts/fraunces-normal.woff2') format('woff2-variations');}
-@font-face{font-family:'Fraunces';font-style:italic;font-display:swap;font-weight:100 900;src:url('/_fonts/fraunces-italic.woff2') format('woff2-variations');}
-@font-face{font-family:'Literata';font-style:normal;font-display:swap;font-weight:200 900;src:url('/_fonts/literata-normal.woff2') format('woff2-variations');}
-@font-face{font-family:'Literata';font-style:italic;font-display:swap;font-weight:200 900;src:url('/_fonts/literata-italic.woff2') format('woff2-variations');}
-@font-face{font-family:'JetBrains Mono';font-style:normal;font-display:optional;font-weight:400;src:url('/_fonts/jetbrains-400.woff2') format('woff2');}
-@font-face{font-family:'JetBrains Mono';font-style:normal;font-display:optional;font-weight:500;src:url('/_fonts/jetbrains-500.woff2') format('woff2');}
+@font-face {font-family:'Fraunces';font-style:normal;font-display:swap;font-weight:100 900;src:url('/_fonts/fraunces-normal.woff2') format('woff2-variations');}
+@font-face {font-family:'Fraunces';font-style:italic;font-display:swap;font-weight:100 900;src:url('/_fonts/fraunces-italic.woff2') format('woff2-variations');}
+@font-face {font-family:'Literata';font-style:normal;font-display:swap;font-weight:200 900;src:url('/_fonts/literata-normal.woff2') format('woff2-variations');}
+@font-face {font-family:'Literata';font-style:italic;font-display:swap;font-weight:200 900;src:url('/_fonts/literata-italic.woff2') format('woff2-variations');}
+@font-face {font-family:'JetBrains Mono';font-style:normal;font-display:optional;font-weight:400;src:url('/_fonts/jetbrains-400.woff2') format('woff2');}
+@font-face {font-family:'JetBrains Mono';font-style:normal;font-display:optional;font-weight:500;src:url('/_fonts/jetbrains-500.woff2') format('woff2');}
 :root{
   --ink:#12100E; --ink-soft:#1D1A16; --ink-line:#332D25;
   --paper:#F5F0E6; --paper-warm:#EDE5D6; --paper-edge:#DED3BE;
@@ -49,10 +49,12 @@ body{
   font-size:18px;line-height:1.68;font-optical-sizing:auto;
   -webkit-font-smoothing:antialiased;
 }
-@media(min-width:900px){body{font-size:19px;}}
+@media(min-width:900px) {body{font-size:19px;}}
 p{margin:0 0 1.05em;}
 a{color:inherit;text-decoration:none;border-bottom:1px solid var(--amber);}
-a:hover{background:rgba(176,128,31,.1);}
+@media (hover: hover) {
+
+  a:hover {background:rgba(176,128,31,.1);}}
 em{font-style:italic;}
 strong{font-weight:600;}
 
@@ -98,7 +100,7 @@ h1 span{display:block;font-style:italic;font-weight:400;color:var(--amber-lit);}
   background:linear-gradient(rgba(176,128,31,0),var(--amber),rgba(176,128,31,0));
   filter:blur(.4px);
 }
-@media(max-width:1000px){#thread{display:none;}}
+@media(max-width:1000px) {#thread{display:none;}}
 
 /* ============ body ============ */
 main{padding:clamp(46px,8vh,86px) 0 0;}
@@ -122,7 +124,7 @@ section{margin-bottom:clamp(52px,9vh,104px);}
   gap:clamp(20px,3.4vw,40px);align-items:start;
   padding:clamp(26px,5vh,44px) 0;border-top:1px solid var(--paper-edge);
 }
-@media(max-width:900px){.post{grid-template-columns:minmax(0,1fr);gap:16px;}}
+@media(max-width:900px) {.post{grid-template-columns:minmax(0,1fr);gap:16px;}}
 .post:first-of-type{border-top:none;}
 .post h3{
   font-family:"Fraunces",Georgia,serif;font-variation-settings:"SOFT" 40,"WONK" 1;
@@ -139,7 +141,7 @@ section{margin-bottom:clamp(52px,9vh,104px);}
   font-size:.83rem;line-height:1.5;color:var(--mute);
   border-left:2px solid var(--amber);padding-left:14px;
 }
-@media(min-width:901px){.note{margin-top:2.55rem;}}
+@media(min-width:901px) {.note{margin-top:2.55rem;}}
 .note b{color:var(--text);font-weight:600;}
 
 /* ============ panels ============ */
@@ -197,9 +199,9 @@ section{margin-bottom:clamp(52px,9vh,104px);}
 }
 .byline a{border-bottom-color:#5E5343;}
 .byline .name{color:var(--paper);font-weight:600;}
-@media(prefers-reduced-motion:no-preference){
+@media(prefers-reduced-motion:no-preference) {
   .hero .col>*{animation:up .42s cubic-bezier(.2,.7,.2,1) both;}
-  @keyframes up{from{opacity:0;transform:translateY(9px);}to{opacity:1;transform:none;}}
+  @keyframes up {from{opacity:0;transform:translateY(9px);}to{opacity:1;transform:none;}}
 }
 </style>
 </head>

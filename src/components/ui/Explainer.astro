@@ -79,12 +79,19 @@ const id = `xp-${Math.random().toString(36).slice(2, 9)}`;
     flex-shrink: 0;
     vertical-align: baseline;
   }
-  .xp:hover,
   .xp:focus-visible {
     color: var(--color-copper-bright);
     border-color: var(--color-copper);
     outline: none;
   }
+
+  @media (hover: hover) {
+
+    .xp:hover {
+    color: var(--color-copper-bright);
+    border-color: var(--color-copper);
+    outline: none;
+  }}
   .xp-trigger {
     line-height: 1;
     pointer-events: none;
@@ -139,12 +146,19 @@ const id = `xp-${Math.random().toString(36).slice(2, 9)}`;
     border-bottom-color: var(--copper-hairline);
   }
 
-  .xp:hover .xp-pop,
-  .xp:focus-visible .xp-pop,
-  .xp.is-open .xp-pop {
+  .xp:focus-visible .xp-pop, .xp.is-open .xp-pop {
     opacity: 1;
     pointer-events: auto;
   }
+
+
+  @media (hover: hover) {
+
+
+    .xp:hover .xp-pop {
+    opacity: 1;
+    pointer-events: auto;
+  }}
 
   /* Wide screens: bigger popover, easier to read */
   @media (min-width: 1024px) {

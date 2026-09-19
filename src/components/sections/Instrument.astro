@@ -754,10 +754,12 @@
     min-width: 64px;
     transition: background 200ms, color 200ms;
   }
-  .in-composer button:hover:not(:disabled) {
+  @media (hover: hover) {
+
+    .in-composer button:hover:not(:disabled) {
     background: var(--color-wc-green);
     color: var(--color-bg-deep);
-  }
+  }}
   .in-composer button:disabled {
     opacity: 0.5;
     cursor: not-allowed;
@@ -796,13 +798,21 @@
     cursor: pointer;
     transition: color 120ms ease, border-color 120ms ease, background 120ms ease;
   }
-  .in-reset-btn:hover,
   .in-reset-btn:focus-visible {
     color: var(--color-copper);
     border-color: var(--color-copper);
     background: rgba(200, 128, 74, 0.06);
     outline: none;
   }
+
+  @media (hover: hover) {
+
+    .in-reset-btn:hover {
+    color: var(--color-copper);
+    border-color: var(--color-copper);
+    background: rgba(200, 128, 74, 0.06);
+    outline: none;
+  }}
   .in-reset-btn:active {
     transform: translateY(1px);
   }

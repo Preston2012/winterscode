@@ -610,11 +610,17 @@ import { breadcrumbSchema } from '../lib/schema';
     cursor: pointer;
     transition: background-color 0.15s ease;
   }
-  .au-form-submit:hover,
   .au-form-submit:focus-visible {
     background: var(--color-wc-green-bright, var(--color-wc-green));
     outline: none;
   }
+
+  @media (hover: hover) {
+
+    .au-form-submit:hover {
+    background: var(--color-wc-green-bright, var(--color-wc-green));
+    outline: none;
+  }}
   .au-form-submit:disabled {
     opacity: 0.6;
     cursor: not-allowed;
@@ -962,12 +968,19 @@ import { breadcrumbSchema } from '../lib/schema';
     cursor: pointer;
     transition: background 120ms ease, color 120ms ease;
   }
-  :global(.au-find-retry:hover),
   :global(.au-find-retry:focus-visible) {
     background: var(--color-wc-green);
     color: var(--color-bg);
     outline: none;
   }
+
+  @media (hover: hover) {
+
+    :global(.au-find-retry:hover) {
+    background: var(--color-wc-green);
+    color: var(--color-bg);
+    outline: none;
+  }}
   :global(.au-find-retry:disabled) {
     opacity: 0.5;
     cursor: not-allowed;
@@ -1029,7 +1042,9 @@ import { breadcrumbSchema } from '../lib/schema';
     border-bottom: 1px dotted var(--copper-dim);
     padding-bottom: 1px;
   }
-  .au-cta-another-link:hover { color: var(--color-copper); border-bottom-color: var(--color-copper); }
+  @media (hover: hover) {
+
+    .au-cta-another-link:hover { color: var(--color-copper); border-bottom-color: var(--color-copper); }}
 
   /* ─── Structural-grade fallback banner (only when PSI fails) ─── */
   .au-banner-structural {

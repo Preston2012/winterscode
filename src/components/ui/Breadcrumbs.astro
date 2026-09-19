@@ -86,12 +86,19 @@ const last = items.length - 1;
     border-bottom: 1px solid transparent;
     transition: color 0.15s ease, border-color 0.15s ease;
   }
-  .bc-link:hover,
   .bc-link:focus-visible {
     color: var(--color-wc-green);
     border-bottom-color: var(--color-wc-green);
     outline: none;
   }
+
+  @media (hover: hover) {
+
+    .bc-link:hover {
+    color: var(--color-wc-green);
+    border-bottom-color: var(--color-wc-green);
+    outline: none;
+  }}
   .bc-current { color: var(--color-copper); }
   .bc-sep {
     font-family: var(--font-mono);

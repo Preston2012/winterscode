@@ -175,10 +175,12 @@
     cursor: pointer;
     transition: color 200ms, background 200ms;
   }
-  .kbd-sheet-close:hover {
+  @media (hover: hover) {
+
+    .kbd-sheet-close:hover {
     color: var(--color-copper-bright);
     background: var(--color-bg-raised);
-  }
+  }}
   .kbd-sheet-close:focus-visible {
     outline: 2px solid var(--color-copper);
     outline-offset: 2px;

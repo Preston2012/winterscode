@@ -530,11 +530,17 @@ import { breadcrumbSchema } from '../lib/schema';
     cursor: pointer;
     transition: background-color 0.15s ease;
   }
-  .ct-submit:hover,
   .ct-submit:focus-visible {
     background: var(--color-wc-green-bright, var(--color-wc-green));
     outline: none;
   }
+
+  @media (hover: hover) {
+
+    .ct-submit:hover {
+    background: var(--color-wc-green-bright, var(--color-wc-green));
+    outline: none;
+  }}
   .ct-submit:disabled { opacity: 0.6; cursor: not-allowed; }
   .ct-actions-note {
     font-family: var(--font-sans);

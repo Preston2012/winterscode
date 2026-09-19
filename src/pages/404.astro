@@ -55,8 +55,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     box-shadow: 0 1px 0 var(--copper-hairline) inset;
     transition: background 200ms, transform 200ms;
   }
-  .wc-404-back:hover {
+  @media (hover: hover) {
+
+    .wc-404-back:hover {
     background: var(--color-wc-green-bright);
     transform: translateY(-1px);
-  }
+  }}
 </style>

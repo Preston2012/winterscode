@@ -428,10 +428,17 @@ const faqLd = faq.length ? faqSchema(faq) : null;
     user-select: none;
   }
   .svc-faq-q::-webkit-details-marker { display: none; }
-  .svc-faq-q:hover, .svc-faq-q:focus-visible {
+  .svc-faq-q:focus-visible {
     background-color: rgba(200, 128, 74, 0.04);
     outline: none;
   }
+
+  @media (hover: hover) {
+
+    .svc-faq-q:hover {
+    background-color: rgba(200, 128, 74, 0.04);
+    outline: none;
+  }}
   .svc-faq-q-text {
     font-family: var(--font-sans);
     font-size: 15px;

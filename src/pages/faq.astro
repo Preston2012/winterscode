@@ -131,10 +131,17 @@ const breadcrumbLd = breadcrumbSchema(crumbs);
     user-select: none;
   }
   .faqp-q::-webkit-details-marker { display: none; }
-  .faqp-q:hover, .faqp-q:focus-visible {
+  .faqp-q:focus-visible {
     background-color: rgba(200, 128, 74, 0.04);
     outline: none;
   }
+
+  @media (hover: hover) {
+
+    .faqp-q:hover {
+    background-color: rgba(200, 128, 74, 0.04);
+    outline: none;
+  }}
   .faqp-q-text {
     font-family: var(--font-serif);
     font-size: 17px;

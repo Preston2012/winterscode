@@ -116,7 +116,9 @@
     color: var(--color-ash-400);
     transition: color 200ms;
   }
-  .at-link:hover { color: var(--color-wc-green); }
+  @media (hover: hover) {
+
+    .at-link:hover { color: var(--color-wc-green); }}
 
   /* ─── Body: photo + copy ───
      Mobile: stacked, photo + text both centered (was left-aligned which
@@ -178,9 +180,11 @@
     transition: box-shadow 300ms;
     pointer-events: none;
   }
-  .at-photo:hover::after {
+  @media (hover: hover) {
+
+    .at-photo:hover::after {
     box-shadow: inset 0 0 0 1px rgba(240, 160, 110, 0.3);
-  }
+  }}
 
   /* Copy */
   .at-copy {
@@ -231,8 +235,10 @@
     align-self: flex-start;
     transition: color 200ms;
   }
-  .at-cta:hover {
+  @media (hover: hover) {
+
+    .at-cta:hover {
     color: var(--color-wc-green-bright);
     text-decoration-color: var(--color-wc-green);
-  }
+  }}
 </style>

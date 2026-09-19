@@ -211,7 +211,11 @@ const legalLinks = [
     transition: color 0.15s ease;
   }
   @media (min-width: 740px) { .wc-foot-col a { font-size: 13px; } }
-  .wc-foot-col a:hover, .wc-foot-col a:focus-visible { color: var(--color-wc-green); outline: none; }
+  .wc-foot-col a:focus-visible { color: var(--color-wc-green); outline: none; }
+
+  @media (hover: hover) {
+
+    .wc-foot-col a:hover { color: var(--color-wc-green); outline: none; }}
 
   /* Legal */
   .wc-foot-chrome { display: flex; flex-direction: column; align-items: center; gap: 10px; }
@@ -231,7 +235,11 @@ const legalLinks = [
     text-decoration: none;
     transition: color 0.15s ease;
   }
-  .wc-foot-legal a:hover, .wc-foot-legal a:focus-visible { color: var(--color-wc-green); outline: none; }
+  .wc-foot-legal a:focus-visible { color: var(--color-wc-green); outline: none; }
+
+  @media (hover: hover) {
+
+    .wc-foot-legal a:hover { color: var(--color-wc-green); outline: none; }}
   .wc-foot-copy { font-size: 12px; color: var(--color-ash-300); }
   .wc-foot-fine {
     margin: 0 auto;

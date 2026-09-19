@@ -283,9 +283,11 @@ const lastDate = commits[0]?.date || '';
     border-bottom: 1px dashed transparent;
     transition: border-color 0.2s;
   }
-  .cl-commit:hover {
+  @media (hover: hover) {
+
+    .cl-commit:hover {
     border-bottom-color: var(--copper-hairline);
-  }
+  }}
   @media (min-width: 740px) {
     .cl-commit {
       grid-template-columns: 64px auto 1fr;
@@ -373,9 +375,11 @@ const lastDate = commits[0]?.date || '';
     text-decoration-color: rgba(77, 216, 168, 0.4);
     text-underline-offset: 3px;
   }
-  .cl-foot a:hover {
+  @media (hover: hover) {
+
+    .cl-foot a:hover {
     color: var(--color-wc-green-bright);
-  }
+  }}
 
   .visually-hidden {
     position: absolute !important;

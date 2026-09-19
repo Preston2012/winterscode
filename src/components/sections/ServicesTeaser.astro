@@ -135,7 +135,9 @@ const COLUMNS = [
     color: var(--color-ash-400);
     transition: color 200ms;
   }
-  .st-link:hover { color: var(--color-wc-green); }
+  @media (hover: hover) {
+
+    .st-link:hover { color: var(--color-wc-green); }}
 
   .st-grid {
     list-style: none;
@@ -164,12 +166,19 @@ const COLUMNS = [
     transition: border-color 200ms, transform 200ms;
     min-height: 180px;
   }
-  .st-col:hover,
   .st-col:focus-visible {
     border-color: var(--color-copper);
     transform: translateY(-2px);
     outline: none;
   }
+
+  @media (hover: hover) {
+
+    .st-col:hover {
+    border-color: var(--color-copper);
+    transform: translateY(-2px);
+    outline: none;
+  }}
 
   .st-col-head {
     display: flex;
@@ -226,5 +235,7 @@ const COLUMNS = [
     align-self: flex-end;
     transition: color 200ms;
   }
-  .st-col:hover .st-go { color: var(--color-wc-green); }
+  @media (hover: hover) {
+
+    .st-col:hover .st-go { color: var(--color-wc-green); }}
 </style>

@@ -454,9 +454,13 @@ main.page {
   color: var(--color-bg-deep);
   box-shadow: 0 1px 0 rgba(240, 160, 110, 0.3) inset;
 }
-.btn-primary:hover { background: var(--color-wc-green-bright); transform: translateY(-1px); }
+@media (hover: hover) {
+
+  .btn-primary:hover { background: var(--color-wc-green-bright); transform: translateY(-1px); }}
 .btn-secondary { background: transparent; color: var(--color-ash-100); border-color: var(--copper-hairline); }
-.btn-secondary:hover { border-color: var(--color-copper); color: var(--color-copper-bright); }
+@media (hover: hover) {
+
+  .btn-secondary:hover { border-color: var(--color-copper); color: var(--color-copper-bright); }}
 @media (min-width: 740px) { .btn { padding: 15px 22px; font-size: 15px; } }
 
 /* ---- Inline emphasis system (locked meaning, see brain #3271) ---- */

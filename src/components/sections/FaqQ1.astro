@@ -95,7 +95,9 @@
     color: var(--color-ash-400);
     transition: color 200ms;
   }
-  .fq-link:hover { color: var(--color-wc-green); }
+  @media (hover: hover) {
+
+    .fq-link:hover { color: var(--color-wc-green); }}
 
   /* ─── Card ─── */
   .fq-card {
@@ -173,8 +175,10 @@
     transition: background 200ms, transform 200ms;
     min-height: 44px;
   }
-  .fq-cta:hover {
+  @media (hover: hover) {
+
+    .fq-cta:hover {
     background: var(--color-wc-green-bright);
     transform: translateY(-1px);
-  }
+  }}
 </style>

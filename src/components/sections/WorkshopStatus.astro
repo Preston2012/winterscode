@@ -212,7 +212,9 @@ const ROWS: StatusRow[] = [
     text-decoration-color: rgba(77, 216, 168, 0.4);
     text-underline-offset: 3px;
   }
-  a.ws-link:hover { color: var(--color-wc-green-bright); }
+  @media (hover: hover) {
+
+    a.ws-link:hover { color: var(--color-wc-green-bright); }}
   .ws-meta {
     color: var(--color-ash-500);
     font-style: italic;

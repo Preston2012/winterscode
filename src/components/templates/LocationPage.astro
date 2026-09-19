@@ -469,10 +469,17 @@ const faqLd = town.faq.length ? faqSchema(town.faq) : null;
     user-select: none;
   }
   .loc-faq-q::-webkit-details-marker { display: none; }
-  .loc-faq-q:hover, .loc-faq-q:focus-visible {
+  .loc-faq-q:focus-visible {
     background-color: rgba(200, 128, 74, 0.04);
     outline: none;
   }
+
+  @media (hover: hover) {
+
+    .loc-faq-q:hover {
+    background-color: rgba(200, 128, 74, 0.04);
+    outline: none;
+  }}
   .loc-faq-q-text {
     font-family: var(--font-sans);
     font-size: 15px;

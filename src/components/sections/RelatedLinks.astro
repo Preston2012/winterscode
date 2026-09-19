@@ -104,11 +104,17 @@ const headingId = `${id}-h`;
     text-decoration: none;
     transition: background-color 0.15s ease;
   }
-  .rl-link:hover,
   .rl-link:focus-visible {
     background-color: rgba(200, 128, 74, 0.05);
     outline: none;
   }
+
+  @media (hover: hover) {
+
+    .rl-link:hover {
+    background-color: rgba(200, 128, 74, 0.05);
+    outline: none;
+  }}
   .rl-label {
     grid-column: 1;
     font-family: var(--font-sans);
@@ -132,9 +138,15 @@ const headingId = `${id}-h`;
     color: var(--color-copper);
     transition: transform 0.15s ease;
   }
-  .rl-link:hover .rl-arrow,
   .rl-link:focus-visible .rl-arrow {
     transform: translateX(3px);
     color: var(--color-wc-green);
   }
+
+  @media (hover: hover) {
+
+    .rl-link:hover .rl-arrow {
+    transform: translateX(3px);
+    color: var(--color-wc-green);
+  }}
 </style>

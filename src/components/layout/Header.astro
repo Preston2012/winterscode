@@ -161,7 +161,9 @@ const navItems = [
     column-gap: 10px;
     align-items: baseline;
   }
-  .topmark-brand:hover { opacity: 0.85; }
+  @media (hover: hover) {
+
+    .topmark-brand:hover { opacity: 0.85; }}
   .topmark-brand .name {
     font-family: var(--font-serif);
     font-size: 18px;
@@ -217,7 +219,9 @@ const navItems = [
       position: relative;
       padding: 8px 0;
     }
-    .topnav-links a:hover { color: var(--color-wc-green); }
+    @media (hover: hover) {
+
+      .topnav-links a:hover { color: var(--color-wc-green); }}
     .topnav-links a::after {
       content: "";
       position: absolute;
@@ -230,7 +234,9 @@ const navItems = [
       transform-origin: left;
       transition: transform 200ms;
     }
-    .topnav-links a:hover::after { transform: scaleX(1); }
+    @media (hover: hover) {
+
+      .topnav-links a:hover::after { transform: scaleX(1); }}
   }
 
   /* Desktop contact cluster */
@@ -258,15 +264,19 @@ const navItems = [
       border-color: var(--color-wc-green);
       font-weight: 600;
     }
-    .topnav-contact a:hover {
+    @media (hover: hover) {
+
+      .topnav-contact a:hover {
       border-color: var(--color-copper);
       color: var(--color-copper-bright);
-    }
-    .topnav-contact a.primary:hover {
+    }}
+    @media (hover: hover) {
+
+      .topnav-contact a.primary:hover {
       background: var(--color-wc-green-bright);
       color: var(--color-bg-deep);
       border-color: var(--color-wc-green-bright);
-    }
+    }}
   }
 
   /* Mobile menu button */
@@ -286,10 +296,12 @@ const navItems = [
     gap: 6px;
     flex-shrink: 0;
   }
-  .topmark-menu-btn:hover {
+  @media (hover: hover) {
+
+    .topmark-menu-btn:hover {
     border-color: var(--color-copper);
     color: var(--color-copper-bright);
-  }
+  }}
   .topmark-menu-btn .bars {
     display: flex;
     flex-direction: column;
@@ -333,10 +345,12 @@ const navItems = [
        em-dash flash). Class flipped by inline script below. */
   }
   .workshop-pill.is-ready { opacity: 1; }
-  .workshop-pill:hover {
+  @media (hover: hover) {
+
+    .workshop-pill:hover {
     border-color: var(--color-copper);
     color: var(--color-ash-100);
-  }
+  }}
   .workshop-pill-dot {
     display: inline-block;
     width: 6px;

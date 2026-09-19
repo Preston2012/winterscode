@@ -89,7 +89,11 @@ const blogLd = {
     padding: 22px 22px 20px;
     transition: background-color 0.15s ease;
   }
-  .ins-card a:hover, .ins-card a:focus-visible { background-color: rgba(200, 128, 74, 0.04); outline: none; }
+  .ins-card a:focus-visible { background-color: rgba(200, 128, 74, 0.04); outline: none; }
+
+  @media (hover: hover) {
+
+    .ins-card a:hover { background-color: rgba(200, 128, 74, 0.04); outline: none; }}
   .ins-date { font-size: 11px; letter-spacing: 0.08em; color: var(--color-copper); text-transform: uppercase; }
   .ins-title {
     font-family: var(--font-serif);

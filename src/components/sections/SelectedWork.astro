@@ -455,7 +455,9 @@ const CARDS: WorkCard[] = [
     color: var(--color-ash-400);
     transition: color 200ms;
   }
-  .selected-link:hover { color: var(--color-wc-green); }
+  @media (hover: hover) {
+
+    .selected-link:hover { color: var(--color-wc-green); }}
 
   /* ─── Grid ─── */
   .selected-grid {
@@ -600,10 +602,15 @@ const CARDS: WorkCard[] = [
     align-items: center;
     min-height: 44px;
   }
-  .sw-brand:hover .sw-brand-board,
   .sw-brand:focus-visible .sw-brand-board {
     border-color: var(--color-wc-green);
   }
+
+  @media (hover: hover) {
+
+    .sw-brand:hover .sw-brand-board {
+    border-color: var(--color-wc-green);
+  }}
   .sw-brand:focus-visible {
     outline: 2px solid var(--color-wc-green);
     outline-offset: 4px;
@@ -641,13 +648,21 @@ const CARDS: WorkCard[] = [
   @media (min-width: 1024px) {
     .sw-card { grid-template-rows: 160px 1fr; min-height: 320px; }
   }
-  .sw-card:hover,
   .sw-card:focus-visible {
     border-color: var(--color-wc-green);
     transform: translateY(-2px);
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), 0 0 0 1px var(--color-wc-green);
     outline: none;
   }
+
+  @media (hover: hover) {
+
+    .sw-card:hover {
+    border-color: var(--color-wc-green);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), 0 0 0 1px var(--color-wc-green);
+    outline: none;
+  }}
 
   .sw-preview {
     background:

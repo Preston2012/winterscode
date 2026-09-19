@@ -684,12 +684,19 @@ const servicesLd = {
     transition: background-color 0.15s ease, color 0.15s ease;
     align-self: flex-start;
   }
-  .sv-tier-cta:hover,
   .sv-tier-cta:focus-visible {
     background-color: var(--color-wc-green);
     color: var(--color-bg-deep);
     outline: none;
   }
+
+  @media (hover: hover) {
+
+    .sv-tier-cta:hover {
+    background-color: var(--color-wc-green);
+    color: var(--color-bg-deep);
+    outline: none;
+  }}
 
   /* Maintenance tier price treatment */
   .sv-tier--maint .sv-tier-price {
@@ -846,11 +853,17 @@ const servicesLd = {
     user-select: none;
   }
   .sv-faq-q::-webkit-details-marker { display: none; }
-  .sv-faq-q:hover,
   .sv-faq-q:focus-visible {
     background-color: rgba(200, 128, 74, 0.04);
     outline: none;
   }
+
+  @media (hover: hover) {
+
+    .sv-faq-q:hover {
+    background-color: rgba(200, 128, 74, 0.04);
+    outline: none;
+  }}
 
   .sv-faq-num {
     font-family: var(--font-mono);

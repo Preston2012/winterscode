@@ -307,9 +307,17 @@ const nx = () => String(++n).padStart(2, '0');
     transition: background-color 0.15s ease, color 0.15s ease;
   }
   .cs-link.primary { background: rgba(77, 216, 168, 0.08); }
-  .cs-link:hover, .cs-link:focus-visible {
+  .cs-link:focus-visible {
     background-color: var(--color-wc-green);
     color: var(--color-bg-deep);
     outline: none;
   }
+
+  @media (hover: hover) {
+
+    .cs-link:hover {
+    background-color: var(--color-wc-green);
+    color: var(--color-bg-deep);
+    outline: none;
+  }}
 </style>

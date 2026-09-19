@@ -410,7 +410,9 @@ const ROWS: WallRow[] = [
     letter-spacing: 0.02em;
     transition: color 200ms;
   }
-  .wall-link:hover { color: var(--color-wc-green); }
+  @media (hover: hover) {
+
+    .wall-link:hover { color: var(--color-wc-green); }}
 
   /* ─── Rows ─── */
   .wall-rows {

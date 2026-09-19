@@ -162,9 +162,15 @@ const glowClass = glow === 'full' ? 'wcs-glow-full'
     pointer-events: auto;
     transition: opacity 0.2s ease-out;
   }
-  .wcs-link:hover, .wcs-link:focus-visible {
+  .wcs-link:focus-visible {
     opacity: 0.85;
   }
+
+  @media (hover: hover) {
+
+    .wcs-link:hover {
+    opacity: 0.85;
+  }}
   .wcs-link:focus-visible {
     outline: 2px solid var(--color-copper);
     outline-offset: 4px;

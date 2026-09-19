@@ -83,11 +83,17 @@ const { label = 'WC', ariaLabel } = Astro.props;
   @media (min-width: 1024px) {
     .divider-mark { width: 36px; height: 36px; }
   }
-  .divider:hover .divider-mark,
   .divider:focus-visible .divider-mark {
     transform: rotate(60deg);
     box-shadow: 0 0 24px rgba(240, 160, 110, 0.4);
   }
+
+  @media (hover: hover) {
+
+    .divider:hover .divider-mark {
+    transform: rotate(60deg);
+    box-shadow: 0 0 24px rgba(240, 160, 110, 0.4);
+  }}
   .divider:focus-visible {
     outline: 2px solid var(--color-copper-bright);
     outline-offset: 8px;
@@ -112,7 +118,9 @@ const { label = 'WC', ariaLabel } = Astro.props;
   }
   @media (prefers-reduced-motion: reduce) {
     .divider-mark { transition: none; }
-    .divider:hover .divider-mark { transform: none; }
+    @media (hover: hover) {
+
+      .divider:hover .divider-mark { transform: none; }}
   }
 </style>
 

@@ -366,12 +366,19 @@ import { breadcrumbSchema } from '../lib/schema';
     text-underline-offset: 3px;
     transition: text-decoration-color 0.15s ease, color 0.15s ease;
   }
-  .ab-prose p a:hover,
   .ab-prose p a:focus-visible {
     color: var(--color-copper-bright);
     text-decoration-color: var(--color-copper-bright);
     outline: none;
   }
+
+  @media (hover: hover) {
+
+    .ab-prose p a:hover {
+    color: var(--color-copper-bright);
+    text-decoration-color: var(--color-copper-bright);
+    outline: none;
+  }}
   .ab-prose p a strong { color: inherit; }
 
   /* Word highlights: green threads the product/tech story, copper the
@@ -537,18 +544,30 @@ import { breadcrumbSchema } from '../lib/schema';
     color: var(--color-bg-deep);
     font-weight: 600;
   }
-  .ab-cta-primary:hover,
   .ab-cta-primary:focus-visible {
     background-color: var(--color-wc-green-bright, var(--color-wc-green));
     outline: none;
   }
+
+  @media (hover: hover) {
+
+    .ab-cta-primary:hover {
+    background-color: var(--color-wc-green-bright, var(--color-wc-green));
+    outline: none;
+  }}
   .ab-cta-secondary {
     color: var(--color-ash-100);
     border: 1px solid var(--copper-hairline);
   }
-  .ab-cta-secondary:hover,
   .ab-cta-secondary:focus-visible {
     border-color: var(--color-copper);
     outline: none;
   }
+
+  @media (hover: hover) {
+
+    .ab-cta-secondary:hover {
+    border-color: var(--color-copper);
+    outline: none;
+  }}
 </style>

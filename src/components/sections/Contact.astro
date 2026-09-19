@@ -243,7 +243,9 @@ const cal = 'https://cal.com/preston-winters';
     position: relative;
     transition: color 200ms;
   }
-  .consult-policy li:hover { color: var(--color-ash-100); }
+  @media (hover: hover) {
+
+    .consult-policy li:hover { color: var(--color-ash-100); }}
   .consult-policy li::before {
     content: "";
     position: absolute;
@@ -254,10 +256,12 @@ const cal = 'https://cal.com/preston-winters';
     background: var(--color-copper);
     transition: width 200ms;
   }
-  .consult-policy li:hover::before {
+  @media (hover: hover) {
+
+    .consult-policy li:hover::before {
     width: 11px;
     background: var(--color-wc-green);
-  }
+  }}
   .consult-policy li strong {
     color: var(--color-ash-100);
     font-weight: 600;
@@ -301,10 +305,12 @@ const cal = 'https://cal.com/preston-winters';
       justify-content: flex-start;
     }
   }
-  .contact-action-btn:hover {
+  @media (hover: hover) {
+
+    .contact-action-btn:hover {
     border-color: var(--color-wc-green);
     transform: translateY(-1px);
-  }
+  }}
 
   .contact-stack {
     display: flex;
