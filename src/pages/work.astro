@@ -759,16 +759,20 @@ const workLd = {
      own framing. Strip them so the widget sets its own height and
      visual treatment. */
   /* The site cards crop to a 2:1 frame because a 1200x630 share card is that
-     shape. The graphic board is 3:2 and taller, so cover was cutting the top
-     and bottom rows of marks straight off. A board of logos has to be shown
-     whole or it is not proof of anything: follow the image's own ratio and
-     contain it. */
+     shape. The graphic board is neither 2:1 nor any other fixed shape: it is
+     one board whose whole point is that every mark is visible, so cropping it
+     proves nothing and letterboxing it inside a landscape box shrinks it to
+     the gutters. This card carries no ratio of its own. The img carries width
+     and height, so the browser reserves the board's real box, and the next
+     board of any shape drops in without touching this rule. */
   .wk-card[data-fit="whole"] .wk-preview {
-    aspect-ratio: 3 / 2;
+    aspect-ratio: auto;
     background: var(--color-bg-card);
     padding: 0;
   }
+  .wk-card[data-fit="whole"] .wk-preview > picture,
   .wk-card[data-fit="whole"] .wk-img {
+    height: auto;
     object-fit: contain;
     object-position: center;
   }
