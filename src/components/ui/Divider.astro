@@ -20,13 +20,29 @@ interface Props {
 }
 
 const { label = 'WC', ariaLabel } = Astro.props;
+
+/*
+ * WCAG 2.5.3 Label in Name. The bezel renders `label` as visible text, so the
+ * accessible name has to contain it or a voice-control user cannot say what
+ * they can see. The default name already did. A caller-supplied ariaLabel did
+ * not: index.astro passes label="WC" with names like "Workshop intro, return
+ * to top", and axe named exactly those two on the live homepage.
+ *
+ * Prefix only when the name does not already carry the glyph, so
+ * label="02" with "Section 02, return to top" keeps the name it has rather
+ * than becoming "02, Section 02, return to top". S285.
+ */
+const spokenName = ariaLabel ?? `Section ${label}, return to top`;
+const accessibleName = spokenName.toLowerCase().includes(String(label).toLowerCase())
+  ? spokenName
+  : `${label}, ${spokenName}`;
 ---
 
 <div
   class="divider"
   role="button"
   tabindex="0"
-  aria-label={ariaLabel ?? `Section ${label}, return to top`}
+  aria-label={accessibleName}
   data-divider
 >
   <div class="divider-line" aria-hidden="true"></div>
