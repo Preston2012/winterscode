@@ -38,8 +38,38 @@ export interface Props {
 }
 
 const { label = '?', class: extraClass = '', placement = 'top' } = Astro.props;
-// Unique id per render so multiple Explainers on a page don't share IDs
-const id = `xp-${Math.random().toString(36).slice(2, 9)}`;
+// Unique id per render so multiple Explainers on a page don't share IDs.
+// Derived from the content, not from Math.random(), because a random id is
+// also unique across BUILDS: every build emitted different bytes for every
+// page carrying an Explainer, which is why golden.py had to learn to
+// normalise xp- ids away. A normalisation that hides a real moving value is
+// one rule away from hiding a real regression. Two Explainers collide only
+// if their label, placement and body are byte-identical, in which case they
+// are the same tooltip and share a description correctly.
+// FNV-1a, inline and dependency-free: this component can render in the
+// Worker, where reaching for node:crypto is a runtime crash.
+// Content alone is not enough: /work carries two Explainers whose label,
+// placement and body are byte-identical, and hashing only content gave them
+// the same id, which is invalid HTML and an ambiguous aria-describedby.
+// The page path plus the occurrence index on that page disambiguates without
+// reaching for randomness. Render order within one page is stable, so this is
+// identical across builds; the counter is keyed per page, so pages cannot
+// perturb each other.
+const counts = ((globalThis as any).__xpCounts ??= new Map<string, number>());
+const page = Astro.url.pathname;
+const nth = (counts.get(page) ?? 0) + 1;
+counts.set(page, nth);
+// The body is deliberately NOT in the seed. Page plus occurrence already
+// makes this unique, and hashing the body would mean rendering the slot into
+// a string and injecting it with set:html, which silently drops the leading
+// whitespace <slot /> preserves. Leave the slot alone.
+const seed = `${page}#${nth}|${label}|${placement}`;
+let h = 2166136261;
+for (let i = 0; i < seed.length; i++) {
+  h ^= seed.charCodeAt(i);
+  h = Math.imul(h, 16777619);
+}
+const id = `xp-${(h >>> 0).toString(36)}`;
 ---
 
 <span
