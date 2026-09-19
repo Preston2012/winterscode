@@ -36,6 +36,10 @@ interface WallRow {
   /** Render one line per measured site from src/lib/sites.ts, filled live by key. */
   sites?: 'lighthouse' | 'security';
   meta?: string;
+  /** Destination for `meta`. Without it `meta` renders as plain text, never a
+      control. The CALENDAR row read "book" in CTA green for months with no
+      href behind it, which is a dead button, not a label. */
+  metaHref?: string;
   featured?: boolean;
   /** API source key used to look up live/cached/fallback state. */
   sourceKey: 'deploys' | 'lighthouse' | 'security' | 'engine' | 'calendar';
@@ -88,6 +92,7 @@ const ROWS: WallRow[] = [
     sourceKey: 'calendar',
     primary: 'next consult: Wed 5pm PT',
     meta: 'book →',
+    metaHref: 'https://cal.com/preston-winters',
     featured: true,
     explain:
       'Pulled live from my booking calendar. If you book a consult, that slot disappears here.',
@@ -132,7 +137,16 @@ const ROWS: WallRow[] = [
           {row.quaternary && <span class="row-quaternary">{row.quaternary}</span>}
           {row.quinary && <span class="row-quinary">{row.quinary}</span>}
         </span>
-        {row.meta && <span class="row-meta">{row.meta}</span>}
+        {row.meta && row.metaHref && (
+          <a
+            class="row-meta row-meta-link"
+            href={row.metaHref}
+            target="_blank"
+            rel="noopener"
+            aria-label="Book a free consult"
+          >{row.meta}</a>
+        )}
+        {row.meta && !row.metaHref && <span class="row-meta">{row.meta}</span>}
       </li>
     ))}
   </ul>
@@ -602,6 +616,27 @@ const ROWS: WallRow[] = [
   .wall-row-featured .row-label {
     color: var(--color-wc-green);
   }
+  a.row-meta-link {
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 2px;
+  }
+  a.row-meta-link:hover,
+  a.row-meta-link:focus-visible {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  a.row-meta-link:focus-visible {
+    outline: 2px solid var(--color-wc-green);
+    outline-offset: 3px;
+    border-radius: 3px;
+  }
+  @media (min-width: 1024px) {
+    a.row-meta-link { justify-content: flex-end; }
+  }
+
   .wall-row-featured .row-meta {
     color: var(--color-wc-green);
     font-weight: 600;
