@@ -17,8 +17,13 @@
   text-shadow: none !important;
   box-shadow: none !important;
   background-image: none !important;
+  /* S283: the prefixed copy is gone. Lightning CSS treats the pair as one
+     property and keeps the last declaration, so writing both made it emit
+     -webkit-filter alone and drop the standard one, which every current
+     browser is the one that reads. The prefix has not been needed since
+     Safari 9.1 and the floor here is 15.6, so the standard line stands by
+     itself and the tool adds a prefix back if a target ever needs it. */
   filter: none !important;
-  -webkit-filter: none !important;
   -webkit-print-color-adjust: economy;
   print-color-adjust: economy;
 }
