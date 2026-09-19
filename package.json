@@ -7,7 +7,7 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build && node scripts/csp-postprocess.mjs",
+    "build": "node scripts/gen-asset-versions.mjs && astro build && node scripts/csp-postprocess.mjs",
     "preview": "astro preview",
     "astro": "astro"
   },

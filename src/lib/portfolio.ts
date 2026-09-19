@@ -1,3 +1,4 @@
+import { v } from './asset';
 /**
  * Portfolio data, single source of truth for Apps + Sites sections.
  * Update here; both homepage grids and any future case-study routes
@@ -485,9 +486,9 @@ export const portfolio: PortfolioItem[] = [
     order: 1,
     published: true,
     image: {
-      src: '/work/graphic-work-1200.webp',
-      srcSmall: '/work/graphic-work-800.webp',
-      srcXSmall: '/work/graphic-work-480.webp',
+      src: v('/work/graphic-work-1200.webp'),
+      srcSmall: v('/work/graphic-work-800.webp'),
+      srcXSmall: v('/work/graphic-work-480.webp'),
       alt: 'A board of selected logo and brand work by Winters Code: nine wordmarks, emblems and full brand marks for a range of businesses, above six die-cut sticker and badge designs.',
       width: 1200,
       height: 1826,
