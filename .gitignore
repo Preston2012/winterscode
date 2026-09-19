@@ -46,3 +46,4 @@ docs/*
 *.pem
 *credential*
 *secret*
+.goldens/last-diff.tsv
