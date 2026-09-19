@@ -31,11 +31,13 @@ const service: ServiceEntry = {
   figure={{
     src: '/work/graphic-work-800.webp',
     srcLarge: '/work/graphic-work-1200.webp',
-    // 3:2, matching the 2026-09-11 board. The previous 1448x1086 was 4:3 and
-    // did not match any file on disk, so the browser reserved the wrong box.
+    // 1200x1826, matching the 2026-09-19 board on disk. The board went
+    // portrait when the grid dropped from five columns to three. Any change to
+    // the board file has to move these two numbers or the browser reserves the
+    // wrong box and the page shifts.
     width: 1200,
-    height: 800,
-    alt: 'A grid of selected logo and brand work by Winters Code, including wordmarks, emblems, and full brand marks for a range of businesses.',
+    height: 1826,
+    alt: 'A board of selected logo and brand work by Winters Code: nine wordmarks, emblems and full brand marks for a range of businesses, above six die-cut sticker and badge designs.',
     caption: 'Selected graphic work.',
   }}
   includesTitle="What you get"

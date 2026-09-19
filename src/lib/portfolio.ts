@@ -488,9 +488,9 @@ export const portfolio: PortfolioItem[] = [
       src: '/work/graphic-work-1200.webp',
       srcSmall: '/work/graphic-work-800.webp',
       srcXSmall: '/work/graphic-work-480.webp',
-      alt: 'A grid of selected logo and brand work by Winters Code, including wordmarks, emblems, and full brand marks for a range of businesses.',
+      alt: 'A board of selected logo and brand work by Winters Code: nine wordmarks, emblems and full brand marks for a range of businesses, above six die-cut sticker and badge designs.',
       width: 1200,
-      height: 800,
+      height: 1826,
     },
     details: [
       {
