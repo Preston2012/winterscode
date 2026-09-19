@@ -22,7 +22,7 @@ interface StatusRow {
 }
 
 const ROWS: StatusRow[] = [
-  { label: 'LAST DEPLOY', value: '4m ago', meta: 'winterscode v0.1.0' },
+  { label: 'LAST DEPLOY', value: '4m ago', meta: '' },
   {
     label: 'LIGHTHOUSE',
     value: '99/100/100/100',
@@ -90,8 +90,7 @@ const ROWS: StatusRow[] = [
           if (v && value) v.textContent = value;
           if (m && meta) m.textContent = '· ' + meta;
         }
-        if (d.deploys) setValue(findRow('LAST DEPLOY'),
-          d.deploys.last, d.deploys.last_message);
+        if (d.deploys) setValue(findRow('LAST DEPLOY'), d.deploys.last, null);
         if (d.lighthouse && Array.isArray(d.lighthouse.winterscode))
           setValue(findRow('LIGHTHOUSE'),
             d.lighthouse.winterscode.join('/'),

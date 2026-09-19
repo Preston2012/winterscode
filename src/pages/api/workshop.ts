@@ -29,7 +29,6 @@ import { env as cfEnv } from 'cloudflare:workers';
 interface WorkshopData {
   deploys: {
     last: string;          // "4m ago" | "2h ago" | "3d ago"
-    last_message: string;  // first line of last commit, or '[private repo] · main'
     count_30d: number;
     repo_count: number;
     source: 'live' | 'fallback';
@@ -83,7 +82,6 @@ interface WorkshopData {
 const FALLBACK: WorkshopData = {
   deploys: {
     last: '4m ago',
-    last_message: '[private repo] · main',
     count_30d: 30,
     repo_count: 4,
     source: 'fallback',
@@ -310,6 +308,12 @@ async function fetchGitHub(
       const repoShort = showable.repo?.name?.split('/').pop() ?? 'repo';
       last_message = `[private repo] · ${repoShort} · main`;
     }
+    // S283: the subject no longer leaves the server at all. The scrubber below
+    // kept client names out, but the line still published what the last commit
+    // touched, so a visitor read "gitignore: the golden's per-run diff file" on
+    // the contact page. A deploy time is the fact worth showing; what was in it
+    // is not the reader's business. The variable stays because the same lookup
+    // that produces it is what corrects the timestamp above.
     // Client-named commit subjects stay out of the public feed.
     if (/davis|keeli|gernandt|bandonhomes|bandonrealtee|\bbarry\b|\bjodie\b|seabreeze|\bstacy\b/i.test(last_message)) {
       last_message = 'client build · main';
@@ -320,7 +324,6 @@ async function fetchGitHub(
     const uniqueRepos = new Set(recent.map(e => e.repo?.name).filter(Boolean));
     const result: WorkshopData['deploys'] = {
       last,
-      last_message,
       count_30d: Math.max(recent.length, FALLBACK.deploys.count_30d), // floor to fallback
       repo_count: Math.max(uniqueRepos.size, FALLBACK.deploys.repo_count),
       source: 'live',
