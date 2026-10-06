@@ -297,9 +297,10 @@ const sms = smsHref(Astro.url.pathname);
       let host = url;
       try { host = new URL(url).hostname.replace(/^www\./, ''); } catch (e) { /* keep raw */ }
       let body = 'Hi Preston, I ran ' + host + ' through your audit at winterscode.com/audit.';
-      if (grade && grade !== '-') body += ' It got a ' + grade + '.';
-      if (topFixes && topFixes.length && topFixes[0].summary) body += ' Top fix: ' + topFixes[0].summary;
-      body += ' Can you help with it?';
+      if (grade && grade !== '-') body += ' It got ' + (/^[AF]/.test(grade) ? 'an ' : 'a ') + grade + '.';
+      const fix = topFixes && topFixes.length && topFixes[0].summary ? String(topFixes[0].summary).trim() : '';
+      if (fix) body += ' Top fix: ' + fix + (/[.!?]$/.test(fix) ? '' : '.') + ' Can you help with it?';
+      else body += ' I would like to talk about the site.';
       smsLink.setAttribute('href', smsBaseHref + encodeURIComponent(body));
     }
     function smsByHand(url) {
