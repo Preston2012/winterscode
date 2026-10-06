@@ -213,6 +213,9 @@ const navItems = [
       justify-content: center;
     }
     .topnav-links a {
+      /* S326: a nav word never breaks mid-word. At 1024 the old header ran
+         about 200px over and stacked these letters vertically on live. */
+      white-space: nowrap;
       font-family: var(--font-sans);
       font-size: 13px;
       font-weight: 500;
@@ -240,6 +243,12 @@ const navItems = [
     @media (hover: hover) {
 
       .topnav-links a:hover::after { transform: scaleX(1); }}
+  }
+
+  /* 1024 to 1279: brand, pill, nav and the Text button need about 950px and
+     the bar has 944, so the nav gap tightens here instead of a word breaking. */
+  @media (min-width: 1024px) and (max-width: 1279.98px) {
+    .topnav-links { gap: 14px; }
   }
 
   /* Contact cluster (S326 Text-first): tablet and desktop. Phones use TextBar. */
