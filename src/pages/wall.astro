@@ -256,41 +256,10 @@ const updatedAt = initialData?.updated_at ?? new Date().toISOString();
       </div>
     </article>
 
-    {/* MODULE 04. ENGINE, folded: for builders, not a reason to hire */}
-    <article class="wall-mod" data-mod="engine">
-      <details class="wall-builders">
-      <summary class="wall-mod-head wall-builders-head">
-        <span class="wall-mod-num">04</span>
-        <h2 class="wall-mod-title">FOR BUILDERS</h2>
-        <span class="wall-builders-sub">the memory engine</span>
-        <span class="wall-mod-badge" data-mod-source={engine.source}>{engine.source}</span>
-        <span class="wall-builders-icon" aria-hidden="true">+</span>
-      </summary>
-      <div class="wall-mod-body">
-        <a class="wall-builders-repo" href="https://github.com/Preston2012/demi" target="_blank" rel="noopener">demi repo ↗</a>
-        <div class="wall-stat-big">
-          <span class="wall-stat-num" data-engine-mem>{memCount}</span>
-          <span class="wall-stat-label">demiurge memories</span>
-        </div>
-        <div class="wall-stat-grid">
-          <div class="wall-stat-cell">
-            <span class="wall-stat-cell-num" data-engine-week>+{engine.added_last_7d ?? 0}</span>
-            <span class="wall-stat-cell-label">added · 7d</span>
-          </div>
-          <div class="wall-stat-cell">
-            <span class="wall-stat-cell-num" data-engine-uptime>{engine.uptime_30d_pct}%</span>
-            <span class="wall-stat-cell-label">uptime · 30d</span>
-          </div>
-        </div>
-        <p class="wall-mod-detail">Memory engine + AI workflow built in-house. Runs alongside my builds.</p>
-      </div>
-      </details>
-    </article>
-
-    {/* MODULE 05. CALENDAR */}
+    {/* MODULE 04. CALENDAR */}
     <article class="wall-mod" data-mod="calendar">
       <header class="wall-mod-head">
-        <span class="wall-mod-num">05</span>
+        <span class="wall-mod-num">04</span>
         <h2 class="wall-mod-title">CALENDAR</h2>
         <span class="wall-mod-badge" data-mod-source={calendar.source}>{calendar.source}</span>
       </header>
@@ -307,10 +276,10 @@ const updatedAt = initialData?.updated_at ?? new Date().toISOString();
       </div>
     </article>
 
-    {/* MODULE 06. ACCEPTING */}
+    {/* MODULE 05. ACCEPTING */}
     <article class="wall-mod" data-mod="accepting">
       <header class="wall-mod-head">
-        <span class="wall-mod-num">06</span>
+        <span class="wall-mod-num">05</span>
         <h2 class="wall-mod-title">ACCEPTING</h2>
         <span class="wall-mod-badge wall-mod-badge-static">policy</span>
       </header>
@@ -355,10 +324,10 @@ const updatedAt = initialData?.updated_at ?? new Date().toISOString();
       </div>
     </article>
 
-    {/* MODULE 07. SPEED RECORD */}
+    {/* MODULE 06. SPEED RECORD */}
     <article class="wall-mod wall-mod-wide" data-mod="speed">
       <header class="wall-mod-head">
-        <span class="wall-mod-num">07</span>
+        <span class="wall-mod-num">06</span>
         <h2 class="wall-mod-title">RECENT BUILDS</h2>
         <span class="wall-mod-badge" data-mod-source={speed.source}>{speed.source}</span>
       </header>
@@ -373,6 +342,37 @@ const updatedAt = initialData?.updated_at ?? new Date().toISOString();
         </ul>
         <p class="wall-mod-detail">Build time in business days, counted from the day I had everything the build needed. Waiting on a client for photos, copy or access is not counted. Sites start at 3 business days, app MVPs run 2 to 4 weeks, and bigger builds are quoted in consult.</p>
       </div>
+    </article>
+
+    {/* MODULE 07. ENGINE, folded and last: for builders, not a reason to hire */}
+    <article class="wall-mod" data-mod="engine">
+      <details class="wall-builders">
+      <summary class="wall-mod-head wall-builders-head">
+        <span class="wall-mod-num">07</span>
+        <h2 class="wall-mod-title">FOR BUILDERS</h2>
+        <span class="wall-builders-sub">the memory engine</span>
+        <span class="wall-mod-badge" data-mod-source={engine.source}>{engine.source}</span>
+        <span class="wall-builders-icon" aria-hidden="true">+</span>
+      </summary>
+      <div class="wall-mod-body">
+        <a class="wall-builders-repo" href="https://github.com/Preston2012/demi" target="_blank" rel="noopener">demi repo ↗</a>
+        <div class="wall-stat-big">
+          <span class="wall-stat-num" data-engine-mem>{memCount}</span>
+          <span class="wall-stat-label">demiurge memories</span>
+        </div>
+        <div class="wall-stat-grid">
+          <div class="wall-stat-cell">
+            <span class="wall-stat-cell-num" data-engine-week>+{engine.added_last_7d ?? 0}</span>
+            <span class="wall-stat-cell-label">added · 7d</span>
+          </div>
+          <div class="wall-stat-cell">
+            <span class="wall-stat-cell-num" data-engine-uptime>{engine.uptime_30d_pct}%</span>
+            <span class="wall-stat-cell-label">uptime · 30d</span>
+          </div>
+        </div>
+        <p class="wall-mod-detail">Memory engine + AI workflow built in-house. Runs alongside my builds.</p>
+      </div>
+      </details>
     </article>
   </section>
 
@@ -566,6 +566,19 @@ const updatedAt = initialData?.updated_at ?? new Date().toISOString();
   }
   .wall-builders[open] .wall-builders-head { border-bottom: 1px solid var(--copper-hairline); }
   .wall-builders-head .wall-mod-badge { margin-left: auto; }
+
+  /* S326 grid: no empty cell beside DEPLOYS on desktop, and the folded
+     engine runs full width at the bottom instead of sitting as a peer. */
+  @media (min-width: 740px) {
+    .wall-mod[data-mod="engine"] { grid-column: 1 / -1; }
+  }
+  @media (min-width: 740px) and (max-width: 1023.98px) {
+    .wall-mod[data-mod="accepting"] { grid-column: span 2; }
+  }
+  @media (min-width: 1024px) {
+    .wall-mod[data-mod="deploys"] { grid-column: auto; }
+    .wall-mod[data-mod="speed"] { grid-column: 1 / -1; }
+  }
   .wall-builders-head::-webkit-details-marker { display: none; }
   .wall-builders-sub {
     font-family: var(--font-sans);
