@@ -68,6 +68,10 @@ const blogLd = {
         </li>
       ))}
     </ul>
+    <p class="ins-soft">
+      Want the same tests run on your own site? The <a href="/audit">free audit</a>
+      takes about a minute and asks for no email.
+    </p>
   </section>
 
   <Divider label="02" />
@@ -78,6 +82,19 @@ const blogLd = {
 <style>
   .ins-list { max-width: 760px; margin: 0 auto; padding: 16px 4px 8px; }
   .ins-list ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
+  .ins-soft {
+    margin: 18px 0 0;
+    font-family: var(--font-sans);
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--color-ash-400);
+  }
+  .ins-soft a {
+    color: var(--color-ash-100);
+    text-decoration: underline;
+    text-decoration-color: var(--copper-hairline);
+    text-underline-offset: 3px;
+  }
   .ins-card {
     background: var(--color-bg-card);
     border: 1px solid var(--copper-hairline);

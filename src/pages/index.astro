@@ -4,20 +4,18 @@ import Header from '../components/layout/Header.astro';
 import MobileMenu from '../components/layout/MobileMenu.astro';
 import Hero from '../components/sections/Hero.astro';
 import Tangle from '../components/sections/Tangle.astro';
-import Wall from '../components/sections/Wall.astro';
 import SelectedWork from '../components/sections/SelectedWork.astro';
 import LocalProofStrip from '../components/sections/LocalProofStrip.astro';
 import ServicesTeaser from '../components/sections/ServicesTeaser.astro';
 import AboutTeaser from '../components/sections/AboutTeaser.astro';
 import FaqQ1 from '../components/sections/FaqQ1.astro';
-import WorkshopStatus from '../components/sections/WorkshopStatus.astro';
 import Contact from '../components/sections/Contact.astro';
 import Divider from '../components/ui/Divider.astro';
 ---
 
 <BaseLayout
   title="Winters Code · Custom websites and apps for the Oregon coast"
-  description="Custom websites, apps, and tools for the Oregon coast. Help is just a text away. Bandon-based. Days for sites, weeks for apps. Real workshop, broadcasting live."
+  description="Custom websites, apps, and tools for Oregon coast businesses, built in Bandon. Sites from $1,750, starting at 3 business days. Help is just a text away."
 >
   <Fragment slot="head">
     <!-- Preload the hero stamp (homepage LCP element). Fetching during HTML
@@ -33,10 +31,6 @@ import Divider from '../components/ui/Divider.astro';
   <Divider label="WC" ariaLabel="The tangle, return to top" />
 
   <Tangle />
-
-  <Divider label="WC" ariaLabel="Workshop intro, return to top" />
-
-  <Wall />
 
   <Divider label="02" ariaLabel="Section 02, return to top" />
 
@@ -61,6 +55,4 @@ import Divider from '../components/ui/Divider.astro';
   <Divider label="06" ariaLabel="Section 06, return to top" />
 
   <Contact sectionNumber="06" />
-
-  <WorkshopStatus />
 </BaseLayout>

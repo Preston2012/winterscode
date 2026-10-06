@@ -1,6 +1,13 @@
 ---
 /**
- * /wall : the full live workshop broadcast.
+ * /wall : the shop, live. A proof locker, not a hire funnel (S326 DNA).
+ *
+ * S326: out of the header nav on Preston's ruling; reached from the footer,
+ * the homepage's Live from the shop card and the g l shortcut. A Text hire bar
+ * sits near the top. DEPLOYS, LIGHTHOUSE and SECURITY carry a plain caption
+ * for an owner who has never heard of either tool. The per-site A+ list sits
+ * behind "nerd details" under a one-line summary. ENGINE is folded into
+ * "For builders". The calendar slot leads with Text; Cal is the quiet second.
  *
  * Dense, Bloomberg-terminal aesthetic. Every section pulls from /api/workshop
  * (server-rendered with live data at build time, then refreshed client-side).
@@ -32,6 +39,9 @@ import Contact from '../components/sections/Contact.astro';
 import Breadcrumbs from '../components/ui/Breadcrumbs.astro';
 import { breadcrumbSchema } from '../lib/schema';
 import { WALL_SITES, RECENT_BUILDS } from '../lib/sites.ts';
+import { smsHref, bookHref } from '../lib/text-cta';
+
+const sms = smsHref(Astro.url.pathname);
 
 // Server-side fetch at build / SSR time. Failures fall back to safe defaults.
 // The page hydrates with these values, then client JS refreshes from the
@@ -109,6 +119,7 @@ const secRows = WALL_SITES.map((site) => {
   const score = got.score ?? (fb?.score ?? null);
   return { key: site.key, name: site.label, grade, score };
 });
+const secTop = secRows.filter((r) => r.grade === 'A+').length;
 
 // Engine memory format with thousands separator
 const memCount = (engine.memories ?? 0).toLocaleString();
@@ -117,8 +128,8 @@ const updatedAt = initialData?.updated_at ?? new Date().toISOString();
 ---
 
 <BaseLayout
-  title="The Wall · Workshop Broadcast · Winters Code"
-  description="Live broadcast from the workshop. Deploys, Lighthouse, security grade, engine state, and next consult slot. Refreshes when you focus the tab."
+  title="The Wall · Live from the shop · Winters Code"
+  description="Every site I build, measured live: Google Lighthouse scores, Mozilla Observatory security grades, and how often the shop pushes changes. Refreshes when you focus the tab."
 >
   <Fragment slot="head">
     <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema([
@@ -132,12 +143,20 @@ const updatedAt = initialData?.updated_at ?? new Date().toISOString();
   <Breadcrumbs items={[{ name: 'Home', path: '/' }, { name: 'The Wall', path: '/wall' }]} />
 
   <PageHero
-    eyebrow="The Wall · Workshop Broadcast"
+    eyebrow="The Wall · Live from the shop"
     h1="The shop, live."
     sub="Deploys pushed, sites measured, slots open. Everything happening right now, on one page."
     sub2="Refreshes when you focus the tab. The numbers are real, the sources are linked."
     showStamp={false}
   />
+
+  <section class="wall-hire" data-textbar-hide aria-label="Hire Preston">
+    <p class="wall-hire-text">
+      These are live numbers from sites I built and still run.
+      <span class="wall-hire-em">Want yours on this wall?</span>
+    </p>
+    <a href={sms} class="btn btn-primary wall-hire-btn">Text Preston</a>
+  </section>
 
   <section class="wall-grid" aria-label="Live workshop data">
     <div class="wall-status-bar">
@@ -157,6 +176,7 @@ const updatedAt = initialData?.updated_at ?? new Date().toISOString();
         <a class="wall-mod-source" href="https://github.com/Preston2012" target="_blank" rel="noopener">github ↗</a>
         <span class="wall-mod-badge" data-mod-source={deploys.source}>{deploys.source}</span>
       </header>
+      <p class="wall-cap">How often I push changes to the sites and apps I run. A number that keeps moving means the shop is working.</p>
       <div class="wall-mod-body">
         <div class="wall-stat-big">
           <span class="wall-stat-num" data-deploys-last>{deploys.last}</span>
@@ -183,6 +203,7 @@ const updatedAt = initialData?.updated_at ?? new Date().toISOString();
         <a class="wall-mod-source" href="https://pagespeed.web.dev/" target="_blank" rel="noopener">pagespeed ↗</a>
         <span class="wall-mod-badge" data-mod-source={lighthouse.source}>{lighthouse.source}</span>
       </header>
+      <p class="wall-cap">Google's own test, run on each site the way a phone sees it: 0 to 100 for speed, accessibility, search readiness and best practices. Most small-business sites land between 50 and 70.</p>
       <div class="wall-mod-body">
         <table class="wall-table" aria-label="Lighthouse scores per site, mobile">
           <thead>
@@ -217,28 +238,36 @@ const updatedAt = initialData?.updated_at ?? new Date().toISOString();
         <a class="wall-mod-source" href="https://developer.mozilla.org/en-US/observatory/analyze?host=winterscode.com" target="_blank" rel="noopener">observatory ↗</a>
         <span class="wall-mod-badge" data-mod-source={security.source}>{security.source}</span>
       </header>
+      <p class="wall-cap">Mozilla Observatory grades each site's security headers, the settings that tell a browser what a page may load and who may frame it. A+ is the top. It checks headers, not everything.</p>
       <div class="wall-mod-body">
-        <ul class="wall-sec-list" data-sec-rows>
-          {secRows.map((r) => (
-            <li class="wall-sec-row">
-              <span class="wall-sec-site">{r.name}</span>
-              <span class={`wall-sec-pill wall-sec-tier-${secTier(r.grade)}`} data-sec-grade-site={r.key}>{secLabel(r)}</span>
-            </li>
-          ))}
-        </ul>
+        <p class="wall-sec-summary"><strong data-sec-summary>{secTop} of {secRows.length}</strong> sites at A+ right now</p>
+        <details class="wall-nerd">
+          <summary class="wall-nerd-toggle">nerd details <span aria-hidden="true">&darr;</span></summary>
+          <ul class="wall-sec-list" data-sec-rows>
+            {secRows.map((r) => (
+              <li class="wall-sec-row">
+                <span class="wall-sec-site">{r.name}</span>
+                <span class={`wall-sec-pill wall-sec-tier-${secTier(r.grade)}`} data-sec-grade-site={r.key}>{secLabel(r)}</span>
+              </li>
+            ))}
+          </ul>
+        </details>
         <p class="wall-mod-detail">Mozilla Observatory · live · A+ is the top grade</p>
       </div>
     </article>
 
-    {/* MODULE 04. ENGINE */}
+    {/* MODULE 04. ENGINE, folded: for builders, not a reason to hire */}
     <article class="wall-mod" data-mod="engine">
-      <header class="wall-mod-head">
+      <details class="wall-builders">
+      <summary class="wall-mod-head wall-builders-head">
         <span class="wall-mod-num">04</span>
-        <h2 class="wall-mod-title">ENGINE</h2>
-        <a class="wall-mod-source" href="https://github.com/Preston2012/demi" target="_blank" rel="noopener">demi repo ↗</a>
+        <h2 class="wall-mod-title">FOR BUILDERS</h2>
+        <span class="wall-builders-sub">the memory engine</span>
         <span class="wall-mod-badge" data-mod-source={engine.source}>{engine.source}</span>
-      </header>
+        <span class="wall-builders-icon" aria-hidden="true">+</span>
+      </summary>
       <div class="wall-mod-body">
+        <a class="wall-builders-repo" href="https://github.com/Preston2012/demi" target="_blank" rel="noopener">demi repo ↗</a>
         <div class="wall-stat-big">
           <span class="wall-stat-num" data-engine-mem>{memCount}</span>
           <span class="wall-stat-label">demiurge memories</span>
@@ -255,6 +284,7 @@ const updatedAt = initialData?.updated_at ?? new Date().toISOString();
         </div>
         <p class="wall-mod-detail">Memory engine + AI workflow built in-house. Runs alongside my builds.</p>
       </div>
+      </details>
     </article>
 
     {/* MODULE 05. CALENDAR */}
@@ -269,8 +299,11 @@ const updatedAt = initialData?.updated_at ?? new Date().toISOString();
           <span class="wall-stat-num" data-cal-next>{calendar.next}</span>
           <span class="wall-stat-label">next available slot</span>
         </div>
-        <p class="wall-mod-detail">Consults are free in Bandon + Coos + Curry. Travel deposits credit on signing.</p>
-        <a class="wall-cta" href="/contact">book a consult →</a>
+        <p class="wall-mod-detail">Consults are free in Bandon, and free by video across Coos and Curry. In-person travel deposits credit on signing.</p>
+        <div class="wall-cal-actions">
+          <a class="wall-cta" href={sms}>Text me to grab it →</a>
+          <a class="wall-cal-quiet" href={bookHref} target="_blank" rel="noopener">or book it on Cal</a>
+        </div>
       </div>
     </article>
 
@@ -416,6 +449,11 @@ const updatedAt = initialData?.updated_at ?? new Date().toISOString();
                 el.textContent = typeof info.score === 'number' ? (info.grade + ' (' + info.score + ')') : info.grade;
                 el.className = 'wall-sec-pill wall-sec-tier-' + secTierOf(info.grade);
               });
+              // Recount the summary line from what is now on the page.
+              var pills = document.querySelectorAll('[data-sec-grade-site]');
+              var top = 0;
+              pills.forEach(function (p) { if (/^A\+/.test(p.textContent || '')) top++; });
+              setText('[data-sec-summary]', top + ' of ' + pills.length);
             }
             if (d.engine) {
               setText('[data-engine-mem]', (d.engine.memories || 0).toLocaleString());
@@ -447,6 +485,128 @@ const updatedAt = initialData?.updated_at ?? new Date().toISOString();
 </BaseLayout>
 
 <style>
+  /* ─── S326: Text hire bar near the top ─── */
+  .wall-hire {
+    max-width: 1200px;
+    margin: 4px auto 0;
+    padding: 14px 16px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px 20px;
+    background: var(--color-bg-card);
+    border: 1px solid var(--copper-hairline);
+    border-radius: var(--radius-card, 10px);
+  }
+  @media (min-width: 740px) { .wall-hire { padding: 16px 20px; } }
+  .wall-hire-text {
+    margin: 0;
+    flex: 1 1 280px;
+    font-family: var(--font-sans);
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--color-ash-300);
+  }
+  .wall-hire-em {
+    color: var(--color-ash-100);
+    font-family: var(--font-serif);
+    font-style: italic;
+  }
+  .wall-hire-btn { flex: none; touch-action: manipulation; }
+
+  /* ─── S326: plain captions for owners ─── */
+  .wall-cap {
+    margin: 0;
+    padding: 10px 16px 0;
+    font-family: var(--font-sans);
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--color-ash-300);
+    position: relative;
+    z-index: 1;
+  }
+  @media (min-width: 740px) { .wall-cap { padding: 12px 18px 0; } }
+
+  .wall-sec-summary {
+    margin: 0 0 6px;
+    font-family: var(--font-sans);
+    font-size: 14px;
+    color: var(--color-ash-300);
+  }
+  .wall-sec-summary strong { color: var(--color-wc-green); font-weight: 600; }
+  .wall-nerd { margin: 0 0 10px; }
+  .wall-nerd-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 44px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--color-ash-400);
+    cursor: pointer;
+    list-style: none;
+  }
+  .wall-nerd-toggle::-webkit-details-marker { display: none; }
+  .wall-nerd[open] .wall-nerd-toggle span { display: inline-block; transform: rotate(180deg); }
+  .wall-nerd-toggle:focus-visible,
+  .wall-builders-head:focus-visible {
+    outline: 2px solid var(--color-wc-green);
+    outline-offset: 2px;
+  }
+
+  /* ─── S326: ENGINE folded under For builders ─── */
+  .wall-builders-head {
+    cursor: pointer;
+    list-style: none;
+    min-height: 44px;
+    align-items: center;
+    border-bottom: none;
+  }
+  .wall-builders[open] .wall-builders-head { border-bottom: 1px solid var(--copper-hairline); }
+  .wall-builders-head .wall-mod-badge { margin-left: auto; }
+  .wall-builders-head::-webkit-details-marker { display: none; }
+  .wall-builders-sub {
+    font-family: var(--font-sans);
+    font-size: 12px;
+    color: var(--color-ash-400);
+  }
+  .wall-builders-icon {
+    font-family: var(--font-mono);
+    font-size: 15px;
+    color: var(--color-ash-400);
+    transition: transform 160ms;
+  }
+  .wall-builders[open] .wall-builders-icon { transform: rotate(45deg); }
+  .wall-builders-repo {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--color-ash-400);
+  }
+
+  .wall-cal-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 16px;
+    margin-top: 4px;
+  }
+  .wall-cal-quiet {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    font-family: var(--font-sans);
+    font-size: 13px;
+    color: var(--color-ash-300);
+    text-decoration: underline;
+    text-decoration-color: var(--copper-hairline);
+    text-underline-offset: 4px;
+  }
+
   .wall-grid {
     max-width: 1200px;
     margin: 0 auto;

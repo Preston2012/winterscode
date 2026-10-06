@@ -7,20 +7,28 @@ import Divider from '../components/ui/Divider.astro';
 import Breadcrumbs from '../components/ui/Breadcrumbs.astro';
 import Contact from '../components/sections/Contact.astro';
 import { breadcrumbSchema, faqSchema } from '../lib/schema';
+import TextCta from '../components/ui/TextCta.astro';
+
+// S326 DNA: one hub. The cost answer keeps the $1,750 floor and drops the
+// agency comparison (Pricing carries the one-line anchor), the speed answer
+// drops the product parade, the questionnaire is optional, and "just text"
+// in the hero is a real Text button. How do we start is the last question,
+// so the closing block's Text button lands right after it. One array feeds
+// the accordion and the FAQPage JSON-LD, so every edit is both.
 
 // One flat list powers both the FAQPage schema and the rendered accordion.
 const faqs = [
   {
     q: 'How much does a website cost?',
-    a: 'Agency quality without the agency price. National agencies typically start around $5,000 over 6+ weeks, and hourly freelancers run $2,500 and up over a month. A Winters Code site starts at $1,750 with everything included, live in days, and yours to keep. Bigger sites and apps are quoted; every project gets a free consult and a custom quote.',
+    a: 'A Winters Code site starts at $1,750 with everything included, and it is yours to keep. Bigger sites and apps are quoted: every project gets a free consult and a written quote that holds for 14 days. The full breakdown is on the pricing page.',
   },
   {
     q: 'How fast can you build it?',
-    a: 'Sites in days, apps in weeks. Sites start at 3 business days from the day you sign, and a bigger build gets its timeline in the quote. Apps run 2 to 16 weeks depending on scope. No agency runaround, no "next quarter."',
+    a: 'Sites in days, apps in weeks. Sites start at 3 business days, counted from the day I have what the build needs, and a bigger build gets its timeline in the quote. Apps run 2 to 16 weeks depending on scope. No agency runaround, no "next quarter."',
   },
   {
     q: 'Why not WordPress, Squarespace, or Wix?',
-    a: 'Those are mass-produced platforms: slower, plugin-dependent, and rented rather than owned. I audited 169 Coos County sites and the three platforms most businesses use averaged a D, an F, and a C on mobile speed. Mine is custom code, which loads faster, ranks better, stays secure, and belongs to you.',
+    a: 'Those are mass-produced platforms: slower, plugin-dependent, and rented rather than owned. I audited 169 Coos County sites: the three platforms most businesses use averaged 60, 48 and 60 out of 100 on mobile speed, and graded a D, an F and a C- on Mozilla Observatory\u2019s security-header check. Mine is custom code, which loads faster, ranks better, stays secure, and belongs to you.',
   },
   {
     q: 'Do I own the site, or am I renting it?',
@@ -32,7 +40,7 @@ const faqs = [
   },
   {
     q: 'What if I do not have photos or copy yet?',
-    a: 'I do most of the lift. A short questionnaire gets us started, and I can shoot real photos of your business and draft the copy for you to edit. No stock photography unless you want it.',
+    a: 'I do most of the lift. A text about what you have gets us started (there is a short questionnaire if you would rather write it out), and I can shoot real photos of your business and draft the copy for you to edit. No stock photography unless you want it.',
   },
   {
     q: 'Do you maintain the site after launch?',
@@ -40,15 +48,15 @@ const faqs = [
   },
   {
     q: 'What areas do you serve?',
-    a: 'Coos and Curry counties on the southern Oregon coast: Bandon, Coos Bay, North Bend, Coquille, Reedsport, Myrtle Point, Port Orford, Gold Beach, and the towns between. Bandon is home base, and most work happens remotely with in-person meetings where they help.',
+    a: 'The southern Oregon coast: Bandon, Coos Bay, North Bend, Coquille, Myrtle Point, Port Orford, Gold Beach and the towns between in Coos and Curry counties, plus Reedsport just north. Bandon is home base, and most work happens over text and video, with in-person meetings where they help.',
   },
   {
     q: 'How are you this fast?',
-    a: 'A modern stack (Astro, React, Flutter) and AI tooling I built myself, including a memory engine called Demiurge that remembers each project’s patterns so I am not relearning the same lessons. Three of my live products are AI, and the speed is real.',
+    a: 'A modern stack (Astro, React, Flutter), one person making every call, and AI tooling I built myself that keeps each project’s decisions on file, so nothing gets relearned between builds.',
   },
   {
     q: 'How do we start?',
-    a: 'A free consult, no pitch deck. Send a brief, book a call on Cal.com, or just text. We scope the project, I send a quote, and once it is signed the work starts that same week.',
+    a: 'With a text to 541-551-0731. Tell me what you need, and if it fits we set up a free consult, in person in Bandon or by video across Coos and Curry. I send a written quote, and once it is signed the work starts that same week. Calling works too, and so does a brief from the contact page if you would rather write it out.',
   },
 ];
 
@@ -77,12 +85,16 @@ const breadcrumbLd = breadcrumbSchema(crumbs);
   <PageHero
     eyebrow="FAQ"
     h1="Questions, answered."
-    sub="The ones every Oregon coast business asks before they reach out. If yours is not here, just text."
+    sub="The ones every Oregon coast business asks before they reach out."
     bgImage="/photo/local/scenes/links-dusk"
     showcase
     bgPosition="center 50%"
     textPos="split"
   />
+
+  <section class="faqp-text" aria-label="Text Preston">
+    <TextCta lead="If yours is not here, just text." links={[{ href: '/pricing', label: 'See pricing' }]} />
+  </section>
 
   <Divider label="01" />
 
@@ -106,6 +118,11 @@ const breadcrumbLd = breadcrumbSchema(crumbs);
 </BaseLayout>
 
 <style>
+  .faqp-text {
+    padding: 8px 4px 0;
+    max-width: 760px;
+    margin: 0 auto;
+  }
   .faqp {
     padding: 24px 4px 24px;
     max-width: 760px;

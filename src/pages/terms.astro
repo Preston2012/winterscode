@@ -2,6 +2,9 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Breadcrumbs from '../components/ui/Breadcrumbs.astro';
 import { breadcrumbSchema } from '../lib/schema';
+import { smsHref, phoneDisplay } from '../lib/text-cta';
+
+const sms = smsHref(Astro.url.pathname);
 
 const lastUpdated = '2026-05-13';
 ---
@@ -113,8 +116,8 @@ const lastUpdated = '2026-05-13';
 
       <h2 class="h2 legal-h2">Questions</h2>
       <p>
-        I'm a person. <a href="mailto:preston@winterscode.com">preston@winterscode.com</a>
-        gets me directly. Or text <a href="sms:5415510731">541-551-0731</a>.
+        I'm a person. Text <a href={sms}>{phoneDisplay}</a> and it gets me directly, or
+        email <a href="mailto:preston@winterscode.com">preston@winterscode.com</a>.
       </p>
     </div>
   </article>

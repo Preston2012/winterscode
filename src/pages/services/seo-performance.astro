@@ -23,8 +23,8 @@ const townLinks = towns.map((t) => ({ href: `/web-design-${t.slug}`, label: `${t
     "I measure, fix what the numbers point to, then measure again. <em>You see exactly what changed.</em>",
   ]}
   includes={[
-    { h: 'Core Web Vitals', body: 'Largest Contentful Paint, interaction latency, and layout shift, brought into the green where Google actually counts them.' },
-    { h: 'Speed optimization', body: 'Image compression, font loading, render-blocking resources, and caching. The fixes that turn a 5-second load into under one.' },
+    { h: 'The speed Google scores', body: 'How fast the main content shows up, how quickly a tap gets a response, and whether the page jumps while it loads, brought into the green where Google actually counts them.' },
+    { h: 'Speed optimization', body: 'Smaller images, faster fonts, less code holding the page up, and proper caching. The fixes that turn a 5-second load into under one.' },
     { h: 'On-page SEO', body: 'Titles, meta descriptions, headings, canonicals, and internal links, cleaned up and made unique on every page.' },
     { h: 'Structured data', body: 'Schema markup so search engines and AI overviews understand your business, your services, and your service area.' },
     { h: 'Security posture', body: 'HTTPS done right, a strict content security policy, and the header set that earns a top security grade instead of a bare lock icon.' },
@@ -34,17 +34,18 @@ const townLinks = towns.map((t) => ({ href: `/web-design-${t.slug}`, label: `${t
     {
       heading: 'The numbers from 169 local sites',
       body: [
-        'I audited <span class="stat">169</span> Coos County small-business websites with Google Lighthouse and Mozilla Observatory. Average mobile speed among the 96 that returned a score: <span class="stat">61/100</span>. <span class="stat">36%</span> scored an F on security despite having HTTPS. Only <span class="stat">2%</span> had a working sitemap. <span class="hl-copper">Zero</span> scored both fast and secure.',
+        'I audited <span class="stat">169</span> Coos County small-business websites with Google Lighthouse and Mozilla Observatory. Average mobile speed among the 96 that returned a score: <span class="stat">61/100</span>. <span class="stat">36%</span> scored an F on security headers, most of them despite having HTTPS. Only <span class="stat">2%</span> had a working sitemap. <span class="hl-copper">Zero</span> scored both fast and secure.',
         'That is not a knock on those businesses. It is an open lane. In a market where almost no one has done the work, <span class="hl-green">doing it well puts you ahead fast.</span>',
-        'This is also the bar I build to from scratch: around a <span class="stat">95</span> Lighthouse average and an <span class="hl-copper">A-plus</span> security grade on every site I ship. The optimization service brings an existing site toward the same bar.',
+        'This is also the bar I build to from scratch: around a <span class="stat">95</span> Lighthouse average and an <span class="hl-copper">A-plus</span> security grade on every site I build. The optimization service brings an existing site toward the same bar.',
       ],
     },
   ]}
   whyLink
+  textLinks={[{ href: '/audit', label: 'Run the free audit' }, { href: '/pricing', label: 'See pricing' }]}
   faq={[
     { q: 'How do I know if my site is slow?', a: 'Run it through my free audit tool, or I will. It checks speed, accessibility, SEO, and security on both mobile and desktop and shows you the same scores Google sees. Most local sites are surprised.' },
     { q: 'Can you fix my site, or do I need a rebuild?', a: 'Often I can fix the site you have: compress images, fix the metadata, tighten security, resolve layout shift. If the platform itself is the bottleneck, like a heavy page builder, a rebuild may cost less in the long run. The audit tells us which.' },
-    { q: 'Does SEO really matter in a small town?', a: 'More than in a city, because the competition is weaker. Local searches here are winnable fast. A fast, properly optimized site can rank for your town and service in weeks, not months.' },
+    { q: 'Does SEO really matter in a small town?', a: 'More than in a city, because the competition is thin: across the 169 Coos County sites I audited, the average mobile speed was 61 out of 100. Nobody can promise a ranking or a date, so I show you the scores on your own site before and after.' },
     { q: 'Will you prove it worked?', a: 'Yes. I measure Lighthouse and Observatory scores before I start and again when I finish, so the improvement is on paper, not just a promise.' },
   ]}
   relatedTitle="SEO and performance across the south coast"

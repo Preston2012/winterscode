@@ -33,12 +33,14 @@ const townLinks = towns.map((t) => ({ href: `/web-design-${t.slug}`, label: `${t
     {
       heading: 'I build my own software too',
       body: [
-        'This is not a service I picked up to fill a menu. I run my own products on custom software: <strong>Baseline</strong>, a multi-model intelligence dashboard, and <strong>Demiurge</strong>, a memory engine holding more than <span class="stat">2,500</span> records that powers everything I build.',
+        'This is not a service I picked up to fill a menu. I run my own products on custom software: <strong>Baseline</strong>, a multi-model intelligence dashboard, and <strong>Demiurge</strong>, the memory engine behind my own builds.',
         'So when I build a portal or a dashboard for your business, it is the same engineering I trust to run mine. <em>Built by hand, secure by default, maintained by the person who wrote it.</em>',
       ],
     },
   ]}
   whyLink
+  textLabel="Text me about your workflow"
+  textLinks={[{ href: '/process', label: 'How a build goes' }, { href: '/work', label: 'See the work' }]}
   faq={[
     { q: 'How do I know if I need custom software?', a: 'A good sign is when spreadsheets have become the system that runs the business, or when someone spends real hours moving data between apps that should talk to each other. If a tool would save those hours, it usually pays for itself.' },
     { q: 'Is this not too expensive for a small business?', a: 'It does not have to be. I scope to the one workflow that hurts most and build that first, so you get value fast instead of a giant project. Then we grow it only if the return is there.' },

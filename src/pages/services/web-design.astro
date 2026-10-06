@@ -36,15 +36,16 @@ const townLinks = towns.map((t) => ({
   whyTitle="Why custom, and the proof"
   why={[
     "Every web shop says the same line now: <em>we write code, not templates.</em> Fair enough. It is also what the out-of-area agencies say on the identical page they publish for four hundred other towns. So do not take the claim. Take the numbers.",
-    "I audited <span class='stat'>169</span> Coos County small-business websites with Google Lighthouse and Mozilla Observatory. Average mobile speed among the 96 that returned a score: <span class='stat'>61/100</span>. Not one scored both fast and secure. The three platforms most businesses rent from, WordPress, Squarespace, and Wix, averaged a <span class='hl-copper'>D, an F, and a C</span>. Custom code, the kind I build, averaged <span class='stat'>94</span> on mobile with an <span class='hl-copper'>A-plus</span> security grade.",
+    "I audited <span class='stat'>169</span> Coos County small-business websites with Google Lighthouse and Mozilla Observatory. Average mobile speed among the 96 that returned a score: <span class='stat'>61/100</span>. Not one scored both fast and secure. The three platforms most businesses rent from, WordPress, Squarespace, and Wix, averaged 60, 48 and 60 on mobile speed and graded a <span class='hl-copper'>D, an F, and a C-</span> on security headers. Custom code, the kind I build, averaged <span class='stat'>94</span> on mobile with an <span class='hl-copper'>A-plus</span> security grade.",
     "That gap is the whole opportunity. Most local sites are rented, not owned: slow, plugin-heavy, and breaking at 2 AM when something auto-updates. A fast, custom site does not just look better. It <span class='hl-green'>outranks the rented sites around it, and the phone rings.</span>",
     "And when something needs changing, you text the person who built it. <em>Not a ticket queue. Not a call center. Me.</em>",
   ]}
+  textLinks={[{ href: '/services', label: 'All services' }, { href: '/pricing', label: 'See pricing' }]}
   faq={[
-    { q: 'How long does a website take?', a: 'Sites start at 3 business days from the day you sign. A larger site gets its timeline in the quote. I work in days, not quarters.' },
-    { q: 'How does the build actually go?', a: 'Short version: questionnaire, then a consult, then a signed scope and deposit, then I build, then it goes live. The full step-by-step is on the <a href="/process">process page</a>.' },
+    { q: 'How long does a website take?', a: 'Sites start at 3 business days, counted from the day I have what the build needs. A larger site gets its timeline in the quote. I work in days, not quarters.' },
+    { q: 'How does the build actually go?', a: 'Short version: a text, then a consult, then a signed scope and deposit, then I build, then it goes live. The full step-by-step is on the <a href="/process">process page</a>.' },
     { q: 'Do you design on WordPress or a builder?', a: 'No. It is custom code. WordPress and builders are mass-produced software with plugins stacked on top: slower, plugin-dependent, and prone to breaking at 2 AM when something auto-updates. Custom code loads faster, ranks better, and stays secure.' },
-    { q: 'What if I do not have photos or copy yet?', a: 'I do most of the lift. A short questionnaire gets us started, and I can shoot real photos of your business and draft the copy for you to edit. No stock photography unless you want it.' },
+    { q: 'What if I do not have photos or copy yet?', a: 'I do most of the lift. A text about what you have gets us started (there is a short questionnaire if you would rather write it out), and I can shoot real photos of your business and draft the copy for you to edit. No stock photography unless you want it.' },
     { q: 'Will my site work on phones?', a: 'It is designed for phones first. On the Oregon coast most local searches happen on a phone over rural LTE, so sub-second mobile loads are the whole point, not an afterthought.' },
   ]}
   relatedTitle="Web design across Coos and Curry counties"

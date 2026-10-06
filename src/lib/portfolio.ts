@@ -75,6 +75,12 @@ export interface PortfolioItem {
    *  seventh entry in `links`. Without it the case studies were reachable
    *  from the footer and nowhere else. */
   caseStudy?: string;
+  /** S326 DNA: a site for one of Preston's own products. Proof he builds hard
+   *  things, never a peer to the coast client cards, so it stays out of the
+   *  Sites grid and is reached from its product's card under Apps. */
+  ownProduct?: boolean;
+  /** An app card's link to a related case page (Baseline's marketing site). */
+  relatedCase?: { href: string; label: string };
   /** False keeps the item out of every list until its domain is live. Default true. */
   published?: boolean;
   /** Display order within category, lower = first. */
@@ -85,6 +91,7 @@ export const portfolio: PortfolioItem[] = [
   // ─────────── SITES ───────────
   {
     slug: 'us-survey-supply',
+    caseStudy: '/work/us-survey-supply',
     numeral: 'i.',
     name: 'US Survey Supply',
     category: 'site',
@@ -92,7 +99,8 @@ export const portfolio: PortfolioItem[] = [
     tags: ['ASTRO', 'TAILWIND', 'CLOUDFLARE'],
     status: 'live',
     build: 'rebuild',
-    order: 1,
+    // S326 DNA order: Sogn, SeaBreeze, US Survey Supply lead, then the rest.
+    order: 3,
     // Published 2026-09-11 (S230). Gate condition met: ussurveysupply.com now
     // serves this build. Verified by fetching the authoritative Cloudflare
     // address directly, because the ops resolver still held the old host's A
@@ -120,7 +128,7 @@ export const portfolio: PortfolioItem[] = [
       {
         label: 'Result',
         value:
-          'Live and mobile-first. Mozilla Observatory A+ with a perfect 140, re-verified against the live domain on 2026-09-11. Lighthouse measured on the wall above.',
+          'Live and mobile-first. Mozilla Observatory A+, re-verified against the live domain on 2026-09-11, with the grade and Lighthouse both measured live on the wall.',
       },
     ],
     links: [
@@ -158,7 +166,7 @@ export const portfolio: PortfolioItem[] = [
       },
       {
         label: 'Result',
-        value: 'Live with real RMLS listings, mobile-first, measured on the wall above.',
+        value: 'Live with real RMLS listings, mobile-first, with Lighthouse and the security grade measured live on the wall.',
       },
     ],
     links: [
@@ -175,7 +183,7 @@ export const portfolio: PortfolioItem[] = [
     tags: ['ASTRO', 'TAILWIND', 'CLOUDFLARE'],
     status: 'live',
     build: 'rebuild',
-    order: 5,
+    order: 2,
     image: {
       src: '/work/seabreeze-card.webp',
       srcSmall: '/work/seabreeze-card-720.webp',
@@ -196,7 +204,7 @@ export const portfolio: PortfolioItem[] = [
       },
       {
         label: 'Result',
-        value: 'Live and mobile-first, with Lighthouse and an A+ security grade both measured live on the wall above.',
+        value: 'Live and mobile-first, with Lighthouse and an A+ security grade both measured live on the wall.',
       },
     ],
     links: [
@@ -205,6 +213,7 @@ export const portfolio: PortfolioItem[] = [
   },
   {
     slug: 'professors-golf',
+    caseStudy: '/work/professors-golf',
     numeral: 'iv.',
     name: 'Professors Golf',
     category: 'site',
@@ -233,7 +242,7 @@ export const portfolio: PortfolioItem[] = [
       },
       {
         label: 'Result',
-        value: 'Live and mobile-first, Mozilla Observatory A+ with a perfect 140, Lighthouse measured on the wall above.',
+        value: 'Live and mobile-first, with the Mozilla Observatory grade and Lighthouse both measured live on the wall.',
       },
     ],
     links: [
@@ -250,7 +259,7 @@ export const portfolio: PortfolioItem[] = [
     tags: ['NEXT.JS', 'VERCEL', 'TYPESCRIPT'],
     status: 'live',
     build: 'new',
-    order: 10,
+    order: 1,
     image: {
       src: '/work/sogn-card.webp',
       srcSmall: '/work/sogn-card-720.webp',
@@ -271,7 +280,11 @@ export const portfolio: PortfolioItem[] = [
       },
       {
         label: 'Result',
-        value: 'Lighthouse 95+ average across all four categories. Live, indexed, and earning local search visibility.',
+        value: 'Live and indexed, with Lighthouse at 95+ across all four categories, measured live on the wall.',
+      },
+      {
+        label: 'Upkeep',
+        value: '105 commits across six months, made by the same person who answers the phone.',
       },
     ],
     links: [
@@ -281,6 +294,7 @@ export const portfolio: PortfolioItem[] = [
   {
     slug: 'baseline-marketing',
     caseStudy: '/work/baseline-marketing',
+    ownProduct: true,
     numeral: 'v.',
     name: 'Baseline Marketing',
     category: 'site',
@@ -318,6 +332,7 @@ export const portfolio: PortfolioItem[] = [
   // ─────────── APPS ───────────
   {
     slug: 'baseline',
+    relatedCase: { href: '/work/baseline-marketing', label: 'How its marketing site was built' },
     numeral: 'iii.',
     name: 'Baseline',
     category: 'app',
@@ -512,7 +527,7 @@ export const portfolio: PortfolioItem[] = [
 ];
 
 export const sites = portfolio
-  .filter((p) => p.category === 'site' && p.published !== false)
+  .filter((p) => p.category === 'site' && p.published !== false && !p.ownProduct)
   .sort((a, b) => a.order - b.order);
 
 export const apps = portfolio

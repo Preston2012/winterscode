@@ -6,6 +6,8 @@ import PageHero from '../../components/sections/PageHero.astro';
 import Divider from '../../components/ui/Divider.astro';
 import Breadcrumbs from '../../components/ui/Breadcrumbs.astro';
 import Contact from '../../components/sections/Contact.astro';
+import { smsHref } from '../../lib/text-cta';
+const sms = smsHref(Astro.url.pathname);
 import { breadcrumbSchema, absUrl, BUSINESS_ID } from '../../lib/schema';
 
 const path = '/insights/coos-county-website-audit';
@@ -72,10 +74,11 @@ const articleLd = {
 
     <h2 class="ins-h">The headline number: zero</h2>
     <p>
-      Across all 169 sites, <strong>not a single one scored both fast and
-      secure.</strong> Not one. Speed and security are the two things that are
-      both measurable and fixable, and every business in the sample was missing
-      at least one.
+      Not one of the 169 sites earned an A from Mozilla Observatory, so
+      <strong>not a single one was both fast and secure.</strong> Of the 96 that
+      Lighthouse could score for speed, 11 reached 90 or better on mobile. Speed
+      and security are the two things that are both measurable and fixable, and
+      every business in the sample was missing at least one.
     </p>
 
     <h2 class="ins-h">Speed: 61 out of 100 among the sites we could score</h2>
@@ -93,10 +96,11 @@ const articleLd = {
     <p>
       On Mozilla Observatory, <strong>the highest security grade in the entire
       sample was a B, and not one site earned an A.</strong> Eighty-eight percent
-      had HTTPS, the basic lock icon in the address bar. Thirty-six percent still
-      scored an F, because the lock was the only thing they had: no real headers,
-      no content security policy, no defense behind it. A lock on the door is not
-      the same as locking it.
+      had HTTPS, the lock icon in the address bar, which encrypts the
+      connection. Thirty-six percent still scored an F, because Observatory
+      grades the security headers behind the lock, such as a content security
+      policy, and those were missing. Observatory reads headers; it is not a
+      penetration test.
     </p>
 
     <h2 class="ins-h">SEO basics: 2 percent</h2>
@@ -119,14 +123,16 @@ const articleLd = {
         src="/insights/rental-platforms-800.webp"
         srcset="/insights/rental-platforms-800.webp 800w, /insights/rental-platforms-1200.webp 1200w"
         sizes="(min-width: 740px) 640px, 100vw"
-        alt="The three platforms most local businesses rent from: WordPress 63 sites at grade D, Squarespace 13 sites at grade F, Wix 10 sites at grade C, versus custom code averaging 94 on mobile with an A-plus security grade."
+        alt="The three platforms most local businesses rent from: WordPress, 63 sites, security grade D; Squarespace, 13 sites, security grade F; Wix, 10 sites, security grade C-; versus custom code averaging 94 on mobile with an A-plus security grade."
         width="1200" height="1500" loading="lazy" decoding="async"
       />
       <figcaption>Custom code versus the three platforms most local businesses rent from.</figcaption>
     </figure>
 
     <p>
-      The three rental platforms averaged a <span class='hl-copper'>D, an F, and a C</span>.
+      On Mozilla Observatory's security-header grade, the three rental platforms
+      averaged a <span class='hl-copper'>D, an F, and a C-</span>, and on mobile
+      speed they averaged 60, 48 and 60 out of 100.
       The Squarespace sites clustered together near the bottom, and the Wix
       sites landed within a few points of one another. Templated software tends
       to produce templated results. For comparison, the custom-coded sites I build, and the
@@ -139,13 +145,17 @@ const articleLd = {
       This is not a knock on any of these businesses. <span class='hl-green'>It is an open lane.</span> In a
       market where almost no one has done the work, doing it well puts you ahead
       fast. A site that loads in under a second, earns a real security grade, and
-      has clean SEO can outrank nearly everything around it locally, often within
-      weeks, because the competition simply is not trying.
+      has clean SEO starts ahead of nearly everything around it locally, because
+      the competition simply is not trying.
     </p>
     <p>
       You do not have to take my word for where your own site stands. The same
       checks I used are built into a free tool on this site.
       <a href="/audit" class="ins-link">Run a free audit of your site →</a>
+    </p>
+    <p>
+      Or <a href={sms} class="ins-link">text me your address</a> and I will tell
+      you what I see.
     </p>
 
     <p class="ins-note">

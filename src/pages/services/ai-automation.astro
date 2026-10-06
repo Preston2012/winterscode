@@ -9,16 +9,16 @@ const townLinks = towns.map((t) => ({ href: `/web-design-${t.slug}`, label: `${t
 <ServiceLayout
   service={service}
   title="AI Automation & Integration · Winters Code"
-  description="Practical AI automation for Oregon coast businesses. Intake, replies, lead routing, and integrations that save real hours. Built by a shop that ships AI apps."
+  description="Practical AI automation for Oregon coast businesses. Intake, replies, lead routing, and integrations that save real hours. Built by a shop that builds its own AI apps."
   eyebrow="Services · AI Automation"
   h1="Practical AI, not the buzzword kind."
   sub="Automating the busywork: intake, replies, lead routing, and the handoffs between tools you already use."
-  sub2="Built by a shop that ships real AI products."
+  sub2="Built by a shop that builds its own AI products."
   bgImage="/photo/local/dunes-sunset"
   showcase
   heroFocal="center 46%"
   intro={[
-    "Most AI pitches are vague. Mine is not, because I ship AI for a living. I start with one question: <em>which repetitive task is eating your week?</em> Then I automate that one thing well, prove it saves hours, and move to the next.",
+    "Most AI pitches are vague. Mine is not, because I build AI for a living. I start with one question: <em>which repetitive task is eating your week?</em> Then I automate that one thing well, prove it saves hours, and move to the next.",
     "Not a chatbot that annoys your customers. Quiet systems that handle intake, route leads, draft replies, and keep your tools in sync while you do <span class='hl-green'>the work only you can do.</span>",
   ]}
   includes={[
@@ -33,16 +33,18 @@ const townLinks = towns.map((t) => ({ href: `/web-design-${t.slug}`, label: `${t
     {
       heading: 'A shop that builds AI, not just buys it',
       body: [
-        '<strong>StainSlayer AI</strong> identifies a stain from a photo and is live on both app stores. <strong>Baseline</strong> runs Claude, GPT, and Grok in parallel and treats their disagreement as the signal. <strong>Demiurge</strong> is a memory engine I built that holds more than <span class="stat">2,500</span> memories and powers the MyKonos companion.',
+        '<strong>StainSlayer AI</strong> identifies a stain from a photo and is live on both app stores. <strong>Baseline</strong> runs Claude, GPT, and Grok in parallel and treats their disagreement as the signal. <strong>Demiurge</strong> is the memory engine I built to run my own work.',
         'That is the difference between a shop that uses AI and one that builds it. <em>When I automate your intake or wire your tools together, it is the same engineering, pointed at your business.</em>',
       ],
     },
   ]}
   whyLink
+  textLabel="Text me the task eating your week"
+  textLinks={[{ href: '/work', label: 'See the work' }]}
   faq={[
     { q: 'Is this just a chatbot?', a: 'No. Chatbots are the smallest, often worst, use of AI. The valuable work is quiet: sorting intake, routing leads, drafting replies, and keeping your tools in sync. The customer usually never sees it; they just get a faster response.' },
     { q: 'Will AI replace the personal touch my customers expect?', a: 'It should protect it. Automating the busywork gives you back the hours to actually talk to people. AI handles the sorting and drafting; you keep the relationship.' },
-    { q: 'Do you actually build AI, or just resell a tool?', a: 'I build it. Three of my live products are AI: StainSlayer, Baseline, and MyKonos, running on a memory engine I wrote called Demiurge. This is my core strength, not a reseller add-on.' },
+    { q: 'Do you actually build AI, or just resell a tool?', a: 'I build it. Three of my own products are AI: StainSlayer, live on both app stores, and Baseline and MyKonos, in private beta. This is my core strength, not a reseller add-on.' },
     { q: 'Where do we start?', a: 'With the one task eating the most time. I automate that, prove it saves hours, then expand only where the return is real. No giant rip-and-replace.' },
   ]}
   relatedTitle="AI automation across the Oregon coast"

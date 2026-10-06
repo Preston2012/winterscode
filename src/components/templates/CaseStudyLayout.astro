@@ -14,6 +14,12 @@
  *   a case study that only asserts quality is a page of adjectives.
  *
  *   SECTIONS. Optional named blocks between the build table and the quote.
+ *
+ * S326 DNA. Text is the climax, not Visit: a Text block right after the
+ * stats band, and the page's ending is "Text me about a build like this" with
+ * the live site as a quiet secondary link. The build table leads with what
+ * the work did (scope, result) and puts the stack last, because the reader is
+ * an owner deciding whether to text, not a developer auditing the stack.
  *   The two original case studies measured 200 and 240 unique text shingles
  *   after boilerplate removal, the thinnest content pages on the site outside
  *   the blog index. A hero, three paragraphs and a definition list is not
@@ -28,11 +34,13 @@ import PageHero from '../sections/PageHero.astro';
 import Divider from '../ui/Divider.astro';
 import RelatedLinks from '../sections/RelatedLinks.astro';
 import Contact from '../sections/Contact.astro';
+import TextCta from '../ui/TextCta.astro';
 import { portfolio } from '../../lib/portfolio';
 import type { PortfolioItem } from '../../lib/portfolio';
 import { breadcrumbSchema, absUrl, BUSINESS_ID } from '../../lib/schema';
 
 interface RelatedLink { href: string; label: string; sub?: string }
+interface EndLink { href: string; label: string; external?: boolean }
 interface Stat { value: string; label: string }
 interface Section { h: string; body: string[] }
 interface Props {
@@ -49,14 +57,26 @@ interface Props {
   /** Named blocks after the build table. */
   sections?: Section[];
   relatedLinks: RelatedLink[];
+  /** Quiet links beside the closing Text button. Default: the live site, then pricing. */
+  endLinks?: EndLink[];
 }
 
 const {
   slug, title, description, eyebrow, h1, sub,
-  intro, stats = [], sections = [], relatedLinks,
+  intro, stats = [], sections = [], relatedLinks, endLinks,
 } = Astro.props;
 const item = portfolio.find((p) => p.slug === slug) as PortfolioItem;
 const path = `/work/${slug}`;
+
+// Outcome first: scope and result before the stack.
+const details = [...item.details].sort(
+  (a, b) => Number(a.label === 'Stack') - Number(b.label === 'Stack'),
+);
+const visit = item.links.find((l) => l.primary) ?? item.links[0];
+const closing: EndLink[] = endLinks ?? [
+  ...(visit ? [{ href: visit.href, label: 'Visit the live site', external: true }] : []),
+  { href: '/pricing', label: 'See pricing' },
+];
 
 const crumbs = [
   { name: 'Home', path: '/' },
@@ -124,12 +144,18 @@ const nx = () => String(++n).padStart(2, '0');
     </section>
   )}
 
+  {stats.length > 0 && (
+    <section class="cs-block cs-cta" aria-label="Text Preston">
+      <TextCta links={[{ href: '/pricing', label: 'See pricing' }]} />
+    </section>
+  )}
+
   <Divider label={nx()} />
 
   <section class="cs-block" aria-labelledby="cs-build-h">
     <h2 class="cs-h" id="cs-build-h">The build</h2>
     <dl class="cs-details">
-      {item.details.map((d) => (
+      {details.map((d) => (
         <div class="cs-row">
           <dt>{d.label}</dt>
           <dd>{d.value}</dd>
@@ -160,13 +186,9 @@ const nx = () => String(++n).padStart(2, '0');
     </>
   )}
 
-  {item.links.length > 0 && (
-    <section class="cs-links">
-      {item.links.map((l) => (
-        <a href={l.href} class={`cs-link${l.primary ? ' primary' : ''}`} target="_blank" rel="noopener">{l.label}</a>
-      ))}
-    </section>
-  )}
+  <section class="cs-block cs-end" aria-label="Text Preston about a build like this">
+    <TextCta label="Text me about a build like this" about={item.name} links={closing} />
+  </section>
 
   <Divider label={nx()} />
 
@@ -205,12 +227,19 @@ const nx = () => String(++n).padStart(2, '0');
     margin: 4px auto 0;
     padding: 0 4px;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    /* Two columns on phones and small tablets, with an odd last stat spanning
+       the row, so a three-stat band never leaves an empty hairline cell. */
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 1px;
     background: var(--copper-hairline);
     border: 1px solid var(--copper-hairline);
     border-radius: var(--radius-card, 10px);
     overflow: hidden;
+  }
+  .cs-stat:last-child:nth-child(odd) { grid-column: 1 / -1; }
+  @media (min-width: 740px) {
+    .cs-stats { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }
+    .cs-stat:last-child:nth-child(odd) { grid-column: auto; }
   }
   .cs-stat {
     background: var(--color-bg-card);
@@ -288,36 +317,4 @@ const nx = () => String(++n).padStart(2, '0');
     letter-spacing: 0.06em;
     color: var(--color-copper);
   }
-
-  .cs-links { max-width: 720px; margin: 18px auto 0; padding: 0 4px; display: flex; flex-wrap: wrap; gap: 10px; }
-  .cs-link {
-    /* 44px touch minimum (G-027), S245 site-wide sweep. Negative margin holds
-       the original layout so the measured box is the tappable box. */
-    display: inline-flex;
-    align-items: center;
-    min-height: 44px;
-    margin: -12px 0;
-    font-family: var(--font-sans);
-    font-size: 14px;
-    color: var(--color-wc-green);
-    border: 1px solid var(--color-wc-green-dim, rgba(77, 216, 168, 0.4));
-    border-radius: 6px;
-    padding: 9px 14px;
-    text-decoration: none;
-    transition: background-color 0.15s ease, color 0.15s ease;
-  }
-  .cs-link.primary { background: rgba(77, 216, 168, 0.08); }
-  .cs-link:focus-visible {
-    background-color: var(--color-wc-green);
-    color: var(--color-bg-deep);
-    outline: none;
-  }
-
-  @media (hover: hover) {
-
-    .cs-link:hover {
-    background-color: var(--color-wc-green);
-    color: var(--color-bg-deep);
-    outline: none;
-  }}
 </style>

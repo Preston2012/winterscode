@@ -17,6 +17,7 @@ import PageHero from '../sections/PageHero.astro';
 import Divider from '../ui/Divider.astro';
 import RelatedLinks from '../sections/RelatedLinks.astro';
 import Contact from '../sections/Contact.astro';
+import TextCta from '../ui/TextCta.astro';
 import type { ServiceEntry } from '../../lib/business';
 import { serviceSchema, breadcrumbSchema, faqSchema } from '../../lib/schema';
 
@@ -70,6 +71,10 @@ interface Props {
   why?: string[];
   /** When true, show a one-line link to the canonical /process page. */
   processLink?: boolean;
+  /** S326: quiet links beside the Text button that follows the sections. */
+  textLinks?: { href: string; label: string }[];
+  /** S326: the Text button's words. Default "Text Preston". */
+  textLabel?: string;
   faq: Faq[];
   relatedTitle?: string;
   relatedIntro?: string;
@@ -102,6 +107,8 @@ const {
   whyLink = false,
   why = [],
   processLink = false,
+  textLinks = [{ href: '/pricing', label: 'See pricing' }, { href: '/work', label: 'See the work' }],
+  textLabel,
   faq,
   relatedTitle = 'Serving the Oregon coast',
   relatedIntro,
@@ -220,9 +227,15 @@ const faqLd = faq.length ? faqSchema(faq) : null;
 
   {processLink && (
     <section class="svc-block svc-inline-link">
-      <p class="svc-section-p">Every build follows the same clear path, from questionnaire to launch. <a href="/process">See exactly how it goes</a>.</p>
+      <p class="svc-section-p">Every build follows the same clear path, from the first text to launch. <a href="/process">See exactly how it goes</a>.</p>
     </section>
   )}
+
+  <section class="svc-block svc-cta" aria-label="Text Preston">
+
+    <TextCta label={textLabel} links={textLinks} />
+
+  </section>
 
   {faq.length > 0 && (
     <>

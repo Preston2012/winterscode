@@ -7,7 +7,7 @@ import CaseStudyLayout from '../../components/templates/CaseStudyLayout.astro';
   description="A Bandon contractor off WordPress in seven days: six service pages instead of one, 46 real job photos, and no JavaScript framework loaded on any page."
   eyebrow="Work · Case Study"
   h1="Off WordPress in seven days."
-  sub="A licensed Bandon landscape-care and home-repair contractor, rebuilt from the ground up. Six service pages instead of one, and not a single framework file loaded."
+  sub="A licensed Bandon landscape-care and home-repair contractor, rebuilt from the ground up. Six service pages instead of one, and no framework or plugin JavaScript on any page."
   intro={[
     "SeaBreeze is a licensed general contractor, landscape contractor and pesticide operator working Bandon and the South Coast. Stacy Winters founded the LLC in 2023 on the back of thirty-plus years of building, landscaping and repair, and the crew does everything from monthly lawn care to full remodels. Stacy is my dad.",
     "The old site was WordPress, and it had the problem almost every contractor site has: <span class='hl-copper'>one page called Services</span> with everything on it. Landscaping, decks, drainage, remodels, gutters, hauling, all in one list. A page like that can only ever rank for one thing, and it is usually the wrong thing.",
@@ -17,7 +17,7 @@ import CaseStudyLayout from '../../components/templates/CaseStudyLayout.astro';
     { value: '7', label: 'business days, kickoff to live' },
     { value: '6', label: 'service pages, one per trade' },
     { value: '46', label: 'real job photos, no stock' },
-    { value: '0', label: 'framework files loaded' },
+    { value: '2', label: 'outside scripts, both Cloudflare' },
   ]}
   sections={[
     {
@@ -37,8 +37,8 @@ import CaseStudyLayout from '../../components/templates/CaseStudyLayout.astro';
     {
       h: 'What the pages do not load',
       body: [
-        "Across all fourteen pages the site requests <span class='stat'>zero</span> external JavaScript files. The one exception is the Cloudflare Turnstile widget on the contact form, which is there to keep the estimate form from filling up with spam. Everything else the site does, it does with the HTML and CSS it already sent.",
-        "That is not a stunt, it is what removing WordPress buys you. No plugin stack, no jQuery, no page builder shipping its own runtime to every visitor. Photos load as WebP at the size the screen actually needs. The result is <span class='hl-green'>a contractor site that opens instantly on a phone with two bars in the Coquille valley</span>, which is where most of these visitors are.",
+        "Across all fourteen pages the site loads <span class='stat'>no</span> framework or plugin JavaScript. The only outside scripts are Cloudflare's own: the Turnstile spam check where there is an estimate form, and the page-view counter. Everything else the site does, it does with the HTML and CSS it already sent.",
+        "That is not a stunt, it is what removing WordPress buys you. No plugin stack, no jQuery, no page builder shipping its own runtime to every visitor. Photos load as WebP at the size the screen actually needs. The result is <span class='hl-green'>a contractor site built to open fast on a phone with two bars in the Coquille valley</span>, which is where most of these visitors are.",
         "The security grade is A+ on Mozilla Observatory and the Lighthouse numbers are measured live, not quoted from a screenshot. Both are on <a href='/wall'>the wall</a>.",
       ],
     },

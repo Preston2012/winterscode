@@ -2,8 +2,10 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Breadcrumbs from '../components/ui/Breadcrumbs.astro';
 import { breadcrumbSchema } from '../lib/schema';
+import { smsHref, phoneDisplay } from '../lib/text-cta';
+const sms = smsHref(Astro.url.pathname);
 
-const lastUpdated = '2026-05-13';
+const lastUpdated = '2026-10-05';
 ---
 
 <BaseLayout
@@ -38,14 +40,30 @@ const lastUpdated = '2026-05-13';
       <h2 class="h2 legal-h2">What I collect</h2>
       <p>
         <strong>When you contact me:</strong> name, email, phone if you share it, business name,
-        and whatever project details you write in the brief. That's it. No hidden fields.
+        city, industry, project type, and whatever you write in the brief. Stored with it: the
+        IP address, country and referring page the request came from, which the site uses to
+        keep spam out. A text or a call reaches my phone like any other.
       </p>
       <p>
         <strong>When you visit the site:</strong> Cloudflare (my host) logs standard server stuff
         like IP address, browser, and referrer. No Google Analytics. No Facebook Pixel. No
-        third-party advertising trackers. No cross-site cookies. The site is built to be
-        watchable without watching you.
+        advertising trackers. No cross-site cookies.
       </p>
+
+      <h2 class="h2 legal-h2">What this site loads, and where your words go</h2>
+      <ul class="legal-list">
+        <li><strong>Every page:</strong> Cloudflare hosts it, and Cloudflare Web Analytics counts page
+          views with a small script from static.cloudflareinsights.com. It sets no cookies.</li>
+        <li><strong>The brief form on /contact:</strong> Cloudflare Turnstile, from
+          challenges.cloudflare.com, checks for spam. A brief you send is stored in my Cloudflare
+          account and a copy is emailed to me.</li>
+        <li><strong>The free audit on /audit:</strong> the address you enter goes from my server to
+          Google PageSpeed Insights and Mozilla Observatory, which score it. Results are kept for six
+          hours so a repeat check is quick, and your IP address counts toward a daily limit.</li>
+        <li><strong>The MyKonos chat demo:</strong> what you type, and your IP address for its five
+          messages a day, goes to my own server, which runs it through an AI model provider.</li>
+        <li><strong>Cal.com, email and text:</strong> those open only when you tap them.</li>
+      </ul>
 
       <h2 class="h2 legal-h2">What I do with it</h2>
       <p>
@@ -64,10 +82,9 @@ const lastUpdated = '2026-05-13';
 
       <h2 class="h2 legal-h2">Third parties I rely on</h2>
       <p>
-        Cloudflare hosts the site and DNS. Stripe processes payments (cards never touch my
-        servers). Supabase or similar managed backends run client apps when contracted.
-        Each one has its own privacy policy. They're the giants doing the heavy lifting.
-        Same names a Fortune 500 would use, same protections.
+        Cloudflare hosts the site and DNS, checks forms for spam and counts page views. Supabase or similar managed backends
+        run client apps when contracted. Google and Mozilla score the sites people run through
+        the audit. Each one has its own privacy policy.
       </p>
 
       <h2 class="h2 legal-h2">Your rights</h2>
@@ -98,8 +115,8 @@ const lastUpdated = '2026-05-13';
 
       <h2 class="h2 legal-h2">Questions</h2>
       <p>
-        I'm a person. <a href="mailto:preston@winterscode.com">preston@winterscode.com</a>
-        gets me directly. Or text <a href="sms:5415510731">541-551-0731</a>. Or just stop me
+        I'm a person. Text <a href={sms}>{phoneDisplay}</a> and it reaches me directly, or email
+        <a href="mailto:preston@winterscode.com">preston@winterscode.com</a>. Or just stop me
         on the street in Bandon.
       </p>
     </div>

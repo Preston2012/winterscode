@@ -22,9 +22,10 @@ import { smsHref, telHref, phoneDisplay } from '../../lib/text-cta';
 const { homepage = false } = Astro.props;
 const sms = smsHref(Astro.url.pathname);
 
-// Primary nav. The Wall joined it at S168 on Preston's ruling and leaves it in
-// the S326 Text-first preview: it stays one tap away in the footer, the home
-// teaser and the g l shortcut. Order matches the homepage emotional arc.
+// Primary nav. The Wall joined it at S168 on Preston's ruling and left it at
+// S326, again on Preston's ruling ("Keep it out", 2026-10-05): it stays one tap
+// away in the footer, the homepage's Live from the shop card and the g l
+// shortcut. Order matches the homepage emotional arc.
 const navItems = [
   { href: '/work',     label: 'Work',     num: '01' },
   { href: '/services', label: 'Services', num: '02' },

@@ -10,8 +10,17 @@
  *   01 SITES GRID   : every site in portfolio.ts, live Lighthouse per card
  *   02 APPS GRID    : 4 cards (Baseline, StainSlayer, ChopLight, Demi+MyKonos)
  *   03 BRANDING     : the graphic board, added S230 so the proof pages carry it
- *   03 PROCESS      : 3-step (questionnaire + consult, SOW + 50%, live in days)
- *   04 CONTACT      : reusable section
+ *   04 PROCESS      : 3-step (a text and a consult, SOW + 50%, live in days)
+ *   05 CONTACT      : reusable section
+ *
+ * S326 DNA. Each site card's primary is "Text me about a build like this"
+ * (prefilled with the project name); the case study and the live site are
+ * quiet links after it. Scores paint with the last known reads from
+ * src/lib/sites.ts instead of "measuring...", then the live fetch replaces
+ * them. One explainer per section instead of the same essay on every card.
+ * Order is Sogn, SeaBreeze, US Survey Supply first (portfolio.ts order).
+ * Baseline Marketing left the Sites grid: it is Preston's own product site,
+ * reached from the Baseline card under Apps. The MyKonos demo opens on tap.
  *
  * Each card has expand-to-detail: click reveals stack + scope + result
  * rows, app store / play store / visit-site links, optional pull quote.
@@ -25,6 +34,8 @@ import PageHero from '../components/sections/PageHero.astro';
 import Divider from '../components/ui/Divider.astro';
 import Contact from '../components/sections/Contact.astro';
 import { sites, apps, brand } from '../lib/portfolio.ts';
+import { SITES, fmtGrade } from '../lib/sites.ts';
+import { smsAboutHref } from '../lib/text-cta';
 import Explainer from '../components/ui/Explainer.astro';
 import Instrument from '../components/sections/Instrument.astro';
 import Breadcrumbs from '../components/ui/Breadcrumbs.astro';
@@ -35,6 +46,17 @@ const crumbs = [
   { name: 'Work', path: '/work' },
 ];
 const breadcrumbLd = breadcrumbSchema(crumbs);
+
+// First paint shows the last real reads (dated in sites.ts), never "measuring".
+const LH_LABELS = ['perf', 'a11y', 'seo', 'best'];
+const lhTier = (n: number) => (n >= 90 ? 'good' : n >= 50 ? 'ok' : 'low');
+const secTier = (g: string) => {
+  const c = g.charAt(0);
+  return c === 'A' ? 'good' : c === 'B' || c === 'C' ? 'ok' : 'low';
+};
+const measuredSite = (slug: string) => SITES.find((s) => s.portfolioSlug === slug);
+const visitOf = (p: { links: { label: string; href: string; primary?: boolean }[] }) =>
+  p.links.find((l) => l.primary) ?? p.links[0];
 
 // ItemList over the real published portfolio. Position follows the order the
 // page renders, and each entry points at its case study when it has one, so
@@ -59,7 +81,7 @@ const workLd = {
 
 <BaseLayout
   title="Work · Winters Code"
-  description="Sites and apps I've built. Live Lighthouse on every site. One app on the stores, three in beta. Days for sites, weeks for apps."
+  description="Sites and apps I've built for Oregon coast businesses, with live Lighthouse and security grades on every site. Sites start at 3 business days."
 >
   <Fragment slot="head">
     <script type="application/ld+json" set:html={JSON.stringify(breadcrumbLd)} />
@@ -71,7 +93,7 @@ const workLd = {
   <Breadcrumbs items={crumbs} />
 
   <PageHero
-    eyebrow="WORK · SITES + APPS"
+    eyebrow="WORK · SITES, THEN APPS"
     h1="Sites and apps I've built."
     sub="Sites live and serving traffic, Lighthouse measured on every one, live. One app live on App Store and Play Store, three more in private beta. Scores and build durations from real data."
     sub2="I design and I build, end to end."
@@ -83,7 +105,7 @@ const workLd = {
       <li><span class="wk-ix-num">01</span><span class="wk-ix-name">Sites</span><span class="wk-ix-meta">Live Lighthouse</span></li>
       <li><span class="wk-ix-num">02</span><span class="wk-ix-name">Mobile apps</span><span class="wk-ix-meta">iOS &amp; Android</span></li>
       <li><span class="wk-ix-num">03</span><span class="wk-ix-name">Branding</span><span class="wk-ix-meta">logos and brand marks</span></li>
-      <li><span class="wk-ix-num">03</span><span class="wk-ix-name">How I work</span><span class="wk-ix-meta">Days, not weeks</span></li>
+      <li><span class="wk-ix-num">04</span><span class="wk-ix-name">How I work</span><span class="wk-ix-meta">Days, not weeks</span></li>
     </ol>
   </nav>
 
@@ -98,7 +120,7 @@ const workLd = {
         <span class="wk-meta">
           live Lighthouse on every one
           <Explainer label="?">
-            Each card below shows real-time Lighthouse scores, fetched fresh. No screenshots, no hard-coded numbers. If a score drops on a client site I built, you'll see it here.
+            Each card shows two measurements, refreshed from the live site when this page loads (the last known numbers show until then). Lighthouse is Google's own test, 0 to 100 each for speed, accessibility, search readiness and best practices, on mobile, the harder test. Mozilla Observatory grades a site's security headers, A+ at the top; it is a header check, not a full security test. If a score drops on a client site I built, you'll see it here.
           </Explainer>
         </span>
       </div>
@@ -114,15 +136,13 @@ const workLd = {
           >
             <div class="wk-body">
               <div class="wk-title-row">
-                <h3 class="wk-title">{p.slug === 'demiurge-mykonos' ? p.name : <a class="wk-title-link" href={(p.links.find((l) => l.primary) ?? p.links[0])?.href} target="_blank" rel="noopener">{p.name}</a>}</h3>
-                {p.slug !== 'demiurge-mykonos' && (
-                  <span class={`wk-status wk-status-${p.status}`}>
-                    {p.status.toUpperCase()}
-                  </span>
-                  <span class={`wk-status wk-build-${p.build}`}>
-                    {p.build === 'rebuild' ? 'REBUILD' : 'NEW BUILD'}
-                  </span>
-                )}
+                <h3 class="wk-title">{p.caseStudy ? <a class="wk-title-link" href={p.caseStudy}>{p.name}</a> : <a class="wk-title-link" href={visitOf(p)?.href} target="_blank" rel="noopener">{p.name}</a>}</h3>
+                <span class={`wk-status wk-status-${p.status}`}>
+                  {p.status.toUpperCase()}
+                </span>
+                <span class={`wk-status wk-build-${p.build}`}>
+                  {p.build === 'rebuild' ? 'REBUILD' : 'NEW BUILD'}
+                </span>
               </div>
               <p class="wk-meta-line">{p.meta}</p>
 
@@ -137,38 +157,31 @@ const workLd = {
                 data-lh-site={p.slug}
                 aria-live="polite"
               >
-                <span class="wk-lh-label">
-                  LIGHTHOUSE
-                  <Explainer label="?">
-                    Google's own score for any website. Four numbers, 0 to 100 each: speed, accessibility, how well Google can read the page, and security. 100 is perfect. Most small-business sites score 50-70. These numbers re-measure on every load. Scores shown are mobile (the harder test). Desktop usually runs 2 to 5 points higher.
-                  </Explainer>
-                </span>
+                <span class="wk-lh-label">LIGHTHOUSE</span>
                 <span class="wk-lh-scores" data-lh-scores>
-                  <span class="wk-lh-pending">measuring...</span>
+                  {measuredSite(p.slug)?.lhFallback
+                    ? measuredSite(p.slug)!.lhFallback!.map((n, i) => (
+                        <span class={`wk-lh-pill wk-lh-pill-${lhTier(n)}`}>{LH_LABELS[i]} {n}</span>
+                      ))
+                    : <span class="wk-lh-pending">not measured yet</span>}
                 </span>
-                <span class="wk-lh-measured" data-lh-measured></span>
+                <span class="wk-lh-measured" data-lh-measured>{measuredSite(p.slug)?.lhFallback ? 'last known read' : ''}</span>
               </div>
 
               <div class="wk-cta-row">
-                {(p.links.find((l) => l.primary) ?? p.links[0]) && (
-                  <a class="wk-visit" href={(p.links.find((l) => l.primary) ?? p.links[0]).href} target="_blank" rel="noopener">
-                    {(p.links.find((l) => l.primary) ?? p.links[0]).label}
-                  </a>
-                )}
-                {p.caseStudy && (
-                  <a class="wk-case" href={p.caseStudy}>Read the case study</a>
-                )}
+                <a class="wk-text" href={smsAboutHref(Astro.url.pathname, p.name)}>Text me about a build like this</a>
                 <div class="wk-security" data-sec-site={p.slug} aria-live="polite">
-                  <span class="wk-sec-label">
-                    MOZILLA
-                    <Explainer label="?">
-                      Mozilla Observatory grade for HTTP security headers like HSTS and CSP. A+ is the top grade; most small-business sites score C or lower. Re-checked live on every load.
-                    </Explainer>
-                  </span>
+                  <span class="wk-sec-label">MOZILLA</span>
                   <span class="wk-sec-grade" data-sec-grade>
-                    <span class="wk-sec-pending">checking...</span>
+                    {measuredSite(p.slug)?.secFallback
+                      ? <span class={`wk-sec-pill wk-sec-pill-${secTier(measuredSite(p.slug)!.secFallback!.grade)}`}>{fmtGrade(measuredSite(p.slug)!.secFallback)}</span>
+                      : <span class="wk-sec-pending">not checked yet</span>}
                   </span>
                 </div>
+              </div>
+              <div class="wk-quiet-row">
+                {p.caseStudy && <a class="wk-quiet" href={p.caseStudy}>Read the case study</a>}
+                {visitOf(p) && <a class="wk-quiet" href={visitOf(p).href} target="_blank" rel="noopener">Visit the live site &#8599;</a>}
               </div>
               <button
                 type="button"
@@ -198,20 +211,6 @@ const workLd = {
                   </blockquote>
                 )}
 
-                {p.links.length > 0 && (
-                  <div class="wk-links">
-                    {p.links.map((link) => (
-                      <a
-                        href={link.href}
-                        class={link.primary ? 'wk-link wk-link-primary' : 'wk-link'}
-                        target="_blank"
-                        rel="noopener"
-                      >
-                        {link.label}
-                      </a>
-                    ))}
-                  </div>
-                )}
               </div>
             </div>
           </article>
@@ -247,13 +246,19 @@ const workLd = {
                   <span class="mk-name">MyKonos</span>
                   <span class="mk-beta">Beta</span>
                 </div>
-                <p class="mk-desc">An AI companion app I built. The window below runs its real engine, right here in your browser. <b>It remembers between chats.</b> Tell it something, reset, ask again, <span class='hl-green'>it still knows.</span></p>
-                <span class="mk-live"><span class="d" aria-hidden="true"></span>Live demo</span>
+                <p class="mk-desc">An AI companion app I built. Open the demo below and it runs on its real engine, right here in your browser. <b>It remembers between chats.</b> Tell it something, reset, ask again, <span class='hl-green'>it still knows.</span></p>
               </div>
             )}
             <div class="wk-preview" aria-hidden={p.slug === 'demiurge-mykonos' ? undefined : (p.image ? undefined : 'true')}>
               {p.slug === 'demiurge-mykonos' ? (
-                <Instrument />
+                <details class="mk-demo">
+                  <summary class="mk-demo-toggle">
+                    <span class="d" aria-hidden="true"></span>
+                    Try the live demo
+                    <span class="mk-demo-icon" aria-hidden="true">+</span>
+                  </summary>
+                  <Instrument />
+                </details>
               ) : p.image ? (
                 <a class="wk-preview-link" href={(p.links.find((l) => l.primary) ?? p.links[0])?.href} target="_blank" rel="noopener" aria-label={`Visit ${p.name}`}>
                 <picture>
@@ -304,6 +309,9 @@ const workLd = {
                 <a class="wk-visit" href={(p.links.find((l) => l.primary) ?? p.links[0]).href} target="_blank" rel="noopener">
                   {(p.links.find((l) => l.primary) ?? p.links[0]).label}
                 </a>
+              )}
+              {p.relatedCase && (
+                <a class="wk-quiet wk-related" href={p.relatedCase.href}>{p.relatedCase.label}</a>
               )}
               <button
                 type="button"
@@ -434,7 +442,7 @@ const workLd = {
     </ul>
   </section>
 
-  <Divider label="03" />
+  <Divider label="04" />
 
   <!-- PROCESS -->
   <section class="wk-section wk-process" aria-labelledby="wk-process-h">
@@ -450,10 +458,11 @@ const workLd = {
       <li class="wk-step">
         <span class="wk-step-num" aria-hidden="true">01</span>
         <div class="wk-step-body">
-          <h3 class="wk-step-h">Questionnaire + consult</h3>
+          <h3 class="wk-step-h">A text, then a consult</h3>
           <p class="wk-step-p">
-            Two-page form. Business, audience, services, goals, what you
-            have, what you need. Free consult to scope it.
+            Text me what you need. A free consult scopes it. The two-page
+            questionnaire is there if you would rather write it all out,
+            never a gate before we talk.
           </p>
           <p class="wk-step-time">No cost. No pitch deck.</p>
         </div>
@@ -466,7 +475,7 @@ const workLd = {
             Statement of work locks scope. 50% deposit clears. Work
             starts the same week.
           </p>
-          <p class="wk-step-time">Stripe invoice. Standard contract.</p>
+          <p class="wk-step-time">Fixed price. Standard contract.</p>
         </div>
       </li>
       <li class="wk-step">
@@ -474,7 +483,7 @@ const workLd = {
         <div class="wk-step-body">
           <h3 class="wk-step-h">Live in days</h3>
           <p class="wk-step-p">
-            Build, review, polish, ship. Final 50% on launch. Hosting
+            Build, review, polish, launch. Final 50% on launch. Hosting
             and maintenance optional, never required.
           </p>
           <p class="wk-step-time">Starting at 3 business days.</p>
@@ -483,7 +492,7 @@ const workLd = {
     </ol>
   </section>
 
-  <Divider label="04" />
+  <Divider label="05" />
 
   <Contact sectionNumber="05" />
 </BaseLayout>
@@ -535,12 +544,20 @@ const workLd = {
         const data = await res.json();
         const lh = data.lighthouse;
         if (!lh) return;
+        // Pills made here need the page's scope attribute, or the scoped
+        // .wk-lh-pill / .wk-sec-pill rules never match them and the live
+        // numbers paint as bare text (they did, until S326).
+        function scopeOf(el) {
+          for (const a of el.attributes) if (a.name.indexOf('data-astro-cid-') === 0) return a.name;
+          return null;
+        }
         function fill(slug, scores) {
           const root = document.querySelector('[data-lh-site="' + slug + '"]');
           if (!root) return;
           const target = root.querySelector('[data-lh-scores]');
           const measured = root.querySelector('[data-lh-measured]');
           if (!Array.isArray(scores) || scores.length !== 4) return;
+          const cid = scopeOf(target);
           target.textContent = '';
           // ORDER MATCHES THE API TUPLE, and it did not. workshop.ts builds
           // [performance, accessibility, seo, best-practices] and this labelled
@@ -556,11 +573,12 @@ const workLd = {
             const grade =
               n >= 90 ? 'good' : n >= 50 ? 'ok' : 'low';
             pill.classList.add('wk-lh-pill-' + grade);
+            if (cid) pill.setAttribute(cid, '');
             pill.textContent = labels[i] + ' ' + n;
             target.appendChild(pill);
           });
-          if (measured && lh.measured) {
-            measured.textContent = 'measured ' + lh.measured;
+          if (measured) {
+            measured.textContent = lh.measured ? 'measured ' + lh.measured : 'measured live';
           }
         }
         // Each /work card gets its real site's PSI scores.
@@ -590,8 +608,10 @@ const workLd = {
             if (!root) continue;
             const target = root.querySelector('[data-sec-grade]');
             if (!target) continue;
+            const cid = scopeOf(target);
             target.textContent = '';
             const pill = document.createElement('span');
+            if (cid) pill.setAttribute(cid, '');
             const g = String(info.grade);
             const tier = g.charAt(0) === 'A' ? 'good' : (g.charAt(0) === 'B' || g.charAt(0) === 'C') ? 'ok' : 'low';
             pill.className = 'wk-sec-pill wk-sec-pill-' + tier;
@@ -636,9 +656,29 @@ const workLd = {
   .mk-beta { font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.14em; color: var(--color-wc-green); border: 1px solid rgba(77,216,168,0.4); border-radius: 4px; padding: 2px 7px; text-transform: uppercase; }
   .mk-desc { font-family: var(--font-sans); font-size: 14px; line-height: 1.6; color: var(--color-ash-300); margin: 0; max-width: 56ch; }
   .mk-desc b { color: var(--color-ash-100); font-weight: 600; }
-  .mk-live { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-ash-500); margin-top: 10px; }
-  .mk-live .d { width: 5px; height: 5px; border-radius: 50%; background: var(--color-wc-green); box-shadow: 0 0 6px rgba(77,216,168,0.6); }
-  @media (prefers-reduced-motion: no-preference) { .mk-live .d { animation: mkpulse 2.4s ease-in-out infinite; } }
+  /* The demo opens on tap (S326 DNA: no mid-page demo block on first paint).
+     Instrument lazy-inits on intersect, so a closed details never fetches. */
+  .mk-demo { width: 100%; }
+  .mk-demo-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 48px;
+    padding: 0 16px;
+    font-family: var(--font-sans);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-wc-green);
+    cursor: pointer;
+    list-style: none;
+  }
+  .mk-demo-toggle::-webkit-details-marker { display: none; }
+  .mk-demo-toggle .d { width: 6px; height: 6px; border-radius: 50%; background: var(--color-wc-green); box-shadow: 0 0 6px rgba(77,216,168,0.6); }
+  .mk-demo-icon { margin-left: auto; font-family: var(--font-mono); font-size: 16px; color: var(--color-ash-500); transition: transform 160ms; }
+  .mk-demo[open] .mk-demo-icon { transform: rotate(45deg); }
+  .mk-demo-toggle:focus-visible { outline: 2px solid var(--color-wc-green); outline-offset: -2px; }
+  @media (min-width: 1024px) { .mk-demo-toggle { padding: 0 18px; } }
+  @media (prefers-reduced-motion: no-preference) { .mk-demo-toggle .d { animation: mkpulse 2.4s ease-in-out infinite; } }
   @keyframes mkpulse { 0%,100%{opacity:1} 50%{opacity:.45} }
 
   .wk-section {
@@ -951,7 +991,55 @@ const workLd = {
     letter-spacing: 0.04em;
   }
 
-  /* CTA row: Visit button + live Mozilla security grade in the same line */
+  /* CTA row: the card's Text button + live Mozilla grade in the same line.
+     S326 DNA: Text is the card primary; case study and live site are quiet. */
+  .wk-text {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 16px;
+    border-radius: var(--radius-btn);
+    background: var(--color-wc-green);
+    color: var(--color-bg-deep);
+    font-family: var(--font-sans);
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    touch-action: manipulation;
+    transition: background 160ms, transform 160ms;
+  }
+  .wk-text:focus-visible {
+    outline: 2px solid var(--color-wc-green-bright);
+    outline-offset: 2px;
+  }
+  @media (hover: hover) {
+    .wk-text:hover {
+      background: var(--color-wc-green-bright);
+      transform: translateY(-1px);
+    }
+  }
+  .wk-quiet-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 18px;
+    margin-top: 2px;
+  }
+  .wk-quiet {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    font-family: var(--font-sans);
+    font-size: 13px;
+    color: var(--color-ash-300);
+    text-decoration: underline;
+    text-decoration-color: var(--copper-hairline);
+    text-underline-offset: 4px;
+  }
+  .wk-related { align-self: flex-start; }
+  @media (hover: hover) {
+    .wk-quiet:hover { color: var(--color-copper-bright); }
+  }
+
   .wk-cta-row {
     display: flex;
     align-items: center;
@@ -1029,30 +1117,6 @@ const workLd = {
 
     .wk-title-link:hover {
     color: var(--color-wc-green);
-    outline: none;
-  }}
-  .wk-case {
-    font-family: var(--font-sans);
-    font-size: 13px;
-    color: var(--color-copper-bright);
-    text-decoration: none;
-    border: 1px solid var(--copper-hairline);
-    border-radius: 6px;
-    padding: 11px 13px;
-    line-height: 20px;
-    transition: background-color 0.15s ease, color 0.15s ease;
-  }
-  .wk-case:focus-visible {
-    background-color: var(--color-copper-bright);
-    color: var(--color-bg-deep);
-    outline: none;
-  }
-
-  @media (hover: hover) {
-
-    .wk-case:hover {
-    background-color: var(--color-copper-bright);
-    color: var(--color-bg-deep);
     outline: none;
   }}
   .wk-visit {
