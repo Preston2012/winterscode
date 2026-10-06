@@ -32,6 +32,19 @@ export function smsHref(rawPath: string): string {
   return `sms:${business.phone}?&body=${encodeURIComponent(body)}`;
 }
 
+/** sms: link for "a build like this" on a work card or a case page. The
+ *  prefill names the project and the page, so the text arrives with context. */
+export function smsAboutHref(rawPath: string, project: string): string {
+  const path = publicPath(rawPath);
+  const where = path === '/' ? 'winterscode.com' : `winterscode.com${path}`;
+  const body = `Hi Preston, saw the ${project} build at ${where}. I'd like something like it for: `;
+  return `sms:${business.phone}?&body=${encodeURIComponent(body)}`;
+}
+
+/** The bare sms: prefix for client scripts that build their own prefill
+ *  (the audit results). Append encodeURIComponent(body). */
+export const smsBase = `sms:${business.phone}?&body=`;
+
 export const telHref = `tel:${business.phone}`;
 export const phoneDisplay = business.phoneDisplay;
 export const bookHref = business.cal;

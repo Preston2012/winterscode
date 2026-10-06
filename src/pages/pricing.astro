@@ -6,6 +6,7 @@ import PageHero from '../components/sections/PageHero.astro';
 import Divider from '../components/ui/Divider.astro';
 import Breadcrumbs from '../components/ui/Breadcrumbs.astro';
 import Contact from '../components/sections/Contact.astro';
+import TextCta from '../components/ui/TextCta.astro';
 import { breadcrumbSchema } from '../lib/schema';
 
 const crumbs = [
@@ -16,7 +17,7 @@ const breadcrumbLd = breadcrumbSchema(crumbs);
 ---
 
 <BaseLayout
-  title="Pricing · Winters Code"
+  title="Pricing · Sites from $1,750 · Winters Code"
   description="What a Winters Code site costs and what is in the price. Local business sites start at $1,750. No tiers, no add-ons, care plans optional from $75/mo."
   canonicalPath="/pricing"
 >
@@ -48,12 +49,9 @@ const breadcrumbLd = breadcrumbSchema(crumbs);
       all-in, nothing buried.
     </p>
     <p class="pr-lead">
-      Here is the honest range. National agencies typically start around
-      <strong>$5,000</strong> and run six weeks or more. Hourly freelancers bill
-      <strong>$2,500</strong> and up over a month, and the meter keeps running
-      until the work stops. A Winters Code site starts at
-      <strong>$1,750</strong>. The same modern stack and quality bar, for less than a
-      freelancer, and live in days, not months.
+      For scale: national agencies typically start around <strong>$5,000</strong>,
+      and hourly freelancers bill <strong>$2,500</strong> and up. A Winters Code
+      site starts at <strong>$1,750</strong>, everything in.
     </p>
     <p class="pr-lead">
       Everything below is included. No per-page fees, no surprise
@@ -61,13 +59,6 @@ const breadcrumbLd = breadcrumbSchema(crumbs);
       price you pay. Every project starts with a free consult and a written quote
       that holds for 14 days. A 50 percent deposit locks scope and schedule, and
       the rest is due at launch.
-    </p>
-    <p class="pr-lead">
-      One thing worth doing before you hire anyone, including me. Ask them to
-      show you the Google score on their own website. It is free, it takes about
-      thirty seconds, and it is the same test I ran on 219 businesses in this
-      county. Mine are on <a href="/wall">the wall</a>, live, updated on their
-      own.
     </p>
   </section>
 
@@ -80,7 +71,7 @@ const breadcrumbLd = breadcrumbSchema(crumbs);
       <ul class="pr-feat pr-feat--2">
         <li>A custom site made for your business, not a template with your name dropped in</li>
         <li>The core pages you need, with all the words written for you</li>
-        <li>Real photos. Bill Bailey or I come shoot your business, no stock</li>
+        <li>Real photos of your business, shot here on the coast, no stock</li>
         <li>A logo and brand if you don't have one, with real vector files for signs, shirts, and print</li>
         <li>Top Google scores for speed and search, proven on Google's own test. Most cheap sites sit near 60 on a phone</li>
         <li>Found by Google and the new AI assistants. Scrapers and junk bots shut out</li>
@@ -91,6 +82,12 @@ const breadcrumbLd = breadcrumbSchema(crumbs);
       </ul>
       <p class="pr-incl-foot">Want it line by line? See the full breakdown on <a href="/services">services</a>.</p>
     </article>
+    <TextCta lead="Tell me about your business in a text and I'll tell you where it lands." links={[{ href: '/audit', label: 'Free audit of your current site' }]} />
+    <p class="pr-scoreband">
+      Measured, not claimed: every site I build is scored live with Google's
+      Lighthouse and Mozilla Observatory, on <a href="/wall">the wall</a>. Ask
+      anyone you hire, me included, for the scores on their own site.
+    </p>
   </section>
 
   <Divider label="03" />
@@ -272,6 +269,23 @@ const breadcrumbLd = breadcrumbSchema(crumbs);
     color: var(--color-wc-green);
     text-decoration: underline;
     text-decoration-color: rgba(77, 216, 168, 0.4);
+    text-underline-offset: 3px;
+  }
+  /* Quiet score band (S326 DNA): after Text, small, never a challenge
+     standing between the visitor and the button. */
+  .pr-scoreband {
+    margin: 18px 0 0;
+    padding: 12px 14px;
+    border-left: 2px solid var(--copper-hairline);
+    font-family: var(--font-sans);
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--color-ash-400);
+  }
+  .pr-scoreband a {
+    color: var(--color-ash-200, var(--color-ash-100));
+    text-decoration: underline;
+    text-decoration-color: var(--copper-hairline);
     text-underline-offset: 3px;
   }
   .pr-care .pr-price {

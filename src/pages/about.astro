@@ -7,6 +7,14 @@ import Divider from '../components/ui/Divider.astro';
 import Contact from '../components/sections/Contact.astro';
 import Breadcrumbs from '../components/ui/Breadcrumbs.astro';
 import { breadcrumbSchema } from '../lib/schema';
+import { smsHref, phoneDisplay } from '../lib/text-cta';
+
+// S326 DNA: one LCP (the portrait), one StainSlayer line instead of the
+// product list, the Lighthouse average told once, and the old Send a brief,
+// then Cal, then Text block gone. Why Bandon now runs straight into the
+// closing block, whose Text button sits over "I answer my texts within a few
+// hours during business days." The phone number in How I work is a text link.
+const sms = smsHref(Astro.url.pathname);
 ---
 
 <BaseLayout
@@ -25,8 +33,6 @@ import { breadcrumbSchema } from '../lib/schema';
   <Breadcrumbs items={[{ name: 'Home', path: '/' }, { name: 'About', path: '/about' }]} />
 
   <Fragment slot="head">
-    <!-- Preload the about hero wash (page LCP). Mirrors the homepage stamp
-         preload pattern: the fetch starts during HTML parse, not after CSS. -->
     <!-- Preload the LCP element, which is the portrait, not the wash. The wash
          renders at 0.4 opacity behind the content and was holding the only
          high-priority image slot on this page while the portrait sat on
@@ -34,7 +40,6 @@ import { breadcrumbSchema } from '../lib/schema';
          dpr1.75: the LCP candidate is IMG.ab-photo-img. If this page's layout
          changes, re-measure before changing this line. -->
     <link rel="preload" as="image" imagesrcset="/photo/preston-560.webp 560w, /photo/preston-840.webp 840w, /photo/preston-1120.webp 1120w" imagesizes="(min-width: 1024px) 380px, (min-width: 740px) 300px, 84vw" fetchpriority="high" />
-    <link rel="preload" as="image" imagesrcset="/photo/local/grass-coast-wash-768.webp 768w, /photo/local/grass-coast-wash-1600.webp 1600w" imagesizes="100vw" />
   </Fragment>
 
   <PageHero
@@ -44,7 +49,6 @@ import { breadcrumbSchema } from '../lib/schema';
     sub2="I've owned small businesses. I know what it's like to drown in software you didn't choose."
     bgImage="/photo/local/grass-coast-wash"
     bgOpacity={0.4}
-    lcp
   />
 
   <Divider label="01" />
@@ -106,10 +110,7 @@ import { breadcrumbSchema } from '../lib/schema';
         <a href="https://apps.apple.com/us/app/stainslayer-ai/id6757208835" target="_blank" rel="noopener">App Store</a>
         and
         <a href="https://play.google.com/store/apps/details?id=com.mycompany.stainslayerai" target="_blank" rel="noopener">Google Play</a>.
-        A handful of others are in private beta: <span class="ab-hl-app">Baseline</span>
-        (political signal across a bunch of AI models at once),
-        <span class="ab-hl-app">MyKonos</span> (an AI companion with real memory),
-        and <span class="ab-hl-app">ChopLight</span> (motion based utility flashlight).
+        The rest are on <a href="/work">the work page</a>.
       </p>
 
       <p>
@@ -150,7 +151,7 @@ import { breadcrumbSchema } from '../lib/schema';
       </li>
       <li>
         <strong>I answer my texts within a few hours during business days.</strong>
-        <span class="ab-hl-place">541-551-0731</span>. Real human, real response time.
+        <a href={sms} class="ab-hl-place ab-text-link">{phoneDisplay}</a>. Real human, real response time.
       </li>
       <li>
         <strong>No outsourcing.</strong>
@@ -184,14 +185,14 @@ import { breadcrumbSchema } from '../lib/schema';
         <span class="ab-law-num">01</span>
         <div class="ab-law-body">
           <h3 class="ab-law-h">Speed matters.</h3>
-          <p>Days for sites, weeks for apps. Small businesses on the Oregon coast deserve tools that ship, not quarterly project plans.</p>
+          <p>Sites start at 3 business days, apps run in weeks. Small businesses on the Oregon coast deserve tools that work now, not quarterly project plans.</p>
         </div>
       </li>
       <li>
         <span class="ab-law-num">02</span>
         <div class="ab-law-body">
           <h3 class="ab-law-h">Quality is non-negotiable.</h3>
-          <p>Speed without quality is reputation death. ~95 Lighthouse average, security defaults, modern stack end to end.</p>
+          <p>Speed without quality is reputation death. Security defaults and a modern stack end to end, measured live on <a href="/wall">the wall</a>.</p>
         </div>
       </li>
       <li>
@@ -205,7 +206,7 @@ import { breadcrumbSchema } from '../lib/schema';
         <span class="ab-law-num">04</span>
         <div class="ab-law-body">
           <h3 class="ab-law-h">Recurring relationships beat one-off projects.</h3>
-          <p>The person who built it is the person who maintains it. Help is just a text away.</p>
+          <p>The person who built it is the person who maintains it. <a href={sms} class="ab-text-link">Help is just a text away.</a></p>
         </div>
       </li>
     </ol>
@@ -238,30 +239,15 @@ import { breadcrumbSchema } from '../lib/schema';
       <p class="ab-roots-pull">
         <em>I'm down the road. I pick up the phone.</em>
       </p>
+      <p class="ab-roots-soft">
+        What a site costs, all in, is on <a href="/pricing">the pricing page</a>.
+      </p>
     </div>
   </section>
 
   <Divider label="05" />
 
-  <!-- ─────────── Section 05 · CTA ─────────── -->
-  <section class="ab-cta" aria-label="Get in touch">
-    <h2 class="ab-cta-h">Let's talk.</h2>
-    <p class="ab-cta-sub">
-      Free consult. No pitch deck. Honest take on what you have,
-      a real number, and a quote on the spot if it's a fit.
-    </p>
-    <div class="ab-cta-actions">
-      <a href="/contact" class="ab-cta-primary">Send a brief →</a>
-      <a href="https://cal.com/preston-winters" target="_blank" rel="noopener" class="ab-cta-secondary">
-        Book on Cal →
-      </a>
-      <a href="sms:5415510731" class="ab-cta-secondary">Text me</a>
-    </div>
-  </section>
-
-  <Divider label="06" />
-
-  <Contact sectionNumber="06" />
+  <Contact sectionNumber="05" headerTitle="Let's talk." />
 </BaseLayout>
 
 <style>
@@ -489,85 +475,20 @@ import { breadcrumbSchema } from '../lib/schema';
     font-style: italic;
   }
 
-  /* ─── Section 05: CTA ─── */
-  .ab-cta {
-    padding: 32px 4px 40px;
-    max-width: 720px;
-    margin: 0 auto;
-    text-align: center;
+  .ab-roots-soft {
+    margin: 18px 0 0 !important;
+    font-size: 14px !important;
+    color: var(--color-ash-400) !important;
   }
-  @media (min-width: 740px) { .ab-cta { padding: 48px 4px 56px; } }
-  .ab-cta-h {
-    font-family: var(--font-serif);
-    font-size: 32px;
-    line-height: 1.15;
-    color: var(--color-ash-100);
-    margin: 0 0 10px;
-    font-weight: 600;
+  .ab-roots-soft a,
+  .ab-text-link {
+    color: inherit;
+    text-decoration: underline;
+    text-decoration-color: var(--copper-hairline);
+    text-underline-offset: 3px;
   }
-  @media (min-width: 740px) { .ab-cta-h { font-size: 44px; } }
-  @media (min-width: 1024px) { .ab-cta-h { font-size: 52px; } }
-  .ab-cta-sub {
-    font-family: var(--font-sans);
-    font-size: 14px;
-    line-height: 1.55;
-    color: var(--color-ash-400);
-    margin: 0 0 20px;
-    max-width: 480px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-  @media (min-width: 740px) { .ab-cta-sub { font-size: 15px; margin-bottom: 24px; } }
-  .ab-cta-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    justify-content: center;
-  }
-  .ab-cta-primary,
-  .ab-cta-secondary {
-    font-family: var(--font-sans);
-    font-size: 14px;
-    text-decoration: none;
-    border-radius: 6px;
-    padding: 10px 16px;
-    transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
-  }
-  .ab-cta-primary {
-    /* 44px touch minimum (G-027), S245 site-wide sweep. Negative margin holds
-       the original layout so the measured box is the tappable box. */
-    display: inline-flex;
-    align-items: center;
-    min-height: 44px;
-    margin: -12px 0;
-    background-color: var(--color-wc-green);
-    color: var(--color-bg-deep);
-    font-weight: 600;
-  }
-  .ab-cta-primary:focus-visible {
-    background-color: var(--color-wc-green-bright, var(--color-wc-green));
-    outline: none;
-  }
-
   @media (hover: hover) {
-
-    .ab-cta-primary:hover {
-    background-color: var(--color-wc-green-bright, var(--color-wc-green));
-    outline: none;
-  }}
-  .ab-cta-secondary {
-    color: var(--color-ash-100);
-    border: 1px solid var(--copper-hairline);
+    .ab-roots-soft a:hover,
+    .ab-text-link:hover { color: var(--color-wc-green); }
   }
-  .ab-cta-secondary:focus-visible {
-    border-color: var(--color-copper);
-    outline: none;
-  }
-
-  @media (hover: hover) {
-
-    .ab-cta-secondary:hover {
-    border-color: var(--color-copper);
-    outline: none;
-  }}
 </style>

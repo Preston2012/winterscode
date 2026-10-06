@@ -1,0 +1,36 @@
+---
+/**
+ * Professors Golf, case stub (S326 DNA, decision C: stub or demote).
+ * Built from the live card facts in src/lib/portfolio.ts and src/lib/sites.ts
+ * only: one business day (sites.ts builtDays, "per Preston"), the homepage
+ * plus the VIP Mexico Open events page, click-to-call header, sharecard, the
+ * client's own Cloudflare account. No quote, no client words, nothing new.
+ * If Preston picks "demote", delete this file and drop caseStudy from the
+ * professors-golf portfolio entry and the homepage card.
+ */
+import CaseStudyLayout from '../../components/templates/CaseStudyLayout.astro';
+---
+<CaseStudyLayout
+  slug="professors-golf"
+  title="Professors Golf Case Study · Winters Code"
+  description="A Bandon golf service online in one business day: club fitting, instruction, caddy referrals, local tee times and golf trips, on the client's own Cloudflare account."
+  eyebrow="Work · Case Study"
+  h1="Online in one business day."
+  sub="A Bandon golf service with a homepage and a VIP events page, built in one business day and running in the client's own Cloudflare account."
+  intro={[
+    "Professors Golf is a Bandon golf service: club fitting, PGA-certified instruction, caddy referrals, local tee times and all-inclusive golf trips.",
+    "The site went up in <span class='hl-copper'>one business day</span>: a homepage that covers all of it, plus the events page for the VIP Mexico Open trip, with a click-to-call header and a sharecard built for the group text.",
+    "It runs in <span class='hl-green'>the client's own Cloudflare account</span>, not mine, so the site is theirs to keep. Its scores are measured on <a href='/wall'>the wall</a> with every other site I build.",
+  ]}
+  stats={[
+    { value: '1', label: 'business day of build time' },
+    { value: '2', label: 'pages: home and the events page' },
+    { value: 'A+', label: 'Mozilla Observatory, measured live' },
+  ]}
+  relatedLinks={[
+    { href: '/services/web-design', label: 'Web Design', sub: 'What a build includes' },
+    { href: '/pricing', label: 'Pricing', sub: 'One price, everything in' },
+    { href: '/web-design-bandon', label: 'Web Design in Bandon', sub: 'Local work' },
+    { href: '/work', label: 'All work', sub: 'More projects' },
+  ]}
+/>

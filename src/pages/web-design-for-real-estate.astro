@@ -1,6 +1,8 @@
 ---
 import ServiceLayout from '../components/templates/ServiceLayout.astro';
 import type { ServiceEntry } from '../lib/business';
+import { smsHref } from '../lib/text-cta';
+const sms = smsHref('/web-design-for-real-estate');
 const service: ServiceEntry = {
   slug: 'web-design-for-real-estate',
   name: 'Web Design for Real Estate',
@@ -42,7 +44,7 @@ const service: ServiceEntry = {
     {
       heading: 'Image weight is where these sites die',
       body: [
-        "A single listing can carry 30 high-resolution photos, and a buyer is scrolling it on a phone from out of the area. Most agent sites serve those as raw uploads and crawl. In a review of <span class='stat'>169</span> Coos County sites, the rented platforms averaged a <span class='hl-copper'>D, an F, and a C on mobile speed</span>, and on an image-heavy listing that is fatal.",
+        "A single listing can carry 30 high-resolution photos, and a buyer is scrolling it on a phone from out of the area. Most agent sites serve those as raw uploads and crawl. In a review of <span class='stat'>169</span> Coos County sites, the rented platforms averaged <span class='hl-copper'>48 to 60 out of 100 on mobile speed</span> and graded a D, an F and a C- on security headers, and on an image-heavy listing that speed is fatal.",
         "Custom code is built for exactly this: images sized per device, lazy-loaded, served in modern formats, so a heavy gallery still opens in <span class='hl-copper'>under a second</span>. <em>Fast imagery is not a nice-to-have here, it is the entire job.</em> Done right, an IDX or MLS feed drops in without dragging the page down.",
       ],
     },
@@ -50,11 +52,12 @@ const service: ServiceEntry = {
       heading: 'Listing Studio: a listing becomes a post',
       body: [
         "Beyond the site, I build working tools for agents. The latest is <em>Listing Studio</em>: drop in a listing photo and the details, pick a voice, and it hands back a branded social graphic plus a caption written fresh for that home, fair-housing aware, ready for Facebook or Instagram.",
-        "It was built for a working Bandon brokerage and turns a listing into a post in about a minute. <a href='/contact'>Ask for a live demo</a> and I will set up a link styled to your office.",
+        `It was built for a working Bandon brokerage and turns a listing into a post in about a minute. <a href='${sms}'>Text me for a live demo</a> and I will set up a link styled to your office.`,
       ],
     },
   ]}
   whyLink
+  textLinks={[{ href: '/work/bandon-by-the-dunes', label: 'Read the brokerage case' }, { href: '/pricing', label: 'See pricing' }]}
   faq={[
     { q: 'Can it pull MLS or IDX listings?', a: 'Yes, IDX and listing feeds can be integrated. We scope which feed and how it should display so it stays fast, since a poorly built IDX embed is the most common reason agent sites are slow.' },
     { q: 'My photos are huge. Will the site be slow?', a: 'No. Handling large photography without slowing the page is the core skill here. I optimize and serve images responsively so a heavy gallery still loads in well under a second on mobile.' },
@@ -63,6 +66,7 @@ const service: ServiceEntry = {
   ]}
   relatedTitle="Related"
   relatedLinks={[
+    { href: '/work/bandon-by-the-dunes', label: 'Bandon By The Dunes', sub: 'A brokerage on its own listings' },
     { href: '/services/web-design', label: 'Web Design', sub: 'The full service' },
     { href: '/services/seo-performance', label: 'SEO & Performance', sub: 'Win local search' },
     { href: '/web-design-bandon', label: 'Web Design in Bandon', sub: 'Local work' },

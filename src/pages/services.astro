@@ -8,6 +8,7 @@ import Contact from '../components/sections/Contact.astro';
 import Breadcrumbs from '../components/ui/Breadcrumbs.astro';
 import { breadcrumbSchema, absUrl } from '../lib/schema';
 import { services } from '../lib/business';
+import TextCta from '../components/ui/TextCta.astro';
 
 const crumbs = [
   { name: 'Home', path: '/' },
@@ -75,7 +76,7 @@ const servicesLd = {
       <ol class="hg-steps">
         <li>
           <span class="step-num">Step 01</span>
-          <span class="step-name">Questionnaire + consult</span>
+          <span class="step-name">A text + a consult</span>
           <span class="step-meta">no cost, no pitch deck</span>
         </li>
         <li>
@@ -86,7 +87,7 @@ const servicesLd = {
         <li>
           <span class="step-num">Step 03</span>
           <span class="step-name">Live in days</span>
-          <span class="step-meta">final 50% on launch</span>
+          <span class="step-meta">starting at 3 business days, final 50% on launch</span>
         </li>
       </ol>
       <p class="hg-tag">
@@ -98,7 +99,7 @@ const servicesLd = {
   <Divider label="02" />
 
   <!-- ─────────── Section 02 · Sites ─────────── -->
-  <section class="sv-block" aria-labelledby="sv-sites-h">
+  <section class="sv-block" id="sites" aria-labelledby="sv-sites-h">
     <header class="sv-block-head">
       <h2 class="sv-block-h" id="sv-sites-h">Sites</h2>
       <p class="sv-block-sub">Custom code, custom design, mobile-first. Built for your business, not stamped from a template.</p>
@@ -112,6 +113,7 @@ const servicesLd = {
         price you pay. Bigger jobs cost more and I tell you that up front, but the
         floor is a real, finished website, not a demo you keep buying pieces of.
       </p>
+      <TextCta links={[{ href: '/pricing', label: 'See pricing' }]} />
     </div>
 
     <div class="sv-floor-groups">
@@ -120,7 +122,7 @@ const servicesLd = {
         <ul class="sv-fg-list">
           <li>A custom site made for your business, not a template with your name dropped in.</li>
           <li>The pages you actually need: home, about, your services or work, and contact.</li>
-          <li>Real photos. Bill Bailey or I come out and shoot your business. No stock photos of a storefront that isn't yours.</li>
+          <li>Real photos of your business, shot here on the coast. No stock photos of a storefront that isn't yours.</li>
           <li>The words written for you. I write the headlines, your story, and your service descriptions, so you don't have to.</li>
           <li>Photo galleries to show your work.</li>
           <li>A contact form that reaches you.</li>
@@ -158,12 +160,18 @@ const servicesLd = {
         </ul>
       </div>
     </div>
+
+    <p class="sv-fence">
+      <strong>Already have a site?</strong> That is a rebuild, not a new build,
+      and most land between $2,500 and $3,500 depending on what has to move.
+      <a href="/website-redesign">See what a rebuild covers</a>.
+    </p>
   </section>
 
   <Divider label="03" />
 
   <!-- ─────────── Section 03 · Apps ─────────── -->
-  <section class="sv-block" aria-labelledby="sv-apps-h">
+  <section class="sv-block" id="apps" aria-labelledby="sv-apps-h">
     <header class="sv-block-head">
       <h2 class="sv-block-h" id="sv-apps-h">Apps</h2>
       <p class="sv-block-sub">Flutter. Cross-platform iOS + Android. One codebase, two stores.</p>
@@ -178,7 +186,6 @@ const servicesLd = {
           <li>Auth + basic backend</li>
         </ul>
         <p class="sv-tier-timeline">2-4 weeks</p>
-        <a href="/contact?type=app&amp;tier=mvp" class="sv-tier-cta">Get a quote →</a>
       </article>
 
       <article class="sv-tier" id="apps-full">
@@ -191,7 +198,6 @@ const servicesLd = {
           <li>App Store + Play Store</li>
         </ul>
         <p class="sv-tier-timeline">4-8 weeks</p>
-        <a href="/contact?type=app&amp;tier=full" class="sv-tier-cta">Get a quote →</a>
       </article>
 
       <article class="sv-tier" id="apps-system">
@@ -203,15 +209,15 @@ const servicesLd = {
           <li>50+ screens / complex workflows</li>
         </ul>
         <p class="sv-tier-timeline">8-16 weeks</p>
-        <a href="/contact?type=app&amp;tier=system" class="sv-tier-cta">Get a quote →</a>
       </article>
     </div>
+    <TextCta label="Text me about your app" links={[{ href: '/services/app-development', label: 'How app builds work' }]} />
   </section>
 
   <Divider label="04" />
 
   <!-- Section 04 - When it costs more -->
-  <section class="sv-block" aria-labelledby="sv-more-h">
+  <section class="sv-block" id="addons" aria-labelledby="sv-more-h">
     <header class="sv-block-head">
       <h2 class="sv-block-h" id="sv-more-h">When it costs more</h2>
       <p class="sv-block-sub">The floor covers a complete core site. These add to it, and I quote them clearly.</p>
@@ -274,7 +280,6 @@ const servicesLd = {
           <li>10 content edits / month</li>
           <li>Uptime monitoring</li>
         </ul>
-        <a href="/contact?type=maintenance&amp;tier=basic" class="sv-tier-cta">Start a plan →</a>
       </article>
 
       <article class="sv-tier sv-tier--maint" id="maint-pro">
@@ -289,9 +294,9 @@ const servicesLd = {
           <li>Quarterly performance + SEO pass, fixes made</li>
           <li>Improvements rolled in as you grow</li>
         </ul>
-        <a href="/contact?type=maintenance&amp;tier=pro" class="sv-tier-cta">Start a plan →</a>
       </article>
     </div>
+    <TextCta label="Text me about a care plan" links={[{ href: '/website-maintenance', label: 'Care plan details' }]} />
   </section>
 
   <Divider label="06" />
@@ -337,13 +342,10 @@ const servicesLd = {
           <p>
             One price, everything in. Most local business sites start at
             <strong>$1,750</strong>, with the pages, the words, real photos,
-            branding, top Google scores, and security all included. National
-            agencies typically start at <span class="strike">$5,000+</span> and
-            run six weeks or more. Hourly freelancers often bill
-            <span class="strike">$2,500+</span> over a month. Same modern stack,
-            live in days, and it's yours to keep.
+            branding, top Google scores, and security all included, and it's
+            yours to keep.
           </p>
-          <p><em>Free consult and a written quote that holds for 14 days. Bigger jobs cost more, and I tell you up front.</em></p>
+          <p><em>Free consult and a written quote that holds for 14 days. Bigger jobs cost more, and I tell you up front.</em> The full picture is on <a href="/pricing">pricing</a>.</p>
         </div>
       </details>
 
@@ -390,13 +392,11 @@ const servicesLd = {
         <div class="sv-faq-a">
           <p>
             I do most of the lift. Usually <strong>80/20 your way</strong>.
-            Step one is a 2-page questionnaire. Business, audience,
-            services, goals, content you have, content you need.
-            <a href="/questionnaire.pdf">One-tap download</a>, fill it
-            out, ship it back. <strong>Completed questionnaire is
-            required before the first meeting.</strong> Keeps the consult
-            sharp. No photos or copy yet? Note
-            it on the form. I can shoot the photos and draft the copy, you edit.
+            Start with a text about what you have and what you need. If you
+            would rather write it all out, there is a 2-page questionnaire
+            (<a href="/questionnaire.pdf">one-tap download</a>), but it is
+            optional and never a gate before we talk. No photos or copy yet?
+            I can shoot the photos and draft the copy, you edit.
           </p>
         </div>
       </details>
@@ -409,16 +409,11 @@ const servicesLd = {
         </summary>
         <div class="sv-faq-a">
           <p>
-            Modern stack (Astro, React, Flutter) and AI tooling I built
-            myself. <strong>Demiurge</strong> is a memory engine that
-            remembers every project's patterns and decisions, so I'm not
-            relearning the same lessons on each new build. Three of my
-            live products are AI: <strong>StainSlayer</strong> does
-            vision AI stain analysis, live on App Store and Play Store.
-            <strong>Baseline</strong> runs multi-model political
-            intelligence across 4 providers. <strong>MyKonos</strong> is
-            an AI companion running on Demiurge. The
-            speed is real.
+            A modern stack (Astro, React, Flutter), one person making
+            every call, and AI tooling I built myself that keeps each
+            project's patterns and decisions on file, so nothing gets
+            relearned between builds. What it has produced is on
+            <a href="/work">the work page</a>.
           </p>
         </div>
       </details>
@@ -671,33 +666,6 @@ const servicesLd = {
   }
   @media (min-width: 740px) { .sv-tier-timeline { font-size: 12px; } }
 
-  .sv-tier-cta {
-    min-height: 44px;
-    display: inline-block;
-    font-family: var(--font-sans);
-    font-size: 13px;
-    color: var(--color-wc-green);
-    text-decoration: none;
-    border: 1px solid var(--color-wc-green-dim, rgba(77, 216, 168, 0.4));
-    border-radius: 6px;
-    padding: 8px 12px;
-    transition: background-color 0.15s ease, color 0.15s ease;
-    align-self: flex-start;
-  }
-  .sv-tier-cta:focus-visible {
-    background-color: var(--color-wc-green);
-    color: var(--color-bg-deep);
-    outline: none;
-  }
-
-  @media (hover: hover) {
-
-    .sv-tier-cta:hover {
-    background-color: var(--color-wc-green);
-    color: var(--color-bg-deep);
-    outline: none;
-  }}
-
   /* Maintenance tier price treatment */
   .sv-tier--maint .sv-tier-price {
     font-family: var(--font-sans);
@@ -945,6 +913,26 @@ const servicesLd = {
   @media (min-width: 740px) { .sv-floor-intro { font-size: 16px; } }
 
   .sv-floor-groups { margin: 30px 0 0; }
+
+  /* Soft rebuild fence (S326 DNA): the live $2,500 to $3,500 band, quiet. */
+  .sv-fence {
+    margin: 28px 0 0;
+    padding: 14px 16px;
+    border: 1px solid var(--copper-hairline);
+    border-radius: 8px;
+    font-family: var(--font-sans);
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--color-ash-300);
+    max-width: 62ch;
+  }
+  .sv-fence strong { color: var(--color-ash-100); }
+  .sv-fence a {
+    color: var(--color-wc-green);
+    text-decoration: underline;
+    text-decoration-color: rgba(77, 216, 168, 0.4);
+    text-underline-offset: 3px;
+  }
   @media (min-width: 740px) {
     .sv-floor-groups { column-count: 2; column-gap: 30px; }
   }

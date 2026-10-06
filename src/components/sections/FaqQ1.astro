@@ -5,7 +5,13 @@
  * Spec ref: docs/design/S6_PLUS.md Section 9 (~line 792).
  * Locked copy from spec line 198. Anchors against $5k national /
  * $2.5k freelancer competitor pricing; Winters Code starter ~$1,750.
+ *
+ * S326 DNA: this is the homepage price beat, so the filled Text sits right
+ * after the $1,750 line, with /pricing and /audit as quiet return links. The
+ * old "Free consult" button to /contact skipped Text. "live in days" became
+ * the CI timeline line, the only public one.
  */
+import TextCta from '../ui/TextCta.astro';
 ---
 
 <section class="faq-q1" id="faq" aria-labelledby="faq1-q">
@@ -15,7 +21,7 @@
       <h2 class="fq-h">05 · QUESTION</h2>
       <span class="fq-status">the first one everyone asks</span>
     </div>
-    <a href="/services#faq" class="fq-link">more questions →</a>
+    <a href="/faq" class="fq-link">more questions →</a>
   </header>
 
   <article class="fq-card">
@@ -25,11 +31,11 @@
       Agency quality, priced under a freelancer. National agencies typically start at
       <span class="strike">$5,000+</span> and run 6+ weeks. Hourly
       freelancers often bill <span class="strike">$2,500+</span> over a
-      month. A site with me starts at <strong>$1,750</strong>, live in
-      days. <em>Free consult, custom quote. I can steer it start to finish, or
-      you can co-pilot with me.</em>
+      month. A site with me starts at <strong>$1,750</strong>, and builds
+      start at 3 business days. <em>The price I quote is the price you pay. I
+      can steer it start to finish, or you can co-pilot with me.</em>
     </p>
-    <a href="/contact" class="fq-cta">Free consult →</a>
+    <TextCta links={[{ href: '/pricing', label: 'See pricing' }, { href: '/audit', label: 'Free audit of your current site' }]} />
   </article>
 </section>
 
@@ -159,26 +165,4 @@
     text-decoration-thickness: 1.5px;
     font-weight: 500;
   }
-
-  .fq-cta {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 11px 18px;
-    background: var(--color-wc-green);
-    color: var(--color-bg-deep);
-    font-family: var(--font-sans);
-    font-weight: 600;
-    font-size: 14px;
-    border-radius: var(--radius-btn);
-    text-decoration: none;
-    transition: background 200ms, transform 200ms;
-    min-height: 44px;
-  }
-  @media (hover: hover) {
-
-    .fq-cta:hover {
-    background: var(--color-wc-green-bright);
-    transform: translateY(-1px);
-  }}
 </style>

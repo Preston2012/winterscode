@@ -1,5 +1,11 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { smsBase, phoneDisplay } from '../lib/text-cta';
+
+// S326 DNA: a dead end becomes a recovery cluster. Text is the one filled
+// control, prefilled so the visitor can say what they were after, and Work,
+// Contact and Home sit beside it as plain links instead of homepage-only.
+const sms = smsBase + encodeURIComponent("Hi Preston, I hit a missing page on winterscode.com. I was looking for: ");
 ---
 
 <BaseLayout
@@ -13,12 +19,18 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     <h1 class="h1 wc-404-headline">Couldn't find that one.</h1>
     <p class="body-text wc-404-lead">
       The page you were looking for has moved, was renamed, or never existed.
-      No worries, everything's still where it should be on the homepage.
+      No worries, everything's still here. Tell me what you were after and
+      I'll point you to it.
     </p>
-    <a href="/" class="wc-404-back">
-      <span aria-hidden="true">←</span>
-      Back to the homepage
+    <a href={sms} class="wc-404-text">
+      Text Preston
+      <span class="wc-404-num">{phoneDisplay}</span>
     </a>
+    <nav class="wc-404-links" aria-label="Where to next">
+      <a href="/work">Work</a>
+      <a href="/contact">Contact</a>
+      <a href="/">Home</a>
+    </nav>
   </section>
 </BaseLayout>
 
@@ -40,25 +52,58 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     margin: 24px auto 0;
     max-width: 480px;
   }
-  .wc-404-back {
+  .wc-404-text {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
+    min-height: 48px;
     margin-top: 36px;
-    padding: 14px 22px;
+    padding: 0 22px;
     background: var(--color-wc-green);
     color: var(--color-bg-deep);
     border-radius: var(--radius-btn);
     font-family: var(--font-sans);
     font-weight: 600;
-    font-size: 14px;
+    font-size: 15px;
+    text-decoration: none;
     box-shadow: 0 1px 0 var(--copper-hairline) inset;
     transition: background 200ms, transform 200ms;
+    touch-action: manipulation;
+  }
+  .wc-404-num {
+    display: none;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    opacity: 0.8;
+  }
+  @media (min-width: 1024px) {
+    .wc-404-num { display: inline; }
   }
   @media (hover: hover) {
-
-    .wc-404-back:hover {
-    background: var(--color-wc-green-bright);
-    transform: translateY(-1px);
-  }}
+    .wc-404-text:hover {
+      background: var(--color-wc-green-bright);
+      transform: translateY(-1px);
+    }
+  }
+  .wc-404-links {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0 24px;
+    margin-top: 14px;
+  }
+  .wc-404-links a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    font-family: var(--font-sans);
+    font-size: 15px;
+    color: var(--color-ash-300);
+    text-decoration: underline;
+    text-decoration-color: var(--copper-hairline);
+    text-underline-offset: 4px;
+  }
+  @media (hover: hover) {
+    .wc-404-links a:hover { color: var(--color-copper-bright); }
+  }
 </style>

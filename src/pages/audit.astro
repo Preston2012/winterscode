@@ -6,6 +6,13 @@ import PageHero from '../components/sections/PageHero.astro';
 import Divider from '../components/ui/Divider.astro';
 import Breadcrumbs from '../components/ui/Breadcrumbs.astro';
 import { breadcrumbSchema } from '../lib/schema';
+import { smsHref, smsBase } from '../lib/text-cta';
+
+// S326 DNA: after the results, Text is the first exit, and its prefill
+// carries the audited site, the grade and the first fix, built in the
+// browser from the result (nothing about the visitor is added). Contact is a
+// quiet link after it.
+const sms = smsHref(Astro.url.pathname);
 ---
 
 <BaseLayout
@@ -58,6 +65,10 @@ import { breadcrumbSchema } from '../lib/schema';
       </div>
       <p class="au-form-note" data-au-note>
         You can paste it without https://. Real checks, real numbers, no email.
+      </p>
+      <p class="au-form-privacy">
+        To run the checks, the address you enter goes to Google PageSpeed and
+        Mozilla Observatory. <a href="/privacy">What is kept, and for how long</a>.
       </p>
       <p class="au-form-error" data-au-error hidden role="alert"></p>
     </form>
@@ -144,15 +155,19 @@ import { breadcrumbSchema } from '../lib/schema';
       <p class="au-findings-loading" id="au-loading-msg">Running checks…</p>
     </div>
 
-    <!-- Soft CTA, warm not pushy -->
-    <footer class="au-cta" data-au-cta hidden>
+    <!-- Soft CTA, warm not pushy. Text first, prefilled from the result. -->
+    <footer class="au-cta" data-au-cta data-textbar-hide hidden>
       <p class="au-cta-text">
         Want help with any of this? I&apos;m down the road.
       </p>
       <div class="au-cta-actions">
-        <a href="/contact" class="au-cta-primary">Drop me a line →</a>
-        <a href="sms:5415510731" class="au-cta-secondary">Text me</a>
+        <a href={sms} class="btn btn-primary au-cta-text-btn" data-au-sms data-sms-base={smsBase}>Text me these results</a>
+        <a href="/contact" class="au-cta-quiet">Other ways to reach me</a>
       </div>
+      <p class="au-cta-note">
+        The text opens with your site, its grade and the first fix filled in.
+        Change anything before you send it.
+      </p>
       <p class="au-cta-another">
         <a href="#au-form-h" class="au-cta-another-link" data-au-another>Audit another site →</a>
       </p>
@@ -174,7 +189,7 @@ import { breadcrumbSchema } from '../lib/schema';
     <p class="au-pitch-body">
       Most agencies want you to fill out a form to "request a free audit"
       so they can call you. Mine just runs. No email, no pitch deck, no
-      sales call. <em>Hope it's useful.</em>
+      sales call.
     </p>
     <p class="au-pitch-sig">
       Preston Winters<br />
@@ -271,6 +286,26 @@ import { breadcrumbSchema } from '../lib/schema';
       if (g === 'D') return 'Holes worth patching' + suffix;
       if (g === 'F') return 'Needs work' + suffix;
       return 'Audit complete';
+    }
+
+    // Text me these results: the prefill is the audited site, its grade and
+    // the first fix, so the conversation starts where the visitor already is.
+    const smsLink = document.querySelector('[data-au-sms]');
+    const smsBaseHref = smsLink ? smsLink.getAttribute('data-sms-base') : null;
+    function setTextResults(url, grade, topFixes) {
+      if (!smsLink || !smsBaseHref) return;
+      let host = url;
+      try { host = new URL(url).hostname.replace(/^www\./, ''); } catch (e) { /* keep raw */ }
+      let body = 'Hi Preston, I ran ' + host + ' through your audit at winterscode.com/audit.';
+      if (grade && grade !== '-') body += ' It got a ' + grade + '.';
+      if (topFixes && topFixes.length && topFixes[0].summary) body += ' Top fix: ' + topFixes[0].summary;
+      body += ' Can you help with it?';
+      smsLink.setAttribute('href', smsBaseHref + encodeURIComponent(body));
+    }
+    function smsByHand(url) {
+      const base = smsBaseHref || 'sms:+15415510731?&body=';
+      const body = 'Hi Preston, your audit could not finish ' + url + ' today. Can you run it by hand?';
+      return '<a href="' + base + encodeURIComponent(body) + '">text me</a>';
     }
 
     function renderTopFixes(topFixes) {
@@ -417,6 +452,7 @@ import { breadcrumbSchema } from '../lib/schema';
         setScore(scores.mobile.seo, lhM.seo);
         renderTopFixes(r.topFixes);
         renderFindings(r.findings);
+        setTextResults(url, r.overall, r.topFixes);
         if (ctaEl) ctaEl.hidden = false;
         if (note) note.textContent = 'Done. Scroll down for the findings.';
 
@@ -449,6 +485,7 @@ import { breadcrumbSchema } from '../lib/schema';
               setScore(scores.mobile.seo, m2.seo);
               renderTopFixes(r2.topFixes);
               renderFindings(r2.findings);
+              setTextResults(url, r2.overall, r2.topFixes);
               if (note) note.textContent = 'Done. Scroll down for the findings.';
             } catch (err) {
               /* keep the result already on screen */
@@ -462,10 +499,10 @@ import { breadcrumbSchema } from '../lib/schema';
           const msg = (e && e.message) ? String(e.message) : '';
           if (msg === 'rate_limit_exceeded') {
             findingsEl.innerHTML =
-              '<p class="au-no-findings">Audited a lot today (15 per day cap). Try again tomorrow, or text me at 541-551-0731 and I will run it by hand.</p>';
+              '<p class="au-no-findings">Audited a lot today (15 per day cap). Try again tomorrow, or ' + smsByHand(url) + ' at 541-551-0731 and I will run it by hand.</p>';
           } else {
             findingsEl.innerHTML =
-              '<p class="au-no-findings">Could not run the audit. The site might be blocking checks, or the URL might be wrong. Try again, or text me at 541-551-0731 if you want me to run it by hand.</p>';
+              '<p class="au-no-findings">Could not run the audit. The site might be blocking checks, or the URL might be wrong. Try again, or ' + smsByHand(url) + ' at 541-551-0731 if you want me to run it by hand.</p>';
           }
         }
         if (note) note.textContent = 'Something went wrong. Try again or text me.';
@@ -1009,22 +1046,42 @@ import { breadcrumbSchema } from '../lib/schema';
     justify-content: center;
     flex-wrap: wrap;
   }
-  .au-cta-primary,
-  .au-cta-secondary {
+  .au-cta-actions { align-items: center; gap: 4px 18px; }
+  .au-cta-text-btn { touch-action: manipulation; }
+  .au-cta-quiet {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
     font-family: var(--font-sans);
     font-size: 14px;
-    text-decoration: none;
-    border-radius: 6px;
-    padding: 10px 16px;
+    color: var(--color-ash-300);
+    text-decoration: underline;
+    text-decoration-color: var(--copper-hairline);
+    text-underline-offset: 4px;
   }
-  .au-cta-primary {
-    background: var(--color-wc-green);
-    color: var(--color-bg-deep);
-    font-weight: 600;
+  @media (hover: hover) {
+    .au-cta-quiet:hover { color: var(--color-copper-bright); }
   }
-  .au-cta-secondary {
-    color: var(--color-ash-100);
-    border: 1px solid var(--copper-hairline);
+  .au-cta-note {
+    margin: 10px auto 0;
+    max-width: 46ch;
+    font-family: var(--font-sans);
+    font-size: 12.5px;
+    line-height: 1.5;
+    color: var(--color-ash-400);
+  }
+  .au-form-privacy {
+    margin: 6px 0 0;
+    font-family: var(--font-sans);
+    font-size: 12.5px;
+    line-height: 1.5;
+    color: var(--color-ash-400);
+  }
+  .au-form-privacy a {
+    color: var(--color-ash-300);
+    text-decoration: underline;
+    text-decoration-color: var(--copper-hairline);
+    text-underline-offset: 3px;
   }
   .au-cta-another {
     margin: 14px 0 0;

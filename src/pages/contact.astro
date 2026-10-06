@@ -7,11 +7,19 @@ import Divider from '../components/ui/Divider.astro';
 import Contact from '../components/sections/Contact.astro';
 import Breadcrumbs from '../components/ui/Breadcrumbs.astro';
 import { breadcrumbSchema } from '../lib/schema';
+import { smsHref, phoneDisplay } from '../lib/text-cta';
+
+// S326 DNA: Text leads. The H1 is the tagline, the Text button sits right
+// under the hero with three facts beneath it (reply hours, consult geography,
+// the 50/50 terms), and the brief form and the full consult policy stay on
+// the page but start collapsed. The form's spam check loads when the form is
+// opened, not on every visit to the page.
+const sms = smsHref(Astro.url.pathname);
 ---
 
 <BaseLayout
   title="Contact · Winters Code"
-  description="Free consult. No pitch deck. Bandon-based, serving Coos and Curry counties. Send a brief, book on Cal, call, or text."
+  description="Text Preston at 541-551-0731. Bandon-based, serving Coos and Curry counties. Free consult, no pitch deck. Call, book a time, or send a brief instead."
 >
   <Fragment slot="head">
     <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema([
@@ -25,10 +33,10 @@ import { breadcrumbSchema } from '../lib/schema';
   <Breadcrumbs items={[{ name: 'Home', path: '/' }, { name: 'Contact', path: '/contact' }]} />
 
   <PageHero
-    eyebrow="Contact · Get In Touch"
-    h1="Let's build something."
-    sub="Four ways to reach me below. Book a consult, call, text, or send a brief. Every one of them goes straight to me. No assistants, no triage layer, no contact-form black hole."
-    sub2="I read every brief. Most replies go out within a few hours during business days."
+    eyebrow="Contact · Text first"
+    h1="Help is just a text away."
+    sub="Text me what you need and it comes straight to me. No assistants, no triage layer, no contact-form black hole."
+    sub2="Calling works too, and so does writing it out below."
     bgImage="/photo/local/contact-sunset-wash"
     bgOpacity={0.44}
     showStamp={false}
@@ -36,14 +44,19 @@ import { breadcrumbSchema } from '../lib/schema';
 
   <Divider label="01" />
 
-  <Contact sectionNumber="01" centered={true} suppressHeader={true} />
+  <Contact sectionNumber="01" centered={true} suppressHeader={true} strip={true} />
 
   <Divider label="02" />
 
-  <!-- ─────────── Section 02 · The brief form ─────────── -->
+  <!-- ─────────── Section 02 · The brief form, collapsed ─────────── -->
   <section class="ct-form-wrap" aria-labelledby="ct-form-h">
-    <header class="ct-form-head">
+    <details class="ct-form-fold" data-ct-fold>
+    <summary class="ct-form-summary">
+      <span class="ct-form-summary-k">Rather write it out?</span>
       <h2 class="ct-form-h" id="ct-form-h">Send a brief.</h2>
+      <span class="ct-form-summary-icon" aria-hidden="true">+</span>
+    </summary>
+    <header class="ct-form-head">
       <p class="ct-form-sub">
         The more you tell me up front, the sharper the consult. Skip
         anything that doesn't fit.
@@ -134,13 +147,13 @@ import { breadcrumbSchema } from '../lib/schema';
         <p class="ct-nojs" data-ct-nojs hidden>
           The spam check did not load. Email
           <a href="mailto:preston@winterscode.com">preston@winterscode.com</a>
-          or text <a href="sms:5415510731">541-551-0731</a> and it reaches me the same way.
+          or text <a href={sms}>{phoneDisplay}</a> and it reaches me the same way.
         </p>
         <noscript>
           <p class="ct-nojs">
             This form needs JavaScript for its spam check. Email
             <a href="mailto:preston@winterscode.com">preston@winterscode.com</a>
-            or text <a href="sms:5415510731">541-551-0731</a> instead.
+            or text <a href={sms}>{phoneDisplay}</a> instead.
           </p>
         </noscript>
       </div>
@@ -151,8 +164,9 @@ import { breadcrumbSchema } from '../lib/schema';
       </div>
 
       <p class="ct-form-trust">
-        Goes straight to my inbox at preston@winterscode.com.
-        No mailing list, no third parties, no auto-replies.
+        Goes straight to me at preston@winterscode.com. No mailing list and
+        no auto-replies. What the form keeps, and where, is on the
+        <a href="/privacy">privacy page</a>.
       </p>
     </form>
 
@@ -160,20 +174,23 @@ import { breadcrumbSchema } from '../lib/schema';
       <h3 class="ct-thanks-h">Got it. Thanks for the brief.</h3>
       <p class="ct-thanks-body">
         <span class='hl-green'>I read every one.</span> You'll hear back from me at the email you
-        provided within a few hours during business days. If it's
-        urgent, text me at <a href="sms:5415510731">541-551-0731</a>.
+        provided within a few hours during business days. If you would
+        rather talk it through, text me at <a href={sms}>{phoneDisplay}</a>.
       </p>
     </div>
+    </details>
   </section>
 
   <Divider label="03" />
 
-  <!-- ─────────── Section 03 · Consult policy (geo-aware) ─────────── -->
+  <!-- ─────────── Section 03 · Consult policy (geo-aware), collapsed ─────────── -->
   <section class="ct-policy" aria-labelledby="ct-policy-h">
-    <header class="ct-block-head">
+    <details class="ct-policy-fold">
+    <summary class="ct-block-head ct-policy-summary">
       <h2 class="ct-block-h" id="ct-policy-h">Consult policy.</h2>
-      <p class="ct-block-sub">Where I show up, what it costs, why it works that way.</p>
-    </header>
+      <span class="ct-block-sub">Where I show up, what it costs, why it works that way.</span>
+      <span class="ct-form-summary-icon" aria-hidden="true">+</span>
+    </summary>
 
     <ul class="ct-policy-list" data-ct-policy>
       <li class="ct-policy-row" data-tier="bandon">
@@ -241,6 +258,7 @@ import { breadcrumbSchema } from '../lib/schema';
       <span class="ct-policy-geo-dot" aria-hidden="true"></span>
       <span data-ct-geo-text></span>
     </p>
+    </details>
   </section>
 
   <Divider label="04" />
@@ -285,11 +303,34 @@ import { breadcrumbSchema } from '../lib/schema';
       </div>
     </dl>
   </section>
-<script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </BaseLayout>
 
 <script is:inline>
   (function () {
+    // ─── Spam check loads when the brief is opened ───
+    // Turnstile used to load on every visit, for a form most visitors never
+    // open. It now loads on the first open of the fold, while the widget's
+    // container is visible, so the implicit render sizes it correctly.
+    const fold = document.querySelector('[data-ct-fold]');
+    let tsLoaded = false;
+    function loadTurnstile() {
+      if (tsLoaded) return;
+      tsLoaded = true;
+      const s = document.createElement('script');
+      s.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
+      s.async = true;
+      s.defer = true;
+      s.onerror = function () {
+        const nojs = document.querySelector('[data-ct-nojs]');
+        if (nojs) nojs.hidden = false;
+      };
+      document.head.appendChild(s);
+    }
+    if (fold) {
+      fold.addEventListener('toggle', function () { if (fold.open) loadTurnstile(); });
+      if (location.hash === '#ct-form-h' || location.hash === '#brief') { fold.open = true; }
+    }
+
     // ─── Brief form submission ───
     const form = document.querySelector('[data-ct-form]');
     const note = document.querySelector('[data-ct-note]');
@@ -377,7 +418,7 @@ import { breadcrumbSchema } from '../lib/schema';
         if (geoEl && geoText) {
           if (country === 'US') {
             geoText.textContent =
-              'Looks like you\'re visiting from the US. If you\'re in Bandon, that\'s a free in-person consult. Coos/Curry counties get a free 30-min video. Note your city above.';
+              'Looks like you\'re visiting from the US. If you\'re in Bandon, that\'s a free in-person consult. Coos/Curry counties get a free 30-min video. Tell me your town when you text.';
           } else if (country) {
             geoText.textContent =
               'Visiting from ' + country + '. Video consults work fine from anywhere. The Oregon coast is my home base.';
@@ -435,6 +476,58 @@ import { breadcrumbSchema } from '../lib/schema';
     margin: 0 0 6px;
     font-weight: 600;
   }
+
+  /* ─── S326: the brief and the policy start folded ─── */
+  .ct-form-summary,
+  .ct-policy-summary {
+    position: relative;
+    display: block;
+    min-height: 44px;
+    padding: 6px 40px 6px 0;
+    cursor: pointer;
+    list-style: none;
+  }
+  .ct-form-summary::-webkit-details-marker,
+  .ct-policy-summary::-webkit-details-marker { display: none; }
+  .ct-form-summary .ct-form-h { margin: 2px 0 0; }
+  .ct-policy-summary .ct-block-sub { display: block; }
+  .ct-form-summary-k {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-copper);
+  }
+  .ct-form-summary-icon {
+    position: absolute;
+    right: 4px;
+    top: 50%;
+    width: 32px;
+    height: 32px;
+    margin-top: -16px;
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--copper-hairline);
+    border-radius: 50%;
+    font-family: var(--font-mono);
+    font-size: 16px;
+    color: var(--color-ash-300);
+    transition: transform 160ms;
+  }
+  details[open] > summary .ct-form-summary-icon { transform: rotate(45deg); }
+  .ct-form-summary:focus-visible,
+  .ct-policy-summary:focus-visible {
+    outline: 2px solid var(--color-wc-green);
+    outline-offset: 4px;
+    border-radius: 6px;
+  }
+  @media (hover: hover) {
+    .ct-form-summary:hover .ct-form-h,
+    .ct-policy-summary:hover .ct-block-h { color: var(--color-wc-green); }
+  }
+  .ct-form-fold[open] > .ct-form-head { margin-top: 12px; }
+  .ct-policy-fold[open] > .ct-policy-summary { margin-bottom: 18px; }
   @media (min-width: 740px) { .ct-form-h { font-size: 34px; } }
   .ct-form-sub {
     font-family: var(--font-sans);

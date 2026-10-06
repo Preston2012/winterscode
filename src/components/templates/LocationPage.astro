@@ -20,6 +20,7 @@ import PageHero from '../sections/PageHero.astro';
 import Divider from '../ui/Divider.astro';
 import RelatedLinks from '../sections/RelatedLinks.astro';
 import Contact from '../sections/Contact.astro';
+import TextCta from '../ui/TextCta.astro';
 import { services, towns, townBySlug } from '../../lib/business';
 import type { ServiceEntry, TownEntry } from '../../lib/business';
 import { serviceSchema, breadcrumbSchema, faqSchema } from '../../lib/schema';
@@ -182,17 +183,7 @@ const faqLd = town.faq.length ? faqSchema(town.faq) : null;
     </>
   )}
 
-  {town.localScene && (
-    <>
-      <Divider label="02c" />
-      <section class="loc-block loc-angle loc-scene" aria-labelledby="loc-scene-h">
-        <header class="loc-block-head">
-          <h2 class="loc-block-h" id="loc-scene-h">{town.localScene.heading}</h2>
-        </header>
-        <p class="loc-angle-p" set:html={town.localScene.body} />
-      </section>
-    </>
-  )}
+  {/* localScene retired in S326: it told the local economy a third time after the intro and context. The data stays in business.ts. */}
 
   {showAuditHook && (
     <>
@@ -208,26 +199,29 @@ const faqLd = town.faq.length ? faqSchema(town.faq) : null;
             I audited <strong>169 Coos County small-business websites</strong> with Google
             Lighthouse and Mozilla Observatory. The average mobile speed score was
             <strong> 61 out of 100</strong> among those Lighthouse could score, and not one site scored both fast and secure.
-            Most are rented from a template platform and pay for it in speed.
+            More than half are rented from a template platform and pay for it in speed.
           </p>
         )}
-        <p class="loc-audit-p">
-          In a market where almost no one has done the work, doing it well wins.
-          A fast, custom site can outrank the rented sites around {town.name} and turn
-          local searches into calls. <a href="/audit" class="loc-link">Run a free audit of your site →</a>
-        </p>
+        <p class="loc-audit-p">In a market where few have done the work, doing it well stands out.</p>
+        <TextCta links={[{ href: '/audit', label: 'Run a free audit of your site' }, { href: '/work', label: 'See the work' }]} />
       </section>
     </>
   )}
 
   <Divider label="04" />
 
-  <RelatedLinks
+  {town.compactServices ? (
+    <section class="loc-block" aria-label="Services">
+      <p class="loc-audit-p">Sites, apps, automation and logo work are all on the <a href="/services" class="loc-link">services page</a>.</p>
+    </section>
+  ) : (
+    <RelatedLinks
     id="loc-services"
     title={`What I build for ${town.name}`}
     intro="Every service, available to businesses in your town. The work is mine, end to end."
     links={serviceLinks}
   />
+  )}
 
   {town.faq.length > 0 && (
     <>
@@ -259,9 +253,9 @@ const faqLd = town.faq.length ? faqSchema(town.faq) : null;
       <h2 class="loc-block-h" id="loc-travel-h">Getting together</h2>
     </header>
     <p class="loc-travel-p">
-      From the shop in Bandon, {town.name} is {town.driveFromBandon}. The first consult is
-      a free 30-minute video call, no pitch deck. Most of a build happens remotely, and I
-      come to {town.name} in person when the project earns the trip.
+      {town.consultBand === 'in-person-free'
+        ? `${town.name} is home base, so meeting in person is free. Most of a build happens over text and video anyway.`
+        : `From the shop in Bandon, ${town.name} is ${town.driveFromBandon}. Most of a build happens over text and video.`}
     </p>
   </section>
 

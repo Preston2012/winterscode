@@ -7,6 +7,14 @@ import Divider from '../components/ui/Divider.astro';
 import Breadcrumbs from '../components/ui/Breadcrumbs.astro';
 import Contact from '../components/sections/Contact.astro';
 import { breadcrumbSchema } from '../lib/schema';
+import TextCta from '../components/ui/TextCta.astro';
+import { smsHref } from '../lib/text-cta';
+
+// S326 DNA: five steps and the 14-day hold stay. The questionnaire is
+// optional, never a gate; the Lighthouse number no longer leads the build
+// step; Text sits once, right after the steps; and the H1 is the sentence
+// that used to sit under it.
+const sms = smsHref(Astro.url.pathname);
 
 const crumbs = [
   { name: 'Home', path: '/' },
@@ -17,9 +25,9 @@ const breadcrumbLd = breadcrumbSchema(crumbs);
 const steps = [
   {
     num: '01',
-    name: 'Questionnaire + consult',
+    name: 'A text + a consult',
     meta: 'no cost, no pitch deck',
-    body: 'A short questionnaire covers your business, audience, services, and goals. Then we talk: in person if you are local, on a video call if you are not. A completed questionnaire keeps the consult sharp and is required before the first meeting.',
+    body: 'Start with a text about your business and what you need. Then we talk: in person if you are local, on a video call if you are not. There is a short questionnaire if you would rather write it all out, but it is optional and never a gate before the first meeting.',
   },
   {
     num: '02',
@@ -30,8 +38,8 @@ const steps = [
   {
     num: '03',
     name: 'Build',
-    meta: 'days for sites, weeks for apps',
-    body: 'I build it, send you progress, and fold in your revision rounds. Modern stack, around a 95 Lighthouse average, secure by default. You see real work fast, not a status meeting.',
+    meta: 'sites start at 3 business days',
+    body: 'I build it, send you progress, and fold in your revision rounds. Modern stack, fast and secure by default, and measured live on the wall once it is up. You see real work fast, not a status meeting.',
   },
   {
     num: '04',
@@ -50,7 +58,7 @@ const steps = [
 
 <BaseLayout
   title="How I Work · The Process · Winters Code"
-  description="From questionnaire to launch and beyond. A clear five-step process for Oregon coast websites and apps: consult, quote, build, launch, and maintain."
+  description="From the first text to launch and beyond. A clear five-step process for Oregon coast websites and apps: consult, quote, build, launch, and maintain."
   canonicalPath="/process"
 >
   <Fragment slot="head">
@@ -63,8 +71,8 @@ const steps = [
 
   <PageHero
     eyebrow="The Process"
-    h1="From questionnaire to launch."
-    sub="A clear, honest path from first conversation to a live site you own. No agency runaround."
+    h1="From first conversation to a live site you own."
+    sub="A clear, honest path in five steps. No agency runaround."
     bgImage="/photo/local/scenes/beach-bigsky"
     showcase
     bgPosition="center 62%"
@@ -86,6 +94,7 @@ const steps = [
         </li>
       ))}
     </ol>
+    <TextCta lead="Step one is a text." links={[{ href: '/pricing', label: 'See pricing' }]} />
   </section>
 
   <Divider label="02" />
@@ -95,7 +104,7 @@ const steps = [
     <ul class="proc-creed-list">
       <li>The work is mine, end to end. No offshore team, no junior you will never meet.</li>
       <li>I show up in person when it matters. Small towns run on trust, and that is built face to face.</li>
-      <li>I answer my texts within a few hours on business days. Real human, real response time.</li>
+      <li><a href={sms} class="proc-text-link">I answer my texts within a few hours on business days.</a> Real human, real response time.</li>
       <li>The site fits your customer, not the other way around. Sometimes that is a long scrolling story, sometimes a big phone number and a clear way to book.</li>
       <li>I am here for the long run. Bandon is home, and the person who built your site is the one who maintains it.</li>
     </ul>
@@ -173,6 +182,17 @@ const steps = [
     color: var(--color-ash-300);
   }
   @media (min-width: 740px) { .proc-creed-list { font-size: 16px; } }
+  /* The creed is wired to the control (S326 DNA). */
+  .proc-text-link {
+    color: var(--color-ash-100);
+    text-decoration: underline;
+    text-decoration-style: dotted;
+    text-decoration-color: rgba(200, 128, 74, 0.6);
+    text-underline-offset: 4px;
+  }
+  @media (hover: hover) {
+    .proc-text-link:hover { color: var(--color-wc-green); }
+  }
   .proc-creed-list li {
     padding-left: 18px;
     position: relative;

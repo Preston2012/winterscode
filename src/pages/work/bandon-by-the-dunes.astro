@@ -7,17 +7,17 @@ import CaseStudyLayout from '../../components/templates/CaseStudyLayout.astro';
   description="A Bandon brokerage with the whole South Coast market on its own pages, pulled straight from the RMLS feed with no third-party IDX widget. Built in 18 days."
   eyebrow="Work · Case Study"
   h1="The whole market, on their own pages."
-  sub="A Bandon real estate brokerage running live RMLS listings with no third-party IDX widget in sight. Astro on Cloudflare Workers, built in 18 business days."
+  sub="A Bandon real estate brokerage running live RMLS listings with no third-party IDX widget in sight, built in 18 business days."
   intro={[
     "Barry Winters and Jodie VanLeuven are Bandon natives, both Bandon High graduates, both licensed brokers, business partners and life partners. They run a cranberry farm here too. Between them they cover homes, land, commercial and farms across Coos and Curry counties, and the thing they say about themselves is the thing that turned out to matter for the site: <em>they know the houses, the land, and the people.</em>",
     "The hard part of a real estate site is never the design. It is the listings. Almost every brokerage solves it by renting an IDX widget, which drops someone else's search tool into a box on your page. It loads slowly, it looks like a different website, and the listing pages it makes are not yours.",
-    "This site does not have one. The RMLS feed lands in a <span class='hl-copper'>Cloudflare D1 database</span> and renders as ordinary pages on their own domain, with their own design, their own URLs, and <span class='hl-green'>their own search built on top of it</span>.",
+    "This site does not have one. The RMLS feed comes straight into <span class='hl-copper'>the brokerage's own database</span> and renders as ordinary pages on their own domain, with their own design, their own URLs, and <span class='hl-green'>their own search built on top of it</span>.",
   ]}
   stats={[
     { value: '1,326', label: 'South Coast properties live on the site' },
     { value: '18', label: 'business days, kickoff to live' },
     { value: '0', label: 'third-party IDX widgets' },
-    { value: 'A+ 130', label: 'Mozilla Observatory' },
+    { value: 'A+', label: 'Mozilla Observatory, measured live' },
   ]}
   sections={[
     {
@@ -28,19 +28,16 @@ import CaseStudyLayout from '../../components/templates/CaseStudyLayout.astro';
       ],
     },
     {
-      h: 'How the listings work',
+      h: 'Their listings first, the whole market after',
       body: [
-        "The feed lands in D1, Cloudflare's SQL database, running at the edge next to the site itself. Pages render on demand from that data, so a price change or a new listing shows up without a rebuild and without anyone touching the site.",
-        "Their own listings lead. Below them sits the rest of the market, currently <span class='stat'>1,326</span> properties, so a visitor who arrives looking for one house can see everything else without leaving. Grid and map views share one filter state. Each property has its own URL, its own photos and its own page, which is what makes it findable at all.",
-        "It fails soft. If the feed is unreachable the page still renders with the brokerage's own listings rather than showing an error where the inventory should be, because a real estate site that looks broken looks like a brokerage that is not paying attention.",
+        "Their own listings lead. Below them sits the rest of the market, currently <span class='stat'>1,326</span> properties, so a visitor who arrives looking for one house can see everything else without leaving. Grid and map views share one filter. Each property has its own address on their domain, its own photos and its own page, which is what makes it findable at all.",
+        "A price change or a new listing shows up on its own, without anyone touching the site. If the feed is ever unreachable, the page still shows the brokerage's own listings instead of an error, because a real estate site that looks broken looks like a brokerage that is not paying attention.",
       ],
     },
     {
-      h: 'The bug that only showed on the homepage',
+      h: 'The maintenance nobody sells',
       body: [
-        "Two months after launch the security grade dropped from A+ to B on this site alone, with no code change to any header. The cause was worth the afternoon it took to find. Cloudflare applies the headers declared in a <code>_headers</code> file to static files only, never to pages the worker generates on demand. When the homepage converted to on-demand rendering so it could show live listings, it silently stopped receiving five of its security headers. Nothing had broken. The page had simply moved out from under the rule.",
-        "The fix was to set the headers in middleware, where every response passes through regardless of how it was made, and to gap-fill only so nothing already correct gets overwritten. The grade came back at <span class='stat'>A+ 130</span>, higher than it had been before the regression.",
-        "That is the part of maintenance nobody sells and everybody needs. A rented site would have shown the same drop and nobody would have looked.",
+        "Two months after launch the site's security grade slipped from A+ to B with no change to its code. I traced the cause, fixed it, and the grade came back at <span class='stat'>A+ 130</span>, higher than before. A rented site would have shown the same drop and nobody would have looked.",
       ],
     },
   ]}

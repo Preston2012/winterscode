@@ -1,32 +1,40 @@
 # Winters Code
 
-> Custom websites and apps for Oregon coast small businesses. React, Astro, and Flutter on a modern stack, with no templates and no WordPress. One person designs, builds, deploys, and maintains every project. Help is just a text away.
+> Custom websites and apps for Oregon coast small businesses, built in Bandon, Oregon. Astro, React, and Flutter on a modern stack, with no templates and no WordPress. One person designs, builds, deploys, and maintains every project. Help is just a text away.
 
-Winters Code is the software shop of Preston Winters in Bandon, Oregon. It builds custom marketing websites, web apps, and mobile apps for small businesses across Coos County, Curry County, and the wider Oregon coast. Every build runs on a modern engineering stack (React, Astro, Flutter, Supabase, Cloudflare). Timelines start at three business days for a Starter site. Maintenance plans start at $75 per month (Basic) and $250 per month (Pro).
+Winters Code is the software shop of Preston Winters in Bandon, Oregon. It builds custom marketing websites, web apps, and mobile apps for small businesses in Coos County, Curry County, and along the Oregon coast. Every build runs on a modern stack (Astro, React, Flutter, Supabase, Cloudflare). Local business sites start at $1,750 with everything included, and site builds start at three business days. Rebuilds of an existing site usually run $2,500 to $3,500. Care plans are optional: Basic from $75 per month and Pro from $250 per month.
 
-Contact: Preston Winters. Phone (541) 551-0731. Email preston@winterscode.com. Based in Bandon, Oregon. Service area: Bandon, Coos Bay, North Bend, Coquille, Reedsport, Myrtle Point, Port Orford, and Gold Beach.
+Contact: Preston Winters. Text or call (541) 551-0731. Email preston@winterscode.com. Based in Bandon, Oregon. Service area: Bandon, Coos Bay, North Bend, Coquille, Myrtle Point, Port Orford, and Gold Beach in Coos and Curry counties, plus Reedsport.
 
 ## Main pages
 - [Home](https://winterscode.com/): What Winters Code is and who it serves.
-- [Services](https://winterscode.com/services): Web design, web development, apps, custom software, AI automation, and maintenance.
-- [Work](https://winterscode.com/work): Portfolio of built websites and apps.
-- [Process](https://winterscode.com/process): How a project runs from first call to launch.
-- [Pricing](https://winterscode.com/pricing): How projects are priced.
+- [Services](https://winterscode.com/services): Websites, apps, custom software, AI automation, SEO, and care plans.
+- [Pricing](https://winterscode.com/pricing): Sites from $1,750 with everything included, rebuilds, and care plans.
+- [Work](https://winterscode.com/work): Sites and apps built and live, with live Lighthouse and security grades.
+- [Process](https://winterscode.com/process): Five steps from the first text to launch and care.
 - [About](https://winterscode.com/about): Preston Winters and how Winters Code works.
 - [FAQ](https://winterscode.com/faq): Common questions answered.
-- [Contact](https://winterscode.com/contact): Get a quote or ask a question.
+- [Contact](https://winterscode.com/contact): Text first; call, book a time, or send a brief.
+- [Free site audit](https://winterscode.com/audit): Run any site through Lighthouse and Mozilla Observatory, no email needed.
+- [Coos County website audit](https://winterscode.com/insights/coos-county-website-audit): 169 local business sites measured.
+- [The Wall](https://winterscode.com/wall): Live Lighthouse scores and security grades for the sites Winters Code builds.
 
 ## Services
 - [Web Design](https://winterscode.com/services/web-design): Custom marketing websites for small businesses.
 - [Web Development](https://winterscode.com/services/web-development): Web apps and custom site builds.
 - [App Development](https://winterscode.com/services/app-development): iOS and Android apps in Flutter.
 - [Custom Software](https://winterscode.com/services/custom-software): Tools built for a specific business need.
-- [AI Automation](https://winterscode.com/services/ai-automation): AI workflows and assistants for small teams.
-- [SEO and Performance](https://winterscode.com/services/seo-performance): Speed and search work for existing sites.
-- [Website Maintenance](https://winterscode.com/website-maintenance): Ongoing care plans, Basic from $75/mo and Pro from $250/mo.
-- [Logo Design](https://winterscode.com/logo-design): Brand marks and identity.
+- [AI Automation](https://winterscode.com/services/ai-automation): AI workflows for small teams.
+- [SEO and Performance](https://winterscode.com/services/seo-performance): Speed and search work, measured before and after.
+- [Core Web Vitals Fix](https://winterscode.com/core-web-vitals-fix): Repairs for slow sites.
 - [Website Redesign](https://winterscode.com/website-redesign): Rebuilds of dated or slow sites.
+- [Website Maintenance](https://winterscode.com/website-maintenance): Care plans, Basic from $75/mo and Pro from $250/mo.
+- [Logo Design](https://winterscode.com/logo-design): Brand marks and identity.
 
 ## Work
-- [Baseline Marketing](https://winterscode.com/work/baseline-marketing): Marketing site case study.
-- [Sogn Contracting](https://winterscode.com/work/sogn-contracting): Contractor website case study.
+- [Sogn Contracting](https://winterscode.com/work/sogn-contracting): A Bandon contractor, live in three business days, now 23 pages.
+- [SeaBreeze Landscape Care and Home Repair](https://winterscode.com/work/seabreeze): A Bandon contractor off WordPress in seven days.
+- [US Survey Supply](https://winterscode.com/work/us-survey-supply): A 42-page rebuild for a surveying-equipment dealer.
+- [Bandon By The Dunes Realtee](https://winterscode.com/work/bandon-by-the-dunes): A brokerage on live RMLS listings with no IDX widget.
+- [Professors Golf](https://winterscode.com/work/professors-golf): A Bandon golf service, built in one business day.
+- [Baseline Marketing](https://winterscode.com/work/baseline-marketing): The marketing site for Preston's own product, Baseline.

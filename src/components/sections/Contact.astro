@@ -9,8 +9,10 @@
  * rather schedule it or write it out.
  *
  * Consult policy is published so prospects self-qualify on geography +
- * travel before they reach out. The $250 deposit gate filters out anyone
- * who isn't serious about Bandon's service area.
+ * travel, but it sits UNDER the Text button and starts collapsed (S326 DNA:
+ * policy and deposit text never stand as a wall before Text). On a phone the
+ * left column stacks first, so four policy bullets there put a wall between
+ * the visitor and the one control that matters.
  */
 import SectionHead from '../ui/SectionHead.astro';
 import { smsHref } from '../../lib/text-cta';
@@ -43,6 +45,12 @@ export interface Props {
    */
   headerKicker?: string;
   headerTitle?: string;
+  /**
+   * strip: /contact only. Under the buttons, three short facts from live copy
+   * (reply hours, consult geography, the 50/50 terms) instead of the
+   * collapsed policy, because /contact carries the full policy further down.
+   */
+  strip?: boolean;
 }
 const {
   sectionNumber = '07',
@@ -50,6 +58,7 @@ const {
   suppressHeader = false,
   headerKicker = 'Reach out',
   headerTitle = 'Ready to build?',
+  strip = false,
 } = Astro.props;
 
 const phone = '5415510731';
@@ -72,19 +81,9 @@ const sms = smsHref(Astro.url.pathname);
     )}
 
     <p class="body-text terminus-body">
-      Custom websites and apps for Oregon coast businesses.
-      Modern stack. Days for sites, weeks for apps. Free consult to scope your project.
+      Custom websites and apps for Oregon coast businesses, built in Bandon.
+      Sites from $1,750, starting at 3 business days. One text gets it started.
     </p>
-
-    <div class="consult-policy">
-      <div class="consult-policy-title mono">Consult Policy</div>
-      <ul>
-        <li><strong>Bandon:</strong> free in-person or video</li>
-        <li><strong>Coos & Curry counties:</strong> free 30-min video</li>
-        <li><strong>In-person up to 1.5 hours away:</strong> $250 deposit, credits to project on signing</li>
-        <li><strong>In-person up to 2.5 hours away:</strong> $400 deposit, credits to project on signing</li>
-      </ul>
-    </div>
   </div>
 
   <div class="terminus-right">
@@ -104,10 +103,30 @@ const sms = smsHref(Astro.url.pathname);
       </a>
     </div>
 
+    {strip ? (
+      <ul class="contact-strip">
+        <li>I answer my texts within a few hours during business days.</li>
+        <li>Consults are free in Bandon, and free by 30-minute video across Coos and Curry.</li>
+        <li>Every build has a written SOW: 50% on signing, 50% at launch.</li>
+      </ul>
+    ) : (
+      <p class="contact-reply">I answer my texts within a few hours during business days.</p>
+    )}
+
     <div class="contact-quiet-row">
       <a href={cal} target="_blank" rel="noopener">Book a 30-min call</a>
       <a href={`mailto:${email}?subject=Winters%20Code%20consult%20request`}>Email {email}</a>
     </div>
+
+    {!strip && <details class="consult-policy">
+      <summary class="consult-policy-title mono">Consult policy</summary>
+      <ul>
+        <li><strong>Bandon:</strong> free in-person or video</li>
+        <li><strong>Coos & Curry counties:</strong> free 30-min video</li>
+        <li><strong>In-person up to 1.5 hours away:</strong> $250 deposit, credits to project on signing</li>
+        <li><strong>In-person up to 2.5 hours away:</strong> $400 deposit, credits to project on signing</li>
+      </ul>
+    </details>}
   </div>
 </section>
 
@@ -181,25 +200,82 @@ const sms = smsHref(Astro.url.pathname);
   .rivet.bl { bottom: 7px; left: 7px; }
   .rivet.br { bottom: 7px; right: 7px; }
 
-  /* ─── Consult policy block ─── */
+  /* ─── Reply line, right under the buttons ─── */
+  .contact-reply {
+    margin: 12px 0 0;
+    font-family: var(--font-sans);
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--color-ash-300);
+  }
+
+  /* ─── /contact strip: three facts under the buttons ─── */
+  .contact-strip {
+    list-style: none;
+    margin: 14px 0 0;
+    padding: 0;
+    display: grid;
+    gap: 6px;
+    font-family: var(--font-sans);
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--color-ash-300);
+  }
+  .contact-strip li {
+    position: relative;
+    padding-left: 16px;
+  }
+  .contact-strip li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.72em;
+    width: 8px;
+    height: 1px;
+    background: var(--color-copper);
+  }
+
+  /* ─── Consult policy, collapsed under Text ─── */
   .consult-policy {
-    margin-top: 8px;
-    padding: 14px 14px 12px;
+    margin-top: 6px;
+    padding: 0 14px;
     background: var(--color-bg-deep);
     border: 1px solid var(--copper-hairline);
     border-radius: 8px;
     position: relative;
   }
   @media (min-width: 740px) {
-    .consult-policy { padding: 18px 18px 16px; }
+    .consult-policy { padding: 0 18px; }
   }
   .consult-policy-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 44px;
     font-size: 10px;
     font-weight: 600;
     letter-spacing: 0.16em;
     color: var(--color-copper);
     text-transform: uppercase;
-    margin-bottom: 10px;
+    cursor: pointer;
+    list-style: none;
+  }
+  .consult-policy-title::-webkit-details-marker { display: none; }
+  .consult-policy-title::after {
+    content: "+";
+    font-size: 14px;
+    letter-spacing: 0;
+    color: var(--color-ash-500);
+  }
+  .consult-policy[open] .consult-policy-title::after { content: "\2212"; }
+  .consult-policy-title:focus-visible {
+    outline: 2px solid var(--color-wc-green);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+  .consult-policy[open] { padding-bottom: 12px; }
+  @media (min-width: 740px) {
+    .consult-policy[open] { padding-bottom: 16px; }
   }
   .consult-policy ul {
     margin: 0;
@@ -373,7 +449,14 @@ const sms = smsHref(Astro.url.pathname);
     margin-right: auto;
     text-align: center;
   }
-  .terminus-centered .consult-policy {
+  .terminus-centered .consult-policy,
+  .terminus-centered .contact-reply {
+    max-width: 560px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .terminus-centered .contact-reply { text-align: center; }
+  .terminus-centered .contact-strip {
     max-width: 560px;
     margin-left: auto;
     margin-right: auto;

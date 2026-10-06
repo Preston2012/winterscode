@@ -1,0 +1,91 @@
+---
+/**
+ * Text-first call to action (S326 site DNA).
+ *
+ * The filled Text button with the page-tagged prefill, the number shown on
+ * desktop (most desktops cannot open an sms: link), and optional quiet links
+ * after it that are never filled. Use it right after a page's best proof or
+ * price beat. It carries data-textbar-hide, so the phone thumb bar steps aside
+ * while this is on screen instead of showing a second Text button.
+ */
+import { smsHref, smsAboutHref, phoneDisplay } from '../../lib/text-cta';
+
+export interface Props {
+  /** Button words. Default "Text Preston". */
+  label?: string;
+  /** One short line above the button. Optional, may carry inline HTML. */
+  lead?: string;
+  /** Quiet links after the button. `external` opens in a new tab. */
+  links?: { href: string; label: string; external?: boolean }[];
+  /** Center the block, for dedicated pages. */
+  centered?: boolean;
+  /** A project name: the prefill then says which build the visitor saw. */
+  about?: string;
+}
+
+const { label = 'Text Preston', lead, links = [], centered = false, about } = Astro.props;
+const sms = about ? smsAboutHref(Astro.url.pathname, about) : smsHref(Astro.url.pathname);
+---
+
+<div class={`tcta${centered ? ' tcta-centered' : ''}`} data-textbar-hide>
+  {lead && <p class="tcta-lead" set:html={lead} />}
+  <div class="tcta-row">
+    <a href={sms} class="btn btn-primary tcta-btn">
+      <span>{label}</span>
+      <span class="tcta-num">{phoneDisplay}</span>
+    </a>
+    {links.map((l) => (
+      <a
+        href={l.href}
+        class="tcta-link"
+        target={l.external ? '_blank' : undefined}
+        rel={l.external ? 'noopener' : undefined}
+      >{l.label}</a>
+    ))}
+  </div>
+</div>
+
+<style>
+  .tcta { margin: 28px 0 8px; }
+  .tcta-centered { text-align: center; }
+  .tcta-lead {
+    margin: 0 0 12px;
+    font-family: var(--font-sans);
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--color-ash-300);
+  }
+  .tcta-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 18px;
+  }
+  .tcta-centered .tcta-row { justify-content: center; }
+  .tcta-btn { gap: 10px; touch-action: manipulation; }
+  .tcta-num {
+    display: none;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 0.02em;
+    opacity: 0.8;
+  }
+  @media (min-width: 1024px) {
+    .tcta-num { display: inline; }
+  }
+  .tcta-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    font-family: var(--font-sans);
+    font-size: 14px;
+    color: var(--color-ash-300);
+    text-decoration: underline;
+    text-decoration-color: var(--copper-hairline);
+    text-underline-offset: 4px;
+    touch-action: manipulation;
+  }
+  @media (hover: hover) {
+    .tcta-link:hover { color: var(--color-copper-bright); }
+  }
+</style>
