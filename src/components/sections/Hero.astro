@@ -1,6 +1,9 @@
 ---
 import Explainer from '../ui/Explainer.astro';
 import Stamp from '../ui/Stamp.astro';
+import { smsHref } from '../../lib/text-cta';
+
+const sms = smsHref(Astro.url.pathname);
 
 /**
  * Hero, S7 ceiling pass (replaces S6 floor).
@@ -60,7 +63,7 @@ const TRUST_TIPS = {
   price:
     'Most local business sites start at $1,750 flat, with the pages, the words, real photos, branding, and top Google scores included. One number, everything in. Bigger jobs cost more and I say so up front. The price I quote is the price you pay.',
   speed:
-    'Site builds typically go live in 3 to 7 business days from the day you sign. App builds run 2 to 4 weeks for an MVP, 4 to 8 weeks for a full build. Compare to 6 to 8 weeks just for a site at most agencies.',
+    'Site builds start at 3 business days from the day you sign, and a bigger site gets its timeline in the quote. App builds run 2 to 4 weeks for an MVP, 4 to 8 weeks for a full build. Compare to 6 to 8 weeks just for a site at most agencies.',
   lighthouse:
     'Google\'s Lighthouse scores any website 0 to 100 on speed, accessibility, SEO, and security. 100 is perfect. Most small-business sites score 50 to 70. Mine sit around a 95 average across every page (some checks dip a few points on heavy interactive pages, but the rolling average holds). Scores shown are mobile (the harder test). Desktop usually runs 2 to 5 points higher.',
   security:
@@ -112,8 +115,8 @@ const WORKSHOP_PREVIEW = [
       >{PHRASES[0]}.</span>
     </p>
 
-    <div class="hero-cta">
-      <a href="https://cal.com/preston-winters" target="_blank" rel="noopener" class="btn btn-primary">Free consult →</a>
+    <div class="hero-cta" data-textbar-hide>
+      <a href={sms} class="btn btn-primary">Text Preston →</a>
       <a href="/work" class="btn btn-secondary">See the work →</a>
     </div>
 

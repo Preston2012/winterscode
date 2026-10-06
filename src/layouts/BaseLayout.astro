@@ -9,6 +9,7 @@ import '../styles/global.css';
 // via @font-face import in src/styles/fonts.css with font-display: swap.
 import KeyboardShortcuts from '../components/layout/KeyboardShortcuts.astro';
 import Footer from '../components/layout/Footer.astro';
+import TextBar from '../components/layout/TextBar.astro';
 // Print stylesheet. loaded with media="print" so the browser parses it
 // at lowest priority and NEVER blocks screen paint. Saves ~1KB off the
 // render-blocking BaseLayout CSS chunk.
@@ -179,6 +180,9 @@ const isPreviewDeploy = !!cfBranch && cfBranch !== prodBranch;
   <KeyboardShortcuts />
 
   {!bare && <Footer />}
+
+  <!-- Phone thumb bar (S326 Text-first): Text Preston plus Call, under 768px only. -->
+  {!bare && <TextBar />}
 
   <!-- Inline scroll-progress updater. ~250 bytes, no framework cost. -->
   <script is:inline type="module">

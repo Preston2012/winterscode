@@ -4,7 +4,7 @@
  *
  * Three responsive modes:
  *   mobile  (<768px)  : brand left, hamburger right
- *   tablet  (768-1023): same as mobile, slightly larger
+ *   tablet  (768-1023): brand left; Text Preston and the menu button right
  *   desktop (≥1024px) : brand left, nav center, contact cluster right
  *
  * The mobile slide-out panel lives in <MobileMenu />; this file emits
@@ -17,16 +17,19 @@ export interface Props {
   homepage?: boolean;
 }
 
-const { homepage = false } = Astro.props;
+import { smsHref, telHref, phoneDisplay } from '../../lib/text-cta';
 
-// Primary nav points to the 6 main pages (S6+ doctrine, The Wall added S168 at Preston's ruling).
-// Order matches the homepage emotional arc.
+const { homepage = false } = Astro.props;
+const sms = smsHref(Astro.url.pathname);
+
+// Primary nav. The Wall joined it at S168 on Preston's ruling and leaves it in
+// the S326 Text-first preview: it stays one tap away in the footer, the home
+// teaser and the g l shortcut. Order matches the homepage emotional arc.
 const navItems = [
   { href: '/work',     label: 'Work',     num: '01' },
   { href: '/services', label: 'Services', num: '02' },
   { href: '/about',    label: 'About',    num: '03' },
-  { href: '/wall',     label: 'The Wall', num: '04' },
-  { href: '/contact',  label: 'Contact',  num: '05' },
+  { href: '/contact',  label: 'Contact',  num: '04' },
 ];
 ---
 
@@ -66,17 +69,18 @@ const navItems = [
     ))}
   </nav>
 
-  <!-- Desktop contact cluster, hidden on mobile/tablet -->
+  <!-- Contact cluster (S326 Text-first). Text is the one filled control.
+       Tablet shows "Text Preston"; desktop shows the number, because most
+       desktops cannot open an sms: link and the number is what a desktop
+       visitor can use. Call is the quiet second choice on desktop. Phones
+       get the pair in the thumb bar (TextBar) instead. Book and Email live
+       in the mobile menu, the closing contact block and /contact. -->
   <div class="topnav-contact">
-    <a href="https://cal.com/preston-winters" target="_blank" rel="noopener" class="book">
-      Book consult
-    </a>
-    <a href="tel:5415510731">Call</a>
-    <a
-      href="mailto:preston@winterscode.com?subject=Winters%20Code%20consult%20request"
-      class="primary"
-    >
-      Free consult →
+    <a href={telHref} class="call">Call</a>
+    <a href={sms} class="text-cta">
+      <span>Text</span>
+      <span class="text-cta-who">Preston</span>
+      <span class="text-cta-num">{phoneDisplay}</span>
     </a>
   </div>
 
@@ -238,44 +242,69 @@ const navItems = [
       .topnav-links a:hover::after { transform: scaleX(1); }}
   }
 
-  /* Desktop contact cluster */
+  /* Contact cluster (S326 Text-first): tablet and desktop. Phones use TextBar. */
   .topnav-contact { display: none; }
-  @media (min-width: 1024px) {
+  @media (min-width: 768px) {
     .topnav-contact {
       display: flex;
-      gap: 8px;
+      gap: 6px;
       align-items: center;
       flex-shrink: 0;
+      margin-left: auto;
     }
-    .topnav-contact a {
-      padding: 8px 14px;
-      border: 1px solid var(--copper-hairline);
-      border-radius: 6px;
-      font-size: 12px;
-      font-weight: 500;
-      color: var(--color-ash-300);
-      transition: all 200ms;
-      font-family: var(--font-sans);
-    }
-    .topnav-contact a.primary {
-      background: var(--color-wc-green);
-      color: var(--color-bg-deep);
-      border-color: var(--color-wc-green);
-      font-weight: 600;
-    }
-    @media (hover: hover) {
-
-      .topnav-contact a:hover {
-      border-color: var(--color-copper);
-      color: var(--color-copper-bright);
-    }}
-    @media (hover: hover) {
-
-      .topnav-contact a.primary:hover {
+  }
+  @media (min-width: 1024px) {
+    .topnav-contact { margin-left: 0; }
+  }
+  .topnav-contact .call {
+    display: none;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 10px;
+    font-family: var(--font-sans);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--color-ash-300);
+    text-decoration: underline;
+    text-decoration-color: var(--copper-hairline);
+    text-underline-offset: 4px;
+    transition: color 200ms;
+  }
+  @media (min-width: 1024px) {
+    .topnav-contact .call { display: inline-flex; }
+  }
+  .text-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 44px;
+    padding: 0 16px;
+    border-radius: 6px;
+    background: var(--color-wc-green);
+    border: 1px solid var(--color-wc-green);
+    color: var(--color-bg-deep);
+    font-family: var(--font-sans);
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+    touch-action: manipulation;
+    transition: background 200ms, border-color 200ms;
+  }
+  .text-cta-num {
+    display: none;
+    font-family: var(--font-mono);
+    letter-spacing: 0.02em;
+  }
+  @media (min-width: 1024px) {
+    .text-cta-who { display: none; }
+    .text-cta-num { display: inline; }
+  }
+  @media (hover: hover) {
+    .topnav-contact .call:hover { color: var(--color-copper-bright); }
+    .text-cta:hover {
       background: var(--color-wc-green-bright);
-      color: var(--color-bg-deep);
       border-color: var(--color-wc-green-bright);
-    }}
+    }
   }
 
   /* Mobile menu button */

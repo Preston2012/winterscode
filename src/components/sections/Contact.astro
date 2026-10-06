@@ -3,18 +3,17 @@
  * Contact (section 04), final CTA, no form.
  *
  * Design intent: filter for serious prospects rather than collect form
- * submissions from tire-kickers. Four direct contact paths each filter
- * differently:
- *   - Cal.com → wants a scheduled call (highest intent)
- *   - Call    → wants to talk now (intent + urgency)
- *   - Text    → wants async (still intent, lower urgency)
- *   - Email   → wants to think it through (lowest urgency, detailed scope)
+ * submissions from tire-kickers. S326 Text-first: Text is the one filled
+ * control ("Help is just a text away" made literal), Call is the second
+ * button, and Cal.com and email stay as plain links for people who would
+ * rather schedule it or write it out.
  *
  * Consult policy is published so prospects self-qualify on geography +
  * travel before they reach out. The $250 deposit gate filters out anyone
  * who isn't serious about Bandon's service area.
  */
 import SectionHead from '../ui/SectionHead.astro';
+import { smsHref } from '../../lib/text-cta';
 
 // Props:
 //   sectionNumber: numeral above the kicker+title. Homepage is the 7th
@@ -57,9 +56,10 @@ const phone = '5415510731';
 const phoneDisplay = '541-551-0731';
 const email = 'preston@winterscode.com';
 const cal = 'https://cal.com/preston-winters';
+const sms = smsHref(Astro.url.pathname);
 ---
 
-<section class={`terminus${centered ? " terminus-centered" : ""}`} id="contact">
+<section class={`terminus${centered ? " terminus-centered" : ""}`} id="contact" data-textbar-hide>
   <!-- Rivets at each corner, magazine binding feel -->
   <div class="rivet tl" aria-hidden="true"></div>
   <div class="rivet tr" aria-hidden="true"></div>
@@ -89,15 +89,10 @@ const cal = 'https://cal.com/preston-winters';
 
   <div class="terminus-right">
     <div class="contact-action-row">
-      <a
-        href={cal}
-        target="_blank"
-        rel="noopener"
-        class="contact-action-btn"
-      >
+      <a href={sms} class="contact-action-btn contact-text">
         <div class="contact-stack">
-          <span class="contact-label">Book Preston</span>
-          <span class="contact-sub mono">Cal.com · 30 min</span>
+          <span class="contact-label">Text Preston</span>
+          <span class="contact-sub mono">{phoneDisplay}</span>
         </div>
       </a>
 
@@ -107,32 +102,11 @@ const cal = 'https://cal.com/preston-winters';
           <span class="contact-sub mono">{phoneDisplay}</span>
         </div>
       </a>
-
-      <a href={`sms:${phone}`} class="contact-action-btn">
-        <div class="contact-stack">
-          <span class="contact-label">Text Preston</span>
-          <span class="contact-sub mono">{phoneDisplay}</span>
-        </div>
-      </a>
-
-      <a
-        href={`mailto:${email}?subject=Winters%20Code%20consult%20request`}
-        class="contact-action-btn"
-      >
-        <div class="contact-stack">
-          <span class="contact-label">Email Preston</span>
-          <span class="contact-sub contact-sub-email mono">{email}</span>
-        </div>
-      </a>
     </div>
 
-    <div class="contact-cta-row">
-      <a class="btn btn-primary" href={cal} target="_blank" rel="noopener">
-        Book free consult →
-      </a>
-      <a class="btn btn-secondary" href={`mailto:${email}?subject=Winters%20Code%20consult%20request`}>
-        Or email instead
-      </a>
+    <div class="contact-quiet-row">
+      <a href={cal} target="_blank" rel="noopener">Book a 30-min call</a>
+      <a href={`mailto:${email}?subject=Winters%20Code%20consult%20request`}>Email {email}</a>
     </div>
   </div>
 </section>
@@ -350,26 +324,41 @@ const cal = 'https://cal.com/preston-winters';
     .contact-sub-email { letter-spacing: 0.06em; }
   }
 
-  /* ─── Bottom CTA row ─── */
-  .contact-cta-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-    margin-top: 20px;
+  /* ─── Text is the filled one (S326 Text-first) ─── */
+  .contact-text {
+    background: var(--color-wc-green);
+    border-color: var(--color-wc-green);
   }
-  @media (max-width: 599px) {
-    .contact-cta-row { grid-template-columns: 1fr; }
+  .contact-text .contact-label { color: var(--color-bg-deep); }
+  .contact-text .contact-sub { color: rgba(10, 13, 12, 0.72); }
+  @media (hover: hover) {
+    .contact-text:hover {
+      background: var(--color-wc-green-bright);
+      border-color: var(--color-wc-green-bright);
+    }
   }
-  @media (min-width: 740px) {
-    .contact-cta-row { gap: 12px; }
+
+  /* ─── Book and Email as plain links ─── */
+  .contact-quiet-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 18px;
+    margin-top: 12px;
   }
-  .contact-cta-row .btn {
-    min-width: 0;
-    white-space: nowrap;
-    font-size: clamp(12px, 2.6vw, 15px);
-    padding-left: 14px;
-    padding-right: 14px;
-    text-align: center;
+  .contact-quiet-row a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    font-family: var(--font-sans);
+    font-size: 13px;
+    color: var(--color-ash-300);
+    text-decoration: underline;
+    text-decoration-color: var(--copper-hairline);
+    text-underline-offset: 4px;
+    overflow-wrap: anywhere;
+  }
+  @media (hover: hover) {
+    .contact-quiet-row a:hover { color: var(--color-copper-bright); }
   }
 
   /* ─── Centered mode (dedicated pages like /contact) ─────────────────
@@ -394,10 +383,11 @@ const cal = 'https://cal.com/preston-winters';
     margin-left: auto;
     margin-right: auto;
   }
-  .terminus-centered .contact-cta-row {
+  .terminus-centered .contact-quiet-row {
     max-width: 560px;
     margin-left: auto;
     margin-right: auto;
+    justify-content: center;
   }
   @media (min-width: 1024px) {
     /* Disable the 2-column grid in centered mode so everything stacks

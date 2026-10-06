@@ -301,7 +301,7 @@ export const towns: TownEntry[] = [
       },
       {
         q: 'What does website creation actually involve on your end?',
-        a: 'Design, code, content, and launch, all by me. No handoff to a junior, no template underneath, and the website designer you talk to is the one writing it. Most North Bend builds are live in three to five business days from the day you sign.',
+        a: 'Design, code, content, and launch, all by me. No handoff to a junior, no template underneath, and the website designer you talk to is the one writing it. North Bend builds start at 3 business days from the day you sign.',
       },
       {
         q: 'Do you do logo design for North Bend businesses, or only websites?',

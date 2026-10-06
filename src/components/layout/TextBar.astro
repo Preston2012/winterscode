@@ -1,0 +1,111 @@
+---
+/**
+ * Phone thumb bar (S326 site DNA, built as a preview for Preston's ruling).
+ *
+ * Under 768px a fixed bar at the bottom of the screen carries the one filled
+ * control, Text Preston, with Call as the quiet second choice. Tablets and
+ * desktops get the same pair in the header, so nothing shows at 768px and up.
+ *
+ * It steps aside while a section marked data-textbar-hide is on screen (the
+ * hero buttons, the closing contact block), because Text is already right
+ * there. It starts hidden and the script reveals it, so a page that opens on
+ * the hero never flashes a second Text button. The page gets bottom padding
+ * the height of the bar, so the bar never covers the last of the content.
+ */
+import { smsHref, telHref } from '../../lib/text-cta';
+
+const sms = smsHref(Astro.url.pathname);
+---
+
+<div class="textbar is-hidden" data-textbar inert>
+  <a href={sms} class="textbar-text">Text Preston</a>
+  <a href={telHref} class="textbar-call">Call</a>
+</div>
+
+<script is:inline type="module">
+  (function () {
+    const bar = document.querySelector('[data-textbar]');
+    if (!bar) return;
+    const onScreen = new Set();
+    function sync() {
+      const hide = onScreen.size > 0;
+      bar.classList.toggle('is-hidden', hide);
+      bar.toggleAttribute('inert', hide);
+    }
+    const blockers = document.querySelectorAll('[data-textbar-hide]');
+    if (blockers.length && 'IntersectionObserver' in window) {
+      const io = new IntersectionObserver((entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting) onScreen.add(e.target);
+          else onScreen.delete(e.target);
+        }
+        sync();
+      }, { threshold: 0.1 });
+      blockers.forEach((el) => io.observe(el));
+    } else {
+      sync();
+    }
+  })();
+</script>
+
+<style>
+  .textbar { display: none; }
+  @media (max-width: 767.98px) {
+    .textbar {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 90;
+      display: flex;
+      gap: 8px;
+      padding: 10px 16px calc(10px + env(safe-area-inset-bottom, 0px));
+      background: rgba(10, 13, 12, 0.96);
+      border-top: 1px solid var(--copper-hairline);
+      transition: transform 240ms ease, opacity 240ms ease;
+    }
+    .textbar.is-hidden {
+      transform: translateY(110%);
+      opacity: 0;
+    }
+  }
+  .textbar-text,
+  .textbar-call {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    border-radius: var(--radius-btn);
+    font-family: var(--font-sans);
+    font-size: 15px;
+    text-decoration: none;
+    touch-action: manipulation;
+    transition: background 200ms, border-color 200ms, color 200ms;
+  }
+  .textbar-text {
+    flex: 1;
+    background: var(--color-wc-green);
+    color: var(--color-bg-deep);
+    font-weight: 600;
+  }
+  .textbar-call {
+    flex: 0 0 auto;
+    padding: 0 22px;
+    border: 1px solid var(--copper-hairline);
+    color: var(--color-ash-100);
+    font-weight: 500;
+  }
+  @media (hover: hover) {
+    .textbar-text:hover { background: var(--color-wc-green-bright); }
+    .textbar-call:hover { border-color: var(--color-copper); color: var(--color-copper-bright); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .textbar { transition: none; }
+  }
+</style>
+
+<style is:global>
+  @media (max-width: 767.98px) {
+    html body { padding-bottom: calc(68px + env(safe-area-inset-bottom, 0px)); }
+  }
+</style>
