@@ -1,0 +1,363 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/ui/Breadcrumbs.astro';
+import { breadcrumbSchema } from '../../lib/schema';
+
+const lastUpdated = '2026-10-14';
+const crumbs = [
+  { name: 'Home', path: '/' },
+  { name: "Chere' privacy", path: '/chere/privacy' },
+];
+---
+
+<BaseLayout
+  title="Chere' Privacy Policy · Winters Code"
+  description="What the Chere' app keeps on your phone, what goes to your business's own server, which AI companies see what, and how to have any of it deleted."
+  canonicalPath="/chere/privacy"
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(crumbs))} />
+  </Fragment>
+
+  <Breadcrumbs items={crumbs} />
+
+  <article class="legal-page">
+    <div class="legal-eyebrow mono">CHERE' · PRIVACY POLICY</div>
+    <h1 class="h1 legal-h1">Chere' privacy, in plain English.</h1>
+    <p class="legal-tagline">
+      Chere' is the app I build for contractors. It holds your customers' names, addresses
+      and job photos. Here is exactly where each one goes.
+    </p>
+    <p class="small legal-updated">Last updated: {lastUpdated}</p>
+
+    <div class="legal-body">
+      <p class="legal-lead">
+        Short version: your business's records live on a server set up for your business
+        alone. No ads, no tracking, nothing sold. AI help runs through that server, and
+        anything about your customers goes only to Anthropic or OpenAI. Ask, and I delete it.
+      </p>
+
+      <h2 class="h2 legal-h2">Who this covers</h2>
+      <p>
+        Chere' is made by Winters Code, which is me, Preston Winters, in Bandon, Oregon. This
+        policy covers the Chere' app on iPhone and Android and the server each business's
+        copy of the app talks to. The business using Chere' decides what it keeps about its
+        own customers. I build and run the software that keeps it.
+      </p>
+      <p>
+        If you are a customer of a business that uses Chere', that business is the one to
+        ask first about your records. You can also ask me, using the contacts at the bottom.
+      </p>
+
+      <h2 class="h2 legal-h2">What stays on your phone</h2>
+      <ul class="legal-list">
+        <li>
+          Your sign-in and the key that pairs this phone with your business, held in the
+          phone's secure storage (the iPhone Keychain, or Android's encrypted storage).
+        </li>
+        <li>
+          A recent copy of your records so the app works without signal: at most 500, each
+          kept 30 days.
+        </li>
+        <li>
+          Changes waiting for a connection, drafts you have not finished, and photos taken
+          for jobs.
+        </li>
+        <li>
+          A short history of your conversations with the Chere' assistant. By default that is
+          the newest 40 lines of each, and up to 10 earlier conversations.
+        </li>
+      </ul>
+      <p>
+        Signing out clears the sign-in, the offline copy, waiting changes, the conversations
+        and the app's temporary files. Uninstalling removes everything the app kept. On
+        Android, none of it goes into the phone's cloud backup.
+      </p>
+
+      <h2 class="h2 legal-h2">What goes to your business's server</h2>
+      <p>
+        Everything you save: customers, jobs, estimates, invoices, payments, notes, photos and
+        documents. Each business that uses Chere' has its own server, which I set up and run.
+        Your records are not pooled with any other business's. Photos and documents are kept
+        in Cloudflare storage set up for your business, and the app removes the location data
+        from every photo before it leaves the phone. Every connection is encrypted (HTTPS).
+        The server's request logs include your phone's internet address.
+      </p>
+
+      <h2 class="h2 legal-h2">What the app asks permission for</h2>
+      <p>Each one asks first, and each one is used only when you tap the thing that needs it.</p>
+      <ul class="legal-list">
+        <li><strong>Camera:</strong> job photos and document scans.</li>
+        <li><strong>Photos:</strong> attach a photo you already took, or save one.</li>
+        <li>
+          <strong>Microphone and speech recognition:</strong> talking to Chere' instead of
+          typing. Your words are recognized on the phone. No audio is sent anywhere or saved.
+        </li>
+        <li>
+          <strong>Location:</strong> fills in a job site's address when you tap the locate
+          button.
+        </li>
+        <li><strong>Motion:</strong> measures a slope when you tap the measure button.</li>
+        <li>
+          <strong>Contacts:</strong> fills in a new lead or customer from the one contact you
+          pick. Nothing is saved until you save the form.
+        </li>
+        <li>
+          <strong>Face ID or fingerprint:</strong> lets you back into the app. The phone
+          checks it, and the app only learns yes or no.
+        </li>
+        <li><strong>Notifications:</strong> reminders the phone shows you.</li>
+        <li>
+          <strong>Call log, Android only:</strong> after a call ends, Chere' can offer to save
+          the caller as a lead. It reads the newest call's number, time, length and the name
+          your phone has for it. It asks once, with a note that says why, and never asks again
+          if you say no.
+        </li>
+      </ul>
+
+      <h2 class="h2 legal-h2">AI, and who sees what</h2>
+      <p>
+        Chere' uses AI to read job photos and plans into an estimate, draw design pictures,
+        draft replies, and answer you in conversation. The app never calls an AI company
+        itself. Each request goes to your business's server, which sends it on.
+      </p>
+      <p>
+        <strong>Anything with your customers in it</strong> (a name, a job note, a photo of
+        their property, a review they wrote) goes only to Anthropic or OpenAI. The server
+        refuses to send it anywhere else. Design pictures are drawn by OpenAI's image service
+        from the property photo and your notes.
+      </p>
+      <p>
+        Both companies may keep a request for up to 30 days to check for abuse, and neither
+        uses it to train its models. Neither has a no-retention agreement with my business, so
+        I won't tell you they keep nothing.
+      </p>
+      <p>
+        Requests with nobody's information in them, like the going price of a material, can
+        also be answered by Google or xAI.
+      </p>
+
+      <h2 class="h2 legal-h2">Other services, only if your business uses them</h2>
+      <ul class="legal-list">
+        <li>
+          <strong>Cloudflare</strong> carries every request to your server, so it sees them as
+          they pass. It also stores your photos, documents and encrypted backups.
+        </li>
+        <li><strong>Resend</strong> sends your estimate and invoice emails and your alerts.</li>
+        <li><strong>Twilio</strong> sends text messages, when texting is turned on.</li>
+        <li>
+          <strong>Square</strong>, when you connect it, receives the customer's name, company,
+          email and phone, and the lines on their invoice.
+        </li>
+        <li>
+          <strong>Google</strong> (Gmail, Calendar, Business Profile), <strong>Facebook</strong>
+          and <strong>Yelp</strong>, when you connect them, to sync your mail, calendar and
+          reviews.
+        </li>
+        <li>
+          <strong>Business memory</strong> lets the Chere' assistant remember things about your
+          work, which can include a customer's name, a job and a price. It stays off until you
+          agree in the app. The memories live on my own memory server, in a space no other
+          business can read. You can delete one, or all of them, at any time.
+        </li>
+        <li>
+          <strong>Apple TestFlight</strong>, during the beta, collects crash reports and any
+          feedback you send, under Apple's own privacy policy, and shares them with me.
+        </li>
+      </ul>
+
+      <h2 class="h2 legal-h2">What I never do</h2>
+      <ul class="legal-list">
+        <li>No ads, and no advertising identifier.</li>
+        <li>No analytics, crash-reporting or tracking kits in the app.</li>
+        <li>The app reports nothing about how you use it.</li>
+        <li>Nothing is sold, rented or traded to anyone.</li>
+      </ul>
+
+      <h2 class="h2 legal-h2">Pages your customers see</h2>
+      <p>
+        When you send an estimate or an invoice, your customer gets a private link. Each link
+        is long and random, expires after 30 days by default, and you can cut it off sooner.
+        The estimate page loads no scripts. When a customer accepts, the server records the
+        name they typed, the time, their internet address and their browser, as the signed
+        record of the agreement.
+      </p>
+
+      <h2 class="h2 legal-h2">How long it's kept</h2>
+      <p>
+        Your records stay while your business uses Chere'. A few things clear themselves:
+        synced email after a year, synced reviews after 90 days. The server keeps a record of
+        what each AI request cost, never what it said. Encrypted backups are kept daily for
+        30 days, weekly for a year, monthly for a year, and quarterly for seven years.
+      </p>
+
+      <h2 class="h2 legal-h2">Deleting, and getting a copy</h2>
+      <ul class="legal-list">
+        <li>Delete a record in the app and it is removed from the server's database.</li>
+        <li>
+          A customer with jobs, estimates or invoices is erased instead. Their name, contact
+          details, addresses and links are removed in one step. Invoices, payments and signed
+          agreements stay, because a business has to keep its tax and contract records.
+        </li>
+        <li>
+          Ask me to delete everything your business has in Chere', backups included. It is
+          done within 30 days, and I email you when it is.
+        </li>
+        <li>Ask me for a copy of your records and I send it.</li>
+      </ul>
+
+      <h2 class="h2 legal-h2">Children</h2>
+      <p>
+        Chere' is a tool for businesses. It is not meant for children under 13, and I don't
+        knowingly collect information about them.
+      </p>
+
+      <h2 class="h2 legal-h2">When this changes</h2>
+      <p>
+        If this policy changes in any meaningful way, the date at the top moves and the change
+        shows up in the site's public history (<a href="/changelog">/changelog</a>).
+      </p>
+
+      <h2 class="h2 legal-h2">Questions</h2>
+      <p>
+        Email <a href="mailto:preston@winterscode.com">preston@winterscode.com</a> or text
+        <a href="sms:5415510731">541-551-0731</a>. For help with the app itself, see
+        <a href="/chere/support">Chere' support</a>.
+      </p>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .legal-page {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 48px 4px 64px;
+  }
+  @media (min-width: 740px) {
+    .legal-page {
+      padding: 64px 4px 80px;
+    }
+  }
+  @media (min-width: 1024px) {
+    .legal-page {
+      padding: 80px 0 96px;
+    }
+  }
+
+  .legal-eyebrow {
+    color: var(--color-copper);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    font-weight: 600;
+    margin-bottom: 16px;
+  }
+  @media (min-width: 740px) {
+    .legal-eyebrow { font-size: 12px; }
+  }
+
+  .legal-h1 {
+    margin: 0 0 16px;
+  }
+
+  .legal-tagline {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 17px;
+    color: var(--color-ash-300);
+    line-height: 1.55;
+    margin: 0 0 16px;
+    max-width: 600px;
+  }
+  @media (min-width: 1024px) {
+    .legal-tagline { font-size: 19px; }
+  }
+
+  .legal-updated {
+    margin-top: 8px;
+    color: var(--color-ash-500);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+  }
+
+  .legal-body {
+    margin-top: 36px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    color: var(--color-ash-300);
+    font-size: 15px;
+    line-height: 1.65;
+  }
+  @media (min-width: 1024px) {
+    .legal-body { font-size: 16px; }
+  }
+  .legal-body p {
+    margin: 0;
+  }
+
+  .legal-lead {
+    padding: 16px 18px;
+    background: rgba(77, 216, 168, 0.05);
+    border: 1px solid rgba(77, 216, 168, 0.25);
+    border-radius: var(--radius-card);
+    color: var(--color-ash-100);
+    font-style: italic;
+    font-family: var(--font-serif);
+    font-size: 16px !important;
+    line-height: 1.6 !important;
+  }
+  @media (min-width: 1024px) {
+    .legal-lead {
+      font-size: 18px !important;
+      padding: 20px 24px;
+    }
+  }
+
+  .legal-h2 {
+    margin-top: 24px;
+    margin-bottom: 4px;
+  }
+  @media (min-width: 740px) {
+    .legal-h2 { margin-top: 28px; }
+  }
+
+  .legal-body strong {
+    color: var(--color-ash-100);
+    font-weight: 600;
+  }
+  .legal-body a {
+    color: var(--color-copper-bright);
+    text-decoration: underline;
+    text-decoration-color: var(--copper-hairline);
+    text-underline-offset: 3px;
+  }
+  @media (hover: hover) {
+
+    .legal-body a:hover {
+    color: var(--color-wc-green);
+    text-decoration-color: var(--color-wc-green-dim);
+  }}
+
+  .legal-list {
+    margin: 4px 0 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .legal-list li {
+    padding-left: 18px;
+    position: relative;
+  }
+  .legal-list li::before {
+    content: '·';
+    position: absolute;
+    left: 4px;
+    top: 0;
+    color: var(--color-copper);
+    font-weight: 700;
+  }
+</style>

@@ -1,0 +1,220 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/ui/Breadcrumbs.astro';
+import { breadcrumbSchema } from '../../lib/schema';
+
+const lastUpdated = '2026-10-14';
+const crumbs = [
+  { name: 'Home', path: '/' },
+  { name: "Chere' support", path: '/chere/support' },
+];
+---
+
+<BaseLayout
+  title="Chere' Support · Winters Code"
+  description="Help with the Chere' app: joining the beta, connecting your phone to your business, a lost phone, and how to reach the person who builds it."
+  canonicalPath="/chere/support"
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(crumbs))} />
+  </Fragment>
+
+  <Breadcrumbs items={crumbs} />
+
+  <article class="legal-page">
+    <div class="legal-eyebrow mono">CHERE' · SUPPORT</div>
+    <h1 class="h1 legal-h1">Help is just a text away.</h1>
+    <p class="legal-tagline">
+      Chere' is built and kept running by one person in Bandon. When something's off, you
+      reach me, not a ticket queue.
+    </p>
+    <p class="small legal-updated">Last updated: {lastUpdated}</p>
+
+    <div class="legal-body">
+      <p class="legal-lead">
+        Text <a href="sms:5415510731">541-551-0731</a> or email
+        <a href="mailto:preston@winterscode.com">preston@winterscode.com</a>. Tell me what you
+        were doing and what you saw. A screenshot helps.
+      </p>
+
+      <h2 class="h2 legal-h2">Joining the beta on iPhone</h2>
+      <ol class="support-steps">
+        <li>Install Apple's free TestFlight app from the App Store.</li>
+        <li>Open the invite I send you, then tap Accept and Install.</li>
+        <li>Open Chere' and connect your phone, below.</li>
+      </ol>
+      <p>On Android, text me and I'll get Chere' onto your phone.</p>
+
+      <h2 class="h2 legal-h2">Connecting your phone to your business</h2>
+      <ol class="support-steps">
+        <li>Open Chere'. It shows a short key for this phone.</li>
+        <li>Text me that key. It is not a password, so texting it is fine.</li>
+        <li>
+          I text back a one-time setup code. It works once, for that phone only, and it
+          doesn't last long, so type it in when it arrives.
+        </li>
+        <li>Type the code into Chere', and your phone is connected to your business.</li>
+      </ol>
+
+      <h2 class="h2 legal-h2">A lost or replaced phone</h2>
+      <p>
+        Text me. I cut the old phone off from your business's server, so it can't sign in to
+        your records again. What it had saved for working offline stays behind the app's own
+        lock. Then connect the new phone the same way as above.
+      </p>
+
+      <h2 class="h2 legal-h2">Sending feedback during the beta</h2>
+      <p>
+        Take a screenshot while you're in Chere' and TestFlight offers to send it to me with a
+        note. You can also open TestFlight and tap Send Beta Feedback. Or just text me.
+      </p>
+
+      <h2 class="h2 legal-h2">Working without signal</h2>
+      <p>
+        Your recent records are kept on the phone, so you can look things up on a job site
+        with no bars. Changes you make wait on the phone and go to your business's server once
+        you're back online.
+      </p>
+
+      <h2 class="h2 legal-h2">Your data</h2>
+      <p>
+        What Chere' keeps, where it goes and how to have it deleted is all in the
+        <a href="/chere/privacy">Chere' privacy policy</a>. To get a copy of your records or
+        have them deleted, text or email me.
+      </p>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .legal-page {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 48px 4px 64px;
+  }
+  @media (min-width: 740px) {
+    .legal-page {
+      padding: 64px 4px 80px;
+    }
+  }
+  @media (min-width: 1024px) {
+    .legal-page {
+      padding: 80px 0 96px;
+    }
+  }
+
+  .legal-eyebrow {
+    color: var(--color-copper);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    font-weight: 600;
+    margin-bottom: 16px;
+  }
+  @media (min-width: 740px) {
+    .legal-eyebrow { font-size: 12px; }
+  }
+
+  .legal-h1 {
+    margin: 0 0 16px;
+  }
+
+  .legal-tagline {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 17px;
+    color: var(--color-ash-300);
+    line-height: 1.55;
+    margin: 0 0 16px;
+    max-width: 600px;
+  }
+  @media (min-width: 1024px) {
+    .legal-tagline { font-size: 19px; }
+  }
+
+  .legal-updated {
+    margin-top: 8px;
+    color: var(--color-ash-500);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+  }
+
+  .legal-body {
+    margin-top: 36px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    color: var(--color-ash-300);
+    font-size: 15px;
+    line-height: 1.65;
+  }
+  @media (min-width: 1024px) {
+    .legal-body { font-size: 16px; }
+  }
+  .legal-body p {
+    margin: 0;
+  }
+
+  .legal-lead {
+    padding: 16px 18px;
+    background: rgba(77, 216, 168, 0.05);
+    border: 1px solid rgba(77, 216, 168, 0.25);
+    border-radius: var(--radius-card);
+    color: var(--color-ash-100);
+    font-style: italic;
+    font-family: var(--font-serif);
+    font-size: 16px !important;
+    line-height: 1.6 !important;
+  }
+  @media (min-width: 1024px) {
+    .legal-lead {
+      font-size: 18px !important;
+      padding: 20px 24px;
+    }
+  }
+
+  .legal-h2 {
+    margin-top: 24px;
+    margin-bottom: 4px;
+  }
+  @media (min-width: 740px) {
+    .legal-h2 { margin-top: 28px; }
+  }
+
+  .legal-body a {
+    color: var(--color-copper-bright);
+    text-decoration: underline;
+    text-decoration-color: var(--copper-hairline);
+    text-underline-offset: 3px;
+  }
+  @media (hover: hover) {
+
+    .legal-body a:hover {
+    color: var(--color-wc-green);
+    text-decoration-color: var(--color-wc-green-dim);
+  }}
+
+  .support-steps {
+    margin: 4px 0 0;
+    padding: 0;
+    list-style: none;
+    counter-reset: step;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .support-steps li {
+    counter-increment: step;
+    padding-left: 26px;
+    position: relative;
+  }
+  .support-steps li::before {
+    content: counter(step) '.';
+    position: absolute;
+    left: 2px;
+    top: 0;
+    color: var(--color-copper);
+    font-family: var(--font-mono);
+    font-weight: 600;
+  }
+</style>
