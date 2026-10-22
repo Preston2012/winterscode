@@ -13,27 +13,22 @@
  *               flag folds (overlay blend, so it reads as cloth moving),
  *               and the red-and-white survey target is sighted once: a ring
  *               and four corner ticks close in on it and lock.
- *   breeze      SeaBreeze: gusts of air draw across the green field on
- *               both sides of the logo panel, then thin away.
+ *   lawn        SeaBreeze: one mower pass lays fresh-cut stripes across the
+ *               green field around the logo panel (the panel itself is
+ *               masked out), then the stripes simply stay, like a lawn.
  *
  * Rules: motion only while the card is on screen (paused off screen, so
  * phones do no work for cards nobody sees), transforms and opacity only,
  * nothing at all under prefers-reduced-motion or without JavaScript: the
  * card is then exactly its art.
  */
-interface Props { kind: 'lighthouse' | 'flag' | 'breeze' }
+interface Props { kind: 'lighthouse' | 'flag' | 'lawn' }
 const { kind } = Astro.props;
 // Measured on the card art (bbtd-card.webp, taylor-card.webp), 1200x630.
 const LANTERN = { x: 574, y: 98 };
 const TARGET = { x: 475.5, y: 178.5, r: 42 };
-const gusts = [
-  { d: 'M40 170 C 110 150, 170 190, 245 168 S 330 140, 300 118 S 262 130, 276 146', delay: 0 },
-  { d: 'M70 262 C 140 246, 205 282, 285 258', delay: 1.4 },
-  { d: 'M30 338 C 95 324, 150 352, 222 336 S 290 318, 268 300', delay: 2.6 },
-  { d: 'M915 150 C 985 134, 1045 168, 1120 150 S 1196 128, 1172 108 S 1136 118, 1150 132', delay: 0.7 },
-  { d: 'M930 250 C 1000 236, 1062 268, 1150 246', delay: 2.0 },
-  { d: 'M905 340 C 970 326, 1030 356, 1110 338', delay: 3.2 },
-];
+// Sixteen 40-unit mowing stripes across the 1200-wide art.
+const STRIPES = Array.from({ length: 16 }, (_, k) => ({ x: k * 80 - 40, dark: k % 2 === 1 }));
 ---
 {kind === 'lighthouse' && (
   <svg class="cm cm-lighthouse" viewBox="0 0 1200 630" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false" data-card-motion>
@@ -94,11 +89,27 @@ const gusts = [
   </>
 )}
 
-{kind === 'breeze' && (
-  <svg class="cm cm-breeze" viewBox="0 0 1200 630" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false" data-card-motion>
-    {gusts.map((g) => (
-      <path class="cm-gust" style={`--d:${g.delay}s`} d={g.d} pathLength="100" fill="none" stroke="#c4f0de" stroke-width="7" stroke-linecap="round" />
-    ))}
+{kind === 'lawn' && (
+  <svg class="cm cm-lawn" viewBox="0 0 1200 630" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false" data-card-motion>
+    <defs>
+      <mask id="cm-lawn-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="1200" height="630">
+        <rect x="0" y="0" width="1200" height="630" fill="#fff" />
+        <rect x="312" y="98" width="576" height="306" rx="18" fill="#000" />
+      </mask>
+      <linearGradient id="cm-blade" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0" stop-color="#d6ffe8" stop-opacity="0" />
+        <stop offset="0.7" stop-color="#d6ffe8" stop-opacity="0.35" />
+        <stop offset="1" stop-color="#f2fff8" stop-opacity="0.75" />
+      </linearGradient>
+    </defs>
+    <g mask="url(#cm-lawn-mask)">
+      <g class="cm-cut">
+        {STRIPES.map((st) => (
+          <rect x={st.x} y="0" width="40" height="630" class={st.dark ? 'cm-stripe-d' : 'cm-stripe-l'} />
+        ))}
+      </g>
+      <rect class="cm-mower" x="-60" y="0" width="60" height="630" fill="url(#cm-blade)" />
+    </g>
   </svg>
 )}
 
@@ -200,19 +211,20 @@ const gusts = [
   }
   @keyframes cm-cross { 0% { opacity: 0; } 30% { opacity: 1; } 100% { opacity: 0.2; } }
 
-  /* ── Breeze ── */
-  .cm-gust {
-    stroke-dasharray: 58 100;
-    stroke-dashoffset: 58;
-    opacity: 0;
-    animation: cm-gust 6.6s ease-in-out var(--d) infinite;
-  }
-  @keyframes cm-gust {
-    0%   { stroke-dashoffset: 58; opacity: 0; }
-    12%  { opacity: 0.6; }
-    55%  { stroke-dashoffset: -42; opacity: 0.45; }
-    70%  { stroke-dashoffset: -100; opacity: 0; }
-    100% { stroke-dashoffset: -100; opacity: 0; }
+  /* ── Lawn: one pass of the mower, then the stripes stay ── */
+  .cm-stripe-l { fill: #c9f5dc; opacity: 0.075; }
+  .cm-stripe-d { fill: #001a0e; opacity: 0.11; }
+  .cm-cut, .cm-mower { transform-box: view-box; transform-origin: 0 0; }
+  .cm-cut { transform: scaleX(0); }
+  .cm-mower { opacity: 0; }
+  .cm.cm-play .cm-cut, .cm.cm-played .cm-cut { animation: cm-cut 2.2s cubic-bezier(0.45, 0, 0.3, 1) 0.3s both; }
+  .cm.cm-play .cm-mower { animation: cm-mower 2.2s cubic-bezier(0.45, 0, 0.3, 1) 0.3s both; }
+  @keyframes cm-cut { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+  @keyframes cm-mower {
+    0% { transform: translateX(0); opacity: 0; }
+    8% { opacity: 1; }
+    88% { opacity: 1; }
+    100% { transform: translateX(1260px); opacity: 0; }
   }
 
   @media (prefers-reduced-motion: reduce) {

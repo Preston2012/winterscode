@@ -48,7 +48,7 @@ interface WorkCard {
   /** S339: pour wet paint off the top of the card art (PaintPour). Makai only. */
   pour?: boolean;
   /** S339: one signature movement from the client's own mark (CardMotion). */
-  motion?: 'lighthouse' | 'flag' | 'breeze';
+  motion?: 'lighthouse' | 'flag' | 'lawn';
   /** Optional hero image (overrides editorial glyph). */
   image?: {
     src: string;
@@ -94,7 +94,7 @@ const CARDS: WorkCard[] = [
     build: 'rebuild',
     built_in_days: 7,
     external_url: 'https://seabreeze.llc',
-    motion: 'breeze',
+    motion: 'lawn',
     image: {
       src: '/work/seabreeze-card.webp',
       srcSmall: '/work/seabreeze-card-720.webp',
