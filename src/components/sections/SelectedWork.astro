@@ -62,6 +62,8 @@ const CARDS: WorkCard[] = [
     id: 'sogn-contracting',
     caseStudy: '/work/sogn-contracting',
     kind: 'site',
+    // S339, Preston: off the homepage; leads nothing now, stays on /work.
+    published: false,
     title: 'Sogn Contracting',
     desc: 'Marketing site for a 30-year Bandon contractor.',
     stack: ['Next.js', 'Vercel'],
@@ -256,6 +258,15 @@ const CARDS: WorkCard[] = [
     },
   },
 ];
+
+// S339, Preston 2026-10-22: the homepage shows US Survey Supply, Makai,
+// Bandon By The Dunes and SeaBreeze, in that order. Sogn and Professors Golf
+// keep their /work cards and case pages. The order lives here, not in the
+// array, so a card's data never has to move to change where it sits.
+const HOME_ORDER = ['us-survey-supply', 'makai-painting', 'bandon-by-the-dunes', 'seabreeze'];
+const HOME_SITES = HOME_ORDER
+  .map((id) => CARDS.find((c) => c.id === id && c.kind === 'site' && c.published !== false))
+  .filter((c): c is WorkCard => Boolean(c));
 ---
 
 <section class="selected" id="work" aria-labelledby="selected-h">
@@ -273,8 +284,8 @@ const CARDS: WorkCard[] = [
     <h3 class="sw-group-label">Websites</h3>
   </div>
 
-  <ul class="selected-grid" role="list">
-    {CARDS.filter((card) => card.published !== false && card.kind === 'site').map((card) => (
+  <ul class={`selected-grid selected-grid--n${HOME_SITES.length}`} role="list">
+    {HOME_SITES.map((card) => (
       <li class="sw-card-wrap" role="listitem">
         <a
           href={card.caseStudy ?? (card.pour ? `/work#${card.id}` : card.external_url) ?? `/work#${card.id}`}
@@ -531,6 +542,14 @@ const CARDS: WorkCard[] = [
       gap: 24px;
     }
     .sw-card-wrap:first-child { grid-column: auto; }
+  }
+  /* Four sites: two by two on tablet, one row of four on desktop, so no
+     card sits alone in a row (S339). */
+  @media (min-width: 740px) {
+    .selected-grid--n4 .sw-card-wrap:first-child { grid-column: auto; }
+  }
+  @media (min-width: 1024px) {
+    .selected-grid--n4 { grid-template-columns: repeat(4, 1fr); gap: 20px; }
   }
 
 

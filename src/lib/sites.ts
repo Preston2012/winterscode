@@ -19,7 +19,7 @@
  * Fallbacks are the last real reads, dated, used only when the API is down.
  * Refreshed 2026-10-22 (S339) from /api/workshop: PSI mobile median, Observatory live.
  */
-export type SiteKey = 'makai' | 'taylor' | 'seabreeze' | 'bbtd' | 'golf' | 'sogn' | 'baseline' | 'winterscode';
+export type SiteKey = 'makai' | 'jen' | 'taylor' | 'seabreeze' | 'bbtd' | 'golf' | 'sogn' | 'baseline' | 'winterscode';
 export type Quad = [number, number, number, number];
 
 export interface MeasuredSite {
@@ -47,6 +47,14 @@ export const SITES: MeasuredSite[] = [
     key: 'makai', label: 'makaipainting', name: 'Makai Painting',
     href: 'https://www.makaipainting.com', portfolioSlug: 'makai-painting', builtDays: 5,
     published: true, lhFallback: [93, 100, 100, 100], secFallback: { grade: 'A+', score: 125 },
+  },
+  {
+    // S339: South Coast Cuisine, live since 2026-09-22 on the apex (www 301s
+    // to it). Fallbacks measured 2026-10-22: Lighthouse lab run and a direct
+    // Observatory scan. No builtDays on record, so it stays off recent builds.
+    key: 'jen', label: 'southcoastcuisine', name: 'South Coast Cuisine',
+    href: 'https://southcoastcuisine.net', portfolioSlug: 'south-coast-cuisine',
+    published: true, lhFallback: [97, 100, 100, 100], secFallback: { grade: 'A+', score: 140 },
   },
   {
     // Cutover done 2026-09-11 (S230): the apex serves this build.

@@ -99,8 +99,9 @@ export const portfolio: PortfolioItem[] = [
     tags: ['ASTRO', 'TAILWIND', 'CLOUDFLARE'],
     status: 'live',
     build: 'rebuild',
-    // S326 DNA order: Sogn, SeaBreeze, US Survey Supply lead, then the rest.
-    order: 3,
+    // S339 order, Preston 2026-10-22: US Survey Supply, Makai, Bandon By The
+    // Dunes, SeaBreeze, Sogn, Professors Golf, South Coast Cuisine.
+    order: 1,
     // Published 2026-09-11 (S230). Gate condition met: ussurveysupply.com now
     // serves this build. Verified by fetching the authoritative Cloudflare
     // address directly, because the ops resolver still held the old host's A
@@ -147,7 +148,7 @@ export const portfolio: PortfolioItem[] = [
     tags: ['ASTRO', 'CLOUDFLARE', 'TURNSTILE'],
     status: 'live',
     build: 'rebuild',
-    order: 4,
+    order: 2,
     image: {
       src: '/work/makai-card.webp',
       srcSmall: '/work/makai-card-720.webp',
@@ -186,7 +187,7 @@ export const portfolio: PortfolioItem[] = [
     tags: ['ASTRO', 'RMLS API', 'CLOUDFLARE'],
     status: 'live',
     build: 'rebuild',
-    order: 6,
+    order: 3,
     image: {
       src: '/work/bbtd-card.webp',
       srcSmall: '/work/bbtd-card-720.webp',
@@ -224,7 +225,7 @@ export const portfolio: PortfolioItem[] = [
     tags: ['ASTRO', 'TAILWIND', 'CLOUDFLARE'],
     status: 'live',
     build: 'rebuild',
-    order: 2,
+    order: 4,
     image: {
       src: '/work/seabreeze-card.webp',
       srcSmall: '/work/seabreeze-card-720.webp',
@@ -262,7 +263,7 @@ export const portfolio: PortfolioItem[] = [
     tags: ['ASTRO', 'CLOUDFLARE'],
     status: 'live',
     build: 'new',
-    order: 8,
+    order: 6,
     image: {
       src: '/work/golf-card.webp',
       srcSmall: '/work/golf-card-720.webp',
@@ -300,7 +301,7 @@ export const portfolio: PortfolioItem[] = [
     tags: ['NEXT.JS', 'VERCEL', 'TYPESCRIPT'],
     status: 'live',
     build: 'new',
-    order: 1,
+    order: 5,
     image: {
       src: '/work/sogn-card.webp',
       srcSmall: '/work/sogn-card-720.webp',
@@ -330,6 +331,37 @@ export const portfolio: PortfolioItem[] = [
     ],
     links: [
       { label: 'Visit site →', href: 'https://sogncontracting.com', primary: true },
+    ],
+  },
+  {
+    // S339, Preston 2026-10-22: Jen's site joins /work, last of the sites.
+    // Facts from the wc-jen RUNBOOK and git log and the live site.
+    slug: 'south-coast-cuisine',
+    numeral: 'vii.',
+    name: 'South Coast Cuisine',
+    category: 'site',
+    meta: 'southcoastcuisine.net · private chef · single page',
+    tags: ['ASTRO', 'CLOUDFLARE', 'CLIENT EDITOR'],
+    status: 'live',
+    build: 'new',
+    order: 7,
+    details: [
+      {
+        label: 'Scope',
+        value:
+          'Single-page site for a Bandon VIP private chef service: four-course menus to taste, locally sourced ingredients, pricing, and a seasonal event package she can switch on or off herself in the Winters Code client editor.',
+      },
+      {
+        label: 'Result',
+        value: 'Live on her own domain since 2026-09-22, on her own Cloudflare account. Lighthouse and the security grade are measured live on the wall.',
+      },
+      {
+        label: 'Stack',
+        value: 'Astro · Cloudflare Pages · Content-Security-Policy header · Winters Code client editor',
+      },
+    ],
+    links: [
+      { label: 'Visit site →', href: 'https://southcoastcuisine.net', primary: true },
     ],
   },
   {
