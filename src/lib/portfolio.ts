@@ -75,6 +75,12 @@ export interface PortfolioItem {
    *  seventh entry in `links`. Without it the case studies were reachable
    *  from the footer and nowhere else. */
   caseStudy?: string;
+  /** S326 DNA: a site for one of Preston's own products. Proof he builds hard
+   *  things, never a peer to the coast client cards, so it stays out of the
+   *  Sites grid and is reached from its product's card under Apps. */
+  ownProduct?: boolean;
+  /** An app card's link to a related case page (Baseline's marketing site). */
+  relatedCase?: { href: string; label: string };
   /** False keeps the item out of every list until its domain is live. Default true. */
   published?: boolean;
   /** Display order within category, lower = first. */
@@ -85,6 +91,7 @@ export const portfolio: PortfolioItem[] = [
   // ─────────── SITES ───────────
   {
     slug: 'us-survey-supply',
+    caseStudy: '/work/us-survey-supply',
     numeral: 'i.',
     name: 'US Survey Supply',
     category: 'site',
@@ -92,6 +99,8 @@ export const portfolio: PortfolioItem[] = [
     tags: ['ASTRO', 'TAILWIND', 'CLOUDFLARE'],
     status: 'live',
     build: 'rebuild',
+    // S339 order, Preston 2026-10-22: US Survey Supply, Makai, Bandon By The
+    // Dunes, SeaBreeze, Sogn, Professors Golf, South Coast Cuisine.
     order: 1,
     // Published 2026-09-11 (S230). Gate condition met: ussurveysupply.com now
     // serves this build. Verified by fetching the authoritative Cloudflare
@@ -120,11 +129,52 @@ export const portfolio: PortfolioItem[] = [
       {
         label: 'Result',
         value:
-          'Live and mobile-first. Mozilla Observatory A+ with a perfect 140, re-verified against the live domain on 2026-09-11. Lighthouse measured on the wall above.',
+          'Live and mobile-first. Mozilla Observatory A+, re-verified against the live domain on 2026-09-11, with the grade and Lighthouse both measured live on the wall.',
       },
     ],
     links: [
       { label: 'Visit site →', href: 'https://ussurveysupply.com', primary: true },
+    ],
+  },
+  {
+    // S339, Preston: Makai joins /work, the homepage and the wall. Facts from
+    // the wc-makai RUNBOOK and the live site, 2026-10-22. Five business days,
+    // per Preston: signed 10-13, live on her go email 10-19.
+    slug: 'makai-painting',
+    numeral: 'vi.',
+    name: 'Makai Painting',
+    category: 'site',
+    meta: 'makaipainting.com · painting + residential rehab · 5-day build',
+    tags: ['ASTRO', 'CLOUDFLARE', 'TURNSTILE'],
+    status: 'live',
+    build: 'new',
+    order: 2,
+    image: {
+      src: '/work/makai-card.webp',
+      srcSmall: '/work/makai-card-720.webp',
+      srcXSmall: '/work/makai-card-480.webp',
+      alt: 'Makai Painting and Residential Rehab, Coos Bay, Oregon: the pink hibiscus logo over the words Interior, Exterior, Repairs and Hauling on gold, pink and white brush strokes, beside a freshly painted blue room with ladders and drop cloths.',
+      width: 1200,
+      height: 630,
+    },
+    details: [
+      {
+        label: 'Scope',
+        value:
+          'New site for a Coos Bay painting and residential-rehab company, built in place of a coming-soon page: 20 pages, twelve of them service pages, an estimate request form that reaches the office inbox, and the company\u2019s own job photos. Every one of the 65 addresses the old domain still listed lands on its new page in one redirect.',
+      },
+      {
+        label: 'Result',
+        value:
+          'Live on its own domain since 2026-10-19, on the client\u2019s own Cloudflare account. The home and services pages paint themselves in as you scroll and show the finished page at once with reduced motion. Lighthouse and the security grade are measured live on the wall.',
+      },
+      {
+        label: 'Stack',
+        value: 'Astro · Cloudflare Pages · Pages Functions estimate form with Turnstile · canvas paint-in, no framework runtime',
+      },
+    ],
+    links: [
+      { label: 'Visit site →', href: 'https://www.makaipainting.com', primary: true },
     ],
   },
   {
@@ -137,7 +187,7 @@ export const portfolio: PortfolioItem[] = [
     tags: ['ASTRO', 'RMLS API', 'CLOUDFLARE'],
     status: 'live',
     build: 'rebuild',
-    order: 6,
+    order: 3,
     image: {
       src: '/work/bbtd-card.webp',
       srcSmall: '/work/bbtd-card-720.webp',
@@ -158,7 +208,7 @@ export const portfolio: PortfolioItem[] = [
       },
       {
         label: 'Result',
-        value: 'Live with real RMLS listings, mobile-first, measured on the wall above.',
+        value: 'Live with real RMLS listings, mobile-first, with Lighthouse and the security grade measured live on the wall.',
       },
     ],
     links: [
@@ -175,7 +225,7 @@ export const portfolio: PortfolioItem[] = [
     tags: ['ASTRO', 'TAILWIND', 'CLOUDFLARE'],
     status: 'live',
     build: 'rebuild',
-    order: 5,
+    order: 4,
     image: {
       src: '/work/seabreeze-card.webp',
       srcSmall: '/work/seabreeze-card-720.webp',
@@ -196,7 +246,7 @@ export const portfolio: PortfolioItem[] = [
       },
       {
         label: 'Result',
-        value: 'Live and mobile-first, with Lighthouse and an A+ security grade both measured live on the wall above.',
+        value: 'Live and mobile-first, with Lighthouse and an A+ security grade both measured live on the wall.',
       },
     ],
     links: [
@@ -205,6 +255,7 @@ export const portfolio: PortfolioItem[] = [
   },
   {
     slug: 'professors-golf',
+    caseStudy: '/work/professors-golf',
     numeral: 'iv.',
     name: 'Professors Golf',
     category: 'site',
@@ -212,7 +263,7 @@ export const portfolio: PortfolioItem[] = [
     tags: ['ASTRO', 'CLOUDFLARE'],
     status: 'live',
     build: 'new',
-    order: 8,
+    order: 6,
     image: {
       src: '/work/golf-card.webp',
       srcSmall: '/work/golf-card-720.webp',
@@ -229,11 +280,11 @@ export const portfolio: PortfolioItem[] = [
       {
         label: 'Scope',
         value:
-          'Site for a Bandon golf service, built in one business day: homepage plus the VIP Mexico Open events page. Club fitting, PGA-certified instruction, caddy referrals, local tee times and all-inclusive golf trips, with a click-to-call header and a sharecard built for the group text.',
+          'Site for a Bandon golf service, first version built in one business day: a homepage plus an events page. Club fitting, PGA-certified instruction, caddy referrals, local tee times and all-inclusive golf trips, with a click-to-call header and a sharecard built for the group text.',
       },
       {
         label: 'Result',
-        value: 'Live and mobile-first, Mozilla Observatory A+ with a perfect 140, Lighthouse measured on the wall above.',
+        value: 'Live and mobile-first, with the Mozilla Observatory grade and Lighthouse both measured live on the wall.',
       },
     ],
     links: [
@@ -250,7 +301,7 @@ export const portfolio: PortfolioItem[] = [
     tags: ['NEXT.JS', 'VERCEL', 'TYPESCRIPT'],
     status: 'live',
     build: 'new',
-    order: 10,
+    order: 5,
     image: {
       src: '/work/sogn-card.webp',
       srcSmall: '/work/sogn-card-720.webp',
@@ -271,7 +322,11 @@ export const portfolio: PortfolioItem[] = [
       },
       {
         label: 'Result',
-        value: 'Lighthouse 95+ average across all four categories. Live, indexed, and earning local search visibility.',
+        value: 'Live and indexed, with Lighthouse at 95+ across all four categories, measured live on the wall.',
+      },
+      {
+        label: 'Upkeep',
+        value: '105 commits across six months, made by the same person who answers the phone.',
       },
     ],
     links: [
@@ -279,8 +334,41 @@ export const portfolio: PortfolioItem[] = [
     ],
   },
   {
+    // S339, Preston 2026-10-22: Jen's site joins /work, last of the sites.
+    // Build time per Preston: about 2 days, 3 with the client editor; 3 shown.
+    // Facts from the wc-jen RUNBOOK and git log and the live site.
+    slug: 'south-coast-cuisine',
+    numeral: 'vii.',
+    name: 'South Coast Cuisine',
+    category: 'site',
+    meta: 'southcoastcuisine.net · private chef · 3-day build',
+    tags: ['ASTRO', 'CLOUDFLARE', 'CLIENT EDITOR'],
+    status: 'live',
+    build: 'new',
+    order: 7,
+    details: [
+      {
+        label: 'Scope',
+        value:
+          'Single-page site for a Bandon VIP private chef service: four-course menus to taste, locally sourced ingredients, pricing, and a seasonal event package she can switch on or off herself in the Winters Code client editor.',
+      },
+      {
+        label: 'Result',
+        value: 'Live on her own domain since 2026-09-22, on her own Cloudflare account. Lighthouse and the security grade are measured live on the wall.',
+      },
+      {
+        label: 'Stack',
+        value: 'Astro · Cloudflare Pages · Content-Security-Policy header · Winters Code client editor',
+      },
+    ],
+    links: [
+      { label: 'Visit site →', href: 'https://southcoastcuisine.net', primary: true },
+    ],
+  },
+  {
     slug: 'baseline-marketing',
     caseStudy: '/work/baseline-marketing',
+    ownProduct: true,
     numeral: 'v.',
     name: 'Baseline Marketing',
     category: 'site',
@@ -318,6 +406,7 @@ export const portfolio: PortfolioItem[] = [
   // ─────────── APPS ───────────
   {
     slug: 'baseline',
+    relatedCase: { href: '/work/baseline-marketing', label: 'How its marketing site was built' },
     numeral: 'iii.',
     name: 'Baseline',
     category: 'app',
@@ -458,7 +547,7 @@ export const portfolio: PortfolioItem[] = [
     details: [
       {
         label: 'Stack',
-        value: 'Demiurge memory engine (custom, 2,500+ memories and growing) · Flutter app · BYOK Anthropic',
+        value: 'Demiurge memory engine (custom, live count on the wall) · Flutter app · BYOK Anthropic',
       },
       {
         label: 'Scope',
@@ -512,7 +601,7 @@ export const portfolio: PortfolioItem[] = [
 ];
 
 export const sites = portfolio
-  .filter((p) => p.category === 'site' && p.published !== false)
+  .filter((p) => p.category === 'site' && p.published !== false && !p.ownProduct)
   .sort((a, b) => a.order - b.order);
 
 export const apps = portfolio

@@ -2,6 +2,9 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Breadcrumbs from '../components/ui/Breadcrumbs.astro';
 import { breadcrumbSchema } from '../lib/schema';
+import { smsHref, phoneDisplay } from '../lib/text-cta';
+
+const sms = smsHref(Astro.url.pathname);
 
 const lastUpdated = '2026-05-13';
 ---
@@ -60,12 +63,13 @@ const lastUpdated = '2026-05-13';
         a job through.
       </p>
 
-      <h2 class="h2 legal-h2">Work starts when the SOW is signed and the deposit clears</h2>
+      <h2 class="h2 legal-h2">Work starts when the SOW is signed, the deposit clears, and the materials are in</h2>
       <p>
         50% deposit upfront, balance on completion. Standard SOW terms include scope, deliverables,
         timeline, revision rounds, and what triggers a change order. Inquiries, emails, calls,
         and consult conversations don't move the clock. The timeline starts when both signatures
-        are on the SOW and the deposit lands.
+        are on the SOW, the deposit lands, and I have the materials and access the SOW
+        lists, such as copy, photos and logins.
       </p>
 
       <h2 class="h2 legal-h2">What's mine, what's yours</h2>
@@ -113,8 +117,8 @@ const lastUpdated = '2026-05-13';
 
       <h2 class="h2 legal-h2">Questions</h2>
       <p>
-        I'm a person. <a href="mailto:preston@winterscode.com">preston@winterscode.com</a>
-        gets me directly. Or text <a href="sms:5415510731">541-551-0731</a>.
+        I'm a person. Text <a href={sms}>{phoneDisplay}</a> and it gets me directly, or
+        email <a href="mailto:preston@winterscode.com">preston@winterscode.com</a>.
       </p>
     </div>
   </article>

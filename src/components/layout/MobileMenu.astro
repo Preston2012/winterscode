@@ -1,41 +1,47 @@
 ---
 /**
- * Slide-out mobile/tablet menu panel.
+ * Mobile and tablet menu: the shop placard (S339, Preston: "a stellar
+ * bulleted factory placard with animation and liveliness, using my brand").
  *
- * State is plain DOM toggling, no React island needed since this is
- * pure show/hide with no reactive UI behind it. ~700 bytes of inline JS.
+ * A riveted plate in the house materials: dark brushed steel, copper
+ * hairlines, the teal registration dot from the header seam, mono stamping,
+ * Fraunces for the names. Each destination is a bolted line on the plate with
+ * a one-line note of what is behind it, and the page you are on is marked.
  *
- * The trigger button lives in <Header /> and identifies itself with
- * `data-menu-open`. This component wires up:
- *   - click on trigger → open
- *   - click on overlay → close
- *   - click on any menu link → close (smooth scroll handled by browser)
- *   - Escape key → close
- *   - aria-expanded sync on the trigger
- *   - body scroll lock while open
+ * Motion, all of it skipped under prefers-reduced-motion: the plate slides in
+ * and settles, the rivets set, a copper sheen runs across the plate once, the
+ * lines bolt on one after another, the bolt of the current page glows, and
+ * the Text button rings once. Pressing a line drives its bolt a quarter turn.
+ *
+ * Phones get the plate across the whole screen with a thumb-height Text
+ * button; from 560px it is a 440px plate on the right. Desktop (1024+) uses
+ * the header nav and never shows this.
+ *
+ * Behaviour is plain DOM: the trigger in <Header /> carries data-menu-open.
+ * Open moves focus to the close button and traps Tab inside the plate; close
+ * (X, overlay, Escape, any link) returns focus to the trigger. Body scroll
+ * locks while open.
  */
 
-export interface Props {
-}
+import { smsHref, telHref, phoneDisplay, bookHref, mailHref } from '../../lib/text-cta';
 
-// homepage prop removed, nav points to real pages now, not anchors
+export interface Props {}
 
+// The Wall stays out of the menu (S326 DNA); footer, home teaser and g l reach it.
 const menuItems = [
-  { href: '/',         label: 'Home',     num: '00' },
-  { href: '/work',     label: 'Work',     num: '01' },
-  { href: '/services', label: 'Services', num: '02' },
-  { href: '/about',    label: 'About',    num: '03' },
-  { href: '/wall',     label: 'The Wall', num: '04' },
-  { href: '/contact',  label: 'Contact',  num: '05' },
+  { href: '/',         label: 'Home',     num: '00', note: 'the front door' },
+  { href: '/work',     label: 'Work',     num: '01', note: 'sites and apps, scored live' },
+  { href: '/services', label: 'Services', num: '02', note: 'sites, apps and care plans' },
+  { href: '/about',    label: 'About',    num: '03', note: 'who builds it' },
+  { href: '/contact',  label: 'Contact',  num: '04', note: 'text, call or book' },
 ];
+const path = Astro.url.pathname.replace(/\.html$/, '').replace(/\/$/, '') || '/';
+const isHere = (href: string) =>
+  href === '/' ? path === '/' : path === href || path.startsWith(href + '/');
+const sms = smsHref(Astro.url.pathname);
 ---
 
-<div
-  class="menu-overlay"
-  id="menu-overlay"
-  aria-hidden="true"
-  data-menu-close
-></div>
+<div class="menu-overlay" id="menu-overlay" aria-hidden="true" data-menu-close></div>
 
 <aside
   class="menu-panel"
@@ -44,36 +50,58 @@ const menuItems = [
   aria-label="Site navigation"
   inert
 >
-  <button
-    type="button"
-    class="menu-close"
-    aria-label="Close menu"
-    data-menu-close
-  >
-    ✕
-  </button>
+  <div class="plate">
+    <span class="rivet tl" aria-hidden="true"></span>
+    <span class="rivet tr" aria-hidden="true"></span>
+    <span class="rivet bl" aria-hidden="true"></span>
+    <span class="rivet br" aria-hidden="true"></span>
 
-  <ul class="menu-list">
-    {menuItems.map(({ href: itemHref, label, num }) => (
-      <li>
-        <a href={itemHref} data-menu-link>
-          <span class="num">{num}</span>
-          {label}
-        </a>
-      </li>
-    ))}
-  </ul>
+    <div class="plate-head">
+      <div class="plate-stamp">
+        <span class="plate-kicker">Winters Code</span>
+        <span class="plate-title">Shop directory</span>
+      </div>
+      <button type="button" class="menu-close" aria-label="Close menu" data-menu-close>
+        <span aria-hidden="true">&#x2715;</span>
+      </button>
+    </div>
+    <div class="plate-seam" aria-hidden="true"><span></span></div>
 
-  <div class="menu-footer">
-    <div class="menu-footer-eyebrow">Reach out direct</div>
-    <div class="menu-contact-row">
-      <a href="tel:5415510731" class="menu-contact-btn">Call</a>
-      <a
-        href="mailto:preston@winterscode.com?subject=Winters%20Code%20consult%20request"
-        class="menu-contact-btn"
-      >
-        Email
+    <ul class="menu-list">
+      {menuItems.map(({ href, label, num, note }, i) => (
+        <li style={`--i:${i}`}>
+          <a
+            href={href}
+            data-menu-link
+            class:list={['menu-line', { here: isHere(href) }]}
+            aria-current={isHere(href) ? 'page' : undefined}
+          >
+            <span class="bolt" aria-hidden="true"><span class="bolt-slot"></span></span>
+            <span class="num">{num}</span>
+            <span class="line-text">
+              <span class="line-label">{label}</span>
+              <span class="line-note">{note}</span>
+            </span>
+            {isHere(href)
+              ? <span class="here-tag" aria-hidden="true">here</span>
+              : <span class="line-arrow" aria-hidden="true">&rarr;</span>}
+          </a>
+        </li>
+      ))}
+    </ul>
+
+    <div class="plate-foot">
+      <p class="plate-creed"><span class="creed-dot" aria-hidden="true"></span>Help is just a text away</p>
+      <a href={sms} class="menu-text-btn" data-menu-link>
+        <span>Text Preston</span>
+        <span class="menu-text-num">{phoneDisplay}</span>
       </a>
+      <div class="menu-quiet-row">
+        <a href={telHref} data-menu-link>Call</a>
+        <a href={bookHref} target="_blank" rel="noopener" data-menu-link>Book a call</a>
+        <a href={mailHref} data-menu-link>Email</a>
+      </div>
+      <p class="plate-mark" aria-hidden="true">Bandon &middot; Oregon</p>
     </div>
   </div>
 </aside>
@@ -84,7 +112,11 @@ const menuItems = [
     const overlay = document.getElementById('menu-overlay');
     const opener = document.querySelector('[data-menu-open]');
     if (!panel || !overlay || !opener) return;
+    const closeBtn = panel.querySelector('.menu-close');
 
+    function focusables() {
+      return Array.from(panel.querySelectorAll('a[href], button:not([disabled])'));
+    }
     function open() {
       panel.classList.add('open');
       overlay.classList.add('open');
@@ -93,8 +125,12 @@ const menuItems = [
       panel.removeAttribute('inert');
       opener.setAttribute('aria-expanded', 'true');
       document.body.style.overflow = 'hidden';
+      document.documentElement.classList.add('menu-open');
+      // Focus after the slide starts so the browser does not scroll the page.
+      setTimeout(() => { if (closeBtn) closeBtn.focus({ preventScroll: true }); }, 60);
     }
-    function close() {
+    function close(returnFocus) {
+      if (!panel.classList.contains('open')) return;
       panel.classList.remove('open');
       overlay.classList.remove('open');
       panel.setAttribute('aria-hidden', 'true');
@@ -102,25 +138,27 @@ const menuItems = [
       panel.setAttribute('inert', '');
       opener.setAttribute('aria-expanded', 'false');
       document.body.style.overflow = '';
+      document.documentElement.classList.remove('menu-open');
+      if (returnFocus) opener.focus({ preventScroll: true });
     }
 
     opener.addEventListener('click', open);
-
-    // Any element marked data-menu-close closes (overlay + X button)
     document.querySelectorAll('[data-menu-close]').forEach((el) => {
-      el.addEventListener('click', close);
+      el.addEventListener('click', () => close(true));
     });
-
-    // Closing on link click, small delay lets the browser process the hash
     panel.querySelectorAll('[data-menu-link]').forEach((link) => {
-      link.addEventListener('click', () => {
-        setTimeout(close, 50);
-      });
+      link.addEventListener('click', () => { setTimeout(() => close(false), 50); });
     });
-
-    // Escape key
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && panel.classList.contains('open')) close();
+      if (!panel.classList.contains('open')) return;
+      if (e.key === 'Escape') { close(true); return; }
+      if (e.key === 'Tab') {
+        const f = focusables();
+        if (!f.length) return;
+        const first = f[0], last = f[f.length - 1];
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+      }
     });
   })();
 </script>
@@ -130,152 +168,378 @@ const menuItems = [
   .menu-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(10, 13, 12, 0.85);
+    background: rgba(10, 13, 12, 0.82);
     backdrop-filter: blur(8px);
     z-index: 200;
     opacity: 0;
     pointer-events: none;
     transition: opacity 300ms;
   }
-  .menu-overlay.open {
-    opacity: 1;
-    pointer-events: auto;
-  }
+  .menu-overlay.open { opacity: 1; pointer-events: auto; }
 
-  /* ─── Panel ─── */
+  /* ─── Panel: the whole screen on phones, a plate on the right from 560 ─── */
   .menu-panel {
     position: fixed;
-    top: 0;
-    right: 0;
-    height: auto;
-    max-height: 100vh;
-    max-height: 100dvh;
-    overflow-y: auto;
-    width: 280px;
-    max-width: 80vw;
-    background: var(--color-bg-card);
+    inset: 0;
     z-index: 201;
-    transform: translateX(100%);
-    transition: transform 350ms cubic-bezier(0.22, 1, 0.36, 1);
-    border-left: 1px solid var(--copper-hairline);
-    border-bottom: 1px solid var(--copper-hairline);
-    border-bottom-left-radius: 16px;
-    padding: 24px 20px 28px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: max(12px, env(safe-area-inset-top)) 12px max(14px, env(safe-area-inset-bottom));
+    background:
+      radial-gradient(120% 60% at 100% 0%, rgba(200, 128, 74, 0.10), transparent 60%),
+      var(--color-bg-deep);
+    transform: translateX(104%);
+    transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
     display: flex;
-    flex-direction: column;
   }
   .menu-panel.open { transform: translateX(0); }
-
-  @media (min-width: 1024px) {
-    .menu-panel,
-    .menu-overlay {
-      display: none;
+  @media (min-width: 560px) {
+    .menu-panel {
+      inset: 0 0 0 auto;
+      width: 440px;
+      padding: 14px;
+      background: transparent;
     }
   }
+  @media (min-width: 1024px) {
+    .menu-panel, .menu-overlay { display: none; }
+  }
 
-  /* Close button */
-  .menu-close {
-    align-self: flex-end;
-    background: none;
-    border: none;
-    color: var(--color-ash-300);
-    font-size: 24px;
-    cursor: pointer;
-    padding: 0;
-    margin-bottom: 24px;
-    width: 44px;
-    height: 44px;
+  /* ─── The plate ─── */
+  .plate {
+    position: relative;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: min-content;
+    border-radius: 14px;
+    border: 1px solid var(--copper-hairline);
+    background:
+      repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.018) 0 1px, transparent 1px 3px),
+      linear-gradient(165deg, #1b2228 0%, var(--color-bg-card) 48%, #0c1013 100%);
+    box-shadow:
+      inset 0 0 0 5px rgba(10, 13, 12, 0.55),
+      inset 0 0 0 6px var(--copper-hairline),
+      0 24px 60px -24px rgba(0, 0, 0, 0.8);
+    padding: 22px 20px 18px;
+    overflow: hidden;
+  }
+  @media (min-width: 560px) { .plate { flex: 0 1 auto; align-self: flex-start; width: 100%; } }
+  /* One copper sheen across the plate when it lands. */
+  .plate::after {
+    content: "";
+    position: absolute;
+    inset: -20% auto -20% -60%;
+    width: 45%;
+    background: linear-gradient(100deg, transparent, rgba(224, 150, 101, 0.16), transparent);
+    transform: skewX(-18deg) translateX(0);
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .rivet {
+    position: absolute;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 32% 30%, var(--color-copper-bright), var(--color-copper-deep) 70%);
+    box-shadow: 0 0 0 1px rgba(10, 13, 12, 0.7), 0 0 6px rgba(200, 128, 74, 0.35);
+    z-index: 2;
+  }
+  .rivet.tl { top: 11px; left: 11px; }
+  .rivet.tr { top: 11px; right: 11px; }
+  .rivet.bl { bottom: 11px; left: 11px; }
+  .rivet.br { bottom: 11px; right: 11px; }
+
+  /* Head: stamped kicker and title, close in a riveted square */
+  .plate-head {
     display: flex;
     align-items: center;
-    justify-content: center;
-    border-radius: 6px;
-    transition: all 200ms;
-  }
-  @media (hover: hover) {
-
-    .menu-close:hover {
-    background: var(--color-bg-raised);
-    color: var(--color-copper-bright);
-  }}
-
-  /* Menu items */
-  .menu-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-  .menu-list li {
-    border-bottom: 1px dashed var(--copper-hairline);
-  }
-  .menu-list a {
-    display: flex;
-    align-items: baseline;
+    justify-content: space-between;
     gap: 12px;
-    padding: 14px 4px;
-    font-family: var(--font-serif);
-    font-size: 22px;
-    font-weight: 500;
-    color: var(--color-ash-100);
-    transition: all 200ms;
-    cursor: pointer;
+    padding: 4px 6px 0 10px;
   }
-  @media (hover: hover) {
-
-    .menu-list a:hover {
-    color: var(--color-wc-green);
-    padding-left: 8px;
-  }}
-  .menu-list .num {
-    font-size: 12px;
+  .plate-stamp { display: flex; flex-direction: column; gap: 4px; }
+  .plate-kicker {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
     color: var(--color-copper);
-    font-style: italic;
+  }
+  .plate-title {
     font-family: var(--font-serif);
+    font-size: 26px;
+    font-weight: 500;
+    font-style: italic;
+    line-height: 1;
+    color: var(--color-ash-100);
+  }
+  .menu-close {
+    flex: none;
+    width: 46px;
+    height: 46px;
+    display: grid;
+    place-items: center;
+    border-radius: 10px;
+    border: 1px solid var(--copper-hairline);
+    background: rgba(10, 13, 12, 0.5);
+    color: var(--color-ash-300);
+    font-size: 18px;
+    cursor: pointer;
+    touch-action: manipulation;
+    transition: color 200ms, border-color 200ms, transform 200ms;
+  }
+  .menu-close:focus-visible { outline: 2px solid var(--color-wc-green); outline-offset: 2px; }
+  @media (hover: hover) {
+    .menu-close:hover { color: var(--color-copper-bright); border-color: var(--copper-dim); transform: rotate(90deg); }
   }
 
-  /* Footer */
-  .menu-footer {
-    margin-top: 32px;
-    padding-top: 20px;
-    border-top: 1px solid var(--copper-hairline);
+  /* The seam under the head: copper hairline with the teal registration dot */
+  .plate-seam {
+    position: relative;
+    height: 1px;
+    margin: 16px 2px 6px;
+    background: linear-gradient(90deg, transparent, var(--copper-dim) 12%, var(--copper-dim) 88%, transparent);
   }
-  .menu-footer-eyebrow {
-    font-family: var(--font-sans);
+  .plate-seam span {
+    position: absolute;
+    left: 50%;
+    top: -2.5px;
+    width: 6px;
+    height: 6px;
+    margin-left: -3px;
+    border-radius: 50%;
+    background: var(--accent-teal, #35d6c4);
+    box-shadow: 0 0 8px rgba(53, 214, 196, 0.6);
+  }
+
+  /* ─── The bolted lines ─── */
+  .menu-list { list-style: none; margin: 0; padding: 0; }
+  .menu-list li + li { border-top: 1px dashed var(--copper-hairline); }
+  .menu-line {
+    display: grid;
+    grid-template-columns: 16px 22px minmax(0, 1fr) auto;
+    align-items: center;
+    column-gap: 10px;
+    /* Taller lines on tall phones, so the plate fills with the directory
+       rather than empty steel above the Text button. */
+    min-height: clamp(64px, 9.4svh, 84px);
+    padding: 8px 8px 8px 6px;
+    border-radius: 8px;
+    color: var(--color-ash-100);
+    text-decoration: none;
+    touch-action: manipulation;
+    transition: background 200ms, transform 200ms;
+  }
+  .menu-line:focus-visible { outline: 2px solid var(--color-wc-green); outline-offset: -2px; }
+  .bolt {
+    position: relative;
+    width: 14px;
+    height: 14px;
+    clip-path: polygon(25% 3%, 75% 3%, 100% 50%, 75% 97%, 25% 97%, 0 50%);
+    background: radial-gradient(circle at 35% 30%, var(--color-copper-bright), var(--color-copper-deep) 75%);
+    transition: transform 260ms cubic-bezier(0.3, 1.4, 0.5, 1), background 200ms;
+  }
+  .bolt-slot {
+    position: absolute;
+    left: 3px;
+    right: 3px;
+    top: 6px;
+    height: 2px;
+    border-radius: 1px;
+    background: rgba(10, 13, 12, 0.75);
+  }
+  .num {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--color-copper);
+    letter-spacing: 0.04em;
+  }
+  .line-text { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+  .line-label {
+    font-family: var(--font-serif);
+    font-size: 24px;
+    font-weight: 500;
+    line-height: 1.05;
+  }
+  .line-note {
+    font-family: var(--font-mono);
     font-size: 11px;
+    letter-spacing: 0.04em;
     color: var(--color-ash-500);
+  }
+  .line-arrow {
+    font-family: var(--font-sans);
+    font-size: 18px;
+    color: var(--color-ash-500);
+    transition: transform 200ms, color 200ms;
+  }
+  .here-tag {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    font-weight: 600;
     letter-spacing: 0.16em;
     text-transform: uppercase;
-    font-weight: 600;
+    color: var(--color-wc-green);
+    border: 1px solid rgba(77, 216, 168, 0.45);
+    border-radius: 4px;
+    padding: 3px 6px;
+    white-space: nowrap;
   }
-  .menu-contact-row {
+  .menu-line.here .line-label { color: var(--color-wc-green); }
+  .menu-line.here .bolt {
+    background: radial-gradient(circle at 35% 30%, #6fffc1, #2a8a6c 75%);
+  }
+  .menu-line:active .bolt { transform: rotate(90deg); }
+  .menu-line:active { background: rgba(200, 128, 74, 0.08); }
+  @media (hover: hover) {
+    .menu-line:hover { background: rgba(200, 128, 74, 0.06); }
+    .menu-line:hover .bolt { transform: rotate(90deg); }
+    .menu-line:hover .line-arrow { color: var(--color-copper-bright); transform: translateX(4px); }
+  }
+
+  /* ─── Foot: the creed, Text, the quiet row ─── */
+  .plate-foot {
+    margin-top: auto;
+    padding: 18px 4px 4px;
+    border-top: 1px solid var(--copper-hairline);
+  }
+  .menu-list { margin-bottom: 18px; }
+  .plate-creed {
     display: flex;
+    align-items: center;
     gap: 8px;
-    margin-top: 14px;
+    margin: 0;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 15px;
+    color: var(--color-ash-300);
   }
-  .menu-contact-btn {
-    flex: 1;
-    /* 44px touch minimum (G-027). Measured 116x39 on production at S245. These
-       two are Call and Email, so a missed tap here is a missed job. */
-    min-height: 44px;
+  .creed-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--color-wc-green);
+    box-shadow: 0 0 8px rgba(77, 216, 168, 0.7);
+  }
+  .menu-text-btn {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    min-height: 56px;
+    margin-top: 12px;
+    padding: 12px 18px;
+    border-radius: 10px;
+    background: var(--color-wc-green);
+    color: var(--color-bg-deep);
+    font-family: var(--font-sans);
+    font-size: 16px;
+    font-weight: 600;
+    text-decoration: none;
+    touch-action: manipulation;
+    transition: background 200ms;
+  }
+  .menu-text-btn::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    box-shadow: 0 0 0 0 rgba(77, 216, 168, 0.55);
+    pointer-events: none;
+  }
+  .menu-text-btn:focus-visible { outline: 2px solid var(--color-ash-100); outline-offset: 3px; }
+  .menu-text-num { font-family: var(--font-mono); font-size: 13px; letter-spacing: 0.02em; }
+  .menu-quiet-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 4px;
+    margin-top: 8px;
+  }
+  .menu-quiet-row a {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 10px;
-    text-align: center;
-    background: var(--color-bg-raised);
-    border: 1px solid var(--copper-hairline);
-    border-radius: 6px;
-    font-size: 11px;
-    color: var(--color-ash-300);
+    min-height: 44px;
+    min-width: 44px;
+    padding: 0 4px;
     font-family: var(--font-sans);
-    font-weight: 500;
-    letter-spacing: 0.08em;
+    font-size: 14px;
+    color: var(--color-ash-300);
+    text-decoration: underline;
+    text-decoration-color: var(--copper-hairline);
+    text-underline-offset: 4px;
+    touch-action: manipulation;
+  }
+  .plate-mark {
+    margin: 10px 0 0;
+    text-align: center;
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.32em;
     text-transform: uppercase;
-    transition: all 200ms;
+    color: var(--color-ash-700);
   }
   @media (hover: hover) {
+    .menu-text-btn:hover { background: var(--color-wc-green-bright); }
+    .menu-quiet-row a:hover { color: var(--color-copper-bright); }
+  }
 
-    .menu-contact-btn:hover {
-    border-color: var(--color-wc-green);
-    color: var(--color-wc-green);
-  }}
+  /* ─── Motion: only when the reader has not asked for less ─── */
+  @media (prefers-reduced-motion: no-preference) {
+    .menu-panel.open .plate { animation: plate-land 520ms cubic-bezier(0.2, 0.9, 0.25, 1.05) both; }
+    .menu-panel.open .rivet { animation: rivet-set 360ms cubic-bezier(0.3, 1.6, 0.5, 1) both; }
+    .menu-panel.open .rivet.tr { animation-delay: 60ms; }
+    .menu-panel.open .rivet.bl { animation-delay: 120ms; }
+    .menu-panel.open .rivet.br { animation-delay: 180ms; }
+    .menu-panel.open .plate::after { animation: plate-sheen 1100ms ease-out 260ms both; }
+    .menu-panel.open .plate-seam span { animation: seam-dot 2.8s ease-in-out 600ms infinite; }
+    .menu-panel.open .menu-list li {
+      animation: line-bolt 460ms cubic-bezier(0.22, 1, 0.36, 1) both;
+      animation-delay: calc(140ms + var(--i) * 60ms);
+    }
+    .menu-panel.open .menu-list li .bolt { animation: bolt-drive 520ms cubic-bezier(0.3, 1.3, 0.5, 1) both; animation-delay: calc(220ms + var(--i) * 60ms); }
+    .menu-panel.open .menu-line.here .bolt { animation: bolt-drive 520ms cubic-bezier(0.3, 1.3, 0.5, 1) calc(220ms + var(--i) * 60ms) both, here-glow 2.4s ease-in-out 900ms infinite; }
+    .menu-panel.open .creed-dot { animation: creed-pulse 2.4s ease-in-out infinite; }
+    .menu-panel.open .menu-text-btn::after { animation: text-ring 1100ms ease-out 700ms 1 both; }
+  }
+  @keyframes plate-land {
+    0% { transform: translateY(14px) scale(0.985); opacity: 0.4; }
+    70% { transform: translateY(-2px) scale(1.002); opacity: 1; }
+    100% { transform: none; opacity: 1; }
+  }
+  @keyframes rivet-set { from { transform: scale(0); } to { transform: scale(1); } }
+  @keyframes plate-sheen {
+    0% { opacity: 0; transform: skewX(-18deg) translateX(0); }
+    15% { opacity: 1; }
+    100% { opacity: 0; transform: skewX(-18deg) translateX(420%); }
+  }
+  @keyframes seam-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+  @keyframes line-bolt {
+    from { opacity: 0; transform: translateX(22px); }
+    to { opacity: 1; transform: none; }
+  }
+  @keyframes bolt-drive {
+    from { transform: rotate(-120deg) scale(0.4); }
+    to { transform: rotate(0) scale(1); }
+  }
+  @keyframes here-glow {
+    0%, 100% { filter: none; }
+    50% { filter: brightness(1.45) saturate(1.2); }
+  }
+  @keyframes creed-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+  @keyframes text-ring {
+    0% { box-shadow: 0 0 0 0 rgba(77, 216, 168, 0.55); }
+    100% { box-shadow: 0 0 0 14px rgba(77, 216, 168, 0); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .menu-panel, .menu-overlay { transition: none; }
+  }
+  /* The header is its own stacking context, so the thumb bar (z 90, outside
+     it) would sit on top of the open plate on phones. It steps aside. */
+  :global(html.menu-open .textbar) { visibility: hidden; }
 </style>

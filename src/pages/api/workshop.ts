@@ -29,6 +29,7 @@ import { env as cfEnv } from 'cloudflare:workers';
 interface WorkshopData {
   deploys: {
     last: string;          // "4m ago" | "2h ago" | "3d ago"
+    last_at?: string;      // ISO time of that push, so a cached read recomputes 'last'
     count_30d: number;
     repo_count: number;
     source: 'live' | 'fallback';
@@ -41,7 +42,10 @@ interface WorkshopData {
     seabreeze:   [number, number, number, number];
     golf:        [number, number, number, number];
     taylor:      [number, number, number, number];
+    makai:       [number, number, number, number];
+    jen:         [number, number, number, number];
     measured: string; // "8m ago"
+    measured_at?: string; // ISO time of the audit, so a cached read ages honestly
     source: 'live' | 'fallback';
   };
   security: {
@@ -56,6 +60,8 @@ interface WorkshopData {
       seabreeze:   { grade: string; score: number };
       golf:        { grade: string; score: number };
       taylor:      { grade: string; score: number };
+      makai:       { grade: string; score: number };
+      jen:         { grade: string; score: number };
     };
     source: 'live' | 'fallback';
   };
@@ -81,7 +87,8 @@ interface WorkshopData {
 // sees when GitHub/PSI/Observatory/Cal.com is unreachable.
 const FALLBACK: WorkshopData = {
   deploys: {
-    last: '4m ago',
+    // S339: no invented recency. A fallback never knows the last push.
+    last: 'unknown',
     count_30d: 30,
     repo_count: 4,
     source: 'fallback',
@@ -111,6 +118,10 @@ const FALLBACK: WorkshopData = {
     // Measured against the live apex 2026-09-11, the day of the DNS cutover,
     // PSI mobile with the project key. Not copied from the staging host.
     taylor:      [99, 100, 100, 100],
+    // Makai Painting (www.makaipainting.com), S339: lab run 2026-10-22.
+    makai:       [93, 100, 100, 100],
+    // South Coast Cuisine (southcoastcuisine.net), S339: lab run 2026-10-22.
+    jen:         [97, 100, 100, 100],
     measured: '8m ago',
     source: 'fallback',
   },
@@ -129,6 +140,8 @@ const FALLBACK: WorkshopData = {
       seabreeze:   { grade: 'A+', score: 115 },
       taylor:      { grade: 'A+', score: 140 },
       golf:        { grade: 'A+', score: 140 }, // Observatory 2026-09-05, 12 of 12
+      makai:       { grade: 'A+', score: 125 }, // Observatory 2026-10-22
+      jen:         { grade: 'A+', score: 140 }, // Observatory 2026-10-22
     },
     source: 'fallback',
   },
@@ -228,11 +241,27 @@ async function fetchGitHub(
   // /api/workshop request hits GitHub, which exhausts quota in hours under
   // moderate traffic. Refresh cache only when older than REFRESH_AFTER_SEC.
   const REFRESH_AFTER_SEC = 5 * 60; // 5 minutes
+  // A cached 'last' string froze at whatever it said when it was written, so
+  // a month-old cache still read "1h ago" on the wall (S339). Recompute it from
+  // the stored push time; an entry without one says nothing rather than lie.
+  // Entries written before last_at existed are rebuilt from the write time
+  // minus the relative string they stored, which is exact to its unit.
+  const UNIT: Record<string, number> = { s: 1, m: 60, h: 3600, d: 86400 };
+  const aged = (c: WorkshopData['deploys'] & { _cachedAt?: number }): WorkshopData['deploys'] => {
+    let iso = c.last_at;
+    if (!iso && c._cachedAt) {
+      const m = /^(\d+)([smhd]) ago$/.exec(c.last || '');
+      if (m) iso = new Date(c._cachedAt - Number(m[1]) * UNIT[m[2]] * 1000).toISOString();
+    }
+    const t = iso ? new Date(iso).getTime() : NaN;
+    const { last_message: _drop, ...pub } = c as typeof c & { last_message?: string };
+    return { ...pub, last: Number.isNaN(t) ? 'unknown' : relativeTime(iso as string), ...(iso ? { last_at: iso } : {}) };
+  };
   if (lastCached && cacheAgeSec < REFRESH_AFTER_SEC) {
-    return { ...lastCached, source: 'live' as const };
+    return { ...aged(lastCached), source: 'live' as const };
   }
   const cachedOrFallback = (): WorkshopData['deploys'] =>
-    lastCached ? { ...lastCached, source: 'cached' as const } : FALLBACK.deploys;
+    lastCached ? { ...aged(lastCached), source: 'cached' as const } : FALLBACK.deploys;
   try {
     // Paginate up to 3 pages (300 events) to capture the full 30-day window.
     // Single page (100 events) maxes out fast at ~50 in our use case.
@@ -283,7 +312,8 @@ async function fetchGitHub(
     // with "2d ago since last push", which Preston caught on the live wall
     // 2026-09-10. A timestamp from one source and a message from another is two
     // facts pretending to be one.
-    let last = relativeTime(showable.created_at);
+    let lastAt: string = showable.created_at;
+    let last = relativeTime(lastAt);
     let last_message: string;
     if (showable.public === true && showable.payload?.commits?.length) {
       last_message = firstLine(showable.payload.commits[0].message);
@@ -300,7 +330,7 @@ async function fetchGitHub(
           // deliberate: a rebase rewrites the committer date and the wall would
           // report work as newer than it is.
           const when = commits?.[0]?.commit?.author?.date;
-          if (when && !Number.isNaN(new Date(when).getTime())) last = relativeTime(when);
+          if (when && !Number.isNaN(new Date(when).getTime())) { lastAt = when; last = relativeTime(when); }
         }
       } catch { /* fall back to masked label */ }
       last_message = msg || 'winterscode · main';
@@ -318,14 +348,27 @@ async function fetchGitHub(
     if (/davis|keeli|gernandt|bandonhomes|bandonrealtee|\bbarry\b|\bjodie\b|seabreeze|\bstacy\b/i.test(last_message)) {
       last_message = 'client build · main';
     }
+    // S339: the clock is the newest push to ANY repo, private ones included,
+    // because the wall's line is "since last push" and the caption is how
+    // often I push to the sites and apps I run. Keying it to winterscode's
+    // main branch read "8d ago" on a day with dozens of client pushes. The
+    // subject above still never leaves the server.
+    // The authenticated feed mixes private and public events out of time
+    // order (a 10-20 private push sat above 10-22 public ones), so take the
+    // newest timestamp, not the first row.
+    lastAt = pushEvents.reduce((m, e) => (e.created_at > m ? e.created_at : m), pushEvents[0].created_at);
+    last = relativeTime(lastAt);
     // 30-day rolling count of push events
     // cutoffMs already defined above for pagination
     const recent = pushEvents.filter(e => new Date(e.created_at).getTime() > cutoffMs);
     const uniqueRepos = new Set(recent.map(e => e.repo?.name).filter(Boolean));
     const result: WorkshopData['deploys'] = {
       last,
-      count_30d: Math.max(recent.length, FALLBACK.deploys.count_30d), // floor to fallback
-      repo_count: Math.max(uniqueRepos.size, FALLBACK.deploys.repo_count),
+      last_at: lastAt,
+      // S339: a live read reports what it counted; flooring it to the
+      // fallback could overstate a quiet month.
+      count_30d: recent.length,
+      repo_count: uniqueRepos.size,
       source: 'live',
     };
     // Cache successful github result so timeouts don't flip the wall to
@@ -351,13 +394,22 @@ async function fetchPSI(
   // KV cache: PSI runs take 10-30s, well outside per-request budget.
   // Read cached value if present (12h TTL); if absent/stale, fall back
   // and let a background refresh (ctx.waitUntil) populate KV for next hit.
-  const CACHE_KEY = 'workshop:psi:v3';
+  const CACHE_KEY = 'workshop:psi:v5';
   const CACHE_TTL = 60 * 60 * 12;
 
   if (kv && !skipCache) {
     try {
       const cached = await kv.get<WorkshopData['lighthouse']>(CACHE_KEY, 'json');
-      if (cached) return { ...cached, source: 'cached' };
+      // 'measured' was stored as "just now", which stayed "just now" for the
+      // whole 12h cache life. Age it from the stored audit time instead.
+      if (cached) {
+        const at = cached.measured_at ? new Date(cached.measured_at).getTime() : NaN;
+        return {
+          ...cached,
+          measured: Number.isNaN(at) ? 'within 12 hours' : relativeTime(cached.measured_at as string),
+          source: 'cached',
+        };
+      }
     } catch { /* KV read failure non-fatal, proceed to live attempt */ }
   }
 
@@ -416,7 +468,7 @@ async function fetchPSI(
   // Measure the canonical www directly. The old PSI Lighthouse-500 on www is
   // resolved (verified May 2026, www PSI ~96). Measuring the bare apex paid the
   // 301 to www redirect penalty (~92 vs ~96 on www); www matches the sogn entry.
-  const [wc, sogn, baseline, bbtd, seabreeze, golf, taylor] = await Promise.all([
+  const [wc, sogn, baseline, bbtd, seabreeze, golf, taylor, makai, jen] = await Promise.all([
     auditSite('https://winterscode.com', FALLBACK.lighthouse.winterscode),
     auditSite('https://www.sogncontracting.com', FALLBACK.lighthouse.sogn),
     auditSite('https://www.baseline.marketing', FALLBACK.lighthouse.baseline),
@@ -426,6 +478,10 @@ async function fetchPSI(
     // Added 2026-09-11 at the cutover. The apex is canonical here: it serves the
     // build directly and does not redirect, so there is no www penalty to dodge.
     auditSite('https://ussurveysupply.com', FALLBACK.lighthouse.taylor),
+    // S339: Makai's apex 301s to www, so www is measured, as with Sogn.
+    auditSite('https://www.makaipainting.com', FALLBACK.lighthouse.makai),
+    // S339: South Coast Cuisine serves the apex; www 301s to it.
+    auditSite('https://southcoastcuisine.net', FALLBACK.lighthouse.jen),
   ]);
   // Source flag is 'live' if any site returned non-fallback data.
   // UI shows "live · partial" when not all 3 succeeded.
@@ -436,7 +492,9 @@ async function fetchPSI(
     JSON.stringify(bbtd) !== JSON.stringify(FALLBACK.lighthouse.bbtd) ||
     JSON.stringify(seabreeze) !== JSON.stringify(FALLBACK.lighthouse.seabreeze) ||
     JSON.stringify(golf) !== JSON.stringify(FALLBACK.lighthouse.golf) ||
-    JSON.stringify(taylor) !== JSON.stringify(FALLBACK.lighthouse.taylor);
+    JSON.stringify(taylor) !== JSON.stringify(FALLBACK.lighthouse.taylor) ||
+    JSON.stringify(makai) !== JSON.stringify(FALLBACK.lighthouse.makai) ||
+    JSON.stringify(jen) !== JSON.stringify(FALLBACK.lighthouse.jen);
 
   // Rolling-best display. Keep the last N live runs per site in KV and show the
   // element-wise best-of-N per category, so a single cold/throttled PSI run (or
@@ -458,8 +516,8 @@ async function fetchPSI(
     };
     return [pick(0), pick(1), pick(2), pick(3)];
   };
-  let hist: { winterscode: Quad[]; sogn: Quad[]; baseline: Quad[]; bbtd: Quad[]; seabreeze: Quad[]; golf: Quad[]; taylor: Quad[] } =
-    { winterscode: [], sogn: [], baseline: [], bbtd: [], seabreeze: [], golf: [], taylor: [] };
+  let hist: { winterscode: Quad[]; sogn: Quad[]; baseline: Quad[]; bbtd: Quad[]; seabreeze: Quad[]; golf: Quad[]; taylor: Quad[]; makai?: Quad[]; jen?: Quad[] } =
+    { winterscode: [], sogn: [], baseline: [], bbtd: [], seabreeze: [], golf: [], taylor: [], makai: [], jen: [] };
   if (kv) {
     try { const h = await kv.get<typeof hist>(HIST_KEY, 'json'); if (h) hist = h; } catch { /* non-fatal */ }
   }
@@ -474,6 +532,8 @@ async function fetchPSI(
     seabreeze: roll(hist.seabreeze, seabreeze, FALLBACK.lighthouse.seabreeze),
     golf: roll(hist.golf, golf, FALLBACK.lighthouse.golf),
     taylor: roll(hist.taylor ?? [], taylor, FALLBACK.lighthouse.taylor),
+    makai: roll(hist.makai ?? [], makai, FALLBACK.lighthouse.makai),
+    jen: roll(hist.jen ?? [], jen, FALLBACK.lighthouse.jen),
   };
   if (kv && isLive) {
     try { await kv.put(HIST_KEY, JSON.stringify(hist), { expirationTtl: HIST_TTL }); } catch { /* non-fatal */ }
@@ -487,7 +547,10 @@ async function fetchPSI(
     seabreeze: aggregate(hist.seabreeze, seabreeze),
     golf: aggregate(hist.golf, golf),
     taylor: aggregate(hist.taylor ?? [], taylor),
+    makai: aggregate(hist.makai ?? [], makai),
+    jen: aggregate(hist.jen ?? [], jen),
     measured: 'just now',
+    measured_at: new Date().toISOString(),
     source: isLive ? 'live' : 'fallback',
   };
 
@@ -508,7 +571,7 @@ async function fetchObservatory(kv?: KVNamespace): Promise<WorkshopData['securit
   // KV cache: 6h TTL, 30min refresh. Grades FIVE hosts (per-site rows on the
   // wall + each /work card). The cached object holds all five grades; if the
   // API is down we serve the cached object as 'cached'. Grades change rarely.
-  const CACHE_KEY = 'workshop:obs:v3'; // v3 (2026-09-11): seventh site, taylor
+  const CACHE_KEY = 'workshop:obs:v5'; // v5 (2026-10-22): ninth site, jen. v4: makai. v3: taylor
   const CACHE_TTL = 60 * 60 * 6;
   let lastCached: (WorkshopData['security'] & { _cachedAt?: number }) | undefined;
   let cacheAgeSec = Infinity;
@@ -537,6 +600,8 @@ async function fetchObservatory(kv?: KVNamespace): Promise<WorkshopData['securit
     seabreeze:   'seabreeze.llc',
     golf:        'professorsgolf.com',
     taylor:      'ussurveysupply.com',
+    makai:       'www.makaipainting.com',
+    jen:         'southcoastcuisine.net',
   };
   const analyze = async (
     host: string,
@@ -753,13 +818,14 @@ async function refreshPSIBackground(
   // had the mapping, the cache simply had no row to give it. Changing the shape
   // means changing the key. HIST_KEY stays at v2 on purpose so the other six
   // keep their rolling history; the reader already tolerates a missing entry.
-  const CACHE_KEY = 'workshop:psi:v3';
+  // v4 (2026-10-22, S339): eighth site, makai; v5 the same day: ninth, jen.
+  const CACHE_KEY = 'workshop:psi:v5';
   const CACHE_TTL = 60 * 60 * 12;
   // Throttle: every pageview schedules this refresher, and a live run is 4 PSI
   // calls (one per site). Without a gate that is 4 calls per visitor, which is
   // what drained the daily quota. Run a live refresh at most once every 30 min;
   // the 12h cache serves every request in between.
-  const GATE_KEY = 'workshop:psi:lastrun:v3';
+  const GATE_KEY = 'workshop:psi:lastrun:v5';
   try {
     const last = await kv.get(GATE_KEY);
     if (last && Date.now() - Number(last) < 30 * 60 * 1000) return;
