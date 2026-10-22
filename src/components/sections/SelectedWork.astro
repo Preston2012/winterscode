@@ -1,6 +1,7 @@
 ---
 import { v } from '../../lib/asset';
 import PaintPour from '../ui/PaintPour.astro';
+import CardMotion from '../ui/CardMotion.astro';
 /**
  * Selected Work (homepage teaser), 3 cards, deep-linked to /work.
  *
@@ -46,6 +47,8 @@ interface WorkCard {
   published?: boolean;
   /** S339: pour wet paint off the top of the card art (PaintPour). Makai only. */
   pour?: boolean;
+  /** S339: one signature movement from the client's own mark (CardMotion). */
+  motion?: 'lighthouse' | 'flag' | 'breeze';
   /** Optional hero image (overrides editorial glyph). */
   image?: {
     src: string;
@@ -91,6 +94,7 @@ const CARDS: WorkCard[] = [
     build: 'rebuild',
     built_in_days: 7,
     external_url: 'https://seabreeze.llc',
+    motion: 'breeze',
     image: {
       src: '/work/seabreeze-card.webp',
       srcSmall: '/work/seabreeze-card-720.webp',
@@ -112,6 +116,7 @@ const CARDS: WorkCard[] = [
     // Published 2026-09-11 (S230) at the cutover. The apex serves this build.
     published: true,
     external_url: 'https://ussurveysupply.com',
+    motion: 'flag',
     image: {
       src: '/work/taylor-card.webp',
       srcSmall: '/work/taylor-card-720.webp',
@@ -157,6 +162,7 @@ const CARDS: WorkCard[] = [
     build: 'rebuild',
     built_in_days: 18,
     external_url: 'https://www.bandonbythedunesrealtee.net',
+    motion: 'lighthouse',
     image: {
       src: '/work/bbtd-card.webp',
       srcSmall: '/work/bbtd-card-720.webp',
@@ -318,6 +324,7 @@ const HOME_SITES = HOME_ORDER
               <span class="sw-mark">{card.title.charAt(0)}</span>
             )}
             {card.pour && <PaintPour />}
+            {card.motion && <CardMotion kind={card.motion} />}
           </div>
           <div class="sw-meta">
             <div class="sw-title-row">
@@ -543,13 +550,17 @@ const HOME_SITES = HOME_ORDER
     }
     .sw-card-wrap:first-child { grid-column: auto; }
   }
-  /* Four sites: two by two on tablet, one row of four on desktop, so no
-     card sits alone in a row (S339). */
+  /* Four sites: two by two from tablet up, so no card sits alone in a row
+     and a name never breaks mid-word (four across squeezed titles to
+     "Paintin g" at 1440, S339). The art keeps its own 1200x630 shape
+     at every width, so a narrow column never crops a name off a card. */
+  .selected-grid--n4 .sw-card { grid-template-rows: auto 1fr; }
+  .selected-grid--n4 .sw-preview { aspect-ratio: 1200 / 630; }
   @media (min-width: 740px) {
     .selected-grid--n4 .sw-card-wrap:first-child { grid-column: auto; }
   }
   @media (min-width: 1024px) {
-    .selected-grid--n4 { grid-template-columns: repeat(4, 1fr); gap: 20px; }
+    .selected-grid--n4 { grid-template-columns: 1fr 1fr; gap: 24px; }
   }
 
 
