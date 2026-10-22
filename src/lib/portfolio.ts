@@ -147,7 +147,7 @@ export const portfolio: PortfolioItem[] = [
     meta: 'makaipainting.com · painting + residential rehab · 5-day build',
     tags: ['ASTRO', 'CLOUDFLARE', 'TURNSTILE'],
     status: 'live',
-    build: 'rebuild',
+    build: 'new',
     order: 2,
     image: {
       src: '/work/makai-card.webp',
@@ -161,7 +161,7 @@ export const portfolio: PortfolioItem[] = [
       {
         label: 'Scope',
         value:
-          'Rebuild of a WordPress site for a Coos Bay painting and residential-rehab company: 20 pages, twelve of them service pages, an estimate request form that reaches the office inbox, and the company\u2019s own job photos. Every one of the old site\u2019s 65 addresses lands on its new page in one redirect.',
+          'New site for a Coos Bay painting and residential-rehab company, built in place of a coming-soon page: 20 pages, twelve of them service pages, an estimate request form that reaches the office inbox, and the company\u2019s own job photos. Every one of the 65 addresses the old domain still listed lands on its new page in one redirect.',
       },
       {
         label: 'Result',
@@ -335,12 +335,13 @@ export const portfolio: PortfolioItem[] = [
   },
   {
     // S339, Preston 2026-10-22: Jen's site joins /work, last of the sites.
+    // Build time per Preston: about 2 days, 3 with the client editor; 3 shown.
     // Facts from the wc-jen RUNBOOK and git log and the live site.
     slug: 'south-coast-cuisine',
     numeral: 'vii.',
     name: 'South Coast Cuisine',
     category: 'site',
-    meta: 'southcoastcuisine.net · private chef · single page',
+    meta: 'southcoastcuisine.net · private chef · 3-day build',
     tags: ['ASTRO', 'CLOUDFLARE', 'CLIENT EDITOR'],
     status: 'live',
     build: 'new',

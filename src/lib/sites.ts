@@ -51,9 +51,10 @@ export const SITES: MeasuredSite[] = [
   {
     // S339: South Coast Cuisine, live since 2026-09-22 on the apex (www 301s
     // to it). Fallbacks measured 2026-10-22: Lighthouse lab run and a direct
-    // Observatory scan. No builtDays on record, so it stays off recent builds.
+    // Observatory scan. builtDays 3, per Preston 2026-10-22: about two days,
+    // three with the client editor; the larger figure is the one shown.
     key: 'jen', label: 'southcoastcuisine', name: 'South Coast Cuisine',
-    href: 'https://southcoastcuisine.net', portfolioSlug: 'south-coast-cuisine',
+    href: 'https://southcoastcuisine.net', portfolioSlug: 'south-coast-cuisine', builtDays: 3,
     published: true, lhFallback: [97, 100, 100, 100], secFallback: { grade: 'A+', score: 140 },
   },
   {
