@@ -208,7 +208,7 @@ const navItems = [
   @media (min-width: 1024px) {
     .topnav-links {
       display: flex;
-      gap: 24px;
+      gap: 18px;
       align-items: center;
       flex: 1;
       justify-content: center;
@@ -231,7 +231,7 @@ const navItems = [
       justify-content: center;
       min-height: 44px;
       min-width: 44px;
-      padding: 0;
+      padding: 0 4px;
     }
     @media (hover: hover) {
 
@@ -240,8 +240,8 @@ const navItems = [
       content: "";
       position: absolute;
       bottom: 10px;
-      left: 0;
-      right: 0;
+      left: 4px;
+      right: 4px;
       height: 1px;
       background: var(--color-wc-green);
       transform: scaleX(0);
@@ -256,7 +256,7 @@ const navItems = [
   /* 1024 to 1279: brand, pill, nav and the Text button need about 950px and
      the bar has 944, so the nav gap tightens here instead of a word breaking. */
   @media (min-width: 1024px) and (max-width: 1279.98px) {
-    .topnav-links { gap: 6px; }
+    .topnav-links { gap: 2px; }
   }
 
   /* Contact cluster (S326 Text-first): tablet and desktop. Phones use TextBar. */
