@@ -43,6 +43,7 @@ interface WorkshopData {
     golf:        [number, number, number, number];
     taylor:      [number, number, number, number];
     measured: string; // "8m ago"
+    measured_at?: string; // ISO time of the audit, so a cached read ages honestly
     source: 'live' | 'fallback';
   };
   security: {
@@ -242,7 +243,8 @@ async function fetchGitHub(
       if (m) iso = new Date(c._cachedAt - Number(m[1]) * UNIT[m[2]] * 1000).toISOString();
     }
     const t = iso ? new Date(iso).getTime() : NaN;
-    return { ...c, last: Number.isNaN(t) ? 'unknown' : relativeTime(iso as string), ...(iso ? { last_at: iso } : {}) };
+    const { last_message: _drop, ...pub } = c as typeof c & { last_message?: string };
+    return { ...pub, last: Number.isNaN(t) ? 'unknown' : relativeTime(iso as string), ...(iso ? { last_at: iso } : {}) };
   };
   if (lastCached && cacheAgeSec < REFRESH_AFTER_SEC) {
     return { ...aged(lastCached), source: 'live' as const };
@@ -375,7 +377,16 @@ async function fetchPSI(
   if (kv && !skipCache) {
     try {
       const cached = await kv.get<WorkshopData['lighthouse']>(CACHE_KEY, 'json');
-      if (cached) return { ...cached, source: 'cached' };
+      // 'measured' was stored as "just now", which stayed "just now" for the
+      // whole 12h cache life. Age it from the stored audit time instead.
+      if (cached) {
+        const at = cached.measured_at ? new Date(cached.measured_at).getTime() : NaN;
+        return {
+          ...cached,
+          measured: Number.isNaN(at) ? 'within 12 hours' : relativeTime(cached.measured_at as string),
+          source: 'cached',
+        };
+      }
     } catch { /* KV read failure non-fatal, proceed to live attempt */ }
   }
 
@@ -506,6 +517,7 @@ async function fetchPSI(
     golf: aggregate(hist.golf, golf),
     taylor: aggregate(hist.taylor ?? [], taylor),
     measured: 'just now',
+    measured_at: new Date().toISOString(),
     source: isLive ? 'live' : 'fallback',
   };
 
