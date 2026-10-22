@@ -5,7 +5,7 @@ import { breadcrumbSchema } from '../lib/schema';
 import { smsHref, phoneDisplay } from '../lib/text-cta';
 const sms = smsHref(Astro.url.pathname);
 
-const lastUpdated = '2026-10-05';
+const lastUpdated = '2026-10-22';
 ---
 
 <BaseLayout
@@ -82,7 +82,9 @@ const lastUpdated = '2026-10-05';
 
       <h2 class="h2 legal-h2">Third parties I rely on</h2>
       <p>
-        Cloudflare hosts the site and DNS, checks forms for spam and counts page views. Supabase or similar managed backends
+        Cloudflare hosts the site and DNS, checks forms for spam and counts page views. If you choose to pay an invoice online,
+        Stripe takes the card or bank payment, and your card details never touch my servers.
+        Supabase or similar managed backends
         run client apps when contracted. Google and Mozilla score the sites people run through
         the audit. Each one has its own privacy policy.
       </p>
