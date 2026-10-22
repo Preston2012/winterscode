@@ -128,8 +128,9 @@ const workLd = {
 
     <ul class="wk-grid wk-grid-sites" role="list">
       {sites.map((p) => (
-        <li class="wk-card-wrap" role="listitem" id={p.slug}>
+        <li class="wk-card-wrap" role="listitem">
           <article
+            id={p.slug}
             class="wk-card wk-card-site"
             data-slug={p.slug}
             data-status={p.status}
@@ -233,8 +234,9 @@ const workLd = {
 
     <ul class="wk-grid wk-grid-apps" role="list">
       {apps.map((p) => (
-        <li class="wk-card-wrap" role="listitem" id={p.slug}>
+        <li class="wk-card-wrap" role="listitem">
           <article
+            id={p.slug}
             class="wk-card"
             data-slug={p.slug}
             data-status={p.status}
@@ -382,8 +384,8 @@ const workLd = {
 
     <ul class="wk-grid wk-grid-apps" role="list">
       {brand.map((p) => (
-        <li class="wk-card-wrap" role="listitem" id={p.slug}>
-          <article class="wk-card" data-slug={p.slug} data-status={p.status} data-fit="whole">
+        <li class="wk-card-wrap" role="listitem">
+          <article id={p.slug} class="wk-card" data-slug={p.slug} data-status={p.status} data-fit="whole">
             <div class="wk-preview">
               {p.image && (
                 <a class="wk-preview-link" href={(p.links.find((l) => l.primary) ?? p.links[0])?.href} aria-label="Logo and brand design">
@@ -588,6 +590,7 @@ const workLd = {
         if (lh.sogn) fill('sogn-contracting', lh.sogn);
         if (lh.seabreeze) fill('seabreeze', lh.seabreeze);
         if (lh.taylor) fill('us-survey-supply', lh.taylor);
+        if (lh.makai) fill('makai-painting', lh.makai);
         if (lh.golf) fill('professors-golf', lh.golf);
 
         // ----- per-site security grade (Mozilla Observatory)
@@ -599,6 +602,7 @@ const workLd = {
             'sogn-contracting': 'sogn',
             'seabreeze': 'seabreeze',
             'us-survey-supply': 'taylor',
+            'makai-painting': 'makai',
             'professors-golf': 'golf',
           };
           for (const slug in SEC_MAP) {
@@ -758,7 +762,10 @@ const workLd = {
     .wk-grid-sites { grid-template-columns: 1fr 1fr; gap: 24px; }
   }
 
+  /* display: contents leaves the li with no box, so a #slug link could not
+     scroll to it; the id lives on the article (S339). */
   .wk-card-wrap { display: contents; }
+  .wk-card { scroll-margin-top: 96px; }
 
   /* Card */
   .wk-card {

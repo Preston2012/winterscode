@@ -136,6 +136,47 @@ export const portfolio: PortfolioItem[] = [
     ],
   },
   {
+    // S339, Preston: Makai joins /work, the homepage and the wall. Facts from
+    // the wc-makai RUNBOOK and the live site, 2026-10-22. No build-time figure
+    // until Preston gives one.
+    slug: 'makai-painting',
+    numeral: 'vi.',
+    name: 'Makai Painting',
+    category: 'site',
+    meta: 'makaipainting.com · painting + residential rehab · 20 pages',
+    tags: ['ASTRO', 'CLOUDFLARE', 'TURNSTILE'],
+    status: 'live',
+    build: 'rebuild',
+    order: 4,
+    image: {
+      src: '/work/makai-card.webp',
+      srcSmall: '/work/makai-card-720.webp',
+      srcXSmall: '/work/makai-card-480.webp',
+      alt: 'Makai Painting and Residential Rehab, Coos Bay, Oregon: the pink hibiscus logo over the words Interior, Exterior, Repairs and Hauling on gold, pink and white brush strokes, beside a freshly painted blue room with ladders and drop cloths.',
+      width: 1200,
+      height: 630,
+    },
+    details: [
+      {
+        label: 'Scope',
+        value:
+          'Rebuild of a WordPress site for a Coos Bay painting and residential-rehab company: 20 pages, twelve of them service pages, an estimate request form that reaches the office inbox, and the company\u2019s own job photos. Every one of the old site\u2019s 65 addresses lands on its new page in one redirect.',
+      },
+      {
+        label: 'Result',
+        value:
+          'Live on its own domain since 2026-10-19, on the client\u2019s own Cloudflare account. The home and services pages paint themselves in as you scroll and show the finished page at once with reduced motion. Lighthouse and the security grade are measured live on the wall.',
+      },
+      {
+        label: 'Stack',
+        value: 'Astro · Cloudflare Pages · Pages Functions estimate form with Turnstile · canvas paint-in, no framework runtime',
+      },
+    ],
+    links: [
+      { label: 'Visit site →', href: 'https://www.makaipainting.com', primary: true },
+    ],
+  },
+  {
     slug: 'bandon-by-the-dunes',
     caseStudy: '/work/bandon-by-the-dunes',
     numeral: 'ii.',

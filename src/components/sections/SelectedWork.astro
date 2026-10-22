@@ -1,5 +1,6 @@
 ---
 import { v } from '../../lib/asset';
+import PaintPour from '../ui/PaintPour.astro';
 /**
  * Selected Work (homepage teaser), 3 cards, deep-linked to /work.
  *
@@ -43,6 +44,8 @@ interface WorkCard {
   caseStudy?: string;
   /** False keeps the card off the homepage until the site's own domain is live. */
   published?: boolean;
+  /** S339: pour wet paint off the top of the card art (PaintPour). Makai only. */
+  pour?: boolean;
   /** Optional hero image (overrides editorial glyph). */
   image?: {
     src: string;
@@ -118,6 +121,29 @@ const CARDS: WorkCard[] = [
     built_in_days: 8,
   },
   {
+    // S339, Preston: Makai joins the homepage below US Survey Supply. Live on
+    // its own domain since 2026-10-19. No case page yet, so the card opens its
+    // /work entry, which carries the Text action and the live scores. No
+    // built-in-days chip until Preston gives the build time (sites.ts rule).
+    id: 'makai-painting',
+    kind: 'site',
+    title: 'Makai Painting',
+    desc: 'Rebuild for a Coos Bay painting company, with pages that paint themselves in as you scroll.',
+    stack: ['Astro', 'Cloudflare'],
+    status: 'LIVE',
+    build: 'rebuild',
+    external_url: 'https://www.makaipainting.com',
+    pour: true,
+    image: {
+      src: '/work/makai-card.webp',
+      srcSmall: '/work/makai-card-720.webp',
+      srcXSmall: '/work/makai-card-480.webp',
+      alt: 'Makai Painting and Residential Rehab, Coos Bay, Oregon: the pink hibiscus logo over the words Interior, Exterior, Repairs and Hauling on gold, pink and white brush strokes, beside a freshly painted blue room with ladders and drop cloths.',
+      width: 1200,
+      height: 630,
+    },
+  },
+  {
     id: 'bandon-by-the-dunes',
     caseStudy: '/work/bandon-by-the-dunes',
     kind: 'site',
@@ -141,6 +167,9 @@ const CARDS: WorkCard[] = [
     id: 'professors-golf',
     caseStudy: '/work/professors-golf',
     kind: 'site',
+    // S339, Preston: off the homepage to make room for Makai. Stays on /work
+    // with its case page.
+    published: false,
     title: 'Professors Golf',
     desc: 'Site for a Bandon golf service: fitting, instruction, tee times, events.',
     stack: ['Astro', 'Cloudflare'],
@@ -247,9 +276,9 @@ const CARDS: WorkCard[] = [
     {CARDS.filter((card) => card.published !== false && card.kind === 'site').map((card) => (
       <li class="sw-card-wrap" role="listitem">
         <a
-          href={card.caseStudy ?? card.external_url ?? `/work#${card.id}`}
-          target={!card.caseStudy && card.external_url ? '_blank' : undefined}
-          rel={!card.caseStudy && card.external_url ? 'noopener' : undefined}
+          href={card.caseStudy ?? (card.pour ? `/work#${card.id}` : card.external_url) ?? `/work#${card.id}`}
+          target={!card.caseStudy && !card.pour && card.external_url ? '_blank' : undefined}
+          rel={!card.caseStudy && !card.pour && card.external_url ? 'noopener' : undefined}
           class="sw-card"
           data-slug={card.id}
         >
@@ -276,6 +305,7 @@ const CARDS: WorkCard[] = [
             ) : (
               <span class="sw-mark">{card.title.charAt(0)}</span>
             )}
+            {card.pour && <PaintPour />}
           </div>
           <div class="sw-meta">
             <div class="sw-title-row">
@@ -304,9 +334,9 @@ const CARDS: WorkCard[] = [
     {CARDS.filter((card) => card.published !== false && card.kind === 'app').map((card) => (
       <li class="sw-card-wrap" role="listitem">
         <a
-          href={card.caseStudy ?? card.external_url ?? `/work#${card.id}`}
-          target={!card.caseStudy && card.external_url ? '_blank' : undefined}
-          rel={!card.caseStudy && card.external_url ? 'noopener' : undefined}
+          href={card.caseStudy ?? (card.pour ? `/work#${card.id}` : card.external_url) ?? `/work#${card.id}`}
+          target={!card.caseStudy && !card.pour && card.external_url ? '_blank' : undefined}
+          rel={!card.caseStudy && !card.pour && card.external_url ? 'noopener' : undefined}
           class="sw-card"
           data-slug={card.id}
         >

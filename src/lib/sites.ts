@@ -19,7 +19,7 @@
  * Fallbacks are the last real reads, dated, used only when the API is down.
  * Refreshed 2026-10-22 (S339) from /api/workshop: PSI mobile median, Observatory live.
  */
-export type SiteKey = 'taylor' | 'seabreeze' | 'bbtd' | 'golf' | 'sogn' | 'baseline' | 'winterscode';
+export type SiteKey = 'makai' | 'taylor' | 'seabreeze' | 'bbtd' | 'golf' | 'sogn' | 'baseline' | 'winterscode';
 export type Quad = [number, number, number, number];
 
 export interface MeasuredSite {
@@ -38,6 +38,16 @@ export interface MeasuredSite {
 }
 
 export const SITES: MeasuredSite[] = [
+  {
+    // S339: newest client, live on www since 2026-10-19 (the apex 301s to www,
+    // so www is the measured host, as with Sogn and Bandon). Fallbacks measured
+    // 2026-10-22: Lighthouse mobile lab run on the homepage (the playbook's
+    // lighthouse-run, not PSI) and a direct Observatory scan. No builtDays
+    // until Preston gives the build time, so it stays off recent builds.
+    key: 'makai', label: 'makaipainting', name: 'Makai Painting',
+    href: 'https://www.makaipainting.com', portfolioSlug: 'makai-painting',
+    published: true, lhFallback: [93, 100, 100, 100], secFallback: { grade: 'A+', score: 125 },
+  },
   {
     // Cutover done 2026-09-11 (S230): the apex serves this build.
     key: 'taylor', label: 'ussurveysupply', name: 'US Survey Supply',
