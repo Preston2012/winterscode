@@ -224,7 +224,14 @@ const navItems = [
       cursor: pointer;
       transition: color 200ms;
       position: relative;
-      padding: 8px 0;
+      /* S339: a 44px target on every width a finger can reach, iPad
+         landscape included. The box grows; the word does not move. */
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      min-width: 44px;
+      padding: 0;
     }
     @media (hover: hover) {
 
@@ -232,7 +239,7 @@ const navItems = [
     .topnav-links a::after {
       content: "";
       position: absolute;
-      bottom: 0;
+      bottom: 10px;
       left: 0;
       right: 0;
       height: 1px;
@@ -249,7 +256,7 @@ const navItems = [
   /* 1024 to 1279: brand, pill, nav and the Text button need about 950px and
      the bar has 944, so the nav gap tightens here instead of a word breaking. */
   @media (min-width: 1024px) and (max-width: 1279.98px) {
-    .topnav-links { gap: 14px; }
+    .topnav-links { gap: 6px; }
   }
 
   /* Contact cluster (S326 Text-first): tablet and desktop. Phones use TextBar. */
