@@ -348,6 +348,13 @@ async function fetchGitHub(
     if (/davis|keeli|gernandt|bandonhomes|bandonrealtee|\bbarry\b|\bjodie\b|seabreeze|\bstacy\b/i.test(last_message)) {
       last_message = 'client build · main';
     }
+    // S339: the clock is the newest push to ANY repo, private ones included,
+    // because the wall's line is "since last push" and the caption is how
+    // often I push to the sites and apps I run. Keying it to winterscode's
+    // main branch read "8d ago" on a day with dozens of client pushes. The
+    // subject above still never leaves the server.
+    lastAt = pushEvents[0].created_at;
+    last = relativeTime(lastAt);
     // 30-day rolling count of push events
     // cutoffMs already defined above for pagination
     const recent = pushEvents.filter(e => new Date(e.created_at).getTime() > cutoffMs);
