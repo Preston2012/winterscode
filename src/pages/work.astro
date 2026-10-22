@@ -33,7 +33,7 @@ import MobileMenu from '../components/layout/MobileMenu.astro';
 import PageHero from '../components/sections/PageHero.astro';
 import Divider from '../components/ui/Divider.astro';
 import Contact from '../components/sections/Contact.astro';
-import { sites, apps, brand } from '../lib/portfolio.ts';
+import { sites, apps, brand, portfolio } from '../lib/portfolio.ts';
 import { SITES, fmtGrade } from '../lib/sites.ts';
 import { smsAboutHref } from '../lib/text-cta';
 import Explainer from '../components/ui/Explainer.astro';
@@ -61,12 +61,15 @@ const visitOf = (p: { links: { label: string; href: string; primary?: boolean }[
 // ItemList over the real published portfolio. Position follows the order the
 // page renders, and each entry points at its case study when it has one, so
 // the list and the internal links on the cards agree.
+// S326 moved Preston's own product sites under Apps (ownProduct). They keep
+// their place in the list, after the apps that link to them (S339).
+const ownSites = portfolio.filter((p) => p.ownProduct && p.published !== false);
 const workLd = {
   '@context': 'https://schema.org',
   '@type': 'ItemList',
   name: 'Sites, apps and brand work built by Winters Code',
-  numberOfItems: sites.length + apps.length + brand.length,
-  itemListElement: [...sites, ...apps, ...brand].map((p, i) => ({
+  numberOfItems: sites.length + apps.length + ownSites.length + brand.length,
+  itemListElement: [...sites, ...apps, ...ownSites, ...brand].map((p, i) => ({
     '@type': 'ListItem',
     position: i + 1,
     item: {
@@ -102,14 +105,12 @@ const workLd = {
   <nav class="wk-index" aria-label="On this page">
     <p class="wk-index-k">On this page</p>
     <ol>
-      <li><span class="wk-ix-num">01</span><span class="wk-ix-name">Sites</span><span class="wk-ix-meta">Live Lighthouse</span></li>
-      <li><span class="wk-ix-num">02</span><span class="wk-ix-name">Mobile apps</span><span class="wk-ix-meta">iOS &amp; Android</span></li>
-      <li><span class="wk-ix-num">03</span><span class="wk-ix-name">Branding</span><span class="wk-ix-meta">logos and brand marks</span></li>
-      <li><span class="wk-ix-num">04</span><span class="wk-ix-name">How I work</span><span class="wk-ix-meta">Days, not weeks</span></li>
+      <li><a href="#wk-sites-h"><span class="wk-ix-num">01</span><span class="wk-ix-name">Sites</span><span class="wk-ix-meta">live Lighthouse</span></a></li>
+      <li><a href="#wk-apps-h"><span class="wk-ix-num">02</span><span class="wk-ix-name">Mobile apps</span><span class="wk-ix-meta">iOS &amp; Android</span></a></li>
+      <li><a href="#wk-brand-h"><span class="wk-ix-num">03</span><span class="wk-ix-name">Branding</span><span class="wk-ix-meta">logos and marks</span></a></li>
+      <li><a href="#wk-process-h"><span class="wk-ix-num">04</span><span class="wk-ix-name">How I work</span><span class="wk-ix-meta">text, quote, build</span></a></li>
     </ol>
   </nav>
-
-  <Divider label="01" />
 
   <!-- SITES GRID with live Lighthouse -->
   <section class="wk-section" aria-labelledby="wk-sites-h">
@@ -313,7 +314,7 @@ const workLd = {
                 </a>
               )}
               {p.relatedCase && (
-                <a class="wk-quiet wk-related" href={p.relatedCase.href}>{p.relatedCase.label}</a>
+                <a class="wk-quiet wk-related" id={p.relatedCase.href.split('/').pop()} href={p.relatedCase.href}>{p.relatedCase.label}</a>
               )}
               <button
                 type="button"
@@ -474,8 +475,8 @@ const workLd = {
         <div class="wk-step-body">
           <h3 class="wk-step-h">SOW + 50%</h3>
           <p class="wk-step-p">
-            Statement of work locks scope. 50% deposit clears. Work
-            starts the same week.
+            Statement of work locks scope and the start date. Work
+            begins once the 50% deposit clears.
           </p>
           <p class="wk-step-time">Fixed price. Standard contract.</p>
         </div>
@@ -635,17 +636,24 @@ const workLd = {
   /* NEW: orientation contents (/work top rework) */
   .wk-index { padding: 0 4px; margin: 28px 0 8px; border-top: 1px solid var(--copper-hairline); }
   .wk-index-k { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--color-copper); font-weight: 600; margin: 14px 0 6px; }
-  .wk-index ol { list-style: none; margin: 0; padding: 0; }
-  .wk-index li { display: grid; grid-template-columns: 30px 1fr auto; align-items: baseline; gap: 12px; padding: 11px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
-  .wk-index li:last-child { border-bottom: 0; }
+  /* S339: two columns on phones so the first project shows sooner, four on
+     desktop so the last item never wraps to a row of its own. Each item is a
+     real link to its section, 44px or taller. */
+  .wk-index ol { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 0 14px; }
+  .wk-index li { border-bottom: 1px solid rgba(255,255,255,0.05); }
+  .wk-index a { display: grid; grid-template-columns: 26px 1fr; align-items: baseline; column-gap: 8px; min-height: 44px; padding: 9px 0; text-decoration: none; color: inherit; }
+  .wk-index a .wk-ix-meta { grid-column: 2; text-align: left; }
+  .wk-index a:focus-visible { outline: 2px solid var(--color-wc-green); outline-offset: 2px; }
+  @media (hover: hover) { .wk-index a:hover .wk-ix-name { color: var(--color-wc-green); } }
   .wk-ix-num { font-family: var(--font-mono); font-size: 12px; font-weight: 600; color: var(--color-copper-bright); letter-spacing: 0.04em; }
   .wk-ix-name { font-family: var(--font-serif); font-size: 18px; font-weight: 500; color: var(--color-ash-100); line-height: 1.15; }
   .wk-ix-meta { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.04em; color: var(--color-ash-500); text-align: right; white-space: nowrap; }
   @media (min-width: 740px) { .wk-ix-name { font-size: 20px; } }
   @media (min-width: 1024px) {
-    .wk-index ol { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0 28px; }
-    .wk-index li { border-bottom: 0; border-left: 1px solid rgba(255,255,255,0.07); padding: 4px 0 4px 16px; display: block; }
+    .wk-index ol { grid-template-columns: repeat(4, 1fr); gap: 0 28px; }
+    .wk-index li { border-bottom: 0; border-left: 1px solid rgba(255,255,255,0.07); padding: 4px 0 4px 16px; }
     .wk-index li:first-child { border-left: 0; padding-left: 0; }
+    .wk-index a { display: block; }
     .wk-ix-num { display: block; margin-bottom: 6px; }
     .wk-ix-name { display: block; font-size: 21px; }
     .wk-ix-meta { display: block; text-align: left; margin-top: 4px; }

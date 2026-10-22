@@ -123,8 +123,8 @@ const CARDS: WorkCard[] = [
   {
     // S339, Preston: Makai joins the homepage below US Survey Supply. Live on
     // its own domain since 2026-10-19. No case page yet, so the card opens its
-    // /work entry, which carries the Text action and the live scores. No
-    // built-in-days chip until Preston gives the build time (sites.ts rule).
+    // /work entry, which carries the Text action and the live scores. Five
+    // business days, per Preston: signed 10-13, live on her go email 10-19.
     id: 'makai-painting',
     kind: 'site',
     title: 'Makai Painting',
@@ -133,6 +133,7 @@ const CARDS: WorkCard[] = [
     status: 'LIVE',
     build: 'rebuild',
     external_url: 'https://www.makaipainting.com',
+    built_in_days: 5,
     pour: true,
     image: {
       src: '/work/makai-card.webp',

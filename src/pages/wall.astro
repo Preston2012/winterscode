@@ -70,6 +70,16 @@ const engine = initialData?.engine ?? { memories: 0, added_last_7d: 0, uptime_30
 const calendar = initialData?.calendar ?? { next: '.', source: 'fallback' };
 const speed = initialData?.speed ?? { last_three: '.', source: 'fallback' };
 
+// S339: the page is built once and read for days, so a relative age baked at
+// build time ("1h ago", "measured just now") goes stale the moment it ships.
+// The first paint carries the stored time as a date, or says it has none; the
+// client script swaps in the live relative age.
+const asOf = (iso?: string): string =>
+  iso && !Number.isNaN(Date.parse(iso))
+    ? 'as of ' + new Date(iso).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', timeZone: 'America/Los_Angeles' }) + ' PT'
+    : '(time unavailable)';
+const lhMeasuredFirstPaint = asOf(lighthouse.measured_at);
+
 // LH average (P/A/SEO/BP). easier to scan at a glance
 function avg(arr: number[]): number {
   if (!arr.length) return 0;
@@ -179,7 +189,7 @@ const updatedAt = initialData?.updated_at ?? new Date().toISOString();
       <p class="wall-cap">How often I push changes to the sites and apps I run. A number that keeps moving means the shop is working.</p>
       <div class="wall-mod-body">
         <div class="wall-stat-big">
-          <span class="wall-stat-num" data-deploys-last>{deploys.last}</span>
+          <span class="wall-stat-num" data-deploys-last>{'\u00b7'}</span>
           <span class="wall-stat-label">since last push</span>
         </div>
         <div class="wall-stat-grid">
@@ -226,7 +236,7 @@ const updatedAt = initialData?.updated_at ?? new Date().toISOString();
             ))}
           </tbody>
         </table>
-        <p class="wall-mod-detail">Mobile · measured <span data-lh-measured>{lighthouse.measured}</span> · desktop typically 2-5 points higher</p>
+        <p class="wall-mod-detail">Mobile · measured <span data-lh-measured>{lhMeasuredFirstPaint}</span> · desktop typically 2-5 points higher</p>
       </div>
     </article>
 

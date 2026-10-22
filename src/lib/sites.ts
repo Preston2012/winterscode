@@ -42,10 +42,10 @@ export const SITES: MeasuredSite[] = [
     // S339: newest client, live on www since 2026-10-19 (the apex 301s to www,
     // so www is the measured host, as with Sogn and Bandon). Fallbacks measured
     // 2026-10-22: Lighthouse mobile lab run on the homepage (the playbook's
-    // lighthouse-run, not PSI) and a direct Observatory scan. No builtDays
-    // until Preston gives the build time, so it stays off recent builds.
+    // lighthouse-run, not PSI) and a direct Observatory scan. builtDays 5, per
+    // Preston 2026-10-22: signed Tue 10-13, live on her go email Mon 10-19.
     key: 'makai', label: 'makaipainting', name: 'Makai Painting',
-    href: 'https://www.makaipainting.com', portfolioSlug: 'makai-painting',
+    href: 'https://www.makaipainting.com', portfolioSlug: 'makai-painting', builtDays: 5,
     published: true, lhFallback: [93, 100, 100, 100], secFallback: { grade: 'A+', score: 125 },
   },
   {

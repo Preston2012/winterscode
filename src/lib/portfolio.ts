@@ -137,13 +137,13 @@ export const portfolio: PortfolioItem[] = [
   },
   {
     // S339, Preston: Makai joins /work, the homepage and the wall. Facts from
-    // the wc-makai RUNBOOK and the live site, 2026-10-22. No build-time figure
-    // until Preston gives one.
+    // the wc-makai RUNBOOK and the live site, 2026-10-22. Five business days,
+    // per Preston: signed 10-13, live on her go email 10-19.
     slug: 'makai-painting',
     numeral: 'vi.',
     name: 'Makai Painting',
     category: 'site',
-    meta: 'makaipainting.com · painting + residential rehab · 20 pages',
+    meta: 'makaipainting.com · painting + residential rehab · 5-day build',
     tags: ['ASTRO', 'CLOUDFLARE', 'TURNSTILE'],
     status: 'live',
     build: 'rebuild',
