@@ -453,6 +453,9 @@ const navItems = [
         const data = await r.json();
         const last = data && data.deploys && data.deploys.last;
         if (typeof last !== 'string' || !last.length) return;
+        // Only a live feed earns the header. A cached read is real but old,
+        // and the pill has no room to say so; the wall shows it with its badge.
+        if (data.deploys.source !== 'live') return;
         // Trim the trailing " ago" to keep the pill tight; API returns
         // strings like "3m ago" / "2h ago" / "5d ago".
         const tight = last.replace(/\s*ago\s*$/i, '');

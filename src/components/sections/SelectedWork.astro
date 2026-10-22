@@ -142,7 +142,7 @@ const CARDS: WorkCard[] = [
     caseStudy: '/work/professors-golf',
     kind: 'site',
     title: 'Professors Golf',
-    desc: 'One-page site for a Bandon golf service: fitting, instruction, tee times.',
+    desc: 'Site for a Bandon golf service: fitting, instruction, tee times, events.',
     stack: ['Astro', 'Cloudflare'],
     status: 'LIVE',
     build: 'new',
@@ -182,6 +182,9 @@ const CARDS: WorkCard[] = [
   {
     id: 'demiurge-mykonos',
     kind: 'app',
+    // S339: off the homepage. The DNA keeps owned products to the Wall, Work
+    // Apps and the app and AI service pages, never the home proof grid.
+    published: false,
     title: 'Demiurge + MyKonos',
     desc: 'Memory engine powering the MyKonos AI companion.',
     stack: ['Demiurge', 'Flutter'],
@@ -291,6 +294,7 @@ const CARDS: WorkCard[] = [
     ))}
   </ul>
 
+  {CARDS.some((c) => c.published !== false && c.kind === 'app') && <>
   <div class="sw-group-head">
     <span class="line" aria-hidden="true"></span>
     <h3 class="sw-group-label">Apps &amp; software</h3>
@@ -346,6 +350,7 @@ const CARDS: WorkCard[] = [
       </li>
     ))}
   </ul>
+  </>}
 
   <!--
     BRAND BAND, S234. The S230 attempt put brand work in the teaser CARD,

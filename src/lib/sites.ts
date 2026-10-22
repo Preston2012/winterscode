@@ -17,6 +17,7 @@
  * site
  * without one stays off the recent-builds list rather than carry a guess.
  * Fallbacks are the last real reads, dated, used only when the API is down.
+ * Refreshed 2026-10-22 (S339) from /api/workshop: PSI mobile median, Observatory live.
  */
 export type SiteKey = 'taylor' | 'seabreeze' | 'bbtd' | 'golf' | 'sogn' | 'baseline' | 'winterscode';
 export type Quad = [number, number, number, number];
@@ -47,18 +48,18 @@ export const SITES: MeasuredSite[] = [
     // direct scan. Neither is copied from the staging host or from an older
     // record. The worker also measures this site live now, so these stand in
     // only when the API is down.
-    lhFallback: [99, 100, 100, 100],
-    secFallback: { grade: 'A+', score: 140 },
+    lhFallback: [97, 100, 100, 100],
+    secFallback: { grade: 'A+', score: 135 },
   },
   {
     key: 'seabreeze', label: 'seabreeze', name: 'SeaBreeze Landscape Care and Home Repair',
     href: 'https://seabreeze.llc', portfolioSlug: 'seabreeze', builtDays: 7,
-    published: true, lhFallback: [98, 100, 100, 100], secFallback: { grade: 'A+', score: 115 },
+    published: true, lhFallback: [95, 100, 100, 100], secFallback: { grade: 'A+', score: 125 },
   },
   {
     key: 'bbtd', label: 'bandon', name: 'Bandon By The Dunes Realtee',
     href: 'https://www.bandonbythedunesrealtee.net', portfolioSlug: 'bandon-by-the-dunes', builtDays: 18,
-    published: true, lhFallback: [97, 100, 100, 100], secFallback: { grade: 'A+', score: 130 },
+    published: true, lhFallback: [93, 100, 100, 100], secFallback: { grade: 'A+', score: 135 },
   },
   {
     // PSI 2026-09-05 after the contrast pass. One business day, per Preston.
@@ -69,17 +70,17 @@ export const SITES: MeasuredSite[] = [
   {
     key: 'sogn', label: 'sogn', name: 'Sogn Contracting',
     href: 'https://www.sogncontracting.com', portfolioSlug: 'sogn-contracting', builtDays: 3,
-    published: true, lhFallback: [99, 100, 100, 100], secFallback: { grade: 'A+', score: 115 },
+    published: true, lhFallback: [96, 100, 100, 100], secFallback: { grade: 'A+', score: 125 },
   },
   {
     key: 'baseline', label: 'baseline', name: 'Baseline Marketing',
     href: 'https://www.baseline.marketing', portfolioSlug: 'baseline-marketing',
-    published: true, lhFallback: [99, 100, 100, 100], secFallback: { grade: 'A+', score: 115 },
+    published: true, lhFallback: [95, 100, 100, 100], secFallback: { grade: 'A+', score: 125 },
   },
   {
     key: 'winterscode', label: 'winterscode', name: 'Winters Code',
     href: 'https://winterscode.com',
-    published: true, lhFallback: [94, 100, 100, 100], secFallback: { grade: 'A+', score: 115 },
+    published: true, lhFallback: [96, 97, 100, 100], secFallback: { grade: 'A+', score: 125 },
   },
 ];
 

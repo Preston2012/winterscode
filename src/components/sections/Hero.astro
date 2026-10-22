@@ -73,11 +73,11 @@ const TRUST_TIPS = {
   price:
     'Most local business sites start at $1,750 flat, with the pages, the words, real photos, branding, and top Google scores included. One number, everything in. Bigger jobs cost more and I say so up front. The price I quote is the price you pay.',
   speed:
-    'Site builds start at 3 business days, counted from the day I have what the build needs, and a bigger site gets its timeline in the quote. App builds run 2 to 4 weeks for an MVP, 4 to 8 weeks for a full build. Compare to 6 to 8 weeks just for a site at most agencies.',
+    'Site builds start at 3 business days, counted from the day I have what the build needs, and a bigger site gets its timeline in the quote. App builds run 2 to 4 weeks for an MVP, 4 to 8 weeks for a full build.',
   lighthouse:
     'Google\'s Lighthouse scores any website 0 to 100 on speed, accessibility, search readiness, and best practices. 100 is perfect. Most small-business sites score 50 to 70. Mine sit around a 95 average across every page (some checks dip a few points on heavy interactive pages, but the rolling average holds). Scores shown are mobile (the harder test). Desktop usually runs 2 to 5 points higher.',
   security:
-    'Every site I build carries strict browser security headers: the settings that tell a browser what a page may load and who may frame it. Mozilla Observatory grades those headers. It is a header check, not a full security test. Every grade is measured live on the wall, including the one that is not an A-plus.',
+    'Every site I build carries strict browser security headers: the settings that tell a browser what a page may load and who may frame it. Mozilla Observatory grades those headers. It is a header check, not a full security test. Every grade is measured live on the wall.',
 };
 
 // Live from the shop. Values here are what paints before /api/workshop
@@ -85,7 +85,7 @@ const TRUST_TIPS = {
 // a slow month (the Wall curation rule), never a frozen live number. The
 // script below swaps in the live value by data-key, never by position.
 const WORKSHOP_PREVIEW = [
-  { key: 'deploys', glyph: '⚡', label: 'DEPLOYS', value: '100+ in past 30 days', cap: 'Changes I pushed live to the sites I run' },
+  { key: 'deploys', glyph: '⚡', label: 'DEPLOYS', value: '', cap: 'Changes I pushed live to the sites I run' },
   { key: 'lighthouse', glyph: '▲', label: 'LIGHTHOUSE', value: '~95 avg, mobile', cap: "Google's own test of this site, out of 100" },
   { key: 'security', glyph: '⬢', label: 'SECURITY', value: 'A+', cap: "Mozilla Observatory's grade for this site's security headers" },
 ];
@@ -170,7 +170,7 @@ const WORKSHOP_PREVIEW = [
     </div>
     <ul class="wp-rows">
       {WORKSHOP_PREVIEW.map((row) => (
-        <li class="wp-row" data-key={row.key}>
+        <li class="wp-row" data-key={row.key} hidden={row.key === 'deploys'}>
           <span class="wp-glyph" aria-hidden="true">{row.glyph}</span>
           <span class="wp-label">{row.label}</span>
           <span class="wp-value">{row.value}</span>
@@ -327,8 +327,12 @@ const WORKSHOP_PREVIEW = [
         var got = 0;
         // A cached deploy count is a past 30-day window, not this one, so it
         // only replaces the static floor when the feed itself is live.
-        if (d.deploys && d.deploys.source === 'live' && typeof d.deploys.count_30d === 'number' && d.deploys.count_30d > 0)
-          got += wpSet('deploys', d.deploys.count_30d + ' in past 30 days') ? 1 : 0;
+        // The deploys row starts hidden and appears only with a live count,
+        // so the card never states a deploy number it cannot back (S339).
+        if (d.deploys && d.deploys.source === 'live' && typeof d.deploys.count_30d === 'number' && d.deploys.count_30d > 0) {
+          var dr = document.querySelector('.wp-row[data-key="deploys"]');
+          if (wpSet('deploys', d.deploys.count_30d + ' in past 30 days')) { got += 1; if (dr) dr.hidden = false; }
+        }
         if (d.lighthouse && Array.isArray(d.lighthouse.winterscode) && d.lighthouse.winterscode.length === 4)
           got += wpSet('lighthouse', d.lighthouse.winterscode.join(' / ')) ? 1 : 0;
         if (d.security && d.security.grade)
@@ -796,6 +800,7 @@ const WORKSHOP_PREVIEW = [
   @media (hover: hover) {
     .wp-link:hover { color: var(--color-wc-green); }
   }
+  .wp-row[hidden] { display: none; }
   .wp-rows {
     list-style: none;
     padding: 0;

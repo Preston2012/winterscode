@@ -201,11 +201,11 @@ export const towns: TownEntry[] = [
         note: 'Lawyers, accountants, agencies, and trades serving the regional hub compete on trust. A website that loads fast and looks like the real thing closes that trust gap before the first call.',
       },
     ],
-    context:
-      'Coos Bay is the largest city on the Oregon coast, around 16,000 people, and the commercial hub of the south coast. It is home to the deep-water port, Bay Area Hospital, Southwestern Oregon Community College, and the Highway 101 retail corridor, and its top employers run from the hospital and Walmart to The Mill Casino and Pacific Seafood.',
+    // S339: the DNA cuts the Coos Bay scene essay; the industries below carry the local facts.
+    context: '',
     localAngle: {
       heading: 'Why website design matters in Coos Bay',
-      body: 'Coos Bay is the one market on the coast big enough to have real local-search competition. In a small town you can rank by default. Here, a clinic, shop, or contractor is fighting a dozen others for the same query, and most of them are renting slow template websites. That is the opening: speed, clean structure, and security are a low bar in this market, and clearing it puts you ahead of competitors who never did the work.',
+      body: 'In a small town you can rank by default. Here, a clinic, shop, or contractor is fighting a dozen others for the same query, and most of them are renting slow template websites. That is the opening: speed, clean structure, and security are a low bar in this market, and clearing it puts you ahead of competitors who never did the work.',
     },
     localScene: {
       heading: 'The business scene in Coos Bay',
@@ -213,7 +213,7 @@ export const towns: TownEntry[] = [
         'The commercial core runs along Highway 101 through downtown, with the Coos History Museum and the boardwalk on the waterfront and the broader retail strip stretching toward the Pony Village area in neighboring North Bend. Bay Area Hospital anchors a whole cluster of clinics and practices, Southwestern Oregon Community College brings steady foot traffic, and the port and Coos Bay Rail Line anchor the industrial side. Charleston, just west, adds the working marina and seafood trade. It is the one place on the south coast where multiple businesses chase the same search, which is exactly why being the fast, well-built option pays here when it would not matter in a smaller town.',
     },
     auditNote:
-      'I audited 169 Coos County small-business websites with Google Lighthouse and Mozilla Observatory. Not one site scored both fast and secure, and the best security grade in the county was a B. The free audit runs the same tests on your site in about a minute.',
+      'I audited 169 Coos County small-business websites with Google Lighthouse and Mozilla Observatory. Not one earned an A for security; the best grade in the county was a B. The free audit runs the same tests on your site in about a minute.',
     faq: [
       {
         q: 'Do you work with Coos Bay businesses in person?',
@@ -345,15 +345,15 @@ export const towns: TownEntry[] = [
       },
       {
         name: 'Art galleries and retail',
-        note: 'Second Street Gallery and the Old Town shops sell on character. A site should carry that character, not flatten it into a template every other gallery is also renting.',
+        note: 'Galleries and Old Town shops sell on character. A site should carry that character, not flatten it into a template every other gallery is also renting.',
       },
       {
         name: 'Cranberry agriculture',
-        note: 'Bandon grows about 95 percent of Oregon\u2019s cranberries. Growers and the businesses built around the harvest need straightforward, durable sites more than they need anything flashy.',
+        note: 'Cranberry growers and the businesses built around the harvest need straightforward, durable sites more than they need anything flashy.',
       },
     ],
     context:
-      'The local economy runs on tourism, Bandon Dunes golf, lodging, cranberries, and the restaurants and galleries that serve them. Tourism employs roughly a third of the town, and the ten square blocks of Old Town are where most of that money changes hands. Most weeks I am within walking distance of all of it.',
+      'The local economy runs on tourism, Bandon Dunes golf, lodging, cranberries, and the restaurants and galleries that serve them. Most weeks I am within walking distance of all of it.',
     localAngle: {
       heading: 'Why it matters in Bandon',
       body: 'Bandon punches above its size online because the visitors are global but the businesses are small. A golfer booking a room or a couple picking a dinner spot is searching on a phone, often from the resort or the road, and they decide in seconds. The shops that win those seconds are not the ones with the prettiest logo, they are the ones whose site loads fast and answers the question. That is a low bar most local sites still miss, which is exactly the opening.',
@@ -372,7 +372,7 @@ export const towns: TownEntry[] = [
       },
       {
         q: 'Have you built for a Bandon business before?',
-        a: 'Yes. Sogn Contracting, a 30-year Bandon contractor, is live with a custom site I built in three days that averages 95+ on Lighthouse. That is real, indexed, local work you can go look at.',
+        a: 'Yes. Sogn Contracting, a 30-year Bandon contractor, is live with a custom site I built in three days that averages 95+ on Lighthouse. SeaBreeze, Bandon By The Dunes, US Survey Supply and Professors Golf are Bandon businesses too, and their sites are live as well. That is real, indexed, local work you can go look at.',
       },
       {
         q: 'My business is seasonal. Does a custom site still make sense?',

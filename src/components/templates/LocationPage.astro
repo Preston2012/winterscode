@@ -144,7 +144,7 @@ const faqLd = town.faq.length ? faqSchema(town.faq) : null;
   <!-- Lead + real local context -->
   <section class="loc-intro" aria-label={`About ${town.name}`}>
     {intro.map((p) => <p class="loc-lead" set:html={p} />)}
-    <p class="loc-context" set:html={town.context} />
+    {town.context && <p class="loc-context" set:html={town.context} />}
   </section>
 
   <Divider label="02" />
@@ -198,7 +198,7 @@ const faqLd = town.faq.length ? faqSchema(town.faq) : null;
           <p class="loc-audit-p">
             I audited <strong>169 Coos County small-business websites</strong> with Google
             Lighthouse and Mozilla Observatory. The average mobile speed score was
-            <strong> 61 out of 100</strong> among those Lighthouse could score, and not one site scored both fast and secure.
+            <strong> 61 out of 100</strong> among those Lighthouse could score, and not one site earned an A for security.
             More than half are rented from a template platform and pay for it in speed.
           </p>
         )}

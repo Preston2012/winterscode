@@ -25,7 +25,7 @@ const articleLd = {
   '@type': 'Article',
   headline,
   description:
-    'An audit of 169 Coos County small-business websites with Google Lighthouse and Mozilla Observatory. Not one was both fast and secure.',
+    'An audit of 169 Coos County small-business websites with Google Lighthouse and Mozilla Observatory. Not one earned an A for security; the best grade was a B.',
   url: absUrl(path),
   datePublished: published,
   dateModified: published,
@@ -38,7 +38,7 @@ const articleLd = {
 
 <BaseLayout
   title="The Coos County Website Audit · Winters Code"
-  description="I measured 169 Coos County small-business websites with Lighthouse and Mozilla Observatory. Not one was both fast and secure. The best grade was a B."
+  description="I measured 169 Coos County small-business websites with Lighthouse and Mozilla Observatory. Not one earned an A for security; the best was a B."
   canonicalPath={path}
 >
   <Fragment slot="head">
@@ -72,10 +72,10 @@ const articleLd = {
       which grades security. Here is what came back.
     </p>
 
-    <h2 class="ins-h">The headline number: zero</h2>
+    <h2 class="ins-h">The headline number: no A grades</h2>
     <p>
-      Not one of the 169 sites earned an A from Mozilla Observatory, so
-      <strong>not a single one was both fast and secure.</strong> Of the 96 that
+      <strong>Not one of the 169 sites earned an A from Mozilla Observatory.</strong>
+      Of the 96 that
       Lighthouse could score for speed, 11 reached 90 or better on mobile. Speed
       and security are the two things that are both measurable and fixable, and
       every business in the sample was missing at least one.

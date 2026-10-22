@@ -473,7 +473,7 @@ export const portfolio: PortfolioItem[] = [
     details: [
       {
         label: 'Stack',
-        value: 'Demiurge memory engine (custom, 2,500+ memories and growing) · Flutter app · BYOK Anthropic',
+        value: 'Demiurge memory engine (custom, live count on the wall) · Flutter app · BYOK Anthropic',
       },
       {
         label: 'Scope',

@@ -83,7 +83,8 @@ interface WorkshopData {
 // sees when GitHub/PSI/Observatory/Cal.com is unreachable.
 const FALLBACK: WorkshopData = {
   deploys: {
-    last: '4m ago',
+    // S339: no invented recency. A fallback never knows the last push.
+    last: 'unknown',
     count_30d: 30,
     repo_count: 4,
     source: 'fallback',
@@ -344,8 +345,10 @@ async function fetchGitHub(
     const result: WorkshopData['deploys'] = {
       last,
       last_at: lastAt,
-      count_30d: Math.max(recent.length, FALLBACK.deploys.count_30d), // floor to fallback
-      repo_count: Math.max(uniqueRepos.size, FALLBACK.deploys.repo_count),
+      // S339: a live read reports what it counted; flooring it to the
+      // fallback could overstate a quiet month.
+      count_30d: recent.length,
+      repo_count: uniqueRepos.size,
       source: 'live',
     };
     // Cache successful github result so timeouts don't flip the wall to
