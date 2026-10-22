@@ -353,7 +353,10 @@ async function fetchGitHub(
     // often I push to the sites and apps I run. Keying it to winterscode's
     // main branch read "8d ago" on a day with dozens of client pushes. The
     // subject above still never leaves the server.
-    lastAt = pushEvents[0].created_at;
+    // The authenticated feed mixes private and public events out of time
+    // order (a 10-20 private push sat above 10-22 public ones), so take the
+    // newest timestamp, not the first row.
+    lastAt = pushEvents.reduce((m, e) => (e.created_at > m ? e.created_at : m), pushEvents[0].created_at);
     last = relativeTime(lastAt);
     // 30-day rolling count of push events
     // cutoffMs already defined above for pagination
