@@ -325,7 +325,9 @@ const WORKSHOP_PREVIEW = [
           return !!(el && text);
         }
         var got = 0;
-        if (d.deploys && typeof d.deploys.count_30d === 'number' && d.deploys.count_30d > 0)
+        // A cached deploy count is a past 30-day window, not this one, so it
+        // only replaces the static floor when the feed itself is live.
+        if (d.deploys && d.deploys.source === 'live' && typeof d.deploys.count_30d === 'number' && d.deploys.count_30d > 0)
           got += wpSet('deploys', d.deploys.count_30d + ' in past 30 days') ? 1 : 0;
         if (d.lighthouse && Array.isArray(d.lighthouse.winterscode) && d.lighthouse.winterscode.length === 4)
           got += wpSet('lighthouse', d.lighthouse.winterscode.join(' / ')) ? 1 : 0;

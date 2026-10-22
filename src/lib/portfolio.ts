@@ -238,7 +238,7 @@ export const portfolio: PortfolioItem[] = [
       {
         label: 'Scope',
         value:
-          'Site for a Bandon golf service, built in one business day: homepage plus the VIP Mexico Open events page. Club fitting, PGA-certified instruction, caddy referrals, local tee times and all-inclusive golf trips, with a click-to-call header and a sharecard built for the group text.',
+          'Site for a Bandon golf service, first version built in one business day: a homepage plus an events page. Club fitting, PGA-certified instruction, caddy referrals, local tee times and all-inclusive golf trips, with a click-to-call header and a sharecard built for the group text.',
       },
       {
         label: 'Result',

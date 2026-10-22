@@ -2,6 +2,10 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Breadcrumbs from '../../components/ui/Breadcrumbs.astro';
 import { breadcrumbSchema } from '../../lib/schema';
+import { smsBase } from '../../lib/text-cta';
+
+// Every sms link carries the +1 number and a prefill (S339, the sitewide sms rule).
+const sms = smsBase + encodeURIComponent("Hi Preston, I need help with Chere': ");
 
 const lastUpdated = '2026-10-14';
 const crumbs = [
@@ -32,7 +36,7 @@ const crumbs = [
 
     <div class="legal-body">
       <p class="legal-lead">
-        Text <a href="sms:5415510731">541-551-0731</a> or email
+        Text <a href={sms}>541-551-0731</a> or email
         <a href="mailto:preston@winterscode.com">preston@winterscode.com</a>. Tell me what you
         were doing and what you saw. A screenshot helps.
       </p>

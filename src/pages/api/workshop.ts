@@ -29,6 +29,7 @@ import { env as cfEnv } from 'cloudflare:workers';
 interface WorkshopData {
   deploys: {
     last: string;          // "4m ago" | "2h ago" | "3d ago"
+    last_at?: string;      // ISO time of that push, so a cached read recomputes 'last'
     count_30d: number;
     repo_count: number;
     source: 'live' | 'fallback';
@@ -228,11 +229,26 @@ async function fetchGitHub(
   // /api/workshop request hits GitHub, which exhausts quota in hours under
   // moderate traffic. Refresh cache only when older than REFRESH_AFTER_SEC.
   const REFRESH_AFTER_SEC = 5 * 60; // 5 minutes
+  // A cached 'last' string froze at whatever it said when it was written, so
+  // a month-old cache still read "1h ago" on the wall (S339). Recompute it from
+  // the stored push time; an entry without one says nothing rather than lie.
+  // Entries written before last_at existed are rebuilt from the write time
+  // minus the relative string they stored, which is exact to its unit.
+  const UNIT: Record<string, number> = { s: 1, m: 60, h: 3600, d: 86400 };
+  const aged = (c: WorkshopData['deploys'] & { _cachedAt?: number }): WorkshopData['deploys'] => {
+    let iso = c.last_at;
+    if (!iso && c._cachedAt) {
+      const m = /^(\d+)([smhd]) ago$/.exec(c.last || '');
+      if (m) iso = new Date(c._cachedAt - Number(m[1]) * UNIT[m[2]] * 1000).toISOString();
+    }
+    const t = iso ? new Date(iso).getTime() : NaN;
+    return { ...c, last: Number.isNaN(t) ? 'unknown' : relativeTime(iso as string), ...(iso ? { last_at: iso } : {}) };
+  };
   if (lastCached && cacheAgeSec < REFRESH_AFTER_SEC) {
-    return { ...lastCached, source: 'live' as const };
+    return { ...aged(lastCached), source: 'live' as const };
   }
   const cachedOrFallback = (): WorkshopData['deploys'] =>
-    lastCached ? { ...lastCached, source: 'cached' as const } : FALLBACK.deploys;
+    lastCached ? { ...aged(lastCached), source: 'cached' as const } : FALLBACK.deploys;
   try {
     // Paginate up to 3 pages (300 events) to capture the full 30-day window.
     // Single page (100 events) maxes out fast at ~50 in our use case.
@@ -283,7 +299,8 @@ async function fetchGitHub(
     // with "2d ago since last push", which Preston caught on the live wall
     // 2026-09-10. A timestamp from one source and a message from another is two
     // facts pretending to be one.
-    let last = relativeTime(showable.created_at);
+    let lastAt: string = showable.created_at;
+    let last = relativeTime(lastAt);
     let last_message: string;
     if (showable.public === true && showable.payload?.commits?.length) {
       last_message = firstLine(showable.payload.commits[0].message);
@@ -300,7 +317,7 @@ async function fetchGitHub(
           // deliberate: a rebase rewrites the committer date and the wall would
           // report work as newer than it is.
           const when = commits?.[0]?.commit?.author?.date;
-          if (when && !Number.isNaN(new Date(when).getTime())) last = relativeTime(when);
+          if (when && !Number.isNaN(new Date(when).getTime())) { lastAt = when; last = relativeTime(when); }
         }
       } catch { /* fall back to masked label */ }
       last_message = msg || 'winterscode · main';
@@ -324,6 +341,7 @@ async function fetchGitHub(
     const uniqueRepos = new Set(recent.map(e => e.repo?.name).filter(Boolean));
     const result: WorkshopData['deploys'] = {
       last,
+      last_at: lastAt,
       count_30d: Math.max(recent.length, FALLBACK.deploys.count_30d), // floor to fallback
       repo_count: Math.max(uniqueRepos.size, FALLBACK.deploys.repo_count),
       source: 'live',

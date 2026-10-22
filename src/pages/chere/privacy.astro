@@ -2,6 +2,10 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Breadcrumbs from '../../components/ui/Breadcrumbs.astro';
 import { breadcrumbSchema } from '../../lib/schema';
+import { smsBase } from '../../lib/text-cta';
+
+// Every sms link carries the +1 number and a prefill (S339, the sitewide sms rule).
+const sms = smsBase + encodeURIComponent("Hi Preston, a question about Chere' and my data: ");
 
 const lastUpdated = '2026-10-14';
 const crumbs = [
@@ -221,7 +225,7 @@ const crumbs = [
       <h2 class="h2 legal-h2">Questions</h2>
       <p>
         Email <a href="mailto:preston@winterscode.com">preston@winterscode.com</a> or text
-        <a href="sms:5415510731">541-551-0731</a>. For help with the app itself, see
+        <a href={sms}>541-551-0731</a>. For help with the app itself, see
         <a href="/chere/support">Chere' support</a>.
       </p>
     </div>
