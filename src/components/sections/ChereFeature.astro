@@ -1,0 +1,445 @@
+---
+/**
+ * Chere' feature (S339, Preston 2026-10-22): the contractor app leads the
+ * Apps group on the homepage and on /work, above every other app, with the
+ * demo-night video.
+ *
+ * One component, two placements. The facts (name, meta, tags, links) come
+ * from the portfolio entry so the two pages cannot drift; the sentences
+ * differ on purpose, because the homepage makes the offer to someone who just
+ * landed and /work describes it to someone already reading the portfolio.
+ *
+ * Copy rule from the brain: claim only what Chere' does today. No pricing
+ * (the beta has none to state), no Stripe or QuickBooks (flagged off), no
+ * "only app that" lines. The proof line is Preston's own, from the closing
+ * card of the video.
+ *
+ * Video. 92.6 s, 1280x720, VP9/Opus WebM first and H.264/AAC MP4 second
+ * (Chromium builds without H.264 take the WebM), with its music, and
+ * preload="none", so the page pays for the poster and nothing else until a
+ * tap. Served through /media/[file], which answers byte ranges;
+ * the static asset layer does not, and iPhone Safari needs them. The poster is a <picture> (AVIF, WebP, three widths) under the video
+ * rather than the poster attribute, which takes one URL for every screen.
+ * Without JS the native controls sit on top of that picture and play works.
+ * With JS the controls step aside for one large play button until the first
+ * tap, and the video pauses when it scrolls out of view. Music only, no
+ * speech, and every word on screen is burned in, so there is no caption track
+ * to carry.
+ */
+import { v } from '../../lib/asset';
+import { portfolio } from '../../lib/portfolio';
+import { smsBase, publicPath, phoneDisplay } from '../../lib/text-cta';
+
+export interface Props {
+  variant: 'home' | 'work';
+}
+const { variant } = Astro.props;
+
+const p = portfolio.find((x) => x.slug === 'chere')!;
+const path = publicPath(Astro.url.pathname);
+const where = path === '/' ? 'winterscode.com' : `winterscode.com${path}`;
+const sms = `${smsBase}${encodeURIComponent(`Hi Preston, saw Chere' at ${where}. I'd like beta access for my business: `)}`;
+const headingId = `chere-h-${variant}`;
+// The bytes are the public asset; the URL is the range-answering route
+// (src/pages/media/chere-demo.mp4.ts), carrying that asset's content hash.
+const mediaUrl = (file: string) => {
+  const ver = v(`/work/${file}`).split('?')[1];
+  return `/media/${file}${ver ? `?${ver}` : ''}`;
+};
+---
+
+<article
+  id={variant === 'work' ? 'chere' : undefined}
+  class={`chf chf--${variant}`}
+  data-slug="chere"
+  aria-labelledby={headingId}
+>
+  <div class="chf-media">
+    <img class="chf-ambient" src={v('/work/chere-poster-480.webp')} alt="" aria-hidden="true" width="480" height="270" loading="lazy" decoding="async" />
+    <div class="chf-player" data-chf>
+      <picture class="chf-poster" aria-hidden="true">
+        <source type="image/avif" srcset={`${v('/work/chere-poster-480.avif')} 480w, ${v('/work/chere-poster-720.avif')} 720w, ${v('/work/chere-poster-1280.avif')} 1280w`} sizes="(min-width: 900px) 560px, 100vw" />
+        <source type="image/webp" srcset={`${v('/work/chere-poster-480.webp')} 480w, ${v('/work/chere-poster-720.webp')} 720w, ${v('/work/chere-poster-1280.webp')} 1280w`} sizes="(min-width: 900px) 560px, 100vw" />
+        <img src={v('/work/chere-poster-720.webp')} alt="" width="1280" height="720" loading="lazy" decoding="async" />
+      </picture>
+      <video
+        class="chf-video"
+        controls
+        playsinline
+        preload="none"
+        width="1280"
+        height="720"
+        aria-label="Chere' demo video, 1 minute 32 seconds, with music. A kitchen photo becomes three design options, a priced estimate, and a before and after the customer sees."
+      >
+        <source src={mediaUrl('chere-demo.webm')} type="video/webm" />
+        <source src={mediaUrl('chere-demo.mp4')} type="video/mp4" />
+      </video>
+      <button type="button" class="chf-play" hidden>
+        <span class="chf-play-disc" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="26" height="26"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor" /></svg>
+        </span>
+        <span class="chf-play-label">Watch the demo <span class="chf-dot" aria-hidden="true">·</span> 1:32 <span class="chf-dot" aria-hidden="true">·</span> sound on<span class="sr-only">, the Chere' video</span></span>
+      </button>
+    </div>
+  </div>
+
+  <div class="chf-body">
+    <div class="chf-chips">
+      <span class="chf-chip chf-chip-beta">{p.status.toUpperCase()}</span>
+      <span class="chf-chip chf-chip-new">NEW BUILD</span>
+      <span class="chf-kicker">for contractors</span>
+    </div>
+
+    {variant === 'work'
+      ? <h3 class="chf-name" id={headingId}>{p.name}</h3>
+      : <h4 class="chf-name" id={headingId}>{p.name}</h4>}
+    <p class="chf-tagline">A back office for one-truck contractors.</p>
+
+    {variant === 'work' ? (
+      <p class="chf-copy">
+        Snap the room and say what's changing. Chere' draws three options from the
+        photo and prices the job from the one your customer picks. Every measurement
+        it read off the picture is marked for you to check, and nothing goes to the
+        customer until you say yes. They see the before and after, accept from a
+        link, and the deposit invoice goes out through Square.
+      </p>
+    ) : (
+      <p class="chf-copy">
+        Photo to priced bid to deposit, from the truck. Chere' draws the options from
+        a picture of the room, prices the one your customer picks, and holds every
+        number it measured for your check before anything goes out.
+      </p>
+    )}
+
+    <p class="chf-proof">
+      <span class="chf-proof-mark" aria-hidden="true"></span>
+      <span>It runs the office at SeaBreeze. <b>A bid that took two of us a full day now takes about an hour.</b></span>
+    </p>
+
+    {variant === 'work' && (
+      <div class="chf-tags" role="list">
+        {p.tags.map((t) => <span class="chf-tag" role="listitem">{t}</span>)}
+      </div>
+    )}
+
+    <div class="chf-cta" data-textbar-hide>
+      <a class="btn btn-primary chf-btn" href={sms}>
+        <span>In beta. Text me for access</span>
+        <span class="chf-num">{phoneDisplay}</span>
+      </a>
+      {variant === 'home'
+        ? <a class="chf-link" href="/work#chere">More on Chere' →</a>
+        : <>
+            <a class="chf-link" href="/chere/support">Beta help</a>
+            <a class="chf-link" href="/chere/privacy">Privacy</a>
+          </>}
+    </div>
+
+    {variant === 'work' && (
+      <p class="chf-name-note">Named for my grandmother, who kept the family's books.</p>
+    )}
+  </div>
+</article>
+
+<style>
+  .chf {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    background: var(--color-bg-card);
+    border: 1px solid var(--copper-hairline);
+    border-radius: var(--radius-card);
+    overflow: hidden;
+    scroll-margin-top: 96px;
+  }
+  @media (min-width: 900px) {
+    .chf { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); }
+  }
+
+  /* Media: the 16:9 player sits centred on a field the colour of the video's
+     own title cards, so a tall text column never leaves a bare strip. */
+  .chf-media {
+    position: relative;
+    overflow: hidden;
+    background: #0a2329;
+    display: flex;
+    align-items: center;
+  }
+  /* Two columns: the text runs taller than a 16:9 player, so the strips above
+     and below it carry a blurred, darkened copy of the poster instead of a
+     flat field. Hidden (and so never fetched) where the card stacks. */
+  .chf-ambient { display: none; }
+  @media (min-width: 900px) {
+    .chf-ambient {
+      display: block;
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform: scale(1.25);
+      filter: blur(28px) brightness(0.34) saturate(1.2);
+    }
+    .chf-media::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(10, 35, 41, 0.7) 0%, rgba(10, 35, 41, 0) 32%, rgba(10, 35, 41, 0) 68%, rgba(10, 35, 41, 0.7) 100%);
+      pointer-events: none;
+    }
+    .chf-player { z-index: 1; box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35); }
+  }
+  .chf-player {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: #0a2329;
+  }
+  .chf-poster,
+  .chf-poster img,
+  .chf-video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+  .chf-poster img { object-fit: cover; }
+  .chf-video { object-fit: contain; background: transparent; }
+  .chf-player.is-playing .chf-video { background: #000; }
+  .chf-player.is-playing .chf-poster { visibility: hidden; }
+
+  .chf-play {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    width: 100%;
+    border: 0;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    color: var(--color-bg-deep);
+    background: linear-gradient(180deg, rgba(6, 18, 22, 0) 40%, rgba(6, 18, 22, 0.55) 100%);
+  }
+  .chf-play[hidden],
+  .chf-player.is-playing .chf-play { display: none; }
+  .chf-play-disc {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+    background: var(--color-wc-green);
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.45);
+    transition: transform 160ms ease, background 160ms ease;
+  }
+  .chf-play-disc svg { margin-left: 4px; }
+  .chf-play-disc::after {
+    content: '';
+    position: absolute;
+    inset: -8px;
+    border-radius: 50%;
+    border: 2px solid rgba(77, 216, 168, 0.55);
+    animation: chf-ring 2.4s ease-out infinite;
+  }
+  @keyframes chf-ring {
+    0% { transform: scale(0.85); opacity: 0.9; }
+    100% { transform: scale(1.35); opacity: 0; }
+  }
+  .chf-play-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #eef4f3;
+    background: rgba(6, 18, 22, 0.72);
+    border: 1px solid rgba(238, 244, 243, 0.18);
+    border-radius: 999px;
+    padding: 6px 12px;
+  }
+  .chf-dot { color: var(--color-wc-green); }
+  /* Narrow phones: the player is about 140px tall, so the disc and the label
+     come down a size to leave the burned-in caption readable. */
+  @media (max-width: 400px) {
+    .chf-play { gap: 8px; }
+    .chf-play-disc { width: 54px; height: 54px; }
+    .chf-play-disc svg { width: 22px; height: 22px; }
+    .chf-play-label { font-size: 9.5px; padding: 4px 9px; letter-spacing: 0.1em; }
+  }
+  @media (hover: hover) {
+    .chf-play:hover .chf-play-disc { transform: scale(1.06); background: var(--color-wc-green-bright); }
+  }
+  .chf-play:focus-visible { outline: none; }
+  .chf-play:focus-visible .chf-play-disc { outline: 3px solid var(--color-copper-bright); outline-offset: 4px; }
+  @media (prefers-reduced-motion: reduce) {
+    .chf-play-disc::after { animation: none; opacity: 0; }
+    .chf-play-disc { transition: none; }
+  }
+
+  /* Body */
+  .chf-body {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 20px 18px 22px;
+  }
+  @media (min-width: 740px) { .chf-body { padding: 26px 26px 26px; } }
+  @media (min-width: 900px) { .chf-body { justify-content: center; } }
+
+  .chf-chips { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+  .chf-chip {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    padding: 2px 6px;
+    border-radius: 3px;
+    white-space: nowrap;
+  }
+  .chf-chip-beta {
+    background: rgba(240, 184, 120, 0.15);
+    color: var(--color-amber);
+    border: 1px solid rgba(240, 184, 120, 0.3);
+  }
+  .chf-chip-new {
+    color: var(--color-ash-100);
+    border: 1px solid rgba(221, 228, 230, 0.3);
+  }
+  .chf-kicker {
+    margin-left: 4px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-copper);
+  }
+
+  .chf-name {
+    margin: 2px 0 0;
+    font-family: var(--font-serif);
+    font-weight: 600;
+    font-size: 30px;
+    line-height: 1.05;
+    letter-spacing: -0.015em;
+    color: var(--color-ash-100);
+  }
+  @media (min-width: 1024px) { .chf--work .chf-name { font-size: 36px; } }
+  .chf-tagline {
+    margin: -4px 0 0;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 17px;
+    line-height: 1.35;
+    color: var(--color-copper-bright);
+  }
+  .chf-copy {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--color-ash-300);
+  }
+  .chf-proof {
+    display: flex;
+    gap: 10px;
+    margin: 2px 0 0;
+    font-family: var(--font-sans);
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--color-ash-400);
+  }
+  .chf-proof b { font-weight: 600; color: var(--color-ash-100); }
+  .chf-proof-mark {
+    flex: none;
+    width: 3px;
+    border-radius: 2px;
+    background: var(--color-wc-green);
+  }
+
+  .chf-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chf-tag {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    color: var(--color-ash-500);
+    background: var(--color-bg-deep);
+    border: 1px solid var(--copper-hairline);
+    padding: 3px 7px;
+    border-radius: 3px;
+  }
+
+  .chf-cta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 18px;
+    margin-top: 6px;
+  }
+  .chf-btn {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 10px;
+    min-height: 44px;
+  }
+  .chf-num {
+    display: none;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 500;
+    opacity: 0.8;
+  }
+  /* Desktops rarely open sms:, so the number rides on the button there. */
+  @media (hover: hover) and (pointer: fine) { .chf-num { display: inline; } }
+  .chf-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    font-family: var(--font-sans);
+    font-size: 14px;
+    color: var(--color-ash-300);
+    text-decoration: underline;
+    text-decoration-color: var(--copper-hairline);
+    text-underline-offset: 4px;
+  }
+  @media (hover: hover) {
+    .chf-link:hover { color: var(--color-copper-bright); text-decoration-color: currentColor; }
+  }
+  .chf-name-note {
+    margin: 4px 0 0;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 13px;
+    color: var(--color-ash-500);
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-chf]').forEach((root) => {
+    const video = root.querySelector('video');
+    const btn = root.querySelector<HTMLButtonElement>('.chf-play');
+    if (!video || !btn) return;
+    video.removeAttribute('controls');
+    btn.hidden = false;
+    const start = () => {
+      root.classList.add('is-playing');
+      video.controls = true;
+      void video.play().catch(() => {});
+      video.focus({ preventScroll: true });
+    };
+    btn.addEventListener('click', start);
+    video.addEventListener('play', () => root.classList.add('is-playing'));
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(
+        (entries) => entries.forEach((e) => { if (!e.isIntersecting && !video.paused) video.pause(); }),
+        { threshold: 0.2 },
+      ).observe(root);
+    }
+  });
+</script>

@@ -39,4 +39,5 @@ Contact: Preston Winters. Text or call (541) 551-0731. Email preston@winterscode
 - [Sogn Contracting](https://winterscode.com/work/sogn-contracting): A Bandon contractor, live in three business days, now 23 pages.
 - [Professors Golf](https://winterscode.com/work/professors-golf): A Bandon golf service, built in one business day.
 - [South Coast Cuisine](https://winterscode.com/work#south-coast-cuisine): A single-page site for a Bandon private chef service, live at https://southcoastcuisine.net.
+- [Chere'](https://winterscode.com/work#chere): Preston's back-office app for contractors, in beta on iPhone and Android. A photo of the room becomes three design options, an estimate priced from the one the customer picks, and a deposit invoice through Square.
 - [Baseline Marketing](https://winterscode.com/work/baseline-marketing): The marketing site for Preston's own product, Baseline.
