@@ -405,9 +405,45 @@ export const portfolio: PortfolioItem[] = [
 
   // ─────────── APPS ───────────
   {
+    // S339, Preston 2026-10-22: Chere' leads Apps on /work and on the
+    // homepage, above every other app, with the demo-night video. It renders
+    // through ChereFeature, not the generic app card. Claims stop at what it
+    // does today: no pricing, no Stripe or QuickBooks (flagged off).
+    slug: 'chere',
+    numeral: 'i.',
+    name: "Chere'",
+    category: 'app',
+    meta: 'Back office for contractors · iPhone and Android · in beta',
+    tags: ['FLUTTER', 'AI RENDERS', 'SQUARE'],
+    status: 'beta',
+    build: 'new',
+    order: 1,
+    image: {
+      src: '/work/chere-poster-1280.webp',
+      srcSmall: '/work/chere-poster-720.webp',
+      srcXSmall: '/work/chere-poster-480.webp',
+      alt: "Chere' before and after: a kitchen photo split down the middle, cluttered counters on the left and the design the customer picked on the right, dark stone counters and a clear island.",
+      width: 1280,
+      height: 720,
+    },
+    details: [
+      { label: 'Stack', value: 'Flutter app on iPhone and Android · a server set up for each business · Square invoices' },
+      {
+        label: 'Scope',
+        value:
+          'A photo of the room in, three design options out, an estimate priced from the one the customer picks, every measured number marked for the contractor to check, and a deposit invoice through Square.',
+      },
+      { label: 'Status', value: 'In beta. Text for access.' },
+    ],
+    links: [
+      { label: 'Beta help →', href: '/chere/support', primary: true },
+      { label: 'Privacy →', href: '/chere/privacy' },
+    ],
+  },
+  {
     slug: 'baseline',
     relatedCase: { href: '/work/baseline-marketing', label: 'How its marketing site was built' },
-    numeral: 'iii.',
+    numeral: 'iv.',
     name: 'Baseline',
     category: 'app',
     meta: 'Political intelligence · 106 figures · 28 screens · 4 AI models',
@@ -446,7 +482,7 @@ export const portfolio: PortfolioItem[] = [
   },
   {
     slug: 'stainslayer-ai',
-    numeral: 'ii.',
+    numeral: 'iii.',
     name: 'StainSlayer AI',
     category: 'app',
     meta: 'AI stain ID · 4 modes · live on App Store + Play Store',
@@ -491,7 +527,7 @@ export const portfolio: PortfolioItem[] = [
   },
   {
     slug: 'choplight',
-    numeral: 'iv.',
+    numeral: 'v.',
     name: 'ChopLight',
     category: 'app',
     meta: 'Motion-activated flashlight · gesture detection · subscription tier',
@@ -528,7 +564,7 @@ export const portfolio: PortfolioItem[] = [
   },
   {
     slug: 'demiurge-mykonos',
-    numeral: 'i.',
+    numeral: 'ii.',
     name: 'Demiurge + MyKonos',
     category: 'app',
     meta: 'Memory engine · powering the MyKonos AI companion',

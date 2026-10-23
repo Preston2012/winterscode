@@ -2,6 +2,7 @@
 import { v } from '../../lib/asset';
 import PaintPour from '../ui/PaintPour.astro';
 import CardMotion from '../ui/CardMotion.astro';
+import ChereFeature from './ChereFeature.astro';
 /**
  * Selected Work (homepage teaser), 3 cards, deep-linked to /work.
  *
@@ -343,13 +344,16 @@ const HOME_SITES = HOME_ORDER
     ))}
   </ul>
 
-  {CARDS.some((c) => c.published !== false && c.kind === 'app') && <>
+  <!-- S339, Preston 2026-10-22: Chere' leads Apps & software on the
+       homepage, above any other app, with its demo video. -->
   <div class="sw-group-head">
     <span class="line" aria-hidden="true"></span>
     <h3 class="sw-group-label">Apps &amp; software</h3>
   </div>
+  <ChereFeature variant="home" />
 
-  <ul class="selected-grid selected-grid-apps" role="list">
+  {CARDS.some((c) => c.published !== false && c.kind === 'app') && <>
+  <ul class="selected-grid selected-grid-apps sw-apps-after" role="list">
     {CARDS.filter((card) => card.published !== false && card.kind === 'app').map((card) => (
       <li class="sw-card-wrap" role="listitem">
         <a
@@ -579,6 +583,7 @@ const HOME_SITES = HOME_ORDER
   /* Three labels, one system: Websites, Apps and software, Logo and graphic
      design. Same mono copper register as the section eyebrow so they read as
      dividers inside section 02, not as three new sections. */
+  .sw-apps-after { margin-top: 20px; }
   .sw-group-head {
     display: flex;
     align-items: center;

@@ -38,6 +38,7 @@ import { SITES, fmtGrade } from '../lib/sites.ts';
 import { smsAboutHref } from '../lib/text-cta';
 import Explainer from '../components/ui/Explainer.astro';
 import Instrument from '../components/sections/Instrument.astro';
+import ChereFeature from '../components/sections/ChereFeature.astro';
 import Breadcrumbs from '../components/ui/Breadcrumbs.astro';
 import { breadcrumbSchema, absUrl } from '../lib/schema';
 
@@ -75,7 +76,8 @@ const workLd = {
     item: {
       '@type': 'CreativeWork',
       name: p.name,
-      url: p.caseStudy ? absUrl(p.caseStudy) : (p.links.find((l) => l.primary) ?? p.links[0])?.href,
+      // Chere' has no site of its own yet; its card on this page is its home.
+      url: p.caseStudy ? absUrl(p.caseStudy) : p.slug === 'chere' ? absUrl('/work#chere') : (p.links.find((l) => l.primary) ?? p.links[0])?.href,
       ...(p.image ? { image: absUrl(p.image.src) } : {}),
     },
   })),
@@ -233,8 +235,11 @@ const workLd = {
       </div>
     </header>
 
+    <!-- S339, Preston: Chere' sits above every other app, with its video. -->
+    <div class="wk-feature"><ChereFeature variant="work" /></div>
+
     <ul class="wk-grid wk-grid-apps" role="list">
-      {apps.map((p) => (
+      {apps.filter((p) => p.slug !== 'chere').map((p) => (
         <li class="wk-card-wrap" role="listitem">
           <article
             id={p.slug}
@@ -761,6 +766,9 @@ const workLd = {
   }
   @media (min-width: 740px) { .wk-grid-apps { gap: 28px; } }
   @media (min-width: 1024px) { .wk-grid-apps { gap: 32px; } }
+  .wk-feature { max-width: 960px; margin: 0 auto 24px; }
+  @media (min-width: 740px) { .wk-feature { margin-bottom: 28px; } }
+  @media (min-width: 1024px) { .wk-feature { margin-bottom: 32px; } }
 
   /* Sites grid: 2-col at 768+ as before. */
   /* Sites are 1-col on tablet so widget cards (Sogn) get full width to
