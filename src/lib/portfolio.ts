@@ -92,6 +92,14 @@ export const portfolio: PortfolioItem[] = [
   {
     slug: 'us-survey-supply',
     caseStudy: '/work/us-survey-supply',
+    // S339, Preston 2026-10-28: Rod Taylor's review, verbatim from his email
+    // "Winters Code Review" of 2026-09-10 (cc Nikkol), written to be published:
+    // it closes "We are proud to endorse and recommend WintersCode.com." His
+    // spaced hyphens and his capital I stay exactly as he typed them.
+    quote: {
+      text: 'Winters Code hit our company just as needed at all the right points: Initiative to show what we were lacking in our website, and a stark contrast that could be realized upgrading to their concepts. This was followed by great intuitive inputs, despite relative unfamiliarity with our very specialized market. Expert receipt and application of assets and inputs we provided, along with very productive follow-ups yielded a final website product that reflects brilliantly - and very professionally - on our brand. We are proud to endorse and recommend WintersCode.com.',
+      attr: 'Rod Taylor, General Manager, US Survey Supply',
+    },
     numeral: 'i.',
     name: 'US Survey Supply',
     category: 'site',

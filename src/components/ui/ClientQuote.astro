@@ -1,0 +1,117 @@
+---
+/**
+ * ClientQuote (S339, Preston 2026-10-28): a client's own words, set as the
+ * proof they are. Used on the homepage (ClientWord) and on every case study
+ * that has a quote (CaseStudyLayout).
+ *
+ * The text is the client's, verbatim, from portfolio.ts. Nothing here edits
+ * it: no trimmed clauses, no typographic dashes swapped in for the hyphens he
+ * typed, no capitals changed. The only styling decision is which sentence
+ * carries the weight, and that is always the client's own closing sentence.
+ */
+export interface Props {
+  quote: { text: string; attr: string };
+  /** 'home' sets it larger, as the section's whole beat. */
+  size?: 'home' | 'case';
+}
+const { quote, size = 'case' } = Astro.props;
+
+// Split off the closing sentence so it can carry the weight. Falls back to
+// the whole text when there is only one sentence.
+const t = quote.text.trim();
+const cut = t.slice(0, -1).lastIndexOf('. ');
+const lead = cut > 0 ? t.slice(0, cut + 1) : '';
+const close = cut > 0 ? t.slice(cut + 2) : t;
+
+// "Name, Title, Company": the name is set apart from the role line.
+const [name, ...role] = quote.attr.split(',').map((s) => s.trim());
+---
+
+<figure class={`cq cq--${size}`}>
+  <svg class="cq-mark" viewBox="0 0 48 40" width="48" height="40" aria-hidden="true">
+    <path d="M0 40V24C0 10.6 6.4 2.6 19.2 0l2.4 5.6C14.4 7.8 10.6 12.4 10 19.2h9.6V40H0Zm26.4 0V24C26.4 10.6 32.8 2.6 45.6 0L48 5.6c-7.2 2.2-11 6.8-11.6 13.6H46V40H26.4Z" fill="currentColor" />
+  </svg>
+  <blockquote class="cq-text">
+    <p>{lead && <>{lead} </>}<strong class="cq-close">{close}</strong></p>
+  </blockquote>
+  <figcaption class="cq-attr">
+    <span class="cq-name">{name}</span>
+    {role.length > 0 && <span class="cq-role">{role.join(', ')}</span>}
+  </figcaption>
+</figure>
+
+<style>
+  .cq {
+    position: relative;
+    margin: 0;
+    padding: 26px 20px 22px;
+    background: var(--color-bg-card);
+    border: 1px solid var(--copper-hairline);
+    border-radius: var(--radius-card);
+    overflow: hidden;
+  }
+  /* A hairline of copper down the left edge, the same accent the proof lines
+     use elsewhere, so the card reads as testimony, not as another work card. */
+  .cq::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(180deg, var(--color-copper-bright), var(--color-copper-deep));
+  }
+  @media (min-width: 740px) { .cq { padding: 34px 36px 28px; } }
+  @media (min-width: 1024px) { .cq--home { padding: 44px 52px 34px; } }
+
+  .cq-mark {
+    display: block;
+    width: 34px;
+    height: auto;
+    color: var(--color-copper);
+    opacity: 0.85;
+    margin-bottom: 14px;
+  }
+  @media (min-width: 740px) { .cq-mark { width: 42px; margin-bottom: 18px; } }
+
+  .cq-text { margin: 0; }
+  .cq-text p {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-size: 18px;
+    line-height: 1.55;
+    color: var(--color-ash-300);
+    text-wrap: pretty;
+  }
+  @media (min-width: 740px) { .cq-text p { font-size: 20px; } }
+  @media (min-width: 1024px) { .cq--home .cq-text p { font-size: 23px; } }
+  .cq-close {
+    font-weight: 600;
+    color: var(--color-ash-100);
+    background-image: linear-gradient(transparent 62%, rgba(77, 216, 168, 0.22) 62%);
+    box-decoration-break: clone;
+  }
+
+  .cq-attr {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 4px 12px;
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid var(--copper-hairline);
+  }
+  .cq-name {
+    font-family: var(--font-sans);
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--color-ash-100);
+  }
+  .cq-role {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-copper);
+  }
+</style>

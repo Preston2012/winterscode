@@ -13,7 +13,12 @@
  *   STATS. A band of real measured numbers. Real numbers beat adjectives, and
  *   a case study that only asserts quality is a page of adjectives.
  *
- *   SECTIONS. Optional named blocks between the build table and the quote.
+ *   SECTIONS. Optional named blocks after the build table.
+ *
+ *   QUOTE (S339). A client's own words sit right after the numbers and
+ *   before the Text button: proof, then the ask. It used to close the page
+ *   under the build table, where the one real review on the site was the
+ *   last thing anyone reached.
  *
  * S326 DNA. Text is the climax, not Visit: a Text block right after the
  * stats band, and the page's ending is "Text me about a build like this" with
@@ -35,6 +40,7 @@ import Divider from '../ui/Divider.astro';
 import RelatedLinks from '../sections/RelatedLinks.astro';
 import Contact from '../sections/Contact.astro';
 import TextCta from '../ui/TextCta.astro';
+import ClientQuote from '../ui/ClientQuote.astro';
 import { portfolio } from '../../lib/portfolio';
 import type { PortfolioItem } from '../../lib/portfolio';
 import { breadcrumbSchema, absUrl, BUSINESS_ID } from '../../lib/schema';
@@ -144,6 +150,12 @@ const nx = () => String(++n).padStart(2, '0');
     </section>
   )}
 
+  {item.quote && (
+    <section class="cs-quote-wrap" aria-label="In the client's words">
+      <ClientQuote quote={item.quote} />
+    </section>
+  )}
+
   {stats.length > 0 && (
     <section class="cs-block cs-cta" aria-label="Text Preston">
       <TextCta links={[{ href: '/pricing', label: 'See pricing' }]} />
@@ -173,18 +185,6 @@ const nx = () => String(++n).padStart(2, '0');
       </section>
     </>
   ))}
-
-  {item.quote && (
-    <>
-      <Divider label={nx()} />
-      <section class="cs-quote-wrap" aria-label="Quote">
-        <blockquote class="cs-quote">
-          <p>{item.quote.text}</p>
-          <cite>{item.quote.attr}</cite>
-        </blockquote>
-      </section>
-    </>
-  )}
 
   <section class="cs-block cs-end" aria-label="Text Preston about a build like this">
     <TextCta label="Text me about a build like this" about={item.name} links={closing} />
@@ -293,28 +293,6 @@ const nx = () => String(++n).padStart(2, '0');
     margin: 0;
   }
 
-  .cs-quote-wrap { padding: 8px 4px; max-width: 720px; margin: 0 auto; }
-  .cs-quote {
-    margin: 0;
-    padding: 20px 22px;
-    background: var(--color-bg-card);
-    border: 1px solid var(--copper-hairline);
-    border-radius: var(--radius-card, 10px);
-  }
-  .cs-quote p {
-    font-family: var(--font-serif);
-    font-style: italic;
-    font-size: 20px;
-    line-height: 1.4;
-    color: var(--color-ash-100);
-    margin: 0 0 10px;
-  }
-  @media (min-width: 740px) { .cs-quote p { font-size: 24px; } }
-  .cs-quote cite {
-    font-family: var(--font-mono);
-    font-style: normal;
-    font-size: 11px;
-    letter-spacing: 0.06em;
-    color: var(--color-copper);
-  }
+  .cs-quote-wrap { padding: 20px 16px 4px; max-width: 760px; margin: 0 auto; }
+  @media (min-width: 740px) { .cs-quote-wrap { padding: 28px 24px 4px; } }
 </style>

@@ -207,6 +207,12 @@ const faqLd = faq.length ? faqSchema(faq) : null;
     </>
   ))}
 
+  {Astro.slots.has('proof') && (
+    <section class="svc-block svc-proof" aria-label="Featured build">
+      <slot name="proof" />
+    </section>
+  )}
+
   {why.length > 0 && !whyLink && (
     <>
       <Divider label={`0${3 + sections.length}`} />
@@ -395,6 +401,8 @@ const faqLd = faq.length ? faqSchema(faq) : null;
   .svc-why-p :global(strong) { color: var(--color-ash-100); font-weight: 600; }
   /* Flexible per-page sections + inline canonical links (re-spine system) */
   .svc-section { max-width: 720px; }
+  /* S339: one featured build under the sections (App Development: Chere'). */
+  .svc-proof { max-width: 720px; padding-top: 4px; }
   .svc-section-p {
     font-family: var(--font-sans);
     font-size: 15px;
