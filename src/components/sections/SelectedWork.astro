@@ -33,6 +33,8 @@ interface WorkCard {
   desc: string;
   stack: [string, string];
   status: 'LIVE' | 'BETA' | 'PROD';
+  /** S339: a build for Preston's own family's business; shows a FAMILY pill. */
+  family?: boolean;
   /** Rebuild of a site the client already had, or a first build. */
   build: 'rebuild' | 'new';
   /** Which labelled group the card sits under. S245: the grid is no longer one
@@ -96,6 +98,7 @@ const CARDS: WorkCard[] = [
   },
   {
     id: 'sogn-contracting',
+    family: true,
     caseStudy: '/work/sogn-contracting',
     kind: 'site',
     // S339, Preston 2026-10-28 14:00 PT: off the homepage again; /work only.
@@ -118,6 +121,7 @@ const CARDS: WorkCard[] = [
   },
   {
     id: 'seabreeze',
+    family: true,
     caseStudy: '/work/seabreeze',
     kind: 'site',
     title: 'SeaBreeze Landscape Care and Home Repair',
@@ -186,6 +190,7 @@ const CARDS: WorkCard[] = [
   },
   {
     id: 'bandon-by-the-dunes',
+    family: true,
     caseStudy: '/work/bandon-by-the-dunes',
     kind: 'site',
     title: 'Bandon By The Dunes Realtee',
@@ -366,10 +371,11 @@ const HOME_SITES = HOME_ORDER
             {card.motion && <CardMotion kind={card.motion} />}
           </div>
           <div class="sw-meta">
-            <div class="sw-title-row">
+            <div class={`sw-title-row${card.family ? ' sw-title-row--3' : ''}`}>
               <span class="sw-title">{card.title}</span>
               <span class={`sw-status sw-status-${card.status.toLowerCase()}`}>{card.status}</span>
               <span class={`sw-status sw-build-${card.build}`}>{card.build === 'rebuild' ? 'REBUILD' : 'NEW BUILD'}</span>
+              {card.family && <span class="sw-status sw-family" title="Built for family">FAMILY</span>}
             </div>
             <p class="sw-desc">{card.desc}</p>
             {card.highlights && (
@@ -431,10 +437,11 @@ const HOME_SITES = HOME_ORDER
             )}
           </div>
           <div class="sw-meta">
-            <div class="sw-title-row">
+            <div class={`sw-title-row${card.family ? ' sw-title-row--3' : ''}`}>
               <span class="sw-title">{card.title}</span>
               <span class={`sw-status sw-status-${card.status.toLowerCase()}`}>{card.status}</span>
               <span class={`sw-status sw-build-${card.build}`}>{card.build === 'rebuild' ? 'REBUILD' : 'NEW BUILD'}</span>
+              {card.family && <span class="sw-status sw-family" title="Built for family">FAMILY</span>}
             </div>
             <p class="sw-desc">{card.desc}</p>
             <div class="sw-stack">
@@ -621,6 +628,9 @@ const HOME_SITES = HOME_ORDER
   @media (min-width: 740px) {
     .selected-grid--n4 .sw-card { height: 100%; }
     .selected-grid--n4 .sw-stack { margin-top: auto; padding-top: 4px; }
+    /* The name takes the free width, so the pills sit together on the right
+       instead of LIVE floating alone in the middle of the row. */
+    .selected-grid--n4 .sw-title { flex: 1 1 auto; }
   }
   .selected-grid--n4 .sw-card { grid-template-rows: auto 1fr; }
   .selected-grid--n4 .sw-preview { aspect-ratio: 1200 / 630; }
@@ -900,15 +910,29 @@ const HOME_SITES = HOME_ORDER
   }
   /* Rebuild vs new build. Three of the client sites replaced a site the
      business already had; the pill says so, because that is a different job. */
+  /* Three pills on a phone-width card leave a long name three words to a
+     line, so the pills drop under the name there. */
+  @media (max-width: 739px) {
+    .sw-title-row--3 { flex-wrap: wrap; justify-content: flex-start; gap: 6px; }
+    .sw-title-row--3 .sw-title { flex-basis: 100%; }
+  }
+  .sw-family {
+    background: transparent;
+    color: var(--color-ash-300);
+    border: 1px dashed rgba(221, 228, 230, 0.4);
+  }
   .sw-build-rebuild {
     background: rgba(216, 144, 90, 0.15);
     color: var(--color-copper-bright);
     border: 1px solid var(--copper-hairline);
   }
+  /* S339, Preston 2026-10-28: NEW BUILD is filled like REBUILD, in cream,
+     so a build from scratch never reads as worth less than a rebuild. */
   .sw-build-new {
-    background: transparent;
-    color: var(--color-ash-100);
-    border: 1px solid rgba(221, 228, 230, 0.30);
+    background: linear-gradient(180deg, rgba(244, 239, 230, 0.22), rgba(244, 239, 230, 0.09));
+    color: #f7f2ea;
+    border: 1px solid rgba(244, 239, 230, 0.45);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14);
   }
 
   .sw-desc {
