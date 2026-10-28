@@ -1,0 +1,77 @@
+---
+/**
+ * ClientWord (S344, Preston 2026-10-28): the homepage beat right after the
+ * work, where a client says what it was like. One beat, one card.
+ *
+ * Reads every published portfolio item that carries a real quote, in /work
+ * order, so a second client review lands here by adding `quote` to that
+ * client's entry and nothing else. Today that is Rod Taylor's review of the US
+ * Survey Supply build, sent by email on 2026-09-10 under the subject "Winters
+ * Code Review", ending "We are proud to endorse and recommend WintersCode.com."
+ * Each card points at that client's case page when there is one.
+ */
+import ClientQuote from '../ui/ClientQuote.astro';
+import { portfolio } from '../../lib/portfolio';
+
+const quoted = portfolio
+  .filter((p) => p.quote && p.published !== false)
+  .sort((a, b) => (a.category === b.category ? a.order - b.order : a.category === 'site' ? -1 : 1));
+---
+
+{quoted.length > 0 && (
+  <section class="cw" aria-labelledby="cw-h">
+    <div class="cw-eyebrow">
+      <span class="line" aria-hidden="true"></span>
+      <h2 class="cw-h" id="cw-h">In the client's words</h2>
+    </div>
+
+    <div class="cw-list">
+      {quoted.map((p) => (
+        <div class="cw-item">
+          <ClientQuote quote={p.quote!} size="home" />
+          <p class="cw-links">
+            {p.caseStudy
+              ? <a href={p.caseStudy}>See the {p.name} build →</a>
+              : <a href={`/work#${p.slug}`}>See the {p.name} build →</a>}
+          </p>
+        </div>
+      ))}
+    </div>
+  </section>
+)}
+
+<style>
+  .cw { max-width: 720px; margin: 0 auto; padding: 40px 16px 44px; }
+  @media (min-width: 740px) { .cw { max-width: 860px; padding: 56px 24px 60px; } }
+  @media (min-width: 1024px) { .cw { max-width: 960px; padding: 72px 0 76px; } }
+
+  .cw-eyebrow { display: flex; align-items: center; gap: 12px; margin: 0 0 18px; }
+  .cw-eyebrow .line { width: 28px; height: 1px; background: var(--color-copper); }
+  .cw-h {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--color-copper);
+  }
+  @media (min-width: 1024px) { .cw-h { font-size: 13px; } }
+
+  .cw-list { display: grid; gap: 28px; }
+  .cw-links { margin: 12px 0 0; }
+  .cw-links a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    font-family: var(--font-sans);
+    font-size: 14px;
+    color: var(--color-ash-300);
+    text-decoration: underline;
+    text-decoration-color: var(--copper-hairline);
+    text-underline-offset: 4px;
+  }
+  @media (hover: hover) {
+    .cw-links a:hover { color: var(--color-copper-bright); text-decoration-color: currentColor; }
+  }
+</style>

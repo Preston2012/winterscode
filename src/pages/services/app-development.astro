@@ -1,5 +1,6 @@
 ---
 import ServiceLayout from '../../components/templates/ServiceLayout.astro';
+import ChereFeature from '../../components/sections/ChereFeature.astro';
 import { serviceBySlug, towns } from '../../lib/business';
 
 const service = serviceBySlug('app-development')!;
@@ -33,8 +34,9 @@ const townLinks = towns.map((t) => ({ href: `/web-design-${t.slug}`, label: `${t
     {
       heading: 'Already built, not theory',
       body: [
+        "<strong>Chere'</strong> is my app for contractors, and it runs the office at SeaBreeze. Snap a room and say what's changing: it draws three design options, prices the job from the one the customer picks, and sends the deposit invoice through Square. It is in beta now. Watch the demo below.",
         '<strong>StainSlayer AI</strong> is live on both the App Store and Google Play: snap a photo of a stain, get step-by-step removal, powered by vision AI. Two more of my own, Baseline and MyKonos, are in private beta.',
-        'Three AI apps built from a solo shop on the Oregon coast, one live on both stores and two in private beta. <em>When you hire me for an app, you are hiring the person who has already done it.</em>',
+        'Four AI apps built from a solo shop on the Oregon coast, one live on both stores and three in beta. <em>When you hire me for an app, you are hiring the person who has already done it.</em>',
       ],
     },
   ]}
@@ -49,4 +51,7 @@ const townLinks = towns.map((t) => ({ href: `/web-design-${t.slug}`, label: `${t
   relatedTitle="App development across the Oregon coast"
   relatedIntro="Local pages for the towns I serve."
   relatedLinks={townLinks}
-/>
+>
+  <!-- S344, Preston 2026-10-28: Chere' with its demo, as the proof. -->
+  <ChereFeature slot="proof" variant="service" />
+</ServiceLayout>

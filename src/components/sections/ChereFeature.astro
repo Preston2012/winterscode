@@ -4,7 +4,7 @@
  * Apps group on the homepage and on /work, above every other app, with the
  * demo-night video.
  *
- * One component, two placements. The facts (name, meta, tags, links) come
+ * One component, three placements (home, /work, App Development). The facts (name, meta, tags, links) come
  * from the portfolio entry so the two pages cannot drift; the sentences
  * differ on purpose, because the homepage makes the offer to someone who just
  * landed and /work describes it to someone already reading the portfolio.
@@ -31,7 +31,8 @@ import { portfolio } from '../../lib/portfolio';
 import { smsBase, publicPath, phoneDisplay } from '../../lib/text-cta';
 
 export interface Props {
-  variant: 'home' | 'work';
+  /** 'service' is the App Development page: home's sentences, an h3. */
+  variant: 'home' | 'work' | 'service';
 }
 const { variant } = Astro.props;
 
@@ -48,6 +49,7 @@ const mediaUrl = (file: string) => {
 };
 ---
 
+<div class="chf-wrap">
 <article
   id={variant === 'work' ? 'chere' : undefined}
   class={`chf chf--${variant}`}
@@ -90,9 +92,9 @@ const mediaUrl = (file: string) => {
       <span class="chf-kicker">for contractors</span>
     </div>
 
-    {variant === 'work'
-      ? <h3 class="chf-name" id={headingId}>{p.name}</h3>
-      : <h4 class="chf-name" id={headingId}>{p.name}</h4>}
+    {variant === 'home'
+      ? <h4 class="chf-name" id={headingId}>{p.name}</h4>
+      : <h3 class="chf-name" id={headingId}>{p.name}</h3>}
     <p class="chf-tagline">A back office for one-truck contractors.</p>
 
     {variant === 'work' ? (
@@ -127,7 +129,7 @@ const mediaUrl = (file: string) => {
         <span>In beta. Text me for access</span>
         <span class="chf-num">{phoneDisplay}</span>
       </a>
-      {variant === 'home'
+      {variant !== 'work'
         ? <a class="chf-link" href="/work#chere">More on Chere' →</a>
         : <>
             <a class="chf-link" href="/chere/support">Beta help</a>
@@ -136,12 +138,17 @@ const mediaUrl = (file: string) => {
     </div>
 
     {variant === 'work' && (
-      <p class="chf-name-note">Named for my grandmother, who kept the family's books.</p>
+      <p class="chf-name-note">Named for Chere' Brazel Winters (Gigi), who kept our family's books.</p>
     )}
   </div>
 </article>
+</div>
 
 <style>
+  /* The two-column switch reads the space the card is given, not the
+     window: the homepage and /work give it 960px, the App Development page
+     720px, and one 900px window rule cannot serve both. */
+  .chf-wrap { container-type: inline-size; }
   .chf {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
@@ -151,7 +158,7 @@ const mediaUrl = (file: string) => {
     overflow: hidden;
     scroll-margin-top: 96px;
   }
-  @media (min-width: 900px) {
+  @container (min-width: 820px) {
     .chf { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); }
   }
 
@@ -168,7 +175,7 @@ const mediaUrl = (file: string) => {
      and below it carry a blurred, darkened copy of the poster instead of a
      flat field. Hidden (and so never fetched) where the card stacks. */
   .chf-ambient { display: none; }
-  @media (min-width: 900px) {
+  @container (min-width: 820px) {
     .chf-ambient {
       display: block;
       position: absolute;
@@ -290,7 +297,7 @@ const mediaUrl = (file: string) => {
     padding: 20px 18px 22px;
   }
   @media (min-width: 740px) { .chf-body { padding: 26px 26px 26px; } }
-  @media (min-width: 900px) { .chf-body { justify-content: center; } }
+  @container (min-width: 820px) { .chf-body { justify-content: center; } }
 
   .chf-chips { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
   .chf-chip {
