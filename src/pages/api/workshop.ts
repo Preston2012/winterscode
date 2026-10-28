@@ -362,6 +362,32 @@ async function fetchGitHub(
     // order (a 10-20 private push sat above 10-22 public ones), so take the
     // newest timestamp, not the first row.
     lastAt = pushEvents.reduce((m, e) => (e.created_at > m ? e.created_at : m), pushEvents[0].created_at);
+    // S339 (2026-10-28): the feed stopped carrying the day's pushes. Its newest
+    // PushEvent read 03:22 UTC while that afternoon's merges showed up as
+    // PullRequestEvents within seconds, so the header said "17h ago" minutes
+    // after a production deploy (Preston caught it on his phone). A merged
+    // pull request IS a push to its base branch, and the feed's slimmed payload
+    // marks it with action 'merged' (older entries: 'closed' plus
+    // pull_request.merged). winterscode's own main is also read directly. The
+    // clock is the newest of the three; none of them carries a subject out.
+    for (const e of allEvents) {
+      if (e.type !== 'PullRequestEvent') continue;
+      const a = e.payload?.action;
+      const merged = a === 'merged' || (a === 'closed' && e.payload?.pull_request?.merged === true);
+      const at: string | undefined = e.payload?.pull_request?.merged_at || e.created_at;
+      if (merged && at && at > lastAt) lastAt = at;
+    }
+    try {
+      const mr = await fetch('https://api.github.com/repos/Preston2012/winterscode/commits?sha=main&per_page=1',
+        { signal: AbortSignal.timeout(4000), headers });
+      if (mr.ok) {
+        const mc: any[] = await mr.json();
+        const at: string | undefined = mc?.[0]?.commit?.committer?.date;
+        if (at && !Number.isNaN(new Date(at).getTime()) && new Date(at).toISOString() > new Date(lastAt).toISOString()) {
+          lastAt = new Date(at).toISOString().replace('.000Z', 'Z');
+        }
+      }
+    } catch { /* the feed's clock stands */ }
     last = relativeTime(lastAt);
     // 30-day rolling count of push events
     // cutoffMs already defined above for pagination

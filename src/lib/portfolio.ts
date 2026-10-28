@@ -53,6 +53,11 @@ export interface PortfolioItem {
   tags: string[];
   /** Current status. */
   status: PortfolioStatus;
+  /** S339, Preston 2026-10-28: a build for his own family's business, shown
+   *  as a FAMILY pill beside the status so the work never passes as an
+   *  arm's-length client win. SeaBreeze (his dad), Sogn (his uncle), Bandon
+   *  By The Dunes. */
+  family?: boolean;
   /** Rebuild of a site the client already had, or a first site. Shown as a pill. */
   build: 'rebuild' | 'new';
   /** Hero image for the card. */
@@ -234,6 +239,7 @@ export const portfolio: PortfolioItem[] = [
   },
   {
     slug: 'bandon-by-the-dunes',
+    family: true,
     caseStudy: '/work/bandon-by-the-dunes',
     numeral: 'ii.',
     name: 'Bandon By The Dunes Realtee',
@@ -273,6 +279,7 @@ export const portfolio: PortfolioItem[] = [
   },
   {
     slug: 'seabreeze',
+    family: true,
     caseStudy: '/work/seabreeze',
     numeral: 'iii.',
     name: 'SeaBreeze Landscape Care and Home Repair',
@@ -349,6 +356,7 @@ export const portfolio: PortfolioItem[] = [
   },
   {
     slug: 'sogn-contracting',
+    family: true,
     caseStudy: '/work/sogn-contracting',
     numeral: 'iv.',
     name: 'Sogn Contracting',

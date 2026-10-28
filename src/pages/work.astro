@@ -147,6 +147,7 @@ const workLd = {
                 <span class={`wk-status wk-build-${p.build}`}>
                   {p.build === 'rebuild' ? 'REBUILD' : 'NEW BUILD'}
                 </span>
+                {p.family && <span class="wk-status wk-family" title="Built for family">FAMILY</span>}
               </div>
               <p class="wk-meta-line">{p.meta}</p>
 
@@ -924,6 +925,12 @@ const workLd = {
   }
   /* Rebuild vs new build. Three client sites replaced one the business already
      had; the pill says so, because a rebuild is a different job from a first site. */
+  /* S339: family builds say so, quietly: outline only, no fill. */
+  .wk-family {
+    background: transparent;
+    color: var(--color-ash-300);
+    border: 1px dashed rgba(221, 228, 230, 0.4);
+  }
   .wk-build-rebuild {
     background: rgba(216, 144, 90, 0.15);
     color: var(--color-copper-bright);
