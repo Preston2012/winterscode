@@ -888,6 +888,14 @@ const workLd = {
     justify-content: space-between;
     gap: 8px;
   }
+  /* S339, Preston 2026-10-28: the same pill layout as the homepage. The name
+     takes the free width so the pills sit together; on a phone they drop
+     under the name, left-aligned, whether there are two or three. */
+  .wk-title { flex: 1 1 auto; min-width: 0; }
+  @media (max-width: 739px) {
+    .wk-title-row { flex-wrap: wrap; justify-content: flex-start; gap: 6px; }
+    .wk-title { flex-basis: 100%; }
+  }
   .wk-title {
     font-family: var(--font-serif);
     font-size: 18px;
