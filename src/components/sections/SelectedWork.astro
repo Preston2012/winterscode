@@ -98,7 +98,8 @@ const CARDS: WorkCard[] = [
     id: 'sogn-contracting',
     caseStudy: '/work/sogn-contracting',
     kind: 'site',
-    // S339, Preston 2026-10-28: back on the homepage, sixth.
+    // S339, Preston 2026-10-28 14:00 PT: off the homepage again; /work only.
+    published: false,
     title: 'Sogn Contracting',
     desc: 'Marketing site for a 30-year Bandon contractor.',
     stack: ['Next.js', 'Vercel'],
@@ -301,9 +302,11 @@ const CARDS: WorkCard[] = [
 // Bandon By The Dunes and SeaBreeze, in that order. Sogn and Professors Golf
 // keep their /work cards and case pages. The order lives here, not in the
 // array, so a card's data never has to move to change where it sits.
-// S339, Preston 2026-10-28: six cards, three across: Grand, US Survey Supply,
-// Bandon By The Dunes, Makai, SeaBreeze, Sogn.
-const HOME_ORDER = ['grand-management', 'us-survey-supply', 'bandon-by-the-dunes', 'makai-painting', 'seabreeze', 'sogn-contracting'];
+// S339, Preston 2026-10-28 14:00 PT: four cards, two across: Grand, US Survey
+// Supply, Bandon By The Dunes, Makai. SeaBreeze and Sogn keep their /work cards
+// and case pages. (The six-card layout earlier the same day is retired; its
+// n6 grid rules stay for the day the grid grows again.)
+const HOME_ORDER = ['grand-management', 'us-survey-supply', 'bandon-by-the-dunes', 'makai-painting'];
 const HOME_SITES = HOME_ORDER
   .map((id) => CARDS.find((c) => c.id === id && c.kind === 'site' && c.published !== false))
   .filter((c): c is WorkCard => Boolean(c));
@@ -610,6 +613,12 @@ const HOME_SITES = HOME_ORDER
     .selected-grid--n6 .sw-stack { margin-top: auto; padding-top: 4px; }
     .selected-grid--n6 .sw-title-row { flex-wrap: wrap; justify-content: flex-start; gap: 6px 6px; }
     .selected-grid--n6 .sw-title { flex-basis: 100%; }
+  }
+  /* Four cards: the same equal heights and floor-pinned stack row as six, so
+     Grand's highlights never leave its row partner short. */
+  @media (min-width: 740px) {
+    .selected-grid--n4 .sw-card { height: 100%; }
+    .selected-grid--n4 .sw-stack { margin-top: auto; padding-top: 4px; }
   }
   .selected-grid--n4 .sw-card { grid-template-rows: auto 1fr; }
   .selected-grid--n4 .sw-preview { aspect-ratio: 1200 / 630; }
