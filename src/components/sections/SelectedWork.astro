@@ -302,11 +302,13 @@ const CARDS: WorkCard[] = [
 // Bandon By The Dunes and SeaBreeze, in that order. Sogn and Professors Golf
 // keep their /work cards and case pages. The order lives here, not in the
 // array, so a card's data never has to move to change where it sits.
-// S339, Preston 2026-10-28 14:00 PT: four cards, two across: Grand, US Survey
-// Supply, Bandon By The Dunes, Makai. SeaBreeze and Sogn keep their /work cards
-// and case pages. (The six-card layout earlier the same day is retired; its
-// n6 grid rules stay for the day the grid grows again.)
-const HOME_ORDER = ['grand-management', 'us-survey-supply', 'bandon-by-the-dunes', 'makai-painting'];
+// S339, Preston 2026-10-28: four cards, two across: Grand, US Survey Supply,
+// Makai, Bandon By The Dunes. SeaBreeze and Sogn keep their /work cards and
+// case pages. Family builds lead less: Bandon By The Dunes sits fourth and is
+// the next to leave the homepage; it stays for the depth and the live RMLS
+// integration it shows. (The six-card layout earlier the same day is retired;
+// its n6 grid rules stay for the day the grid grows again.)
+const HOME_ORDER = ['grand-management', 'us-survey-supply', 'makai-painting', 'bandon-by-the-dunes'];
 const HOME_SITES = HOME_ORDER
   .map((id) => CARDS.find((c) => c.id === id && c.kind === 'site' && c.published !== false))
   .filter((c): c is WorkCard => Boolean(c));

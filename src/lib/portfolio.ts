@@ -154,8 +154,8 @@ export const portfolio: PortfolioItem[] = [
     tags: ['ASTRO', 'TAILWIND', 'CLOUDFLARE'],
     status: 'live',
     build: 'rebuild',
-    // S339 order, Preston 2026-10-28: Grand, US Survey Supply, Bandon By The
-    // Dunes, Makai, SeaBreeze, Sogn, Professors Golf, South Coast Cuisine.
+    // S339 order, Preston 2026-10-28: Grand, US Survey Supply, Makai, Bandon
+    // By The Dunes, SeaBreeze, Sogn, Professors Golf, South Coast Cuisine.
     order: 2,
     // Published 2026-09-11 (S230). Gate condition met: ussurveysupply.com now
     // serves this build. Verified by fetching the authoritative Cloudflare
@@ -203,7 +203,7 @@ export const portfolio: PortfolioItem[] = [
     tags: ['ASTRO', 'CLOUDFLARE', 'TURNSTILE'],
     status: 'live',
     build: 'new',
-    order: 4,
+    order: 3,
     image: {
       src: '/work/makai-card.webp',
       srcSmall: '/work/makai-card-720.webp',
@@ -242,7 +242,8 @@ export const portfolio: PortfolioItem[] = [
     tags: ['ASTRO', 'RMLS API', 'CLOUDFLARE'],
     status: 'live',
     build: 'rebuild',
-    order: 3,
+    // S339, Preston 2026-10-28: family builds lead less; fourth, after Makai.
+    order: 4,
     image: {
       src: '/work/bbtd-card.webp',
       srcSmall: '/work/bbtd-card-720.webp',
