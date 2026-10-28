@@ -628,6 +628,9 @@ const HOME_SITES = HOME_ORDER
   @media (min-width: 740px) {
     .selected-grid--n4 .sw-card { height: 100%; }
     .selected-grid--n4 .sw-stack { margin-top: auto; padding-top: 4px; }
+    /* The name takes the free width, so the pills sit together on the right
+       instead of LIVE floating alone in the middle of the row. */
+    .selected-grid--n4 .sw-title { flex: 1 1 auto; }
   }
   .selected-grid--n4 .sw-card { grid-template-rows: auto 1fr; }
   .selected-grid--n4 .sw-preview { aspect-ratio: 1200 / 630; }
@@ -923,10 +926,13 @@ const HOME_SITES = HOME_ORDER
     color: var(--color-copper-bright);
     border: 1px solid var(--copper-hairline);
   }
+  /* S339, Preston 2026-10-28: NEW BUILD is filled like REBUILD, in cream,
+     so a build from scratch never reads as worth less than a rebuild. */
   .sw-build-new {
-    background: transparent;
-    color: var(--color-ash-100);
-    border: 1px solid rgba(221, 228, 230, 0.30);
+    background: linear-gradient(180deg, rgba(244, 239, 230, 0.22), rgba(244, 239, 230, 0.09));
+    color: #f7f2ea;
+    border: 1px solid rgba(244, 239, 230, 0.45);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14);
   }
 
   .sw-desc {
