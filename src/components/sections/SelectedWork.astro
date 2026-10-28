@@ -371,7 +371,7 @@ const HOME_SITES = HOME_ORDER
             {card.motion && <CardMotion kind={card.motion} />}
           </div>
           <div class="sw-meta">
-            <div class={`sw-title-row${card.family ? ' sw-title-row--3' : ''}`}>
+            <div class="sw-title-row">
               <span class="sw-title">{card.title}</span>
               <span class={`sw-status sw-status-${card.status.toLowerCase()}`}>{card.status}</span>
               <span class={`sw-status sw-build-${card.build}`}>{card.build === 'rebuild' ? 'REBUILD' : 'NEW BUILD'}</span>
@@ -437,7 +437,7 @@ const HOME_SITES = HOME_ORDER
             )}
           </div>
           <div class="sw-meta">
-            <div class={`sw-title-row${card.family ? ' sw-title-row--3' : ''}`}>
+            <div class="sw-title-row">
               <span class="sw-title">{card.title}</span>
               <span class={`sw-status sw-status-${card.status.toLowerCase()}`}>{card.status}</span>
               <span class={`sw-status sw-build-${card.build}`}>{card.build === 'rebuild' ? 'REBUILD' : 'NEW BUILD'}</span>
@@ -628,9 +628,6 @@ const HOME_SITES = HOME_ORDER
   @media (min-width: 740px) {
     .selected-grid--n4 .sw-card { height: 100%; }
     .selected-grid--n4 .sw-stack { margin-top: auto; padding-top: 4px; }
-    /* The name takes the free width, so the pills sit together on the right
-       instead of LIVE floating alone in the middle of the row. */
-    .selected-grid--n4 .sw-title { flex: 1 1 auto; }
   }
   .selected-grid--n4 .sw-card { grid-template-rows: auto 1fr; }
   .selected-grid--n4 .sw-preview { aspect-ratio: 1200 / 630; }
@@ -910,11 +907,17 @@ const HOME_SITES = HOME_ORDER
   }
   /* Rebuild vs new build. Three of the client sites replaced a site the
      business already had; the pill says so, because that is a different job. */
-  /* Three pills on a phone-width card leave a long name three words to a
-     line, so the pills drop under the name there. */
+  /* S339, Preston 2026-10-28: one pill layout on every card. On a phone the
+     name gets the full width and the pills sit under it, left-aligned, so
+     two pills and three pills line up the same way down the page. From
+     740px the name takes the free width and the pills sit together on the
+     right; space-between used to float LIVE alone mid-row. */
   @media (max-width: 739px) {
-    .sw-title-row--3 { flex-wrap: wrap; justify-content: flex-start; gap: 6px; }
-    .sw-title-row--3 .sw-title { flex-basis: 100%; }
+    .sw-title-row { flex-wrap: wrap; justify-content: flex-start; gap: 6px; }
+    .sw-title { flex-basis: 100%; }
+  }
+  @media (min-width: 740px) {
+    .sw-title { flex: 1 1 auto; }
   }
   .sw-family {
     background: transparent;
