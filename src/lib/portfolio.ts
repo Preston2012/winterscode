@@ -92,7 +92,7 @@ export const portfolio: PortfolioItem[] = [
   {
     slug: 'us-survey-supply',
     caseStudy: '/work/us-survey-supply',
-    // S344, Preston 2026-10-28: Rod Taylor's review, verbatim from his email
+    // S339, Preston 2026-10-28: Rod Taylor's review, verbatim from his email
     // "Winters Code Review" of 2026-09-10 (cc Nikkol), written to be published:
     // it closes "We are proud to endorse and recommend WintersCode.com." His
     // spaced hyphens and his capital I stay exactly as he typed them.
