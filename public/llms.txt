@@ -32,6 +32,7 @@ Contact: Preston Winters. Text or call (541) 551-0731. Email preston@winterscode
 - [Logo Design](https://winterscode.com/logo-design): Brand marks and identity.
 
 ## Work
+- [Grand Management Services](https://winterscode.com/work/grand-management): A Coos Bay property manager rebuilt off WordPress, 100 pages in English and Spanish with live AppFolio rentals and online applications for 16 subsidized communities, live at https://www.grandmgmt.com.
 - [US Survey Supply](https://winterscode.com/work/us-survey-supply): A 42-page rebuild for a surveying-equipment dealer.
 - [Makai Painting](https://winterscode.com/work#makai-painting): A 20-page site for a Coos Bay painting and residential-rehab company, live at https://www.makaipainting.com.
 - [Bandon By The Dunes Realtee](https://winterscode.com/work/bandon-by-the-dunes): A brokerage on live RMLS listings with no IDX widget.

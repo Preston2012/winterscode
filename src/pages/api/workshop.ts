@@ -44,6 +44,7 @@ interface WorkshopData {
     taylor:      [number, number, number, number];
     makai:       [number, number, number, number];
     jen:         [number, number, number, number];
+    grand:       [number, number, number, number];
     measured: string; // "8m ago"
     measured_at?: string; // ISO time of the audit, so a cached read ages honestly
     source: 'live' | 'fallback';
@@ -62,6 +63,7 @@ interface WorkshopData {
       taylor:      { grade: string; score: number };
       makai:       { grade: string; score: number };
       jen:         { grade: string; score: number };
+      grand:       { grade: string; score: number };
     };
     source: 'live' | 'fallback';
   };
@@ -122,6 +124,8 @@ const FALLBACK: WorkshopData = {
     makai:       [93, 100, 100, 100],
     // South Coast Cuisine (southcoastcuisine.net), S339: lab run 2026-10-22.
     jen:         [97, 100, 100, 100],
+    // Grand Management (www.grandmgmt.com), S339: lab run 2026-10-28.
+    grand:       [98, 100, 100, 100],
     measured: '8m ago',
     source: 'fallback',
   },
@@ -142,6 +146,7 @@ const FALLBACK: WorkshopData = {
       golf:        { grade: 'A+', score: 140 }, // Observatory 2026-09-05, 12 of 12
       makai:       { grade: 'A+', score: 125 }, // Observatory 2026-10-22
       jen:         { grade: 'A+', score: 140 }, // Observatory 2026-10-22
+      grand:       { grade: 'A+', score: 125 }, // Observatory 2026-10-28
     },
     source: 'fallback',
   },
@@ -468,7 +473,7 @@ async function fetchPSI(
   // Measure the canonical www directly. The old PSI Lighthouse-500 on www is
   // resolved (verified May 2026, www PSI ~96). Measuring the bare apex paid the
   // 301 to www redirect penalty (~92 vs ~96 on www); www matches the sogn entry.
-  const [wc, sogn, baseline, bbtd, seabreeze, golf, taylor, makai, jen] = await Promise.all([
+  const [wc, sogn, baseline, bbtd, seabreeze, golf, taylor, makai, jen, grand] = await Promise.all([
     auditSite('https://winterscode.com', FALLBACK.lighthouse.winterscode),
     auditSite('https://www.sogncontracting.com', FALLBACK.lighthouse.sogn),
     auditSite('https://www.baseline.marketing', FALLBACK.lighthouse.baseline),
@@ -482,6 +487,8 @@ async function fetchPSI(
     auditSite('https://www.makaipainting.com', FALLBACK.lighthouse.makai),
     // S339: South Coast Cuisine serves the apex; www 301s to it.
     auditSite('https://southcoastcuisine.net', FALLBACK.lighthouse.jen),
+    // S339: Grand's apex 301s to www, so www is measured.
+    auditSite('https://www.grandmgmt.com', FALLBACK.lighthouse.grand),
   ]);
   // Source flag is 'live' if any site returned non-fallback data.
   // UI shows "live · partial" when not all 3 succeeded.
@@ -494,7 +501,8 @@ async function fetchPSI(
     JSON.stringify(golf) !== JSON.stringify(FALLBACK.lighthouse.golf) ||
     JSON.stringify(taylor) !== JSON.stringify(FALLBACK.lighthouse.taylor) ||
     JSON.stringify(makai) !== JSON.stringify(FALLBACK.lighthouse.makai) ||
-    JSON.stringify(jen) !== JSON.stringify(FALLBACK.lighthouse.jen);
+    JSON.stringify(jen) !== JSON.stringify(FALLBACK.lighthouse.jen) ||
+    JSON.stringify(grand) !== JSON.stringify(FALLBACK.lighthouse.grand);
 
   // Rolling-best display. Keep the last N live runs per site in KV and show the
   // element-wise best-of-N per category, so a single cold/throttled PSI run (or
@@ -516,8 +524,8 @@ async function fetchPSI(
     };
     return [pick(0), pick(1), pick(2), pick(3)];
   };
-  let hist: { winterscode: Quad[]; sogn: Quad[]; baseline: Quad[]; bbtd: Quad[]; seabreeze: Quad[]; golf: Quad[]; taylor: Quad[]; makai?: Quad[]; jen?: Quad[] } =
-    { winterscode: [], sogn: [], baseline: [], bbtd: [], seabreeze: [], golf: [], taylor: [], makai: [], jen: [] };
+  let hist: { winterscode: Quad[]; sogn: Quad[]; baseline: Quad[]; bbtd: Quad[]; seabreeze: Quad[]; golf: Quad[]; taylor: Quad[]; makai?: Quad[]; jen?: Quad[]; grand?: Quad[] } =
+    { winterscode: [], sogn: [], baseline: [], bbtd: [], seabreeze: [], golf: [], taylor: [], makai: [], jen: [], grand: [] };
   if (kv) {
     try { const h = await kv.get<typeof hist>(HIST_KEY, 'json'); if (h) hist = h; } catch { /* non-fatal */ }
   }
@@ -534,6 +542,7 @@ async function fetchPSI(
     taylor: roll(hist.taylor ?? [], taylor, FALLBACK.lighthouse.taylor),
     makai: roll(hist.makai ?? [], makai, FALLBACK.lighthouse.makai),
     jen: roll(hist.jen ?? [], jen, FALLBACK.lighthouse.jen),
+    grand: roll(hist.grand ?? [], grand, FALLBACK.lighthouse.grand),
   };
   if (kv && isLive) {
     try { await kv.put(HIST_KEY, JSON.stringify(hist), { expirationTtl: HIST_TTL }); } catch { /* non-fatal */ }
@@ -549,6 +558,7 @@ async function fetchPSI(
     taylor: aggregate(hist.taylor ?? [], taylor),
     makai: aggregate(hist.makai ?? [], makai),
     jen: aggregate(hist.jen ?? [], jen),
+    grand: aggregate(hist.grand ?? [], grand),
     measured: 'just now',
     measured_at: new Date().toISOString(),
     source: isLive ? 'live' : 'fallback',
@@ -571,7 +581,7 @@ async function fetchObservatory(kv?: KVNamespace): Promise<WorkshopData['securit
   // KV cache: 6h TTL, 30min refresh. Grades FIVE hosts (per-site rows on the
   // wall + each /work card). The cached object holds all five grades; if the
   // API is down we serve the cached object as 'cached'. Grades change rarely.
-  const CACHE_KEY = 'workshop:obs:v5'; // v5 (2026-10-22): ninth site, jen. v4: makai. v3: taylor
+  const CACHE_KEY = 'workshop:obs:v6'; // v6 (2026-10-28): tenth site, grand. v5: jen. v4: makai. v3: taylor
   const CACHE_TTL = 60 * 60 * 6;
   let lastCached: (WorkshopData['security'] & { _cachedAt?: number }) | undefined;
   let cacheAgeSec = Infinity;
@@ -602,6 +612,7 @@ async function fetchObservatory(kv?: KVNamespace): Promise<WorkshopData['securit
     taylor:      'ussurveysupply.com',
     makai:       'www.makaipainting.com',
     jen:         'southcoastcuisine.net',
+    grand:       'www.grandmgmt.com',
   };
   const analyze = async (
     host: string,
@@ -819,13 +830,14 @@ async function refreshPSIBackground(
   // means changing the key. HIST_KEY stays at v2 on purpose so the other six
   // keep their rolling history; the reader already tolerates a missing entry.
   // v4 (2026-10-22, S339): eighth site, makai; v5 the same day: ninth, jen.
-  const CACHE_KEY = 'workshop:psi:v5';
+  // v6 (2026-10-28, S339): tenth site, grand.
+  const CACHE_KEY = 'workshop:psi:v6';
   const CACHE_TTL = 60 * 60 * 12;
   // Throttle: every pageview schedules this refresher, and a live run is 4 PSI
   // calls (one per site). Without a gate that is 4 calls per visitor, which is
   // what drained the daily quota. Run a live refresh at most once every 30 min;
   // the 12h cache serves every request in between.
-  const GATE_KEY = 'workshop:psi:lastrun:v5';
+  const GATE_KEY = 'workshop:psi:lastrun:v6';
   try {
     const last = await kv.get(GATE_KEY);
     if (last && Date.now() - Number(last) < 30 * 60 * 1000) return;

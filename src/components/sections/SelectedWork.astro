@@ -49,7 +49,7 @@ interface WorkCard {
   /** S339: pour wet paint off the top of the card art (PaintPour). Makai only. */
   pour?: boolean;
   /** S339: one signature movement from the client's own mark (CardMotion). */
-  motion?: 'lighthouse' | 'flag' | 'lawn';
+  motion?: 'lighthouse' | 'flag' | 'lawn' | 'pins';
   /** Optional hero image (overrides editorial glyph). */
   image?: {
     src: string;
@@ -63,11 +63,33 @@ interface WorkCard {
 
 const CARDS: WorkCard[] = [
   {
+    // S339, Preston 2026-10-28: Grand leads the homepage. Live on its own
+    // domain since 2026-10-27; the card opens its case page. No built-in
+    // days until Preston gives the build time.
+    id: 'grand-management',
+    caseStudy: '/work/grand-management',
+    kind: 'site',
+    title: 'Grand Management Services',
+    desc: 'Coos Bay property manager: live rentals, 16 communities with applications online, in English and Spanish.',
+    stack: ['Astro', 'AppFolio'],
+    status: 'LIVE',
+    build: 'rebuild',
+    external_url: 'https://www.grandmgmt.com',
+    motion: 'pins',
+    image: {
+      src: '/work/grand-card.webp',
+      srcSmall: '/work/grand-card-720.webp',
+      srcXSmall: '/work/grand-card-480.webp',
+      alt: 'Grand Management Services, Coos Bay, Oregon: the Grand logo over the line How can we help?, beside a map of Oregon with a gold pin in every town where Grand manages a community.',
+      width: 1200,
+      height: 630,
+    },
+  },
+  {
     id: 'sogn-contracting',
     caseStudy: '/work/sogn-contracting',
     kind: 'site',
-    // S339, Preston: off the homepage; leads nothing now, stays on /work.
-    published: false,
+    // S339, Preston 2026-10-28: back on the homepage, sixth.
     title: 'Sogn Contracting',
     desc: 'Marketing site for a 30-year Bandon contractor.',
     stack: ['Next.js', 'Vercel'],
@@ -270,7 +292,9 @@ const CARDS: WorkCard[] = [
 // Bandon By The Dunes and SeaBreeze, in that order. Sogn and Professors Golf
 // keep their /work cards and case pages. The order lives here, not in the
 // array, so a card's data never has to move to change where it sits.
-const HOME_ORDER = ['us-survey-supply', 'makai-painting', 'bandon-by-the-dunes', 'seabreeze'];
+// S339, Preston 2026-10-28: six cards, three across: Grand, US Survey Supply,
+// Bandon By The Dunes, Makai, SeaBreeze, Sogn.
+const HOME_ORDER = ['grand-management', 'us-survey-supply', 'bandon-by-the-dunes', 'makai-painting', 'seabreeze', 'sogn-contracting'];
 const HOME_SITES = HOME_ORDER
   .map((id) => CARDS.find((c) => c.id === id && c.kind === 'site' && c.published !== false))
   .filter((c): c is WorkCard => Boolean(c));
@@ -558,6 +582,21 @@ const HOME_SITES = HOME_ORDER
      and a name never breaks mid-word (four across squeezed titles to
      "Paintin g" at 1440, S339). The art keeps its own 1200x630 shape
      at every width, so a narrow column never crops a name off a card. */
+  /* Six cards (S339, 2026-10-28): two across from 740px with no spanning
+     first card, three across from 1024px, every preview at the art's own
+     1200x630 so no card art is cropped. */
+  .selected-grid--n6 .sw-card { grid-template-rows: auto 1fr; }
+  .selected-grid--n6 .sw-preview { aspect-ratio: 1200 / 630; }
+  @media (min-width: 740px) {
+    .selected-grid--n6 .sw-card-wrap:first-child { grid-column: auto; }
+    /* Every card in a row the same height, the stack row on the floor, and
+       the badges under the title so a three-word name is not squeezed into
+       a narrow column beside them. */
+    .selected-grid--n6 .sw-card { height: 100%; }
+    .selected-grid--n6 .sw-stack { margin-top: auto; padding-top: 4px; }
+    .selected-grid--n6 .sw-title-row { flex-wrap: wrap; justify-content: flex-start; gap: 6px 6px; }
+    .selected-grid--n6 .sw-title { flex-basis: 100%; }
+  }
   .selected-grid--n4 .sw-card { grid-template-rows: auto 1fr; }
   .selected-grid--n4 .sw-preview { aspect-ratio: 1200 / 630; }
   @media (min-width: 740px) {
