@@ -90,6 +90,53 @@ export interface PortfolioItem {
 export const portfolio: PortfolioItem[] = [
   // ─────────── SITES ───────────
   {
+    // S339, Preston 2026-10-28: Grand Management is live (www.grandmgmt.com,
+    // 2026-10-27) and leads the homepage and /work. Order from his ruling:
+    // Grand, US Survey Supply, Bandon By The Dunes, Makai, SeaBreeze, Sogn,
+    // then Professors Golf and South Coast Cuisine. Facts from the wc-grandmgmt
+    // repo and docs, the live sitemap and live scans of 2026-10-28. "50
+    // bilingual pages", never 100 (Preston). 13 business days: first build
+    // 2026-10-09, live 2026-10-27.
+    slug: 'grand-management',
+    caseStudy: '/work/grand-management',
+    numeral: 'viii.',
+    name: 'Grand Management Services',
+    category: 'site',
+    meta: 'grandmgmt.com · property management · 50 bilingual pages',
+    tags: ['ASTRO', 'APPFOLIO', 'CLOUDFLARE'],
+    status: 'live',
+    build: 'rebuild',
+    order: 1,
+    image: {
+      src: '/work/grand-card.webp',
+      srcSmall: '/work/grand-card-720.webp',
+      srcXSmall: '/work/grand-card-480.webp',
+      alt: 'Grand Management Services, Coos Bay, Oregon: the Grand logo and its gold cube mark over the line How can we help?, beside a map of Oregon with a gold pin in every town where Grand manages a community and the Park Avenue office circled.',
+      width: 1200,
+      height: 630,
+    },
+    details: [
+      {
+        label: 'Scope',
+        value:
+          'Rebuild of a Coos Bay property manager off WordPress: 50 bilingual pages, English and Spanish. Rentals live from AppFolio with town, bedroom and rent filters; 16 subsidized communities in 14 towns, each with its own page; their applications online, encrypted in the applicant\u2019s browser and opened only in a back office the staff signs in to; all eight of the old forms rebuilt; and all 80 old addresses redirected to their new pages. Built in 13 business days.',
+      },
+      {
+        label: 'Result',
+        value:
+          'Live on its own domain since 2026-10-27, on the client\u2019s own Cloudflare account. Mozilla Observatory A+ (the old site measured D-), and Lighthouse and the security grade measured live on the wall.',
+      },
+      {
+        label: 'Stack',
+        value: 'Astro · Cloudflare Pages · Pages Functions · AppFolio listings · applications encrypted in the browser · English and Spanish',
+      },
+    ],
+    links: [
+      { label: 'Visit site →', href: 'https://www.grandmgmt.com', primary: true },
+    ],
+    published: true,
+  },
+  {
     slug: 'us-survey-supply',
     caseStudy: '/work/us-survey-supply',
     // S339, Preston 2026-10-28: Rod Taylor's review, verbatim from his email
@@ -107,9 +154,9 @@ export const portfolio: PortfolioItem[] = [
     tags: ['ASTRO', 'TAILWIND', 'CLOUDFLARE'],
     status: 'live',
     build: 'rebuild',
-    // S339 order, Preston 2026-10-22: US Survey Supply, Makai, Bandon By The
-    // Dunes, SeaBreeze, Sogn, Professors Golf, South Coast Cuisine.
-    order: 1,
+    // S339 order, Preston 2026-10-28: Grand, US Survey Supply, Bandon By The
+    // Dunes, Makai, SeaBreeze, Sogn, Professors Golf, South Coast Cuisine.
+    order: 2,
     // Published 2026-09-11 (S230). Gate condition met: ussurveysupply.com now
     // serves this build. Verified by fetching the authoritative Cloudflare
     // address directly, because the ops resolver still held the old host's A
@@ -156,7 +203,7 @@ export const portfolio: PortfolioItem[] = [
     tags: ['ASTRO', 'CLOUDFLARE', 'TURNSTILE'],
     status: 'live',
     build: 'new',
-    order: 2,
+    order: 4,
     image: {
       src: '/work/makai-card.webp',
       srcSmall: '/work/makai-card-720.webp',
@@ -233,7 +280,7 @@ export const portfolio: PortfolioItem[] = [
     tags: ['ASTRO', 'TAILWIND', 'CLOUDFLARE'],
     status: 'live',
     build: 'rebuild',
-    order: 4,
+    order: 5,
     image: {
       src: '/work/seabreeze-card.webp',
       srcSmall: '/work/seabreeze-card-720.webp',
@@ -271,7 +318,7 @@ export const portfolio: PortfolioItem[] = [
     tags: ['ASTRO', 'CLOUDFLARE'],
     status: 'live',
     build: 'new',
-    order: 6,
+    order: 7,
     image: {
       src: '/work/golf-card.webp',
       srcSmall: '/work/golf-card-720.webp',
@@ -309,7 +356,7 @@ export const portfolio: PortfolioItem[] = [
     tags: ['NEXT.JS', 'VERCEL', 'TYPESCRIPT'],
     status: 'live',
     build: 'new',
-    order: 5,
+    order: 6,
     image: {
       src: '/work/sogn-card.webp',
       srcSmall: '/work/sogn-card-720.webp',
@@ -353,7 +400,7 @@ export const portfolio: PortfolioItem[] = [
     tags: ['ASTRO', 'CLOUDFLARE', 'CLIENT EDITOR'],
     status: 'live',
     build: 'new',
-    order: 7,
+    order: 8,
     details: [
       {
         label: 'Scope',

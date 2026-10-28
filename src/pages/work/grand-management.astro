@@ -1,0 +1,84 @@
+---
+/**
+ * Grand Management Services case study (S339, Preston 2026-10-28: "now the
+ * grand management is live we need to prep its feature and work showcase and
+ * case study").
+ *
+ * Every number here was measured or counted, never estimated:
+ *   - 50 bilingual pages: the live sitemap, 2026-10-28, has each of 50 pages
+ *     in English and again under /es. Preston 2026-10-28: say 50 bilingual
+ *     pages, never 100 or "50 and the same 50".
+ *   - Built in 13 business days: first build 2026-10-09 (wc-grandmgmt's
+ *     first commit, S330), live 2026-10-27.
+ *   - Office retention: the encrypted copy is deleted 30 days after the
+ *     office files it (docs/SUBSIDIZED-APPLICATIONS.md, RETENTION_DAYS).
+ *   - Observatory A+ 125: live scan of www.grandmgmt.com, 2026-10-28.
+ *   - Old site D- 25: Observatory, measured 2026-10-10 (brain, S330).
+ *   - Lighthouse mobile 98 home, 98 communities, 97 apply: lab runs
+ *     2026-10-28 (playbook lighthouse-run). Old site 69: the May 2026 audit.
+ *   - 16 communities in 14 towns: Christina Hurt's list of 2026-10-15, as
+ *     built (wc-grandmgmt 9b9ce38) and as the live home counts them.
+ *   - 80 old addresses: wc-grandmgmt docs/old-urls.txt, all redirect
+ *     checked live at launch, 0 bad (S345).
+ *   - Signed 2026-10-13, live 2026-10-27 on Grand's own Cloudflare account.
+ * Nothing about how the office's encryption works beyond the fact that it
+ * exists: a case study is not a map for anyone looking for a way in.
+ */
+import CaseStudyLayout from '../../components/templates/CaseStudyLayout.astro';
+---
+<CaseStudyLayout
+  slug="grand-management"
+  title="Grand Management Services Case Study · Winters Code"
+  description="A Coos Bay property manager rebuilt off WordPress: 50 bilingual pages, rentals live from AppFolio, and an encrypted back office for 16 subsidized communities' applications."
+  eyebrow="Work · Case Study"
+  h1="Fifty bilingual pages and an encrypted back office."
+  sub="A Coos Bay property manager's site, rebuilt from WordPress: every page in English and Spanish, rentals live from AppFolio, and applications for 16 subsidized communities that arrive encrypted in an office only the staff can open."
+  intro={[
+    "Grand Management Services runs rentals, subsidized apartment communities and owner services from an office on Park Avenue in Coos Bay. Their website serves three people who want three different things: somebody looking for a home, a tenant who needs to pay rent or ask for a repair, and an owner deciding who should manage their property.",
+    "The old site was WordPress on a page-builder theme. Mozilla Observatory graded it <span class='hl-copper'>D-</span> when I measured it on October 10, and a May audit put its mobile performance at 69. The rebuild went live on October 27 on Grand's own Cloudflare account, graded <span class='hl-green'>A+</span>, with a mobile performance score of 98.",
+    "It is the largest site I have built for a client: <span class='hl-green'>50 bilingual pages</span>, a live rental feed, and a back office the staff signs in to. Thirteen business days from the first build to launch.",
+  ]}
+  stats={[
+    { value: '50', label: 'bilingual pages, English and Spanish' },
+    { value: '16', label: 'subsidized communities, each with its own page' },
+    { value: '80', label: 'old addresses, every one redirected' },
+    { value: 'A+', label: 'Mozilla Observatory, up from D-' },
+  ]}
+  sections={[
+    {
+      h: 'The front door is a question',
+      body: [
+        "The homepage opens with the question the front desk asks: <em>How can we help?</em> Right under it the site splits three ways. Looking for a home, already a tenant, or own a property, each with its own short list of the things that person came to do, so a tenant paying rent never has to wade through owner services to find the button.",
+        "Below that, a map of Oregon carries a pin for every town where Grand manages a community, from Tillamook to Brookings and out to Prineville, with the office marked on Park Avenue. Tap a town and its communities come up.",
+      ],
+    },
+    {
+      h: 'Rentals straight from AppFolio',
+      body: [
+        "Grand runs its business in AppFolio, and that did not change. The homes for rent on the site come live from AppFolio, with filters for town, bedrooms and rent, so a home the office lists in AppFolio is on the website within minutes. If AppFolio is slow, the page still shows the last homes it had instead of an empty box.",
+        "Paying rent and applying for a market-rate home still happen in AppFolio, one tap away, so tenants keep the logins they already have.",
+      ],
+    },
+    {
+      h: 'An encrypted back office',
+      body: [
+        "AppFolio takes one rental application. Grand's subsidized communities run under HUD, Rural Development, HOME and tax-credit programs, and each program needs its own application with its own notices. On the old site those were PDFs to print, fill in by hand and carry to the office.",
+        "Now every community that takes applications has its own online, matched to the version of the paper form that community uses. An application is <span class='hl-green'>encrypted in the applicant's own browser</span> before it leaves the phone or computer it was typed on, and it opens only in Grand's back office, a workspace the staff signs in to. When the office has filed its record, the stored copy is deleted 30 days later.",
+        "The paper forms are still there for anyone who would rather use them.",
+      ],
+    },
+    {
+      h: 'Bilingual, and nothing lost in the move',
+      body: [
+        "Every page has a Spanish version, one tap from the top of the page, and so does every form, error message and confirmation email, so a family applying in Spanish never lands on an English form halfway through.",
+        "The move off WordPress kept everything the old site had. All eight of its forms were rebuilt, the accessibility statement, Equal Housing Opportunity notice and TTY 711 line are on every page that needs them, and all 80 addresses the old site published lead to the right new page. Each one was checked live on launch day. The security grade and the performance numbers are measured live on <a href='/wall'>the wall</a>, not quoted from a screenshot.",
+      ],
+    },
+  ]}
+  relatedLinks={[
+    { href: '/website-redesign', label: 'Website Redesign', sub: 'Getting off WordPress' },
+    { href: '/services/web-development', label: 'Web Development', sub: 'Custom code, not a plugin stack' },
+    { href: '/web-design-coos-bay', label: 'Web Design in Coos Bay', sub: 'Local work' },
+    { href: '/work', label: 'All work', sub: 'More projects' },
+  ]}
+/>

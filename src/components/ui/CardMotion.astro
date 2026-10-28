@@ -16,19 +16,33 @@
  *   lawn        SeaBreeze: one mower pass lays fresh-cut stripes across the
  *               green field around the logo panel (the panel itself is
  *               masked out), then the stripes simply stay, like a lawn.
+ *   pins        Grand Management: a ring goes out from the Park Avenue office
+ *               and each town's pin answers in turn, nearest first, out to
+ *               Prineville: one office reaching every community it manages.
  *
  * Rules: motion only while the card is on screen (paused off screen, so
  * phones do no work for cards nobody sees), transforms and opacity only,
  * nothing at all under prefers-reduced-motion or without JavaScript: the
  * card is then exactly its art.
  */
-interface Props { kind: 'lighthouse' | 'flag' | 'lawn' }
+interface Props { kind: 'lighthouse' | 'flag' | 'lawn' | 'pins' }
 const { kind } = Astro.props;
 // Measured on the card art (bbtd-card.webp, taylor-card.webp), 1200x630.
 const LANTERN = { x: 574, y: 98 };
 const TARGET = { x: 475.5, y: 178.5, r: 42 };
 // Sixteen 40-unit mowing stripes across the 1200-wide art.
 const STRIPES = Array.from({ length: 16 }, (_, k) => ({ x: k * 80 - 40, dark: k % 2 === 1 }));
+// Measured on grand-card.webp, 1200x630: the office and the fourteen town
+// pins, nearest the office first. Each pin answers after a delay that grows
+// with its distance from the office.
+const OFFICE = { x: 671.6, y: 385.1 };
+const PINS: [number, number][] = [
+  [671.6, 385.1], [659.4, 407.2], [676.4, 412], [726.7, 398.6], [653.8, 440.1],
+  [726.1, 325.5], [658.5, 469.8], [680.8, 292.3], [707.4, 491.2], [667.2, 500.8],
+  [733.5, 255.2], [695, 201.9], [775, 229], [885.1, 303.5],
+];
+const pinDelay = ([x, y]: [number, number]) =>
+  (0.35 + Math.hypot(x - OFFICE.x, y - OFFICE.y) * 0.0065).toFixed(2);
 ---
 {kind === 'lighthouse' && (
   <svg class="cm cm-lighthouse" viewBox="0 0 1200 630" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false" data-card-motion>
@@ -110,6 +124,15 @@ const STRIPES = Array.from({ length: 16 }, (_, k) => ({ x: k * 80 - 40, dark: k 
       </g>
       <rect class="cm-mower" x="-60" y="0" width="60" height="630" fill="url(#cm-blade)" />
     </g>
+  </svg>
+)}
+
+{kind === 'pins' && (
+  <svg class="cm cm-pins" viewBox="0 0 1200 630" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false" data-card-motion>
+    <circle class="cm-reach" cx={OFFICE.x} cy={OFFICE.y} r="14" fill="none" stroke="#f4efe6" stroke-width="2" />
+    {PINS.map((pin) => (
+      <circle class="cm-pin" cx={pin[0]} cy={pin[1]} r="7" fill="none" stroke="#e7cc95" stroke-width="2.4" style={`--d:${pinDelay(pin)}s`} />
+    ))}
   </svg>
 )}
 
@@ -225,6 +248,23 @@ const STRIPES = Array.from({ length: 16 }, (_, k) => ({ x: k * 80 - 40, dark: k 
     8% { opacity: 1; }
     88% { opacity: 1; }
     100% { transform: translateX(1260px); opacity: 0; }
+  }
+
+  /* ── Pins: the office calls, the towns answer ── */
+  .cm-reach, .cm-pin { transform-box: fill-box; transform-origin: center; opacity: 0; }
+  .cm-reach { animation: cm-reach 6s ease-out infinite; }
+  .cm-pin { animation: cm-pin 6s ease-out var(--d) infinite; }
+  @keyframes cm-reach {
+    0% { transform: scale(1); opacity: 0; }
+    4% { opacity: 0.9; }
+    30% { transform: scale(3.4); opacity: 0; }
+    100% { transform: scale(3.4); opacity: 0; }
+  }
+  @keyframes cm-pin {
+    0% { transform: scale(0.9); opacity: 0; }
+    3% { opacity: 1; }
+    22% { transform: scale(2.6); opacity: 0; }
+    100% { transform: scale(2.6); opacity: 0; }
   }
 
   @media (prefers-reduced-motion: reduce) {
