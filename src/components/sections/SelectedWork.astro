@@ -48,6 +48,9 @@ interface WorkCard {
   published?: boolean;
   /** S339: pour wet paint off the top of the card art (PaintPour). Makai only. */
   pour?: boolean;
+  /** S339: up to three short lines of what the build actually does, under the
+      description. Used where one sentence cannot carry the build (Grand). */
+  highlights?: string[];
   /** S339: one signature movement from the client's own mark (CardMotion). */
   motion?: 'lighthouse' | 'flag' | 'lawn' | 'pins';
   /** Optional hero image (overrides editorial glyph). */
@@ -63,17 +66,23 @@ interface WorkCard {
 
 const CARDS: WorkCard[] = [
   {
-    // S339, Preston 2026-10-28: Grand leads the homepage. Live on its own
-    // domain since 2026-10-27; the card opens its case page. No built-in
-    // days until Preston gives the build time.
+    // S339, Preston 2026-10-28: Grand leads the homepage, and the card shows
+    // what was built: 50 bilingual pages and the encrypted back office.
+    // 13 business days, first build 2026-10-09 to live 2026-10-27.
     id: 'grand-management',
     caseStudy: '/work/grand-management',
     kind: 'site',
     title: 'Grand Management Services',
-    desc: 'Coos Bay property manager: live rentals, 16 communities with applications online, in English and Spanish.',
+    desc: 'A Coos Bay property manager, rebuilt off WordPress.',
+    highlights: [
+      '50 bilingual pages',
+      'Live AppFolio rentals',
+      'Encrypted back office',
+    ],
     stack: ['Astro', 'AppFolio'],
     status: 'LIVE',
     build: 'rebuild',
+    built_in_days: 13,
     external_url: 'https://www.grandmgmt.com',
     motion: 'pins',
     image: {
@@ -358,6 +367,11 @@ const HOME_SITES = HOME_ORDER
               <span class={`sw-status sw-build-${card.build}`}>{card.build === 'rebuild' ? 'REBUILD' : 'NEW BUILD'}</span>
             </div>
             <p class="sw-desc">{card.desc}</p>
+            {card.highlights && (
+              <ul class="sw-hl" role="list">
+                {card.highlights.map((h) => <li>{h}</li>)}
+              </ul>
+            )}
             <div class="sw-stack">
               {card.stack.map((s) => <span class="sw-tag">{s}</span>)}
               {card.built_in_days != null && <span class="sw-built">Built in {card.built_in_days}d</span>}
@@ -897,6 +911,34 @@ const HOME_SITES = HOME_ORDER
     .sw-desc { font-size: 14px; }
   }
 
+  /* What the build does, three lines at most (Grand). */
+  .sw-hl {
+    list-style: none;
+    margin: 2px 0 0;
+    padding: 0;
+    display: grid;
+    gap: 5px;
+  }
+  .sw-hl li {
+    position: relative;
+    padding-left: 16px;
+    font-family: var(--font-sans);
+    font-size: 13px;
+    line-height: 1.45;
+    color: var(--color-ash-100);
+  }
+  .sw-hl li::before {
+    content: '';
+    position: absolute;
+    left: 1px;
+    top: 0.5em;
+    width: 7px;
+    height: 7px;
+    border-radius: 1px;
+    background: var(--color-copper);
+    transform: rotate(45deg);
+  }
+  @media (min-width: 1024px) { .sw-hl li { font-size: 14px; } }
   .sw-stack {
     display: flex;
     flex-wrap: wrap;

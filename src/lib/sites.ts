@@ -42,10 +42,10 @@ export const SITES: MeasuredSite[] = [
     // S339, 2026-10-28: newest client, live on www since 2026-10-27 (the apex
     // 301s to www, so www is the measured host). Fallbacks measured
     // 2026-10-28: Lighthouse lab run on the homepage (98, 100, 100, 100) and
-    // a direct Observatory scan (A+, 125). No builtDays until Preston gives
-    // the build time, so Grand stays off the recent-builds list until then.
+    // a direct Observatory scan (A+, 125). builtDays 13: first build Fri
+    // 2026-10-09 (wc-grandmgmt's first commit), live Tue 2026-10-27.
     key: 'grand', label: 'grandmgmt', name: 'Grand Management Services',
-    href: 'https://www.grandmgmt.com', portfolioSlug: 'grand-management',
+    href: 'https://www.grandmgmt.com', portfolioSlug: 'grand-management', builtDays: 13,
     published: true, lhFallback: [98, 100, 100, 100], secFallback: { grade: 'A+', score: 125 },
   },
   {

@@ -5,7 +5,13 @@
  * case study").
  *
  * Every number here was measured or counted, never estimated:
- *   - 100 pages: the live sitemap, 2026-10-28 (50 English, 50 under /es).
+ *   - 50 bilingual pages: the live sitemap, 2026-10-28, has each of 50 pages
+ *     in English and again under /es. Preston 2026-10-28: say 50 bilingual
+ *     pages, never 100 or "50 and the same 50".
+ *   - Built in 13 business days: first build 2026-10-09 (wc-grandmgmt's
+ *     first commit, S330), live 2026-10-27.
+ *   - Office retention: the encrypted copy is deleted 30 days after the
+ *     office files it (docs/SUBSIDIZED-APPLICATIONS.md, RETENTION_DAYS).
  *   - Observatory A+ 125: live scan of www.grandmgmt.com, 2026-10-28.
  *   - Old site D- 25: Observatory, measured 2026-10-10 (brain, S330).
  *   - Lighthouse mobile 98 home, 98 communities, 97 apply: lab runs
@@ -23,17 +29,17 @@ import CaseStudyLayout from '../../components/templates/CaseStudyLayout.astro';
 <CaseStudyLayout
   slug="grand-management"
   title="Grand Management Services Case Study · Winters Code"
-  description="A Coos Bay property manager rebuilt off WordPress: 100 pages in English and Spanish, live AppFolio rentals, and online applications for 16 subsidized communities."
+  description="A Coos Bay property manager rebuilt off WordPress: 50 bilingual pages, rentals live from AppFolio, and an encrypted back office for 16 subsidized communities' applications."
   eyebrow="Work · Case Study"
-  h1="A hundred pages, half of them in Spanish."
-  sub="A Coos Bay property manager's site, rebuilt from WordPress: rentals live from AppFolio, 16 subsidized communities with their applications online, and every page in English and Spanish."
+  h1="Fifty bilingual pages and an encrypted back office."
+  sub="A Coos Bay property manager's site, rebuilt from WordPress: every page in English and Spanish, rentals live from AppFolio, and applications for 16 subsidized communities that arrive encrypted in an office only the staff can open."
   intro={[
     "Grand Management Services runs rentals, subsidized apartment communities and owner services from an office on Park Avenue in Coos Bay. Their website serves three people who want three different things: somebody looking for a home, a tenant who needs to pay rent or ask for a repair, and an owner deciding who should manage their property.",
     "The old site was WordPress on a page-builder theme. Mozilla Observatory graded it <span class='hl-copper'>D-</span> when I measured it on October 10, and a May audit put its mobile performance at 69. The rebuild went live on October 27 on Grand's own Cloudflare account, graded <span class='hl-green'>A+</span>, with a mobile performance score of 98.",
-    "It is the largest site I have built for a client: <span class='hl-green'>a hundred pages</span>, fifty in English and the same fifty in Spanish.",
+    "It is the largest site I have built for a client: <span class='hl-green'>50 bilingual pages</span>, a live rental feed, and a back office the staff signs in to. Thirteen business days from the first build to launch.",
   ]}
   stats={[
-    { value: '100', label: 'pages live, English and Spanish' },
+    { value: '50', label: 'bilingual pages, English and Spanish' },
     { value: '16', label: 'subsidized communities, each with its own page' },
     { value: '80', label: 'old addresses, every one redirected' },
     { value: 'A+', label: 'Mozilla Observatory, up from D-' },
@@ -54,14 +60,15 @@ import CaseStudyLayout from '../../components/templates/CaseStudyLayout.astro';
       ],
     },
     {
-      h: 'The applications AppFolio could not take',
+      h: 'An encrypted back office',
       body: [
         "AppFolio takes one rental application. Grand's subsidized communities run under HUD, Rural Development, HOME and tax-credit programs, and each program needs its own application with its own notices. On the old site those were PDFs to print, fill in by hand and carry to the office.",
-        "Now every community that takes applications has its own online, matched to the version of the paper form that community uses. An application is encrypted in the applicant's own browser before it is sent, and opens only in the office's signed-in workspace. The paper forms are still there for anyone who would rather use them.",
+        "Now every community that takes applications has its own online, matched to the version of the paper form that community uses. An application is <span class='hl-green'>encrypted in the applicant's own browser</span> before it leaves the phone or computer it was typed on, and it opens only in Grand's back office, a workspace the staff signs in to. When the office has filed its record, the stored copy is deleted 30 days later.",
+        "The paper forms are still there for anyone who would rather use them.",
       ],
     },
     {
-      h: 'Every page in Spanish, nothing lost in the move',
+      h: 'Bilingual, and nothing lost in the move',
       body: [
         "Every page has a Spanish version, one tap from the top of the page, and so does every form, error message and confirmation email, so a family applying in Spanish never lands on an English form halfway through.",
         "The move off WordPress kept everything the old site had. All eight of its forms were rebuilt, the accessibility statement, Equal Housing Opportunity notice and TTY 711 line are on every page that needs them, and all 80 addresses the old site published lead to the right new page. Each one was checked live on launch day. The security grade and the performance numbers are measured live on <a href='/wall'>the wall</a>, not quoted from a screenshot.",

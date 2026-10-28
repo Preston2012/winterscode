@@ -94,15 +94,15 @@ export const portfolio: PortfolioItem[] = [
     // 2026-10-27) and leads the homepage and /work. Order from his ruling:
     // Grand, US Survey Supply, Bandon By The Dunes, Makai, SeaBreeze, Sogn,
     // then Professors Golf and South Coast Cuisine. Facts from the wc-grandmgmt
-    // repo and docs, the live sitemap and live scans of 2026-10-28. No build
-    // days: build time is Preston's number to give, and contract to live is
-    // not build time (sites.ts).
+    // repo and docs, the live sitemap and live scans of 2026-10-28. "50
+    // bilingual pages", never 100 (Preston). 13 business days: first build
+    // 2026-10-09, live 2026-10-27.
     slug: 'grand-management',
     caseStudy: '/work/grand-management',
     numeral: 'viii.',
     name: 'Grand Management Services',
     category: 'site',
-    meta: 'grandmgmt.com · property management · 100 pages, English + Spanish',
+    meta: 'grandmgmt.com · property management · 50 bilingual pages',
     tags: ['ASTRO', 'APPFOLIO', 'CLOUDFLARE'],
     status: 'live',
     build: 'rebuild',
@@ -119,7 +119,7 @@ export const portfolio: PortfolioItem[] = [
       {
         label: 'Scope',
         value:
-          'Rebuild of a Coos Bay property manager off WordPress: 100 pages, 50 in English and the same 50 in Spanish. Rentals live from AppFolio with town, bedroom and rent filters; 16 subsidized communities in 14 towns, each with its own page and its application online; all eight of the old forms rebuilt; and all 80 old addresses redirected to their new pages.',
+          'Rebuild of a Coos Bay property manager off WordPress: 50 bilingual pages, English and Spanish. Rentals live from AppFolio with town, bedroom and rent filters; 16 subsidized communities in 14 towns, each with its own page; their applications online, encrypted in the applicant\u2019s browser and opened only in a back office the staff signs in to; all eight of the old forms rebuilt; and all 80 old addresses redirected to their new pages. Built in 13 business days.',
       },
       {
         label: 'Result',
