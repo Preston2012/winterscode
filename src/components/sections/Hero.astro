@@ -733,11 +733,17 @@ const WORKSHOP_PREVIEW = [
     }
   }
   @media (min-width: 1024px) {
-    /* Centred over the shop card: the right column is 1fr of (100% - 60px gap) / 2.2fr,
-       so its centre sits half that from the right edge; minus half the 140px stamp. */
+    /* Centred over the shop card: an absolutely positioned grid child placed in column 2
+       takes that column as its containing block, so auto inline margins centre it on the
+       card's column at every width. */
     .hero-mark {
+      grid-column: 2;
+      grid-row: 1 / -1;
       top: 48px;
-      right: calc((100% - 60px) / 4.4 - 70px);
+      left: 0;
+      right: 0;
+      width: 140px;
+      margin-inline: auto;
       transform: rotate(-4deg);
       transform-origin: center;
     }
