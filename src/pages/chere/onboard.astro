@@ -543,6 +543,9 @@ const fileNote = (f: Field) => `${f.maxFiles === 1 ? 'One file' : `Up to ${f.max
   .ob-lead { font-family: var(--font-sans); font-size: 15px; line-height: 1.6; color: var(--color-ash-300); margin: 0 0 18px; }
   .ob-lead a, .ob-err a, .ob-priv a { color: var(--color-wc-green); }
   .ob-ticks { margin: 0 0 6px; padding-left: 20px; color: var(--color-ash-300); font-family: var(--font-sans); font-size: 15px; line-height: 1.6; }
+  ul.ob-ticks { list-style: disc; }
+  ol.ob-ticks { list-style: decimal; }
+  .ob-ticks li::marker { color: var(--color-wc-green); }
   .ob-ticks li { margin: 0 0 6px; }
   .ob-priv {
     margin: 18px 0 0;
