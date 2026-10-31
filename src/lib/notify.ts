@@ -42,12 +42,12 @@ const FROM_NAME = 'Winters Code';
 const TO = 'droiddna2013@gmail.com';
 
 /** One line, no control characters, bounded. Safe to place in a header. */
-function headerSafe(value: string, max = 160): string {
+export function headerSafe(value: string, max = 160): string {
   return value.replace(/[\r\n\t]+/g, ' ').replace(/[^\x20-\x7E]/g, '').trim().slice(0, max);
 }
 
 /** Body text is not header context, but keep CR out so the MIME stays intact. */
-function bodySafe(value: string, max = 4000): string {
+export function bodySafe(value: string, max = 4000): string {
   return value.replace(/\r/g, '').slice(0, max);
 }
 
