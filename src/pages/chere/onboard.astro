@@ -66,7 +66,8 @@ const pickWords = (f: Field) => ((f.maxFiles ?? 1) > 1 ? 'Choose files' : 'Choos
         <ol class="ob-ticks">
           <li>I set up your own server and the app's look from your answers.</li>
           <li>You install Chere': TestFlight on iPhone, or a download link on Android.</li>
-          <li>I text you a one-time code that connects your phone to your business.</li>
+          <li>You open Chere' and tap Text Preston the key. That texts me your phone's key.</li>
+          <li>I text you back a one-time code. You type it in, and your phone is connected to your business.</li>
         </ol>
         <p class="ob-priv">
           Your answers and files go to Winters Code's private storage and to me, and are used only
@@ -174,9 +175,12 @@ const pickWords = (f: Field) => ((f.maxFiles ?? 1) > 1 ? 'Choose files' : 'Choos
         <h2 class="ob-h2" id="ob-send-h" tabindex="-1">Send it to Preston</h2>
         <p class="ob-lead" data-ob-send-lead>Your answers go first, then your files one at a time. Stay here until it says sent.</p>
         <div class="ob-turnstile">
-          <div class="cf-turnstile" data-sitekey="0x4AAAAAAErqpIxNFp37Ylha" data-theme="dark" data-size="flexible"></div>
+          <div class="cf-turnstile" data-sitekey="0x4AAAAAAErqpIxNFp37Ylha" data-theme="dark" data-appearance="interaction-only" data-error-callback="obTurnstileError"></div>
           <p class="ob-err" data-ob-ts-err hidden>
             The spam check did not load. Text me at <a href={sms}>541-551-0731</a> and we will set you up by phone.
+          </p>
+          <p class="ob-err" data-ob-ts-preview hidden>
+            This is a preview copy. The spam check only runs on winterscode.com, so it cannot send from here.
           </p>
         </div>
         <p class="ob-status" data-ob-status role="status" aria-live="polite"></p>
@@ -381,14 +385,26 @@ const pickWords = (f: Field) => ((f.maxFiles ?? 1) > 1 ? 'Choose files' : 'Choos
   form.addEventListener('submit', (e) => { e.preventDefault(); if (steps[at].dataset.obStep !== 'send' && stepOk(at)) go(at + 1); });
 
   let tsLoaded = false;
+  const tsErr = () => { const e = form.querySelector<HTMLElement>('[data-ob-ts-err]'); if (e) e.hidden = false; };
+  // @ts-ignore : named in data-error-callback, so the Turnstile script finds it on window
+  window.obTurnstileError = () => { tsErr(); };
   function loadTurnstile() {
     if (tsLoaded) return;
     tsLoaded = true;
+    // The sitekey allows winterscode.com and www only, so a preview host can never pass it.
+    if (!/^(www\.)?winterscode\.com$/.test(location.hostname)) {
+      const e = form.querySelector<HTMLElement>('[data-ob-ts-preview]');
+      if (e) e.hidden = false;
+      return;
+    }
+    // Flexible needs 300px; a narrower phone gets the compact box, if Cloudflare shows one at all.
+    const box = form.querySelector<HTMLElement>('.cf-turnstile');
+    if (box) box.dataset.size = box.clientWidth >= 300 ? 'flexible' : 'compact';
     const s = document.createElement('script');
     s.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
     s.async = true;
     s.defer = true;
-    s.onerror = () => { const e = form.querySelector<HTMLElement>('[data-ob-ts-err]'); if (e) e.hidden = false; };
+    s.onerror = tsErr;
     document.head.appendChild(s);
   }
 
@@ -418,7 +434,7 @@ const pickWords = (f: Field) => ((f.maxFiles ?? 1) > 1 ? 'Choose files' : 'Choos
       return;
     }
     const ts = (form.querySelector<HTMLInputElement>('[name="cf-turnstile-response"]')?.value ?? '').trim();
-    if (!ts) { say('Waiting on the spam check above. If it does not clear in a few seconds, text me.', true); return; }
+    if (!ts) { say('Waiting on the spam check. If it does not clear in a few seconds, text me.', true); return; }
 
     sending = true;
     sendBtn.disabled = true;
@@ -751,7 +767,7 @@ const pickWords = (f: Field) => ((f.maxFiles ?? 1) > 1 ? 'Choose files' : 'Choos
     text-align: left;
   }
 
-  .ob-turnstile { margin: 8px 0 12px; min-height: 70px; }
+  .ob-turnstile { margin: 8px 0 12px; }
   .ob-status { font-family: var(--font-sans); font-size: 15px; color: var(--color-ash-300); min-height: 1.5em; margin: 0; }
   .ob-status-bad { color: #e08a7a; }
 
