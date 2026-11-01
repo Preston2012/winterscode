@@ -33,6 +33,8 @@ export interface Props {
   ogImage?: string | null;
   /** Suppress sitewide chrome (footer etc.), used by /404. */
   bare?: boolean;
+  /** Keep the page out of search: a working page shared by link (/chere/onboard). */
+  noindex?: boolean;
 }
 
 const {
@@ -41,6 +43,7 @@ const {
   canonicalPath,
   ogImage = '/og-image.png?v=2',
   bare = false,
+  noindex = false,
 } = Astro.props;
 
 const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? 'https://winterscode.com';
@@ -81,7 +84,7 @@ const isPreviewDeploy = !!cfBranch && cfBranch !== prodBranch;
   <title>{title}</title>
   <meta name="description" content={description} />
   <link rel="canonical" href={canonical} />
-  {isPreviewDeploy && <meta name="robots" content="noindex, nofollow" />}
+  {(isPreviewDeploy || noindex) && <meta name="robots" content="noindex, nofollow" />}
 
   <!-- Theme + favicons. The color seal (wc-stamp PNGs) is the canonical favicon:
        it matches the Google Business Profile mark, reads at tab size, and the

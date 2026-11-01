@@ -1,0 +1,743 @@
+---
+// The Chere' onboarding form (S348, Preston 2026-10-29): a new contractor
+// answers only the questions that change their setup, one part per screen,
+// then a review, then one Send. Every question comes from lib/onboard-spec,
+// which the server checks against and the PDF is labelled from, so the page,
+// the checks and Preston's copy cannot disagree. Shared by link with a
+// contractor, never listed: no index, no sitemap entry.
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/ui/Breadcrumbs.astro';
+import { STEPS, MB, type Field } from '../../lib/onboard-spec';
+import { smsBase } from '../../lib/text-cta';
+
+const sms = smsBase + encodeURIComponent("Hi Preston, about the Chere' setup form: ");
+const crumbs = [
+  { name: 'Home', path: '/' },
+  { name: "Chere' setup", path: '/chere/onboard' },
+];
+const total = STEPS.length + 2; // the parts, then review, then send
+const hint = (f: Field) => [f.help ? `ob-${f.id}-help` : '', `ob-${f.id}-err`].filter(Boolean).join(' ');
+const fileNote = (f: Field) => `${f.maxFiles === 1 ? 'One file' : `Up to ${f.maxFiles} files`}, ${Math.round((f.maxBytes ?? MB) / MB)} MB each.`;
+---
+
+<BaseLayout
+  title="Set up Chere' · Winters Code"
+  description="The questions that set up Chere' for your business: your work, your prices, your payments and your phone. About ten minutes."
+  canonicalPath="/chere/onboard"
+  noindex={true}
+>
+  <Breadcrumbs items={crumbs} />
+
+  <article class="ob">
+    <header class="ob-top">
+      <div class="ob-eyebrow">CHERE' · SETUP</div>
+      <h1 class="ob-h1">Set up Chere' for your business.</h1>
+      <p class="ob-tag">
+        Only the questions that change how the app works for you. About ten minutes. Your
+        answers come straight to me, and I set up your own server from them.
+      </p>
+    </header>
+
+    <form class="ob-form" data-ob-form novalidate>
+      <div class="ob-honey" aria-hidden="true">
+        <label>Leave this empty <input type="text" name="company_extra" tabindex="-1" autocomplete="off" /></label>
+      </div>
+
+      <nav class="ob-prog" aria-label="Form parts" data-ob-prog hidden>
+        <p class="ob-prog-now" data-ob-prog-now></p>
+        <div class="ob-bar" aria-hidden="true"><span data-ob-bar></span></div>
+      </nav>
+
+      <!-- Before you start -->
+      <section class="ob-step" data-ob-step="start" aria-labelledby="ob-start-h">
+        <h2 class="ob-h2" id="ob-start-h" tabindex="-1">Before you start</h2>
+        <h3 class="ob-h3">Have these handy</h3>
+        <ul class="ob-ticks">
+          <li>Your CCB or LCB license number, if you have one.</li>
+          <li>The hourly labor rate you usually charge.</li>
+          <li>Your logo, and any past contracts, estimates or price sheets, as files or photos on this device.</li>
+          <li>If you use an iPhone, the email on your Apple ID.</li>
+        </ul>
+        <h3 class="ob-h3">What happens after you send it</h3>
+        <ol class="ob-ticks">
+          <li>I set up your own server and the app's look from your answers.</li>
+          <li>You install Chere': TestFlight on iPhone, or a download link on Android.</li>
+          <li>I text you a one-time code that connects your phone to your business.</li>
+        </ol>
+        <p class="ob-priv">
+          Your answers and files go to Winters Code's private storage and to me, and are used only
+          to set up your app. Nothing is kept on this device. Ask me any time and I delete them.
+        </p>
+        <div class="ob-nav"><span></span><button type="button" class="ob-btn ob-btn-go" data-ob-next>Start →</button></div>
+      </section>
+
+      {STEPS.map((step, si) => (
+        <section class="ob-step" data-ob-step={step.id} aria-labelledby={`ob-${step.id}-h`} hidden>
+          <p class="ob-count">Part {si + 1} of {total}</p>
+          <h2 class="ob-h2" id={`ob-${step.id}-h`} tabindex="-1">{step.title}</h2>
+          {step.lead && <p class="ob-lead">{step.lead}</p>}
+          <div class="ob-errsum" data-ob-errsum role="alert" hidden></div>
+
+          {step.fields.map((f) => (
+            <div class="ob-field" data-ob-field={f.id} data-when-field={f.when?.field} data-when-is={f.when?.is} hidden={!!f.when}>
+              {(f.kind === 'radio' || f.kind === 'checks') ? (
+                <fieldset class="ob-set" aria-describedby={hint(f)}>
+                  <legend class="ob-label">{f.label}{f.required ? <span class="ob-req" aria-hidden="true"> *</span> : <span class="ob-opt"> (optional)</span>}</legend>
+                  {f.help && <p class="ob-help" id={`ob-${f.id}-help`}>{f.help}</p>}
+                  <div class="ob-choices">
+                    {f.options!.map((o) => (
+                      <label class="ob-choice">
+                        <input type={f.kind === 'radio' ? 'radio' : 'checkbox'} name={f.id} value={o.value} required={f.required && f.kind === 'radio'} />
+                        <span>{o.label}</span>
+                      </label>
+                    ))}
+                  </div>
+                  <p class="ob-err" id={`ob-${f.id}-err`} data-ob-err hidden></p>
+                </fieldset>
+              ) : f.kind === 'check' ? (
+                <div class="ob-set">
+                  <label class="ob-choice ob-choice-solo">
+                    <input type="checkbox" name={f.id} value="yes" id={`ob-${f.id}`} aria-describedby={hint(f)} />
+                    <span>{f.label}</span>
+                  </label>
+                  {f.help && <p class="ob-help" id={`ob-${f.id}-help`}>{f.help}</p>}
+                  <p class="ob-err" id={`ob-${f.id}-err`} data-ob-err hidden></p>
+                </div>
+              ) : (
+                <>
+                  <label class="ob-label" for={`ob-${f.id}`}>{f.label}{f.required ? <span class="ob-req" aria-hidden="true"> *</span> : <span class="ob-opt"> (optional)</span>}</label>
+                  {f.help && <p class="ob-help" id={`ob-${f.id}-help`}>{f.help}</p>}
+                  {f.kind === 'textarea' ? (
+                    <textarea id={`ob-${f.id}`} name={f.id} rows="4" maxlength={f.max} aria-describedby={hint(f)}></textarea>
+                  ) : f.kind === 'select' ? (
+                    <select id={`ob-${f.id}`} name={f.id} required={f.required} aria-describedby={hint(f)}>
+                      <option value="">Pick one</option>
+                      {f.options!.map((o) => <option value={o.value}>{o.label}</option>)}
+                    </select>
+                  ) : f.kind === 'file' ? (
+                    <div class="ob-file">
+                      <input type="file" id={`ob-${f.id}`} name={f.id} accept={f.accept} multiple={(f.maxFiles ?? 1) > 1} aria-describedby={`${hint(f)} ob-${f.id}-note`} data-ob-file />
+                      <p class="ob-help" id={`ob-${f.id}-note`}>{fileNote(f)}</p>
+                      <ul class="ob-files" data-ob-files={f.id}></ul>
+                      <button type="button" class="ob-link" data-ob-clear={f.id} hidden>Clear these files</button>
+                    </div>
+                  ) : (
+                    <input
+                      id={`ob-${f.id}`}
+                      name={f.id}
+                      type={f.kind === 'number' ? 'number' : f.kind}
+                      required={f.required}
+                      maxlength={f.kind === 'number' ? undefined : f.max}
+                      min={f.min}
+                      max={f.maxNum}
+                      step={f.kind === 'number' ? 'any' : undefined}
+                      autocomplete={f.autocomplete ?? 'off'}
+                      inputmode={f.inputmode as any}
+                      placeholder={f.placeholder}
+                      value={f.initial}
+                      aria-describedby={hint(f)}
+                    />
+                  )}
+                  <p class="ob-err" id={`ob-${f.id}-err`} data-ob-err hidden></p>
+                </>
+              )}
+            </div>
+          ))}
+
+          <div class="ob-nav">
+            <button type="button" class="ob-btn" data-ob-back>← Back</button>
+            <button type="button" class="ob-btn ob-btn-go" data-ob-next>{si === STEPS.length - 1 ? 'Review my answers →' : 'Next →'}</button>
+          </div>
+        </section>
+      ))}
+
+      <!-- Review -->
+      <section class="ob-step" data-ob-step="review" aria-labelledby="ob-review-h" hidden>
+        <p class="ob-count">Part {STEPS.length + 1} of {total}</p>
+        <h2 class="ob-h2" id="ob-review-h" tabindex="-1">Check your answers</h2>
+        <p class="ob-lead">Change anything that is not right. Nothing has been sent yet.</p>
+        <div class="ob-review" data-ob-review></div>
+        <div class="ob-nav">
+          <button type="button" class="ob-btn" data-ob-back>← Back</button>
+          <button type="button" class="ob-btn ob-btn-go" data-ob-next>These are right →</button>
+        </div>
+      </section>
+
+      <!-- Send -->
+      <section class="ob-step" data-ob-step="send" aria-labelledby="ob-send-h" hidden>
+        <p class="ob-count">Part {total} of {total}</p>
+        <h2 class="ob-h2" id="ob-send-h" tabindex="-1">Send it to Preston</h2>
+        <p class="ob-lead" data-ob-send-lead>Your answers go first, then your files one at a time. Stay here until it says sent.</p>
+        <div class="ob-turnstile">
+          <div class="cf-turnstile" data-sitekey="0x4AAAAAAErqpIxNFp37Ylha" data-theme="dark" data-size="flexible"></div>
+          <p class="ob-err" data-ob-ts-err hidden>
+            The spam check did not load. Text me at <a href={sms}>541-551-0731</a> and we will set you up by phone.
+          </p>
+        </div>
+        <p class="ob-status" data-ob-status role="status" aria-live="polite"></p>
+        <div class="ob-nav">
+          <button type="button" class="ob-btn" data-ob-back>← Back</button>
+          <button type="button" class="ob-btn ob-btn-go" data-ob-send>Send to Preston</button>
+        </div>
+      </section>
+
+      <noscript>
+        <p class="ob-err">This form needs JavaScript. Text me at <a href={sms}>541-551-0731</a> and we will set you up by phone.</p>
+      </noscript>
+    </form>
+
+    <section class="ob-done" data-ob-done hidden aria-labelledby="ob-done-h">
+      <h2 class="ob-h2" id="ob-done-h" tabindex="-1">Sent. Thank you.</h2>
+      <p class="ob-lead">
+        Your answers reached me. I will text you when your server is ready, usually within a day
+        or two. Questions before then: text <a href={sms}>541-551-0731</a>.
+      </p>
+      <p class="ob-missing" data-ob-missing hidden></p>
+      <p><a class="ob-btn ob-btn-go ob-copy" data-ob-copy href="#" target="_blank" rel="noopener">Save a copy of your answers (PDF)</a></p>
+      <p class="ob-help">The copy link works for a day.</p>
+    </section>
+  </article>
+</BaseLayout>
+
+<script>
+  import { STEPS, ALL_FIELDS, FILE_FIELDS, UPLOAD_TYPES, checkSubmission, isShown, answerText, type Answers, type DeclaredFile } from '../../lib/onboard-spec';
+
+  const form = document.querySelector<HTMLFormElement>('[data-ob-form]')!;
+  const steps = Array.from(form.querySelectorAll<HTMLElement>('[data-ob-step]'));
+  const prog = form.querySelector<HTMLElement>('[data-ob-prog]')!;
+  const progNow = form.querySelector<HTMLElement>('[data-ob-prog-now]')!;
+  const bar = form.querySelector<HTMLElement>('[data-ob-bar]')!;
+  const status = form.querySelector<HTMLElement>('[data-ob-status]')!;
+  const sendBtn = form.querySelector<HTMLButtonElement>('[data-ob-send]')!;
+  let at = 0;
+  let sending = false;
+  const picked: Record<string, File[]> = {};
+
+  const EXT: Record<string, string> = {
+    pdf: 'application/pdf', jpg: 'image/jpeg', jpeg: 'image/jpeg', png: 'image/png', heic: 'image/heic', heif: 'image/heif',
+    webp: 'image/webp', svg: 'image/svg+xml', doc: 'application/msword',
+    docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', xls: 'application/vnd.ms-excel',
+    xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', csv: 'text/csv', txt: 'text/plain',
+  };
+  // A phone often names no type, or one the list spells differently: go by the
+  // file's own extension first, then the browser's type.
+  const typeOf = (f: File) => {
+    const byExt = EXT[(f.name.split('.').pop() || '').toLowerCase()];
+    if (byExt) return byExt;
+    return (UPLOAD_TYPES as readonly string[]).includes(f.type) ? f.type : f.type || 'application/octet-stream';
+  };
+
+  function answers(): Answers {
+    const out: Answers = {};
+    for (const f of ALL_FIELDS) {
+      if (f.kind === 'file') continue;
+      const els = Array.from(form.querySelectorAll<HTMLInputElement>(`[name="${f.id}"]`));
+      if (f.kind === 'checks') out[f.id] = els.filter((e) => e.checked).map((e) => e.value);
+      else if (f.kind === 'radio') out[f.id] = els.find((e) => e.checked)?.value ?? '';
+      else if (f.kind === 'check') out[f.id] = els[0]?.checked ? 'yes' : '';
+      else out[f.id] = (els[0]?.value ?? '').trim();
+    }
+    return out;
+  }
+
+  function declared(): DeclaredFile[] {
+    return FILE_FIELDS.flatMap((f) => (picked[f.id] ?? []).map((file) => ({ field: f.id, name: file.name, type: typeOf(file), size: file.size })));
+  }
+
+  /** Show or hide the questions that depend on another answer. */
+  function applyConditions() {
+    const a = answers();
+    form.querySelectorAll<HTMLElement>('[data-when-field]').forEach((el) => {
+      const f = ALL_FIELDS.find((x) => x.id === el.dataset.obField)!;
+      const show = isShown(f, a);
+      el.hidden = !show;
+      el.querySelectorAll<HTMLInputElement>('input, select, textarea').forEach((i) => { i.disabled = !show; });
+    });
+  }
+
+  function showErrors(stepEl: HTMLElement, errors: Record<string, string>): boolean {
+    const ids = Array.from(stepEl.querySelectorAll<HTMLElement>('[data-ob-field]')).filter((el) => !el.hidden).map((el) => el.dataset.obField!);
+    const mine = ids.filter((id) => errors[id]);
+    stepEl.querySelectorAll<HTMLElement>('[data-ob-field]').forEach((el) => {
+      const id = el.dataset.obField!;
+      const msg = mine.includes(id) ? errors[id] : '';
+      const p = el.querySelector<HTMLElement>('[data-ob-err]');
+      if (p) { p.textContent = msg; p.hidden = !msg; }
+      el.classList.toggle('ob-bad', !!msg);
+      el.querySelectorAll('input, select, textarea').forEach((i) => { if (msg) i.setAttribute('aria-invalid', 'true'); else i.removeAttribute('aria-invalid'); });
+    });
+    const sum = stepEl.querySelector<HTMLElement>('[data-ob-errsum]');
+    if (sum) {
+      sum.hidden = mine.length === 0;
+      sum.textContent = mine.length === 1 ? 'One answer needs a look before you go on.' : `${mine.length} answers need a look before you go on.`;
+    }
+    if (mine.length) {
+      const first = stepEl.querySelector<HTMLElement>(`[data-ob-field="${mine[0]}"] input:not([disabled]), [data-ob-field="${mine[0]}"] select, [data-ob-field="${mine[0]}"] textarea`);
+      first?.focus();
+    }
+    return mine.length === 0;
+  }
+
+  function stepOk(i: number): boolean {
+    const el = steps[i];
+    const id = el.dataset.obStep!;
+    if (!STEPS.some((s) => s.id === id)) return true;
+    return showErrors(el, checkSubmission(answers(), declared()).errors);
+  }
+
+  function go(i: number, move = true) {
+    at = Math.max(0, Math.min(steps.length - 1, i));
+    steps.forEach((s, n) => { s.hidden = n !== at; });
+    const id = steps[at].dataset.obStep!;
+    prog.hidden = at === 0;
+    const partCount = steps.length - 1;
+    progNow.textContent = at === 0 ? '' : `Part ${at} of ${partCount}: ${steps[at].querySelector('h2')?.textContent ?? ''}`;
+    bar.style.width = `${Math.round((at / partCount) * 100)}%`;
+    if (id === 'review') renderReview();
+    if (id === 'send') loadTurnstile();
+    if (!move) return;
+    steps[at].querySelector<HTMLElement>('h2')?.focus({ preventScroll: true });
+    window.scrollTo({ top: form.getBoundingClientRect().top + window.scrollY - 24, behavior: 'smooth' });
+  }
+
+  function renderReview() {
+    const a = answers();
+    const box = form.querySelector<HTMLElement>('[data-ob-review]')!;
+    box.replaceChildren();
+    STEPS.forEach((step) => {
+      const sec = document.createElement('div');
+      sec.className = 'ob-rv';
+      const h = document.createElement('h3');
+      h.className = 'ob-h3';
+      h.textContent = step.title;
+      const edit = document.createElement('button');
+      edit.type = 'button';
+      edit.className = 'ob-link';
+      edit.textContent = `Change ${step.title.toLowerCase()}`;
+      edit.addEventListener('click', () => go(steps.findIndex((s) => s.dataset.obStep === step.id)));
+      const dl = document.createElement('dl');
+      step.fields.forEach((f) => {
+        if (!isShown(f, a)) return;
+        const dt = document.createElement('dt');
+        dt.textContent = f.label;
+        const dd = document.createElement('dd');
+        const v = f.kind === 'file'
+          ? (picked[f.id] ?? []).map((x) => `${x.name} (${size(x.size)})`).join(', ')
+          : answerText(f, a[f.id]);
+        dd.textContent = v || 'Not answered';
+        if (!v) dd.className = 'ob-none';
+        dl.append(dt, dd);
+      });
+      sec.append(h, dl, edit);
+      box.append(sec);
+    });
+  }
+
+  const size = (n: number) => (n >= 1048576 ? `${(n / 1048576).toFixed(1)} MB` : `${Math.max(1, Math.round(n / 1024))} KB`);
+
+  function listFiles(id: string) {
+    const ul = form.querySelector<HTMLElement>(`[data-ob-files="${id}"]`)!;
+    ul.replaceChildren(...(picked[id] ?? []).map((f) => {
+      const li = document.createElement('li');
+      li.textContent = `${f.name} · ${size(f.size)}`;
+      return li;
+    }));
+    const clear = form.querySelector<HTMLElement>(`[data-ob-clear="${id}"]`)!;
+    clear.hidden = !(picked[id] ?? []).length;
+  }
+
+  form.querySelectorAll<HTMLInputElement>('[data-ob-file]').forEach((input) => {
+    input.addEventListener('change', () => {
+      const f = FILE_FIELDS.find((x) => x.id === input.name)!;
+      const max = f.maxFiles ?? 1;
+      // Adding to what is already picked lets someone choose photos in turns.
+      const next = [...(max > 1 ? picked[f.id] ?? [] : []), ...Array.from(input.files ?? [])];
+      picked[f.id] = next.slice(0, max);
+      input.value = '';
+      listFiles(f.id);
+      showErrors(steps[at], checkSubmission(answers(), declared()).errors);
+    });
+  });
+  form.querySelectorAll<HTMLButtonElement>('[data-ob-clear]').forEach((b) => {
+    b.addEventListener('click', () => { picked[b.dataset.obClear!] = []; listFiles(b.dataset.obClear!); });
+  });
+
+  form.addEventListener('change', applyConditions);
+  form.addEventListener('input', applyConditions);
+  form.querySelectorAll('[data-ob-next]').forEach((b) => b.addEventListener('click', () => { if (stepOk(at)) go(at + 1); }));
+  form.querySelectorAll('[data-ob-back]').forEach((b) => b.addEventListener('click', () => go(at - 1)));
+  // Enter in a text box moves on instead of doing nothing.
+  form.addEventListener('submit', (e) => { e.preventDefault(); if (steps[at].dataset.obStep !== 'send' && stepOk(at)) go(at + 1); });
+
+  let tsLoaded = false;
+  function loadTurnstile() {
+    if (tsLoaded) return;
+    tsLoaded = true;
+    const s = document.createElement('script');
+    s.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
+    s.async = true;
+    s.defer = true;
+    s.onerror = () => { const e = form.querySelector<HTMLElement>('[data-ob-ts-err]'); if (e) e.hidden = false; };
+    document.head.appendChild(s);
+  }
+
+  const say = (t: string, bad = false) => { status.textContent = t; status.classList.toggle('ob-status-bad', bad); };
+
+  async function put(id: string, token: string, n: number, file: File, type: string): Promise<boolean> {
+    for (let attempt = 0; attempt < 2; attempt++) {
+      try {
+        const res = await fetch(`/api/onboard/upload?id=${encodeURIComponent(id)}&n=${n}`, {
+          method: 'PUT', headers: { 'x-onboard-token': token, 'content-type': type }, body: file,
+        });
+        if (res.ok) return true;
+      } catch { /* try once more */ }
+    }
+    return false;
+  }
+
+  sendBtn.addEventListener('click', async () => {
+    if (sending) return;
+    const a = answers();
+    const files = declared();
+    const all = checkSubmission(a, files);
+    if (!all.ok) {
+      const firstBad = STEPS.findIndex((s) => s.fields.some((f) => all.errors[f.id]));
+      go(steps.findIndex((s) => s.dataset.obStep === STEPS[firstBad].id));
+      showErrors(steps[at], all.errors);
+      return;
+    }
+    const ts = (form.querySelector<HTMLInputElement>('[name="cf-turnstile-response"]')?.value ?? '').trim();
+    if (!ts) { say('Waiting on the spam check above. If it does not clear in a few seconds, text me.', true); return; }
+
+    sending = true;
+    sendBtn.disabled = true;
+    say('Sending your answers…');
+    const honey = form.querySelector<HTMLInputElement>('[name="company_extra"]')?.value ?? '';
+    try {
+      const res = await fetch('/api/onboard/start', {
+        method: 'POST', headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ answers: a, files, company_extra: honey, 'cf-turnstile-response': ts }),
+      });
+      const j = await res.json().catch(() => ({}));
+      if (!res.ok || !j.ok) {
+        if (j.error === 'check_failed' && j.errors) {
+          const firstBad = STEPS.findIndex((s) => s.fields.some((f) => j.errors[f.id]));
+          go(steps.findIndex((s) => s.dataset.obStep === STEPS[Math.max(0, firstBad)].id));
+          showErrors(steps[at], j.errors);
+          throw new Error('quiet');
+        }
+        throw new Error(j.message || 'Your answers did not send.');
+      }
+      const ordered = FILE_FIELDS.flatMap((f) => picked[f.id] ?? []);
+      for (let n = 0; n < ordered.length; n++) {
+        say(`Sending your files: ${n + 1} of ${ordered.length}…`);
+        await put(j.id, j.token, n, ordered[n], files[n].type);
+      }
+      say('Finishing up…');
+      const fin = await fetch('/api/onboard/finish', {
+        method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ id: j.id, token: j.token }),
+      });
+      const fj = await fin.json().catch(() => ({}));
+      if (!fin.ok || !fj.ok) throw new Error('Your answers arrived, but the last step did not. Text me and I will check.');
+      form.hidden = true;
+      const done = document.querySelector<HTMLElement>('[data-ob-done]')!;
+      done.hidden = false;
+      const copy = done.querySelector<HTMLAnchorElement>('[data-ob-copy]')!;
+      copy.href = `/api/onboard/copy?id=${encodeURIComponent(j.id)}&token=${encodeURIComponent(j.token)}`;
+      if (Array.isArray(fj.missing) && fj.missing.length) {
+        const m = done.querySelector<HTMLElement>('[data-ob-missing]')!;
+        m.textContent = `These files did not come through: ${fj.missing.join(', ')}. Text them to me and I will add them.`;
+        m.hidden = false;
+      }
+      done.querySelector<HTMLElement>('h2')?.focus();
+      done.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : '';
+      if (msg !== 'quiet') say(`${msg || 'It did not send.'} You can try again, or text me at 541-551-0731.`, true);
+      else say('');
+      sending = false;
+      sendBtn.disabled = false;
+      // @ts-ignore : global from the Turnstile script
+      if (window.turnstile) window.turnstile.reset();
+    }
+  });
+
+  applyConditions();
+  go(0, false);
+</script>
+
+<style>
+  .ob {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 24px 16px 72px;
+  }
+  @media (min-width: 740px) { .ob { padding: 40px 24px 96px; } }
+  .ob-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    color: var(--color-copper);
+    margin: 0 0 10px;
+  }
+  .ob-h1 {
+    font-family: var(--font-serif);
+    font-size: 30px;
+    line-height: 1.12;
+    color: var(--color-ash-100);
+    margin: 0 0 12px;
+  }
+  @media (min-width: 740px) { .ob-h1 { font-size: 42px; } }
+  .ob-tag {
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--color-ash-300);
+    margin: 0 0 28px;
+  }
+  .ob-honey { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
+  .ob-prog { margin: 0 0 20px; }
+  .ob-prog-now {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-ash-400);
+    margin: 0 0 8px;
+  }
+  .ob-bar { height: 4px; background: var(--color-bg-raised); border-radius: 2px; overflow: hidden; }
+  .ob-bar span { display: block; height: 100%; width: 0; background: var(--color-wc-green); transition: width 200ms ease; }
+
+  .ob-step {
+    background: var(--color-bg-card);
+    border: 1px solid var(--copper-hairline);
+    border-radius: var(--radius-card);
+    padding: 22px 16px;
+  }
+  @media (min-width: 740px) { .ob-step { padding: 32px 32px; } }
+  .ob-count {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-copper);
+    margin: 0 0 6px;
+  }
+  .ob-h2 {
+    font-family: var(--font-serif);
+    font-size: 24px;
+    line-height: 1.2;
+    color: var(--color-ash-100);
+    margin: 0 0 8px;
+    outline: none;
+  }
+  @media (min-width: 740px) { .ob-h2 { font-size: 30px; } }
+  .ob-h3 {
+    font-family: var(--font-sans);
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--color-ash-100);
+    margin: 20px 0 8px;
+  }
+  .ob-lead { font-family: var(--font-sans); font-size: 15px; line-height: 1.6; color: var(--color-ash-300); margin: 0 0 18px; }
+  .ob-lead a, .ob-err a, .ob-priv a { color: var(--color-wc-green); }
+  .ob-ticks { margin: 0 0 6px; padding-left: 20px; color: var(--color-ash-300); font-family: var(--font-sans); font-size: 15px; line-height: 1.6; }
+  ul.ob-ticks { list-style: disc; }
+  ol.ob-ticks { list-style: decimal; }
+  .ob-ticks li::marker { color: var(--color-wc-green); }
+  .ob-ticks li { margin: 0 0 6px; }
+  .ob-priv {
+    margin: 18px 0 0;
+    padding: 12px 14px;
+    border-left: 3px solid var(--color-wc-green);
+    background: var(--color-bg-stone);
+    border-radius: 6px;
+    font-family: var(--font-sans);
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--color-ash-300);
+  }
+
+  .ob-field { margin: 0 0 20px; }
+  .ob-set { border: 0; margin: 0; padding: 0; min-width: 0; }
+  .ob-label {
+    display: block;
+    font-family: var(--font-sans);
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.4;
+    color: var(--color-ash-100);
+    margin: 0 0 6px;
+    padding: 0;
+  }
+  .ob-req { color: var(--color-wc-green); }
+  .ob-opt { color: var(--color-ash-500); font-weight: 400; }
+  .ob-help { font-family: var(--font-sans); font-size: 13.5px; line-height: 1.5; color: var(--color-ash-400); margin: -2px 0 8px; }
+
+  .ob-form input[type='text'],
+  .ob-form input[type='email'],
+  .ob-form input[type='tel'],
+  .ob-form input[type='url'],
+  .ob-form input[type='number'],
+  .ob-form select,
+  .ob-form textarea {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    min-height: 46px;
+    font-family: var(--font-sans);
+    font-size: 16px;
+    color: var(--color-ash-100);
+    background: var(--color-bg-deep);
+    border: 1px solid var(--copper-hairline);
+    border-radius: 6px;
+    padding: 10px 12px;
+  }
+  .ob-form textarea { line-height: 1.55; resize: vertical; min-height: 110px; }
+  .ob-form select {
+    appearance: none;
+    background-image: linear-gradient(45deg, transparent 50%, var(--color-copper) 50%), linear-gradient(135deg, var(--color-copper) 50%, transparent 50%);
+    background-position: calc(100% - 18px) 50%, calc(100% - 13px) 50%;
+    background-size: 5px 5px;
+    background-repeat: no-repeat;
+    padding-right: 34px;
+  }
+  .ob-form input:focus-visible, .ob-form select:focus-visible, .ob-form textarea:focus-visible {
+    outline: none;
+    border-color: var(--color-wc-green);
+    box-shadow: 0 0 0 2px rgba(77, 216, 168, 0.18);
+  }
+  .ob-choices { display: grid; gap: 8px; }
+  .ob-choice {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 46px;
+    padding: 10px 12px;
+    border: 1px solid var(--copper-hairline);
+    border-radius: 6px;
+    background: var(--color-bg-deep);
+    font-family: var(--font-sans);
+    font-size: 15px;
+    line-height: 1.4;
+    color: var(--color-ash-100);
+    cursor: pointer;
+  }
+  .ob-choice input { width: 20px; height: 20px; flex: none; margin: 0; accent-color: var(--color-wc-green); }
+  .ob-choice:has(input:checked) { border-color: var(--color-wc-green); background: rgba(77, 216, 168, 0.08); }
+  .ob-choice:has(input:focus-visible) { outline: 2px solid var(--color-wc-green); outline-offset: 2px; }
+  .ob-choice-solo { align-items: flex-start; }
+  .ob-choice-solo input { margin-top: 1px; }
+  .ob-file input[type='file'] {
+    display: block;
+    width: 100%;
+    min-height: 46px;
+    font-family: var(--font-sans);
+    font-size: 15px;
+    color: var(--color-ash-300);
+  }
+  .ob-file input[type='file']::file-selector-button {
+    min-height: 44px;
+    margin-right: 12px;
+    padding: 0 16px;
+    font-family: var(--font-sans);
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--color-ash-100);
+    background: var(--color-bg-raised);
+    border: 1px solid var(--copper-hairline);
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  .ob-files { list-style: none; margin: 6px 0 0; padding: 0; font-family: var(--font-sans); font-size: 14px; color: var(--color-ash-300); }
+  /* Rows the script builds carry no scope attribute, so these rules reach them through :global. */
+  .ob-files :global(li) { padding: 4px 0; overflow-wrap: anywhere; }
+
+  .ob-err { font-family: var(--font-sans); font-size: 14px; color: #e08a7a; margin: 6px 0 0; }
+  .ob-bad input, .ob-bad select, .ob-bad textarea, .ob-bad .ob-choice { border-color: #c96f5f; }
+  .ob-errsum {
+    margin: 0 0 16px;
+    padding: 10px 12px;
+    border-left: 3px solid #c96f5f;
+    background: rgba(201, 111, 95, 0.1);
+    border-radius: 6px;
+    font-family: var(--font-sans);
+    font-size: 14px;
+    color: var(--color-ash-100);
+  }
+
+  .ob-nav { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin: 26px 0 0; flex-wrap: wrap; }
+  .ob-btn {
+    min-height: 46px;
+    padding: 0 18px;
+    font-family: var(--font-sans);
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--color-ash-100);
+    background: transparent;
+    border: 1px solid var(--copper-hairline);
+    border-radius: 6px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+  }
+  .ob-btn-go { color: var(--color-bg-deep); background: var(--color-wc-green); border-color: var(--color-wc-green); margin-left: auto; }
+  .ob-btn:focus-visible { outline: 2px solid var(--color-wc-green); outline-offset: 3px; }
+  @media (hover: hover) {
+    .ob-btn:hover { border-color: var(--color-wc-green); }
+    .ob-btn-go:hover { background: var(--color-wc-green-bright); }
+  }
+  .ob-btn:disabled { opacity: 0.6; cursor: wait; }
+  .ob-link {
+    min-height: 44px;
+    padding: 0;
+    background: none;
+    border: 0;
+    font-family: var(--font-sans);
+    font-size: 14px;
+    color: var(--color-wc-green);
+    text-decoration: underline;
+    text-decoration-color: rgba(77, 216, 168, 0.4);
+    cursor: pointer;
+  }
+
+  .ob-review :global(.ob-rv) { border-top: 1px solid var(--copper-hairline); padding: 6px 0 10px; }
+  .ob-review :global(.ob-rv:first-child) { border-top: 0; }
+  .ob-review :global(.ob-h3) { font-family: var(--font-sans); font-size: 15px; font-weight: 600; color: var(--color-wc-green); margin: 16px 0 4px; }
+  .ob-review :global(dl) { margin: 0; display: grid; grid-template-columns: 1fr; gap: 2px 16px; }
+  @media (min-width: 640px) { .ob-review :global(dl) { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+  .ob-review :global(dt) { font-family: var(--font-sans); font-size: 13px; line-height: 1.4; color: var(--color-ash-400); padding-top: 10px; }
+  .ob-review :global(dd) { margin: 0; font-family: var(--font-sans); font-size: 15px; line-height: 1.45; color: var(--color-ash-100); padding-top: 10px; overflow-wrap: anywhere; }
+  @media (max-width: 639px) { .ob-review :global(dd) { padding-top: 2px; } }
+  .ob-review :global(dd.ob-none) { color: var(--color-ash-500); }
+  .ob-review :global(.ob-link) {
+    min-height: 44px;
+    padding: 0;
+    background: none;
+    border: 0;
+    font-family: var(--font-sans);
+    font-size: 14px;
+    color: var(--color-wc-green);
+    text-decoration: underline;
+    text-decoration-color: rgba(77, 216, 168, 0.4);
+    cursor: pointer;
+    display: block;
+    text-align: left;
+  }
+
+  .ob-turnstile { margin: 8px 0 12px; min-height: 70px; }
+  .ob-status { font-family: var(--font-sans); font-size: 15px; color: var(--color-ash-300); min-height: 1.5em; margin: 0; }
+  .ob-status-bad { color: #e08a7a; }
+
+  .ob-done {
+    background: var(--color-bg-card);
+    border: 1px solid rgba(77, 216, 168, 0.4);
+    border-left: 3px solid var(--color-wc-green);
+    border-radius: var(--radius-card);
+    padding: 24px 18px;
+  }
+  .ob-missing { font-family: var(--font-sans); font-size: 15px; color: #e8b27a; }
+  .ob-copy { margin-left: 0; }
+</style>
