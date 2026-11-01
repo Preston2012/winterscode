@@ -17,7 +17,11 @@ const crumbs = [
 ];
 const total = STEPS.length + 2; // the parts, then review, then send
 const hint = (f: Field) => [f.help ? `ob-${f.id}-help` : '', `ob-${f.id}-err`].filter(Boolean).join(' ');
-const fileNote = (f: Field) => `${f.maxFiles === 1 ? 'One file' : `Up to ${f.maxFiles} files`}, ${Math.round((f.maxBytes ?? MB) / MB)} MB each.`;
+const fileNote = (f: Field) => {
+  const mb = Math.round((f.maxBytes ?? MB) / MB);
+  return f.maxFiles === 1 ? `One file, up to ${mb} MB.` : `Up to ${f.maxFiles} files, ${mb} MB each.`;
+};
+const pickWords = (f: Field) => ((f.maxFiles ?? 1) > 1 ? 'Choose files' : 'Choose a file');
 ---
 
 <BaseLayout
@@ -116,10 +120,11 @@ const fileNote = (f: Field) => `${f.maxFiles === 1 ? 'One file' : `Up to ${f.max
                     </select>
                   ) : f.kind === 'file' ? (
                     <div class="ob-file">
-                      <input type="file" id={`ob-${f.id}`} name={f.id} accept={f.accept} multiple={(f.maxFiles ?? 1) > 1} aria-describedby={`${hint(f)} ob-${f.id}-note`} data-ob-file />
+                      <input type="file" class="ob-file-input" id={`ob-${f.id}`} name={f.id} accept={f.accept} multiple={(f.maxFiles ?? 1) > 1} aria-describedby={`${hint(f)} ob-${f.id}-note`} data-ob-file />
+                      <label class="ob-file-pick" for={`ob-${f.id}`} data-ob-pick={f.id} data-ob-pick-words={pickWords(f)}>{pickWords(f)}</label>
                       <p class="ob-help" id={`ob-${f.id}-note`}>{fileNote(f)}</p>
                       <ul class="ob-files" data-ob-files={f.id}></ul>
-                      <button type="button" class="ob-link" data-ob-clear={f.id} hidden>Clear these files</button>
+                      <button type="button" class="ob-link" data-ob-clear={f.id} hidden>{(f.maxFiles ?? 1) > 1 ? 'Clear these files' : 'Clear this file'}</button>
                     </div>
                   ) : (
                     <input
@@ -313,7 +318,7 @@ const fileNote = (f: Field) => `${f.maxFiles === 1 ? 'One file' : `Up to ${f.max
       const edit = document.createElement('button');
       edit.type = 'button';
       edit.className = 'ob-link';
-      edit.textContent = `Change ${step.title.toLowerCase()}`;
+      edit.textContent = `Change ${step.title.charAt(0).toLowerCase()}${step.title.slice(1)}`;
       edit.addEventListener('click', () => go(steps.findIndex((s) => s.dataset.obStep === step.id)));
       const dl = document.createElement('dl');
       step.fields.forEach((f) => {
@@ -344,6 +349,12 @@ const fileNote = (f: Field) => `${f.maxFiles === 1 ? 'One file' : `Up to ${f.max
     }));
     const clear = form.querySelector<HTMLElement>(`[data-ob-clear="${id}"]`)!;
     clear.hidden = !(picked[id] ?? []).length;
+    // The browser's own control is hidden: it is emptied after each pick, so it would
+    // say nothing was chosen. The button says what a tap does now.
+    const pick = form.querySelector<HTMLElement>(`[data-ob-pick="${id}"]`)!;
+    const n = (picked[id] ?? []).length;
+    const max = FILE_FIELDS.find((x) => x.id === id)?.maxFiles ?? 1;
+    pick.textContent = n === 0 ? pick.dataset.obPickWords! : max === 1 ? 'Choose a different file' : n < max ? 'Add more files' : 'Choose files';
   }
 
   form.querySelectorAll<HTMLInputElement>('[data-ob-file]').forEach((input) => {
@@ -629,17 +640,20 @@ const fileNote = (f: Field) => `${f.maxFiles === 1 ? 'One file' : `Up to ${f.max
   .ob-choice:has(input:focus-visible) { outline: 2px solid var(--color-wc-green); outline-offset: 2px; }
   .ob-choice-solo { align-items: flex-start; }
   .ob-choice-solo input { margin-top: 1px; }
-  .ob-file input[type='file'] {
-    display: block;
-    width: 100%;
-    min-height: 46px;
-    font-family: var(--font-sans);
-    font-size: 15px;
-    color: var(--color-ash-300);
+  .ob-file { position: relative; }
+  /* Hidden but focusable: the label below is what people see and tap. */
+  .ob-file .ob-file-input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
   }
-  .ob-file input[type='file']::file-selector-button {
+  .ob-file-pick {
+    display: inline-flex;
+    align-items: center;
     min-height: 44px;
-    margin-right: 12px;
     padding: 0 16px;
     font-family: var(--font-sans);
     font-size: 15px;
@@ -650,6 +664,8 @@ const fileNote = (f: Field) => `${f.maxFiles === 1 ? 'One file' : `Up to ${f.max
     border-radius: 6px;
     cursor: pointer;
   }
+  .ob-file-input:focus-visible + .ob-file-pick { outline: 2px solid var(--color-wc-green); outline-offset: 3px; }
+  .ob-file-pick + .ob-help { margin-top: 8px; }
   .ob-files { list-style: none; margin: 6px 0 0; padding: 0; font-family: var(--font-sans); font-size: 14px; color: var(--color-ash-300); }
   /* Rows the script builds carry no scope attribute, so these rules reach them through :global. */
   .ob-files :global(li) { padding: 4px 0; overflow-wrap: anywhere; }
@@ -685,6 +701,14 @@ const fileNote = (f: Field) => `${f.maxFiles === 1 ? 'One file' : `Up to ${f.max
   }
   .ob-btn-go { color: var(--color-bg-deep); background: var(--color-wc-green); border-color: var(--color-wc-green); margin-left: auto; }
   .ob-btn:focus-visible { outline: 2px solid var(--color-wc-green); outline-offset: 3px; }
+  /* A phone is too narrow for Back beside a long forward button, so the forward
+     one goes on top at full width, where the thumb is, and Back under it. */
+  @media (max-width: 479px) {
+    .ob-nav { flex-direction: column-reverse; align-items: stretch; }
+    .ob-nav > span:empty { display: none; }
+    .ob-nav .ob-btn { justify-content: center; }
+    .ob-nav .ob-btn-go { margin-left: 0; }
+  }
   @media (hover: hover) {
     .ob-btn:hover { border-color: var(--color-wc-green); }
     .ob-btn-go:hover { background: var(--color-wc-green-bright); }
