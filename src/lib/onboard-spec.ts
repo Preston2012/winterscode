@@ -188,7 +188,7 @@ export const STEPS: Step[] = [
     lead: 'Both are optional. The more Chere\' sees of how you work, the closer its first estimates come to yours.',
     fields: [
       { id: 'logo', label: 'Your logo', kind: 'file', accept: 'image/*,.pdf,.svg', maxFiles: 1, maxBytes: 5 * MB, help: 'The biggest, clearest version you have. The app\'s colors come from it.', sets: 'brand.json colors, measured from the logo' },
-      { id: 'reference', label: 'Past contracts, estimates and price sheets', kind: 'file', accept: '.pdf,.doc,.docx,.xls,.xlsx,.csv,.txt,image/*', maxFiles: 8, maxBytes: 10 * MB, help: 'Up to 8 files. PDF, Word, Excel, CSV or photos.', sets: 'your price book and contract wording' },
+      { id: 'reference', label: 'Past contracts, estimates and price sheets', kind: 'file', accept: '.pdf,.doc,.docx,.xls,.xlsx,.csv,.txt,image/*', maxFiles: 8, maxBytes: 10 * MB, help: 'PDF, Word, Excel, CSV or photos.', sets: 'your price book and contract wording' },
     ],
   },
   {
