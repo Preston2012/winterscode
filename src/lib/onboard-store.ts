@@ -147,7 +147,9 @@ const TO = 'droiddna2013@gmail.com';
 
 /** The notice to Preston: a short summary, the file list, and the PDF attached. */
 export function onboardMime(answers: Answers, files: FileLine[], pdf: Uint8Array, meta: { id: string; received: Date }): string {
-  const name = headerSafe(String(answers.display_name || answers.legal_name || 'a new contractor'), 80);
+  const business = String(answers.legal_name || answers.display_name || 'a new contractor');
+  const person = String(answers.owner_name || '');
+  const subjectName = person && person !== business ? `${business}, ${person}` : business;
   const replyTo = typeof answers.email === 'string' && /^[^\s@,;<>]+@[^\s@,;<>]+\.[^\s@,;<>]+$/.test(answers.email)
     ? headerSafe(answers.email, 120) : '';
   const boundary = `wc-${hex(12)}`;
@@ -178,7 +180,9 @@ export function onboardMime(answers: Answers, files: FileLine[], pdf: Uint8Array
     `From: Winters Code <${FROM}>`,
     `To: ${TO}`,
     replyTo ? `Reply-To: ${replyTo}` : '',
-    `Subject: ${headerSafe(`Chere' onboarding: ${name}`, 120)}`,
+    // The business name first: Gmail threads mails whose subjects match, and two contractors
+    // can share a name (S348).
+    `Subject: ${headerSafe(`Chere' onboarding: ${subjectName}`, 120)}`,
     `Message-ID: <${Date.now().toString(36)}.${hex(5)}@winterscode.com>`,
     `Date: ${new Date().toUTCString()}`,
     'MIME-Version: 1.0',

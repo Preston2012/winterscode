@@ -19,9 +19,20 @@ export interface Option { value: string; label: string }
 
 export interface When {
   field: string;
-  /** Shown when the field's value equals this, or (for checks) includes it. */
+  /** Shown when the field's value equals this, or (for checks) includes it. Text compares without case. */
   is: string;
+  /** Shown when the value does NOT match instead. */
+  not?: boolean;
 }
+
+/** Oregon's 36 counties, for the home county pick-list (Preston, 2026-11-02). */
+const OREGON_COUNTIES = [
+  'Baker', 'Benton', 'Clackamas', 'Clatsop', 'Columbia', 'Coos', 'Crook', 'Curry', 'Deschutes',
+  'Douglas', 'Gilliam', 'Grant', 'Harney', 'Hood River', 'Jackson', 'Jefferson', 'Josephine',
+  'Klamath', 'Lake', 'Lane', 'Lincoln', 'Linn', 'Malheur', 'Marion', 'Morrow', 'Multnomah',
+  'Polk', 'Sherman', 'Tillamook', 'Umatilla', 'Union', 'Wallowa', 'Wasco', 'Washington',
+  'Wheeler', 'Yamhill',
+].map((c) => ({ value: c, label: c }));
 
 export interface Field {
   id: string;
@@ -118,7 +129,10 @@ export const STEPS: Step[] = [
       { id: 'lcb', label: 'Oregon Landscape Contractors Board license number', kind: 'text', max: 12, pattern: '^[0-9]{1,8}$', patternWords: 'Digits only.', inputmode: 'numeric', when: { field: 'trades', is: 'landscape' }, help: 'Leave it blank if you are not licensed with the LCB.', sets: 'client.json licenses; the casual-work cap is lifted for an LCB licensee' },
       { id: 'bonded', label: 'Are you bonded?', kind: 'radio', required: true, options: YES_NO, sets: 'client.json credentials.bonded' },
       { id: 'insured', label: 'Do you carry liability insurance?', kind: 'radio', required: true, options: YES_NO, sets: 'client.json credentials.insured' },
-      { id: 'county', label: 'Your home county', kind: 'text', required: true, max: 60, sets: 'client.json service_area.primary_county; the prices the app starts from' },
+      // Preston's own test typed "7" and "Oregon" into a free-text county (2026-11-01). In
+      // Oregon it is a pick-list; anywhere else it stays typed.
+      { id: 'county', label: 'Your home county', kind: 'select', required: true, options: OREGON_COUNTIES, when: { field: 'state', is: 'OR' }, sets: 'client.json service_area.primary_county; the prices the app starts from' },
+      { id: 'county_other', label: 'Your home county', kind: 'text', required: true, max: 60, when: { field: 'state', is: 'OR', not: true }, sets: 'client.json service_area.primary_county; the prices the app starts from' },
       { id: 'counties', label: 'Other counties you work in', kind: 'text', max: 300, help: 'Prices follow the job\'s address, so name every county you take work in.', sets: 'client.json service_area.counties_served; regional pricing' },
       { id: 'radius', label: 'How far you will drive for a job, in miles', kind: 'number', min: 0, maxNum: 500, inputmode: 'numeric', sets: 'client.json service_area.in_person_radius_miles' },
       { id: 'labor_rate', label: 'Your usual hourly labor rate, in dollars', kind: 'number', required: true, min: 1, maxNum: 1000, inputmode: 'decimal', help: 'The starting rate on new estimates. You can change it on any job.', sets: 'client.json pricing.labor.default_rate_cents' },
@@ -218,7 +232,9 @@ export type Answers = Record<string, string | string[]>;
 export function isShown(f: Field, answers: Answers): boolean {
   if (!f.when) return true;
   const v = answers[f.when.field];
-  return Array.isArray(v) ? v.includes(f.when.is) : v === f.when.is;
+  const want = f.when.is.toUpperCase();
+  const hit = Array.isArray(v) ? v.includes(f.when.is) : typeof v === 'string' && v.trim().toUpperCase() === want;
+  return f.when.not ? !hit : hit;
 }
 
 /** The label a stored value reads as, for the review and the PDF. */
@@ -286,7 +302,13 @@ export function checkSubmission(rawAnswers: unknown, rawFiles: unknown): CheckRe
     if (f.kind === 'check' && s !== 'yes') continue;
     if (f.kind === 'email' && !EMAIL.test(s)) { errors[f.id] = 'That email does not look right.'; continue; }
     if (f.kind === 'url' && !/^https?:\/\/[^\s]+\.[^\s]+$/i.test(s)) { errors[f.id] = 'Start it with https://'; continue; }
-    if (f.kind === 'tel' && (s.replace(/\D/g, '').length < 10)) { errors[f.id] = 'Include the area code.'; continue; }
+    if (f.kind === 'tel') {
+      // Stored the way people write it (Preston's test was kept as 15415510731).
+      const digits = s.replace(/\D/g, '').replace(/^1(?=\d{10}$)/, '');
+      if (digits.length !== 10) { errors[f.id] = 'Ten digits with the area code, like 541-555-0100.'; continue; }
+      answers[f.id] = `${digits.slice(0, 3)}-${digits.slice(3, 6)}-${digits.slice(6)}`;
+      continue;
+    }
     if (f.kind === 'number') {
       const n = Number(s);
       if (!Number.isFinite(n) || (f.min !== undefined && n < f.min) || (f.maxNum !== undefined && n > f.maxNum)) {
