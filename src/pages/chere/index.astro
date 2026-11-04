@@ -1,0 +1,241 @@
+---
+/**
+ * /chere, Chere's own page (S351, Preston 2026-11-03 17:11 PT: "make something similar to the
+ * showcase page, but for Chere', and have that be its website for now").
+ *
+ * Copy rule, the same as ChereFeature's: claim only what Chere' does today. No pricing, no
+ * customer counts, no raise or investor numbers, no Stripe or QuickBooks (flagged off). Every
+ * line here is Preston's own, from his pitch deck and the portfolio entry: the hours, the full
+ * day to about an hour, the owner's yes, the Oregon notices, the in-person setup. The video,
+ * the beta text link and the help and privacy pages come from the existing feature, so the
+ * three placements cannot drift. /work#chere stays exactly where it was.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/layout/Header.astro';
+import MobileMenu from '../../components/layout/MobileMenu.astro';
+import Breadcrumbs from '../../components/ui/Breadcrumbs.astro';
+import PageHero from '../../components/sections/PageHero.astro';
+import Divider from '../../components/ui/Divider.astro';
+import ChereFeature from '../../components/sections/ChereFeature.astro';
+import TextCta from '../../components/ui/TextCta.astro';
+import RelatedLinks from '../../components/sections/RelatedLinks.astro';
+import { breadcrumbSchema, absUrl, BUSINESS_ID } from '../../lib/schema';
+
+const path = '/chere';
+const crumbs = [
+  { name: 'Home', path: '/' },
+  { name: "Chere'", path },
+];
+const appLd = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: "Chere'",
+  applicationCategory: 'BusinessApplication',
+  operatingSystem: 'iOS, Android',
+  url: absUrl(path),
+  description: "A back office for one-truck contractors: photo in, a priced bid with Oregon's required notices, a signature on the customer's phone, and the deposit invoice through the contractor's own Square.",
+  creator: { '@id': BUSINESS_ID },
+};
+
+const steps = [
+  { h: 'Photo in', p: "Snap the room or the yard and say what's changing. A hand sketch or a set of plans works too." },
+  { h: 'Options and a price', p: "Chere' draws three directions from the photo, then prices the one your customer picks, from your own prices first." },
+  { h: 'Your yes', p: "Every number it measured off the picture is marked for you to check. Nothing goes to the customer until you approve it." },
+  { h: 'The contract', p: "Oregon's required notices go with every contract, from the board's own forms, so none get missed." },
+  { h: 'Signed on their phone', p: "The customer sees the before and after, reads the contract and signs from a link. You know who signed, and when." },
+  { h: 'Deposit out', p: "The deposit invoice follows the signature, through your own Square. What was paid shows up next to the job." },
+];
+
+let n = 0;
+const nx = () => String(++n).padStart(2, '0');
+---
+
+<BaseLayout
+  title="Chere' · The Contractor's Back Office · Winters Code"
+  description="Chere' is a back office for one-truck contractors, built in Bandon: a photo becomes a priced bid with Oregon's required notices, signed on the customer's phone, deposit through your own Square. In beta."
+  canonicalPath={path}
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(crumbs))} />
+    <script type="application/ld+json" set:html={JSON.stringify(appLd)} />
+  </Fragment>
+
+  <Header />
+  <MobileMenu />
+  <Breadcrumbs items={crumbs} />
+
+  <PageHero
+    eyebrow="Chere' · For contractors · In beta"
+    h1="The contractor's back office."
+    sub="Said like Sherrie. Photo in, signed job out, and the office work done from the truck. Built in Bandon by a licensed contractor who needed it first."
+  />
+
+  <Divider label={nx()} />
+
+  <section class="ch-feature" aria-label="Chere' in a minute and a half">
+    <ChereFeature variant="page" />
+  </section>
+
+  <Divider label={nx()} />
+
+  <section class="ch-block" aria-labelledby="ch-why-h">
+    <h2 class="ch-h" id="ch-why-h">I became the office.</h2>
+    <p class="ch-lead">
+      In 2023 I came home to Bandon to work in my dad's contracting business. One truck, no office.
+      So I became the office: bids, contracts, Oregon's required notices, invoices and the books.
+      <strong>Twenty to thirty hours a week.</strong> A big bid took two of us a full day.
+    </p>
+    <p class="ch-lead">
+      Most remodeling and repair contractors work alone, and every one of those hours comes off the
+      job or off the family. I went looking for software that would take it. What I found handed you
+      a login and walked away, and none of it built in Oregon's contract notices. So I built Chere'.
+    </p>
+    <p class="ch-lead">
+      It runs the office at SeaBreeze today. <em>A bid that took two of us a full day now takes about an hour.</em>
+    </p>
+  </section>
+
+  <Divider label={nx()} />
+
+  <section class="ch-block" aria-labelledby="ch-how-h">
+    <h2 class="ch-h" id="ch-how-h">Photo in. Signed job out.</h2>
+    <ol class="ch-steps">
+      {steps.map((s, i) => (
+        <li class="ch-step">
+          <span class="ch-step-n" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+          <div>
+            <h3 class="ch-step-h">{s.h}</h3>
+            <p class="ch-step-p">{s.p}</p>
+          </div>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <Divider label={nx()} />
+
+  <section class="ch-block" aria-labelledby="ch-yes-h">
+    <h2 class="ch-h" id="ch-yes-h">Nothing reaches a customer without your yes.</h2>
+    <p class="ch-lead">
+      Chere' does the paperwork. You stay the contractor. It never sends a bid, a contract or an
+      invoice on its own, and anything it read off a photo is flagged for you to check before a
+      customer sees it. The price comes from your prices, and your work stays yours.
+    </p>
+    <p class="ch-lead">
+      Each business runs on its own server, set up for that business alone. What Chere' keeps and
+      why is on <a href="/chere/privacy">the privacy page</a>, in plain words.
+    </p>
+  </section>
+
+  <Divider label={nx()} />
+
+  <section class="ch-block" aria-labelledby="ch-setup-h">
+    <h2 class="ch-h" id="ch-setup-h">Set up in person, by the people who built it.</h2>
+    <p class="ch-lead">
+      Most contractors won't learn new software alone, and they shouldn't have to. Before your first
+      job I load your contract, your prices and your customers, then walk you through it on your own
+      job. When you need help later, you text the person who set it up.
+    </p>
+    <p class="ch-lead">
+      Right now Chere' is in beta with a few contractors on the South Coast, on iPhone and Android.
+      If you run a one-truck shop doing repair, remodel or exterior work, text me and I'll show you
+      on a job of yours.
+    </p>
+  </section>
+
+  <section class="ch-block ch-end" aria-label="Text Preston for beta access">
+    <TextCta
+      label="In beta. Text me for access"
+      about="Chere'"
+      links={[
+        { href: '/chere/support', label: 'Beta help' },
+        { href: '/chere/privacy', label: 'Privacy' },
+      ]}
+    />
+  </section>
+
+  <Divider label={nx()} />
+
+  <RelatedLinks
+    id="ch-related"
+    title="Related"
+    links={[
+      { href: '/work/seabreeze', label: 'SeaBreeze', sub: "The business Chere' runs" },
+      { href: '/services/app-development', label: 'App Development', sub: 'Apps built the same way' },
+      { href: '/work', label: 'All work', sub: 'Sites and apps' },
+    ]}
+  />
+</BaseLayout>
+
+<style>
+  .ch-feature { max-width: 1000px; margin: 0 auto; padding: 8px 16px 0; }
+  .ch-block { padding: 28px 4px 20px; max-width: 720px; margin: 0 auto; }
+  .ch-h {
+    font-family: var(--font-serif);
+    font-size: 26px;
+    font-weight: 600;
+    line-height: 1.2;
+    color: var(--color-ash-100);
+    margin: 0 0 16px;
+    text-wrap: balance;
+  }
+  @media (min-width: 740px) { .ch-h { font-size: 34px; } }
+  .ch-lead {
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 1.7;
+    color: var(--color-ash-300);
+    margin: 0 0 16px;
+    max-width: 62ch;
+  }
+  @media (min-width: 740px) { .ch-lead { font-size: 17px; } }
+  .ch-lead strong { color: var(--color-ash-100); font-weight: 600; }
+  .ch-lead em { color: var(--color-copper-bright); font-style: italic; font-family: var(--font-serif); }
+  .ch-lead a { color: var(--color-wc-green); text-underline-offset: 3px; }
+
+  /* The steps are a real sequence, so they are numbered. One column on a phone, two on wider screens. */
+  .ch-steps {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1px;
+    background: var(--copper-hairline);
+    border: 1px solid var(--copper-hairline);
+    border-radius: var(--radius-card);
+    overflow: hidden;
+  }
+  @media (min-width: 740px) { .ch-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  .ch-step {
+    background: var(--color-bg-card);
+    padding: 18px 16px;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 14px;
+    align-items: start;
+  }
+  .ch-step-n {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    color: var(--color-copper);
+    padding-top: 3px;
+  }
+  .ch-step-h {
+    font-family: var(--font-sans);
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--color-ash-100);
+    margin: 0 0 6px;
+  }
+  .ch-step-p {
+    font-family: var(--font-sans);
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--color-ash-300);
+    margin: 0;
+  }
+
+  .ch-end { padding-top: 8px; }
+</style>

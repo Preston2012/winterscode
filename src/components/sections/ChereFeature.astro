@@ -31,8 +31,9 @@ import { portfolio } from '../../lib/portfolio';
 import { smsBase, publicPath, phoneDisplay } from '../../lib/text-cta';
 
 export interface Props {
-  /** 'service' is the App Development page: home's sentences, an h3. */
-  variant: 'home' | 'work' | 'service';
+  /** 'service' is the App Development page: home's sentences, an h3.
+   *  'page' is Chere's own page (/chere, S351): /work's sentences under the page's h1, an h2. */
+  variant: 'home' | 'work' | 'service' | 'page';
 }
 const { variant } = Astro.props;
 
@@ -94,10 +95,12 @@ const mediaUrl = (file: string) => {
 
     {variant === 'home'
       ? <h4 class="chf-name" id={headingId}>{p.name}</h4>
-      : <h3 class="chf-name" id={headingId}>{p.name}</h3>}
+      : variant === 'page'
+        ? <h2 class="chf-name" id={headingId}>{p.name}</h2>
+        : <h3 class="chf-name" id={headingId}>{p.name}</h3>}
     <p class="chf-tagline">A back office for one-truck contractors.</p>
 
-    {variant === 'work' ? (
+    {variant === 'work' || variant === 'page' ? (
       <p class="chf-copy">
         Snap the room and say what's changing. Chere' draws three options from the
         photo and prices the job from the one your customer picks. Every measurement
@@ -118,7 +121,7 @@ const mediaUrl = (file: string) => {
       <span>It runs the office at SeaBreeze. <b>A bid that took two of us a full day now takes about an hour.</b></span>
     </p>
 
-    {variant === 'work' && (
+    {(variant === 'work' || variant === 'page') && (
       <div class="chf-tags" role="list">
         {p.tags.map((t) => <span class="chf-tag" role="listitem">{t}</span>)}
       </div>
@@ -129,15 +132,21 @@ const mediaUrl = (file: string) => {
         <span>In beta. Text me for access</span>
         <span class="chf-num">{phoneDisplay}</span>
       </a>
-      {variant !== 'work'
-        ? <a class="chf-link" href="/work#chere">More on Chere' →</a>
-        : <>
+      {variant === 'work'
+        ? <>
+            <a class="chf-link" href="/chere">The full story →</a>
             <a class="chf-link" href="/chere/support">Beta help</a>
             <a class="chf-link" href="/chere/privacy">Privacy</a>
-          </>}
+          </>
+        : variant === 'page'
+          ? <>
+              <a class="chf-link" href="/chere/support">Beta help</a>
+              <a class="chf-link" href="/chere/privacy">Privacy</a>
+            </>
+          : <a class="chf-link" href="/chere">More on Chere' →</a>}
     </div>
 
-    {variant === 'work' && (
+    {(variant === 'work' || variant === 'page') && (
       <p class="chf-name-note">Named for Chere' Brazel Winters (Gigi), who kept our family's books.</p>
     )}
   </div>
@@ -340,7 +349,7 @@ const mediaUrl = (file: string) => {
     letter-spacing: -0.015em;
     color: var(--color-ash-100);
   }
-  @media (min-width: 1024px) { .chf--work .chf-name { font-size: 36px; } }
+  @media (min-width: 1024px) { .chf--work .chf-name, .chf--page .chf-name { font-size: 36px; } }
   .chf-tagline {
     margin: -4px 0 0;
     font-family: var(--font-serif);
