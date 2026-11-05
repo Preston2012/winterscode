@@ -40,6 +40,14 @@ const SKIP_PREFIXES = ['wip:', 'lint:', 'fmt:', 'chore:', 'typo:', 'style:', 'ci
 
 // Client-named work stays out of the public feed. Display-side only; git
 // history is unchanged. Covers client names and client domains.
+// S339 (Nov 4 site audit): two subjects read as a confession to a stranger
+// skimming the log. Git keeps the original words; the public line says what
+// changed, in plain terms, and stays true.
+const REWORDS: [RegExp, string][] = [
+  [/the fake Sogn quote is gone/i, 'the Sogn card quote is removed until a real one exists'],
+  [/correct false and inconsistent claims found in full-site claim audit/i, 'full-site claim audit: every claim matched to its source'],
+];
+
 const PRIVATE_PATTERNS = [/davis/i, /keeli/i, /gernandt/i, /bandonhomes/i, /bandonrealtee/i, /\bbarry\b/i, /\bjodie\b/i, /seabreeze/i, /\bstacy\b/i];
 
 let commits: Commit[] = [];
@@ -62,7 +70,8 @@ try {
       // W-1 compliance: strip em/en-dashes from historical commit messages.
       // Older commits (pre-2026-05-14 lock) contain em-dashes that violate W-1.
       // Render-time strip keeps git history honest, public display W-1 clean.
-      const message = rest.join('|').trim().replace(/\s*[\u2014\u2013]\s*/g, '. ');
+      let message = rest.join('|').trim().replace(/\s*[\u2014\u2013]\s*/g, '. ');
+      for (const [re, to] of REWORDS) message = message.replace(re, to);
       if (!message) return null;
       // Skip noise prefixes
       const lower = message.toLowerCase();

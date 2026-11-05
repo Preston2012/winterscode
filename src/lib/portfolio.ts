@@ -305,7 +305,7 @@ export const portfolio: PortfolioItem[] = [
       {
         label: 'Scope',
         value:
-          'Full site for a Bandon landscape-care and home-repair business. Services, project photos, a service-area map, and a spam-guarded contact form. Built in 7 days from kickoff to live.',
+          'Full site for a Bandon landscape-care and home-repair business. Services, project photos, a service-area map, and a spam-guarded contact form. Built in 7 business days from kickoff to live.',
       },
       {
         label: 'Result',
@@ -382,11 +382,11 @@ export const portfolio: PortfolioItem[] = [
       {
         label: 'Scope',
         value:
-          'Full marketing site for a 30-year contractor business. Before/after gallery, services pages, lead form. Built in 3 days from kickoff to live.',
+          'Full marketing site for a 30-year contractor business. Before/after gallery, services pages, lead form. Built in 3 business days from kickoff to live.',
       },
       {
         label: 'Result',
-        value: 'Live and indexed, with Lighthouse at 95+ across all four categories, measured live on the wall.',
+        value: 'Live and indexed, with its Lighthouse scores measured live on the wall.',
       },
       {
         label: 'Upkeep',

@@ -51,6 +51,12 @@ export interface Props {
    * collapsed policy, because /contact carries the full policy further down.
    */
   strip?: boolean;
+  /**
+   * policy: show the collapsed consult policy. S339, the Nov 4 site audit:
+   * it sat in the closer on 43 pages, so deposits came up before anyone
+   * asked about a consult. Now /pricing only; /contact carries its own table.
+   */
+  policy?: boolean;
 }
 const {
   sectionNumber = '07',
@@ -59,6 +65,7 @@ const {
   headerKicker = 'Reach out',
   headerTitle = 'Ready to build?',
   strip = false,
+  policy = false,
 } = Astro.props;
 
 const phone = '5415510731';
@@ -80,10 +87,14 @@ const sms = smsHref(Astro.url.pathname);
       <SectionHead number={sectionNumber} kicker={headerKicker} title={headerTitle} />
     )}
 
-    <p class="body-text terminus-body">
-      Custom websites and apps for Oregon coast businesses, built in Bandon.
-      Sites from $1,750, starting at 3 business days. One text gets it started.
-    </p>
+    {strip ? (
+      <p class="body-text terminus-body">Sites from $1,750, everything in.</p>
+    ) : (
+      <p class="body-text terminus-body">
+        Custom websites and apps for Oregon coast businesses, built in Bandon.
+        Sites from $1,750, starting at 3 business days. One text gets it started.
+      </p>
+    )}
   </div>
 
   <div class="terminus-right">
@@ -118,7 +129,7 @@ const sms = smsHref(Astro.url.pathname);
       <a href={`mailto:${email}?subject=Winters%20Code%20consult%20request`}>Email {email}</a>
     </div>
 
-    {!strip && <details class="consult-policy">
+    {!strip && policy && <details class="consult-policy">
       <summary class="consult-policy-title mono">Consult policy</summary>
       <ul>
         <li><strong>Bandon:</strong> free in-person or video</li>
