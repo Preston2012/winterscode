@@ -34,7 +34,7 @@ const servicesLd = {
 ---
 
 <BaseLayout
-  title="Services · Winters Code"
+  title="Services · Websites, Apps & Care Plans · Winters Code"
   description="Websites, apps, custom software, AI automation, SEO and branding for Oregon coast businesses. Six services, one builder, one price with everything in."
 >
   <Fragment slot="head">
@@ -142,10 +142,11 @@ const servicesLd = {
       <div class="sv-fg">
         <h3 class="sv-fg-h">Getting found</h3>
         <ul class="sv-fg-list">
-          <li>Built to load fast on a phone, scored live on the Wall. In my audit, the local sites Google could score averaged 61 out of 100 on a phone. Every one I build is on the Wall.</li>
+          <li>Built to load fast on a phone and scored live on Google's own test. In my audit, the local sites Google could score averaged 61 out of 100 on a phone. Every one I build is on the Wall.</li>
           <li>Set up in Google Search Console, with your sitemap submitted.</li>
           <li>Readable by Google and AI assistants, with clean structure they can understand. Scrapers and junk bots get shut out.</li>
           <li>Your whole presence lined up: your website, your Google listing, and your socials all saying the same thing and pointing the same way.</li>
+          <li>Google Business Profile setup, with your hours, photos and services filled in.</li>
           <li>Your socials wired right into the site.</li>
         </ul>
       </div>
@@ -211,6 +212,7 @@ const servicesLd = {
         <p class="sv-tier-timeline">8-16 weeks</p>
       </article>
     </div>
+    <p class="sv-runcost">If a build uses an AI model or a paid API, I name that running cost in the quote, so the monthly bill is never a surprise.</p>
     <TextCta label="Text me about your app" links={[{ href: '/services/app-development', label: 'How app builds work' }]} />
   </section>
 
@@ -246,7 +248,7 @@ const servicesLd = {
       </div>
       <div class="sv-addon-row">
         <dt class="sv-addon-name">AI workflow design</dt>
-        <dd class="sv-addon-desc">Automating intake, replies, and lead routing. Practical AI, not the buzzword kind.</dd>
+        <dd class="sv-addon-desc">Automating intake, replies, and lead routing. Practical AI, not the buzzword kind. If it uses an AI model or a paid API, I name that running cost in the quote, so the monthly bill is never a surprise.</dd>
       </div>
     </dl>
 
@@ -342,7 +344,7 @@ const servicesLd = {
           <p>
             One price, everything in. Most local business sites start at
             <strong>$1,750</strong>, with the pages, the words, real photos,
-            branding, a fast phone-first build, and security all included, and it's
+            branding, a site built to load fast on a phone, and security all included, and it's
             yours to keep.
           </p>
           <p><em>Free consult and a written quote that holds for 14 days. Bigger jobs cost more, and I tell you up front.</em> The full picture is on <a href="/pricing">pricing</a>.</p>
@@ -713,6 +715,7 @@ const servicesLd = {
     .sv-addon-row { grid-template-columns: 240px 1fr; }
   }
 
+  .sv-runcost { margin: 18px 0 0; max-width: 640px; font-size: 14px; line-height: 1.55; color: var(--color-ash-300); }
   .sv-addon-name {
     font-family: var(--font-sans);
     font-size: 14px;

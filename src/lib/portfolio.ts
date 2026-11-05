@@ -49,6 +49,10 @@ export interface PortfolioItem {
   category: PortfolioCategory;
   /** One-line meta (domain · type · timeline). */
   meta: string;
+  /** S339 HONE-SPEC: the /work card's face line, a stranger's read of the
+   *  business and the build, verified against each live site. The domain
+   *  and stack move into "more details". Falls back to meta. */
+  face?: string;
   /** Stack chips. */
   tags: string[];
   /** Current status. */
@@ -108,10 +112,11 @@ export const portfolio: PortfolioItem[] = [
     name: 'Grand Management Services',
     category: 'site',
     meta: 'grandmgmt.com · property management · 50 bilingual pages',
+    face: 'A Coos Bay property manager, rebuilt off WordPress · 50 bilingual pages · security grade D- → A+ · 13 business days',
     tags: ['ASTRO', 'APPFOLIO', 'CLOUDFLARE'],
     status: 'live',
     build: 'rebuild',
-    order: 1,
+    order: 1, // S339 HONE-SPEC: family builds go last on /work
     image: {
       src: '/work/grand-card.webp',
       srcSmall: '/work/grand-card-720.webp',
@@ -156,12 +161,13 @@ export const portfolio: PortfolioItem[] = [
     name: 'US Survey Supply',
     category: 'site',
     meta: 'ussurveysupply.com · surveying equipment dealer · 42 pages',
+    face: 'A Bandon surveying-equipment dealer · 42 pages on a 32-page contract · 8 business days',
     tags: ['ASTRO', 'TAILWIND', 'CLOUDFLARE'],
     status: 'live',
     build: 'rebuild',
     // S339 order, Preston 2026-10-28: Grand, US Survey Supply, Makai, Bandon
     // By The Dunes, SeaBreeze, Sogn, Professors Golf, South Coast Cuisine.
-    order: 2,
+    order: 2, // S339 HONE-SPEC: family builds go last on /work
     // Published 2026-09-11 (S230). Gate condition met: ussurveysupply.com now
     // serves this build. Verified by fetching the authoritative Cloudflare
     // address directly, because the ops resolver still held the old host's A
@@ -205,10 +211,11 @@ export const portfolio: PortfolioItem[] = [
     name: 'Makai Painting',
     category: 'site',
     meta: 'makaipainting.com · painting + residential rehab · 5-day build',
+    face: 'A Coos Bay painting and residential-rehab company · 20 pages, 12 of them services · estimate form to the office inbox · 5 business days',
     tags: ['ASTRO', 'CLOUDFLARE', 'TURNSTILE'],
     status: 'live',
     build: 'new',
-    order: 3,
+    order: 3, // S339 HONE-SPEC: family builds go last on /work
     image: {
       src: '/work/makai-card.webp',
       srcSmall: '/work/makai-card-720.webp',
@@ -245,11 +252,12 @@ export const portfolio: PortfolioItem[] = [
     name: 'Bandon By The Dunes Realtee',
     category: 'site',
     meta: 'bandonbythedunesrealtee.net · real estate · live RMLS listings',
+    face: 'A Bandon real estate brokerage · listings live from the RMLS feed',
     tags: ['ASTRO', 'RMLS API', 'CLOUDFLARE'],
     status: 'live',
     build: 'rebuild',
     // S339, Preston 2026-10-28: family builds lead less; fourth, after Makai.
-    order: 4,
+    order: 6, // S339 HONE-SPEC: family builds go last on /work
     image: {
       src: '/work/bbtd-card.webp',
       srcSmall: '/work/bbtd-card-720.webp',
@@ -285,10 +293,11 @@ export const portfolio: PortfolioItem[] = [
     name: 'SeaBreeze Landscape Care and Home Repair',
     category: 'site',
     meta: 'seabreeze.llc · landscape care + home repair · 7-day build',
+    face: 'A Bandon landscape care and home-repair company · 7 business days',
     tags: ['ASTRO', 'TAILWIND', 'CLOUDFLARE'],
     status: 'live',
     build: 'rebuild',
-    order: 5,
+    order: 7, // S339 HONE-SPEC: family builds go last on /work
     image: {
       src: '/work/seabreeze-card.webp',
       srcSmall: '/work/seabreeze-card-720.webp',
@@ -323,10 +332,11 @@ export const portfolio: PortfolioItem[] = [
     name: 'Professors Golf',
     category: 'site',
     meta: 'professorsgolf.com · golf service · 1-day build',
+    face: 'A Bandon golf service · first version in one business day (homepage + events page)',
     tags: ['ASTRO', 'CLOUDFLARE'],
     status: 'live',
     build: 'new',
-    order: 7,
+    order: 4, // S339 HONE-SPEC: family builds go last on /work
     image: {
       src: '/work/golf-card.webp',
       srcSmall: '/work/golf-card-720.webp',
@@ -362,10 +372,11 @@ export const portfolio: PortfolioItem[] = [
     name: 'Sogn Contracting',
     category: 'site',
     meta: 'sogncontracting.com · contractor · 3-day build',
+    face: 'A 30-year Bandon contractor · 3 business days',
     tags: ['NEXT.JS', 'VERCEL', 'TYPESCRIPT'],
     status: 'live',
     build: 'new',
-    order: 6,
+    order: 8, // S339 HONE-SPEC: family builds go last on /work
     image: {
       src: '/work/sogn-card.webp',
       srcSmall: '/work/sogn-card-720.webp',
@@ -406,10 +417,11 @@ export const portfolio: PortfolioItem[] = [
     name: 'South Coast Cuisine',
     category: 'site',
     meta: 'southcoastcuisine.net · private chef · 3-day build',
+    face: 'A Bandon private chef · single page with menus, pricing and a seasonal event package she switches on herself · 3 business days',
     tags: ['ASTRO', 'CLOUDFLARE', 'CLIENT EDITOR'],
     status: 'live',
     build: 'new',
-    order: 8,
+    order: 5, // S339 HONE-SPEC: family builds go last on /work
     details: [
       {
         label: 'Scope',

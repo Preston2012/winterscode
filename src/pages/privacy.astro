@@ -5,7 +5,7 @@ import { breadcrumbSchema } from '../lib/schema';
 import { smsHref, phoneDisplay } from '../lib/text-cta';
 const sms = smsHref(Astro.url.pathname);
 
-const lastUpdated = '2026-10-22';
+const lastUpdated = '2026-11-05';
 ---
 
 <BaseLayout
@@ -59,7 +59,8 @@ const lastUpdated = '2026-10-22';
           account and a copy is emailed to me.</li>
         <li><strong>The free audit on /audit:</strong> the address you enter goes from my server to
           Google PageSpeed Insights and Mozilla Observatory, which score it. Results are kept for six
-          hours so a repeat check is quick, and your IP address counts toward a daily limit.</li>
+          hours so a repeat check is quick, and your IP address counts toward a daily limit. An
+          audit link contains only the site address and reruns the check when opened.</li>
         <li><strong>The MyKonos chat demo:</strong> what you type, and your IP address for its five
           messages a day, goes to my own server, which runs it through an AI model provider.</li>
         <li><strong>Cal.com, email and text:</strong> those open only when you tap them.</li>
@@ -78,6 +79,10 @@ const lastUpdated = '2026-10-22';
         repos I control. Anything I build for you that handles your customers' data uses
         encryption in transit (HTTPS), row-level security on the database, and patched
         dependencies. I treat your data like I'd want mine treated.
+      </p>
+      <p>
+        <strong>Project notes:</strong> I keep notes on each client project in my own
+        AI-assisted notes system so I don't relearn your business. Ask and I'll delete them.
       </p>
 
       <h2 class="h2 legal-h2">Third parties I rely on</h2>

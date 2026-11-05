@@ -18,7 +18,7 @@ const sms = smsHref(Astro.url.pathname);
 ---
 
 <BaseLayout
-  title="About · Winters Code"
+  title="About Preston Winters · Bandon Web Designer · Winters Code"
   description="Preston Winters. 6th generation Bandon. Solo software shop. I've owned small businesses. I know what it's like to drown in software you didn't choose."
 >
   <Fragment slot="head">
@@ -103,14 +103,7 @@ const sms = smsHref(Astro.url.pathname);
       </p>
 
       <p>
-        I've been building my own software for a while.
-        <a href="https://apps.apple.com/us/app/stainslayer-ai/id6757208835" target="_blank" rel="noopener"><span class="ab-hl-app">StainSlayer</span></a>
-        is the one you can grab right now. A phone app that takes a
-        picture of a stain and tells you how to get it out, live on the
-        <a href="https://apps.apple.com/us/app/stainslayer-ai/id6757208835" target="_blank" rel="noopener">App Store</a>
-        and
-        <a href="https://play.google.com/store/apps/details?id=com.mycompany.stainslayerai" target="_blank" rel="noopener">Google Play</a>.
-        The rest are on <a href="/work">the work page</a>.
+        Other things I've built are on <a href="/work">the work page</a>.
       </p>
 
       <p>
@@ -146,11 +139,11 @@ const sms = smsHref(Astro.url.pathname);
       </li>
       <li>
         <strong>My code loads fast, and I'm the one who keeps it running.</strong>
-        Modern stack, no plugins to babysit, <span class="ab-hl-app">~<span class='stat'>95</span> Lighthouse average</span> across every site.
+        Modern stack, no plugins to babysit. Scores are posted live on <a href="/wall">the Wall</a>.
       </li>
       <li>
         <strong>I answer my texts within a few hours during business days.</strong>
-        <a href={sms} class="ab-hl-place ab-text-link">{phoneDisplay}</a>. Real human, real response time.
+        <span class="ab-reply-row"><a href={sms} class="btn btn-primary ab-reply-btn">Text {phoneDisplay}</a> Real human, real response time.</span>
       </li>
       <li>
         <strong>No outsourcing.</strong>
@@ -191,21 +184,21 @@ const sms = smsHref(Astro.url.pathname);
         <span class="ab-law-num">02</span>
         <div class="ab-law-body">
           <h3 class="ab-law-h">Quality is non-negotiable.</h3>
-          <p>Speed without quality is reputation death. Security defaults and a modern stack end to end, measured live on <a href="/wall">the wall</a>.</p>
+          <p>Speed without quality is reputation death. Every site gets HTTPS, security headers and spam-protected forms. What's loaded and why is on <a href="/privacy">the privacy page</a>.</p>
         </div>
       </li>
       <li>
         <span class="ab-law-num">03</span>
         <div class="ab-law-body">
           <h3 class="ab-law-h">The code is custom.</h3>
-          <p>Not WordPress, not Wix, not a builder. The code under your site is the code I wrote for your site. Loads faster, reads cleanly to Google, ships with strict security headers.</p>
+          <p>Not WordPress, not Wix, not a builder. The code under your site is the code I wrote for your site, and it's yours to keep.</p>
         </div>
       </li>
       <li>
         <span class="ab-law-num">04</span>
         <div class="ab-law-body">
           <h3 class="ab-law-h">Recurring relationships beat one-off projects.</h3>
-          <p>The person who built it is the person who maintains it. <a href={sms} class="ab-text-link">Help is just a text away.</a></p>
+          <p>The person who built it is the person who maintains it.</p>
         </div>
       </li>
     </ol>
@@ -246,7 +239,7 @@ const sms = smsHref(Astro.url.pathname);
 
   <Divider label="05" />
 
-  <Contact sectionNumber="05" headerTitle="Let's talk." />
+  <Contact sectionNumber="05" headerTitle="Let's talk." why="You're paying for a person, not a cheap template and a ticket number. The one who builds it answers your text and keeps it running." />
 </BaseLayout>
 
 <style>
@@ -490,4 +483,7 @@ const sms = smsHref(Astro.url.pathname);
     .ab-roots-soft a:hover,
     .ab-text-link:hover { color: var(--color-wc-green); }
   }
+  /* S339 HONE-SPEC: the reply-time row carries the page's one filled Text. */
+  .ab-reply-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; margin-top: 10px; }
+  .ab-reply-btn { padding: 10px 16px; font-size: 14px; }
 </style>

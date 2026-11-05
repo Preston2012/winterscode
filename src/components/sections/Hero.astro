@@ -1,103 +1,29 @@
 ---
-import Stamp from '../ui/Stamp.astro';
 import { smsHref } from '../../lib/text-cta';
 
 const sms = smsHref(Astro.url.pathname);
 
 /**
- * Hero, S7 ceiling pass (replaces S6 floor).
+ * Hero, S339 HONE-SPEC (Nov 4) pass.
  *
- * Spec ref: docs/design/S6_PLUS.md Section 2 (~line 393).
+ * Left: eyebrow, H1, one plain sub with the price, Text (filled) and See the
+ * work (outline), then the reply-time line and the free audit. Right: real
+ * work instead of a badge: a phone-frame screenshot of ussurveysupply.com
+ * (the portfolio clause in the USS contract covers it) with its build facts
+ * and one link to the Wall. On phones the screenshot sits under the reply
+ * line, so Text is the first thing a thumb reaches.
  *
- * Critical change from S6 floor: H1 is now the emotional anchor
- * ("You didn't go into business to manage software."). The morph
- * line moves BELOW the sub as a small secondary line.
+ * Cut in this pass, per the spec: the industry rotator, the maker's stamp,
+ * the "Live from the shop" panel (the Wall shows the same numbers live), and
+ * the four trust chips with their tooltip essays. The "Why $1,750" block
+ * under the hero replaces the chips.
  *
- * Layout:
- *   mobile  (<768)  : single col. Eyebrow → H1 → sub → morph → CTAs → trust → shop card
- *   tablet (768-1023): single col, larger type, shop card full width under the text
- *   desktop  (≥1024): 2-col grid 1.2fr / 1fr, text left + shop card right
- *
- * S326 DNA: this card is the ONE workshop teaser on Home ("Live from the
- * shop"). The mid-page Wall block and the WORKSHOP STATUS stack are gone, so
- * the card now renders at every width (equal-forward: a phone visitor gets
- * the same peek a desktop visitor does). ENGINE is out (builder vanity, not
- * a reason to hire), CALENDAR is out (a booking cue in the hero beside Text),
- * and each row carries a plain caption for an owner who has never heard of
- * Lighthouse or Observatory.
- *
- * Trust tooltips:
- *   - Stub data for S7 ("last-known-good" pattern per Wall curation rules)
- *   - Real PSI/internal-tracker wiring lands when Preston rotates keys + PSI is provisioned
- *   - Mobile: tap to toggle. Desktop: hover.
- *
- * Morph line: vanilla JS (~700 bytes). Cycles every 3.5s automatically.
- * Click/Enter/Space advances manually, auto-resumes after 5s.
+ * Facts on the caption, verified against the USS case page: 42 pages,
+ * 8 business days of build time.
  */
-
-const PHRASES = [
-  // Ordered by Coos/Curry priority (data-anchored from Coos Co. top
-  // employment sectors + Curry tourism/fishing/ag). At runtime the array
-  // is Fisher-Yates shuffled on page load so no two visitors see the
-  // same cycle order. kills the loop pattern, makes each visit feel
-  // freshly curated. Source order preserved for sane future edits.
-  // S326 DNA: index 0 is what paints before the shuffle and what a crawler
-  // reads, so it leads with contractors, where the real proof is (Sogn).
-  // Restaurants moved down: there is no restaurant build to back a lead.
-  'websites for contractors',
-  'mobile apps for fishing charters',
-  'websites for vacation rentals',
-  'software for property managers',
-  'websites for lodging',
-  'websites for restaurants',
-  'tools for marinas',
-  'mobile apps for tour guides',
-  'websites for breweries',
-  'websites for real estate agents',
-  'websites for salons',
-  'tools for landscapers',
-  'mobile apps for food trucks',
-  'websites for retail shops',
-  'websites for photographers',
-  'software for bookkeepers',
-  'web apps for auto shops',
-  'websites for farms',
-  'websites for dispensaries',
-  'tools for cranberry growers',
-];
-
-// Stub "last-known-good" data for trust tooltips. Replace with live
-// data sources (PSI API, internal build tracker, securityheaders.com)
-// once Preston rotates leaked keys and provisions PSI. Wire-up: S10.
-const TRUST_TIPS = {
-  price:
-    'Most local business sites start at $1,750 flat, with the pages, the words, real photos, branding, and a site built to load fast on a phone, scored live on the Wall. One number, everything in. Bigger jobs cost more and I say so up front. The price I quote is the price you pay.',
-  speed:
-    'Site builds start at 3 business days, counted from the day I have what the build needs, and a bigger site gets its timeline in the quote. App builds run 2 to 4 weeks for an MVP, 4 to 8 weeks for a full build, and 8 to 16 for a custom system.',
-  lighthouse:
-    'Google\'s Lighthouse scores any website 0 to 100 on speed, accessibility, search readiness, and best practices. 100 is perfect. The 96 Coos County sites Google could score averaged 61 out of 100 on a phone. Every site I build scores 90 or better on Google\'s mobile test, measured live on the Wall. Scores shown are mobile (the harder test). Desktop usually runs 2 to 5 points higher.',
-  security:
-    'Every site I build carries strict browser security headers: the settings that tell a browser what a page may load and who may frame it. Mozilla Observatory grades those headers. It is a header check, not a full security test. Every grade is measured live on the wall.',
-};
-
-// Live from the shop. Values here are what paints before /api/workshop
-// answers, and what stays if it never does, so each is a floor that holds on
-// a slow month (the Wall curation rule), never a frozen live number. The
-// script below swaps in the live value by data-key, never by position.
-const WORKSHOP_PREVIEW = [
-  { key: 'deploys', glyph: '⚡', label: 'DEPLOYS', value: '', cap: 'Changes I pushed live to the sites I run' },
-  { key: 'lighthouse', glyph: '▲', label: 'LIGHTHOUSE', value: '90+ on mobile', cap: "Google's own test of this site, out of 100" },
-  { key: 'security', glyph: '⬢', label: 'SECURITY', value: 'A+', cap: "Mozilla Observatory's grade for this site's security headers" },
-];
 ---
 
 <section class="hero" id="hero">
-  <!-- Maker's stamp, top-right of hero. Replaces the magazine volume
-       stamp. Doctrine: brain memory #2586. -->
-  <div class="hero-mark" aria-hidden="false">
-    <Stamp size={140} glow="full" priority ariaLabel="Winters Code" />
-  </div>
-
   <div class="hero-text">
     <div class="hero-eyebrow">
       <span class="line" aria-hidden="true"></span>
@@ -110,19 +36,8 @@ const WORKSHOP_PREVIEW = [
     </h1>
 
     <p class="hero-sub">
-      Custom websites, apps, and tools for the <span class="keep">Oregon coast.</span><br />
-      <em><a href={sms} class="hero-creed">Help is just a text away.</a></em>
-    </p>
-
-    <p class="hero-morph-line" aria-live="polite">
-      I can build{' '}
-      <span
-        class="morph"
-        id="morph-phrase"
-        role="button"
-        tabindex="0"
-        aria-label={`Industry: ${PHRASES[0]}. Click to see another.`}
-      >{PHRASES[0]}.</span>
+      Hand-built websites from $1,750 that you own, fast on a phone, from a
+      builder in Bandon you can text.
     </p>
 
     <div class="hero-cta" data-textbar-hide>
@@ -130,224 +45,40 @@ const WORKSHOP_PREVIEW = [
       <a href="/work" class="btn btn-secondary">See the work →</a>
     </div>
 
-    <div class="hero-trust">
-      <span class="trust-item" tabindex="0" data-tip data-kind="price">
-        <span class="dot" aria-hidden="true"></span>
-        From $1,750, everything in
-        <span class="tip" role="tooltip">{TRUST_TIPS.price}</span>
-      </span>
-      <span class="trust-item" tabindex="0" data-tip data-kind="speed">
-        <span class="dot" aria-hidden="true"></span>
-        Starts at 3 business days
-        <span class="tip" role="tooltip">{TRUST_TIPS.speed}</span>
-      </span>
-      <span class="trust-item" tabindex="0" data-tip data-kind="lighthouse">
-        <span class="dot" aria-hidden="true"></span>
-        90+ Lighthouse, every site
-        <span class="tip" role="tooltip">{TRUST_TIPS.lighthouse}</span>
-      </span>
-      <span class="trust-item" tabindex="0" data-tip data-kind="security">
-        <span class="dot" aria-hidden="true"></span>
-        A+ security grade
-        <span class="tip" role="tooltip">{TRUST_TIPS.security}</span>
-      </span>
-    </div>
+    <p class="hero-reply">I answer my texts within a few hours during business days.</p>
+    <p class="hero-audit">
+      Not sure what's wrong with your site?
+      <a href="/audit">Run the free audit. No email needed. →</a>
+    </p>
   </div>
 
-  <!--
-    Live from the shop: the one workshop teaser on Home (S326 DNA). Right
-    column on desktop, under the hero text on tablet and phone. The pulse
-    only turns green once /api/workshop has answered, so the card never
-    claims "live" over numbers that are just the floors above.
-  -->
-  <aside class="workshop-preview" aria-labelledby="wp-h">
-    <div class="wp-header">
-      <h2 class="wp-eyebrow" id="wp-h">
-        <span class="wp-pulse" aria-hidden="true"></span>
-        Live from the shop
-      </h2>
-      <a href="/wall" class="wp-link">the whole shop &rarr;</a>
-    </div>
-    <ul class="wp-rows">
-      {WORKSHOP_PREVIEW.map((row) => (
-        <li class="wp-row" data-key={row.key} hidden={row.key === 'deploys'}>
-          <span class="wp-glyph" aria-hidden="true">{row.glyph}</span>
-          <span class="wp-label">{row.label}</span>
-          <span class="wp-value">{row.value}</span>
-          <span class="wp-cap">{row.cap}</span>
-        </li>
-      ))}
-    </ul>
-  </aside>
+  <figure class="hero-proof">
+    <a href="/work/us-survey-supply" class="hero-phone" aria-label="US Survey Supply, the case study">
+      <span class="hero-phone-notch" aria-hidden="true"></span>
+      <picture>
+        <source type="image/avif" srcset="/work/uss-phone-280.avif 280w, /work/uss-phone-420.avif 420w, /work/uss-phone-560.avif 560w" sizes="(min-width: 1024px) 280px, 240px" />
+        <img
+          src="/work/uss-phone-420.webp"
+          srcset="/work/uss-phone-280.webp 280w, /work/uss-phone-420.webp 420w, /work/uss-phone-560.webp 560w"
+          sizes="(min-width: 1024px) 280px, 240px"
+          width="280" height="560"
+          alt="The US Survey Supply homepage on a phone"
+          decoding="async"
+          fetchpriority="high"
+        />
+      </picture>
+    </a>
+    <figcaption class="hero-proof-cap">
+      <span class="hero-proof-facts">US Survey Supply · 42-page rebuild · built in 8 business days</span>
+      <a href="/wall" class="hero-proof-link">Scored live on the Wall →</a>
+    </figcaption>
+  </figure>
 </section>
-
-<script
-  is:inline
-  type="application/json"
-  id="morph-data"
-  set:html={JSON.stringify(PHRASES)}
-></script>
-
-<script is:inline type="module">
-  (function () {
-    const el = document.getElementById('morph-phrase');
-    const data = document.getElementById('morph-data');
-    if (!el || !data) return;
-
-    let phrases;
-    try { phrases = JSON.parse(data.textContent || '[]'); } catch { return; }
-    if (!Array.isArray(phrases) || phrases.length < 2) return;
-
-    // Fisher-Yates shuffle on every page load. Each visit gets a fresh
-    // industry order so the cycle doesn't reveal a loop pattern. We
-    // copy the array first so the source order in DOM is preserved
-    // for any external readers (screen-readers, scrapers).
-    phrases = phrases.slice();
-    for (var i = phrases.length - 1; i > 0; i--) {
-      var j = Math.floor(Math.random() * (i + 1));
-      var tmp = phrases[i]; phrases[i] = phrases[j]; phrases[j] = tmp;
-    }
-    // Set the initial phrase to index 0 of the shuffled order so the
-    // first thing the visitor sees isn't always the first source phrase.
-    el.textContent = phrases[0] + '.';
-    el.setAttribute('aria-label', 'Industry: ' + phrases[0] + '. Click to see another.');
-
-    const FADE_MS = 400;
-    const AUTO_MS = 3500;
-    const RESUME_MS = 5000;
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    let idx = 0;
-    let autoTimer = null;
-    let resumeTimer = null;
-
-    function advance() {
-      el.style.opacity = '0';
-      setTimeout(function () {
-        idx = (idx + 1) % phrases.length;
-        el.textContent = phrases[idx] + '.';
-        el.setAttribute('aria-label', 'Industry: ' + phrases[idx] + '. Click to see another.');
-        el.style.opacity = '1';
-      }, FADE_MS);
-    }
-
-    function startAuto() {
-      if (reduceMotion) return;
-      if (autoTimer) clearInterval(autoTimer);
-      autoTimer = setInterval(advance, AUTO_MS);
-    }
-
-    function handleClick() {
-      if (autoTimer) clearInterval(autoTimer);
-      if (resumeTimer) clearTimeout(resumeTimer);
-      advance();
-      resumeTimer = setTimeout(startAuto, RESUME_MS);
-    }
-
-    el.addEventListener('click', handleClick);
-    el.addEventListener('keydown', function (e) {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        handleClick();
-      }
-    });
-
-    el.style.transition = 'opacity ' + FADE_MS + 'ms ease-out, text-shadow ' + FADE_MS + 'ms ease-out';
-    startAuto();
-  })();
-
-  // Trust tooltip: hover on desktop, tap-toggle on touch.
-  // Closes on outside tap or another tooltip opening.
-  (function () {
-    const items = document.querySelectorAll('[data-tip]');
-    if (!items.length) return;
-    const isTouch = window.matchMedia('(hover: none)').matches;
-    if (!isTouch) return; // hover handled by CSS, no JS needed
-
-    let openItem = null;
-    items.forEach(function (item) {
-      item.addEventListener('click', function (e) {
-        e.stopPropagation();
-        if (openItem === item) {
-          item.classList.remove('tip-open');
-          openItem = null;
-          return;
-        }
-        if (openItem) openItem.classList.remove('tip-open');
-        item.classList.add('tip-open');
-        openItem = item;
-      });
-    });
-    document.addEventListener('click', function () {
-      if (openItem) {
-        openItem.classList.remove('tip-open');
-        openItem = null;
-      }
-    });
-  })();
-
-  // Live data fetch from /api/workshop for trust tooltips + Workshop preview.
-  // Falls back to baked-in last-known-good silently.
-  (function () {
-    fetch('/api/workshop', { signal: AbortSignal.timeout(8000) })
-      .then(function (r) { return r.ok ? r.json() : null; })
-      .then(function (d) {
-        if (!d) return;
-        // Trust tooltips
-        // Looked up by WHAT THE ITEM IS, never by position. Until S245 this
-        // read items[0..2] while the markup order is price, speed, lighthouse,
-        // security, so every live line landed one tooltip to the left: the
-        // price tip ended with build days, the speed tip ended with Lighthouse
-        // scores. Both were live and both were visible to anyone who tapped.
-        function tipFor(kind) {
-          var el = document.querySelector('.trust-item[data-kind="' + kind + '"] .tip');
-          return el;
-        }
-        var tSpeed = tipFor('speed'), tLh = tipFor('lighthouse'), tSec = tipFor('security');
-        if (tSpeed && d.speed && d.speed.last_three) {
-          tSpeed.insertAdjacentHTML('beforeend',
-            '<span class="tip-live">last 3 builds: ' + d.speed.last_three + '</span>');
-        }
-        if (tLh && d.lighthouse && Array.isArray(d.lighthouse.winterscode)) {
-          tLh.insertAdjacentHTML('beforeend',
-            '<span class="tip-live">winterscode.com today: ' +
-            d.lighthouse.winterscode.join('/') + '</span>');
-        }
-        if (tSec && d.security && d.security.grade) {
-          tSec.insertAdjacentHTML('beforeend',
-            '<span class="tip-live">current grade: ' + d.security.grade + '</span>');
-        }
-        // Live from the shop card. Rows are found by data-key, never by
-        // position (the S245 tooltip lesson above).
-        function wpSet(key, text) {
-          var el = document.querySelector('.wp-row[data-key="' + key + '"] .wp-value');
-          if (el && text) el.textContent = text;
-          return !!(el && text);
-        }
-        var got = 0;
-        // A cached deploy count is a past 30-day window, not this one, so it
-        // only replaces the static floor when the feed itself is live.
-        // The deploys row starts hidden and appears only with a live count,
-        // so the card never states a deploy number it cannot back (S339).
-        if (d.deploys && d.deploys.source === 'live' && typeof d.deploys.count_30d === 'number' && d.deploys.count_30d > 0) {
-          var dr = document.querySelector('.wp-row[data-key="deploys"]');
-          if (wpSet('deploys', d.deploys.count_30d + ' in past 30 days')) { got += 1; if (dr) dr.hidden = false; }
-        }
-        if (d.lighthouse && Array.isArray(d.lighthouse.winterscode) && d.lighthouse.winterscode.length === 4)
-          got += wpSet('lighthouse', d.lighthouse.winterscode.join(' / ')) ? 1 : 0;
-        if (d.security && d.security.grade)
-          got += wpSet('security', d.security.grade) ? 1 : 0;
-        var card = document.querySelector('.workshop-preview');
-        if (card && got) card.classList.add('is-live');
-      })
-      .catch(function () { /* swallow, stubs already rendered */ });
-  })();
-</script>
 
 <style>
   /* ─── Hero shell ─── */
   .hero {
-    padding: 36px 4px 28px;
+    padding: 52px 4px 28px;
     position: relative;
   }
   @media (min-width: 740px) {
@@ -355,7 +86,6 @@ const WORKSHOP_PREVIEW = [
        overlap the H1. The stamp is fixed top-right inside .hero, so
        hero-text needs its own right-pad on this breakpoint only. */
     .hero { padding: 56px 4px 40px; }
-    .hero-text { padding-right: 170px; }
   }
   @media (min-width: 1024px) {
     .hero {
@@ -419,9 +149,6 @@ const WORKSHOP_PREVIEW = [
       line-height: 1.08;
       margin-top: 0;
     }
-    /* Force the line break at tablet too so line 1 ("...into business")
-       ends before the maker's-mark zone top-right. Without this the H1
-       runs full width and collides with the stamp. */
     .desktop-break { display: inline; }
   }
   @media (min-width: 1024px) {
@@ -439,33 +166,6 @@ const WORKSHOP_PREVIEW = [
     color: var(--color-ash-300);
     line-height: 1.55;
   }
-  /* Preston's call: hold "Oregon coast." together so it drops to its own line
-     directly above "Help is just a text away." The two then read as one
-     sentence to anyone scanning, which is the whole point. */
-  .hero-sub .keep { white-space: nowrap; }
-  .hero-sub em {
-    color: var(--color-ash-100);
-    font-style: italic;
-    font-family: var(--font-serif);
-    font-weight: 500;
-  }
-  /* The creed is wired to the control (S326 DNA): the tagline itself opens
-     the same text as the button below it. Quiet underline, no button look. */
-  .hero-creed {
-    color: inherit;
-    text-decoration: underline;
-    text-decoration-style: dotted;
-    text-decoration-color: rgba(200, 128, 74, 0.55);
-    text-decoration-thickness: 1px;
-    text-underline-offset: 5px;
-    transition: color 200ms, text-decoration-color 200ms;
-  }
-  @media (hover: hover) {
-    .hero-creed:hover {
-      color: var(--color-wc-green);
-      text-decoration-color: var(--color-wc-green);
-    }
-  }
   @media (min-width: 740px) {
     .hero-sub { font-size: 15px; margin-top: 20px; }
   }
@@ -476,61 +176,6 @@ const WORKSHOP_PREVIEW = [
       line-height: 1.5;
       margin-top: 24px;
     }
-  }
-
-  /* ─── Morph line (small secondary line BELOW sub) ─── */
-  .hero-morph-line {
-    margin: 14px 0 0;
-    font-family: var(--font-sans);
-    font-size: 13px;
-    color: var(--color-ash-400);
-    line-height: 1.5;
-    font-weight: 400;
-    letter-spacing: 0;
-  }
-  @media (min-width: 740px) {
-    .hero-morph-line { font-size: 14px; }
-  }
-  @media (min-width: 1024px) {
-    .hero-morph-line { font-size: 15px; margin-top: 18px; }
-  }
-  .morph {
-    /* 44px touch minimum (G-027). Measured 22px tall on production at S245 while
-       carrying role="button" and tabindex, so it advertised itself as tappable
-       at half the size a finger needs. Padding grows the hit area, the matching
-       negative margin keeps the sentence on its original line. */
-    padding: 12px 0;
-    margin: -12px 0;
-    display: inline-block;
-    color: var(--color-wc-green);
-    font-family: var(--font-serif);
-    font-style: italic;
-    font-weight: 500;
-    cursor: pointer;
-    user-select: none;
-    position: relative;
-  }
-  /* The dashed underline is a pseudo-element, not a border. A border sits on the
-     padding edge, and the padding is what buys the 44px hit area, so as a border
-     it dropped 11px below the text. This keeps it tight under the words while
-     the box stays 44 tall. */
-  .morph::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 10px;
-    border-bottom: 1px dashed rgba(77, 216, 168, 0.3);
-  }
-  @media (hover: hover) {
-
-    .morph:hover::after {
-    border-bottom-color: var(--color-wc-green);
-  }}
-  .morph:focus-visible {
-    outline: 2px solid var(--color-wc-green);
-    outline-offset: 4px;
-    border-radius: 2px;
   }
 
   /* ─── CTAs ─── */
@@ -593,285 +238,102 @@ const WORKSHOP_PREVIEW = [
     :global(.btn) { padding: 15px 22px; font-size: 15px; }
   }
 
-  /* ─── Trust signals ─── */
-  .hero-trust {
-    position: relative;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px 14px;
-    margin-top: 22px;
-    padding-top: 18px;
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
+  /* ─── Reply line and audit, right under the buttons ─── */
+  .hero-reply {
+    margin: 14px 0 0;
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--color-ash-300);
   }
-  @media (min-width: 740px) {
-    .hero-trust { gap: 12px 22px; margin-top: 32px; padding-top: 24px; }
-  }
-  .trust-item {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-family: var(--font-sans);
-    font-size: 11px;
+  .hero-audit {
+    margin: 6px 0 0;
+    font-size: 13px;
+    line-height: 1.5;
     color: var(--color-ash-400);
-    font-weight: 500;
-    cursor: help;
-    /* static on purpose: the tip resolves against .hero-trust, not against the
-       item, so it can never be pushed off an edge by where its item sits. */
-    position: static;
-    border-bottom: 1px dashed rgba(255, 255, 255, 0.08);
-    padding-bottom: 1px;
   }
-  @media (min-width: 740px) {
-    .trust-item { font-size: 13px; }
-  }
-  .trust-item .dot {
-    width: 5px;
-    height: 5px;
-    border-radius: 50%;
-    background: var(--color-wc-green);
-  }
-  .trust-item:focus-visible {
-    color: var(--color-ash-100);
-    border-bottom-color: var(--color-wc-green);
-    outline: none;
-  }
-
-  @media (hover: hover) {
-
-    .trust-item:hover {
-    color: var(--color-ash-100);
-    border-bottom-color: var(--color-wc-green);
-    outline: none;
-  }}
-  .trust-item .tip {
-    position: absolute;
-    bottom: calc(100% + 8px);
-    left: 0;
-    right: 0;
-    background: var(--color-bg-card);
-    border: 1px solid var(--copper-hairline);
-    color: var(--color-ash-100);
-    padding: 10px 12px;
-    border-radius: 6px;
-    font-size: 12px;
-    line-height: 1.45;
-    width: auto;
-    white-space: normal;
-    text-align: left;
-    font-weight: 400;
-    letter-spacing: 0;
-    text-transform: none;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 200ms;
-    z-index: 10;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-    font-family: var(--font-sans);
-  }
-  /* Live-data line appended after plain text by the workshop fetch.
-     :global on the last step is load bearing. Astro scopes every selector with
-     a data-astro-cid attribute, and this span is created at runtime by
-     insertAdjacentHTML so it never gets one. Scoped, the rule matched nothing,
-     the span fell back to inline, and every tooltip ended with its live line
-     jammed onto the last sentence with no space: "the price you pay.last 3
-     builds: 3d". Preston caught it on the preview. */
-  .trust-item .tip :global(.tip-live) {
-    display: block;
-    margin-top: 6px;
-    padding-top: 6px;
-    border-top: 1px dashed var(--copper-hairline);
-    font-family: var(--font-mono);
-    font-size: 10px;
-    color: var(--color-copper-bright);
-    letter-spacing: 0.02em;
-  }
-  /* The tip spans the trust row at EVERY width. It used to be centred on its
-     own item with max-width min(300px, 80vw), which put the tip's position at
-     the mercy of where its item happened to sit: the first item pushed its tip
-     off the left edge, the last pushed off the right. Measured on production
-     before any change, that overflowed at 320, 360, 393, 430, 600, 739, 768,
-     1024 and 1280. Every width it was ever tested at. Pinning both edges to
-     .hero-trust makes the geometry independent of the item, so there is no
-     width at which it can fail. */
-  .trust-item .tip::after {
-    content: '';
-    position: absolute;
-    top: 100%;
-    left: 16px;
-    border: 5px solid transparent;
-    border-top-color: var(--copper-hairline);
-  }
-  .trust-item:focus-visible .tip, .trust-item.tip-open .tip {
-    opacity: 1;
-  }
-
-  @media (hover: hover) {
-
-    .trust-item:hover .tip {
-    opacity: 1;
-  }}
-
-  /* ─── Maker's mark (top-right of hero) ─── */
-  /* The Stamp component renders at 140px. Wrapper handles position,
-     rotation (desktop only), and responsive scaling. Rotation goes on
-     the wrapper not the Stamp so it doesn't fight the inline transform
-     the component emits for its size prop. */
-  .hero-mark {
-    position: absolute;
-    top: 10px;
-    right: 4px;
-    z-index: 5;
-    pointer-events: none;
-    transform: scale(calc(64 / 140));
-    transform-origin: top right;
-  }
-  @media (min-width: 740px) {
-    .hero-mark {
-      top: 20px;
-      right: 14px;
-      transform: scale(calc(110 / 140)) rotate(-3deg);
-    }
-  }
-  @media (min-width: 1024px) {
-    /* Centred over the shop card: an absolutely positioned grid child placed in column 2
-       takes that column as its containing block, so auto inline margins centre it on the
-       card's column at every width. */
-    .hero-mark {
-      grid-column: 2;
-      grid-row: 1 / -1;
-      top: 0;
-      left: 0;
-      right: 0;
-      width: 140px;
-      margin-inline: auto;
-      transform: rotate(-4deg);
-      transform-origin: center;
-    }
-  }
-
-  /* ─── Live from the shop card: every width (S326 DNA) ─── */
-  .workshop-preview {
-    margin-top: 28px;
-    background: var(--color-bg-card);
-    border: 1px solid var(--copper-hairline);
-    border-radius: var(--radius-card);
-    padding: 4px 16px 16px;
-    position: relative;
-  }
-  @media (min-width: 740px) {
-    .workshop-preview { margin-top: 36px; padding: 4px 20px 18px; max-width: 620px; }
-  }
-  @media (min-width: 1024px) {
-    .workshop-preview { margin-top: 0; max-width: none; }
-  }
-  .workshop-preview::before {
-    content: '';
-    position: absolute;
-    inset: -1px;
-    border-radius: var(--radius-card);
-    pointer-events: none;
-    box-shadow: 0 0 0 1px rgba(200, 128, 74, 0.05);
-  }
-  .wp-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 12px;
-    border-bottom: 1px solid var(--copper-hairline);
-    margin-bottom: 14px;
-  }
-  .wp-eyebrow {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    margin: 0;
-    font-family: var(--font-mono);
-    font-size: 10px;
-    line-height: 1.2;
-    letter-spacing: 0.18em;
-    color: var(--color-copper);
-    text-transform: uppercase;
-    font-weight: 600;
-  }
-  .wp-link {
+  .hero-audit a {
     display: inline-flex;
     align-items: center;
     min-height: 44px;
-    font-family: var(--font-sans);
-    font-size: 12px;
-    color: var(--color-ash-400);
+    color: var(--color-wc-green);
+    text-decoration: underline;
+    text-decoration-color: rgba(77, 216, 168, 0.35);
+    text-underline-offset: 4px;
+  }
+  @media (hover: hover) { .hero-audit a:hover { text-decoration-color: var(--color-wc-green); } }
+  @media (min-width: 740px) { .hero-reply, .hero-audit { font-size: 14px; } }
+
+  /* ─── Proof: a real client site in a phone frame ─── */
+  .hero-proof {
+    margin: 34px 0 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+  }
+  @media (min-width: 1024px) { .hero-proof { margin: 0; } }
+  .hero-phone {
+    position: relative;
+    display: block;
+    width: 240px;
+    aspect-ratio: 1 / 2.04;
+    padding: 30px 10px 12px;
+    border-radius: 34px;
+    background: linear-gradient(160deg, #1d2422, #0c100f);
+    border: 1px solid var(--copper-hairline);
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.6) inset, 0 24px 60px rgba(0, 0, 0, 0.55), 0 0 40px rgba(77, 216, 168, 0.06);
+    transition: transform 240ms ease, box-shadow 240ms ease;
+  }
+  @media (min-width: 1024px) { .hero-phone { width: 280px; } }
+  .hero-phone picture, .hero-phone img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 6px 6px 25px 25px;
+    object-fit: cover;
+    object-position: top center;
+  }
+  .hero-phone-notch {
+    position: absolute;
+    z-index: 1;
+    top: 10px;
+    left: 50%;
+    width: 58px;
+    height: 12px;
+    transform: translateX(-50%);
+    border-radius: 10px;
+    background: #050706;
+  }
+  .hero-phone:focus-visible { outline: 2px solid var(--color-wc-green); outline-offset: 6px; }
+  @media (hover: hover) {
+    .hero-phone:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.6) inset, 0 30px 70px rgba(0, 0, 0, 0.6), 0 0 48px rgba(77, 216, 168, 0.12);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) { .hero-phone { transition: none; } }
+  .hero-proof-cap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    text-align: center;
+  }
+  .hero-proof-facts {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    color: var(--color-ash-300);
+  }
+  .hero-proof-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    font-size: 13px;
+    color: var(--color-ash-300);
     text-decoration: underline;
     text-decoration-color: var(--copper-hairline);
     text-underline-offset: 4px;
-    white-space: nowrap;
-    transition: color 200ms;
   }
-  @media (hover: hover) {
-    .wp-link:hover { color: var(--color-wc-green); }
-  }
-  .wp-row[hidden] { display: none; }
-  .wp-rows {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: grid;
-    gap: 12px;
-  }
-  .wp-row {
-    display: grid;
-    grid-template-columns: 16px 84px minmax(0, 1fr);
-    column-gap: 10px;
-    row-gap: 3px;
-    align-items: baseline;
-    font-family: var(--font-mono);
-    font-size: 11px;
-    color: var(--color-ash-300);
-    line-height: 1.4;
-  }
-  @media (min-width: 740px) {
-    .wp-row { grid-template-columns: 16px 96px minmax(0, 1fr); }
-  }
-  .wp-glyph {
-    color: var(--color-copper);
-    font-size: 12px;
-    line-height: 1;
-  }
-  .wp-label {
-    color: var(--color-ash-500);
-    letter-spacing: 0.08em;
-    font-size: 10px;
-    text-transform: uppercase;
-  }
-  .wp-value {
-    color: var(--color-ash-100);
-    font-size: 12px;
-    overflow-wrap: anywhere;
-  }
-  .wp-cap {
-    grid-column: 3;
-    font-family: var(--font-sans);
-    font-size: 12px;
-    line-height: 1.45;
-    color: var(--color-ash-400);
-  }
-  /* Grey and still until /api/workshop answers; green and breathing after. */
-  .wp-pulse {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--color-ash-500);
-    flex: none;
-  }
-  .workshop-preview.is-live .wp-pulse {
-    background: var(--color-wc-green);
-    box-shadow: 0 0 8px rgba(77, 216, 168, 0.5);
-    animation: wp-pulse 2.4s ease-in-out infinite;
-  }
-  @keyframes wp-pulse {
-    0%, 100% { opacity: 0.6; transform: scale(1); }
-    50% { opacity: 1; transform: scale(1.2); }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .workshop-preview.is-live .wp-pulse { animation: none; }
-  }
+  @media (hover: hover) { .hero-proof-link:hover { color: var(--color-copper-bright); } }
 </style>

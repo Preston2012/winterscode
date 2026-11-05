@@ -18,7 +18,7 @@ const sms = smsHref(Astro.url.pathname);
 ---
 
 <BaseLayout
-  title="Contact · Winters Code"
+  title="Contact · Text Preston 541-551-0731 · Winters Code"
   description="Text Preston at 541-551-0731. Bandon-based, serving Coos and Curry counties. Free consult, no pitch deck. Call, book a time, or send a brief instead."
 >
   <Fragment slot="head">
@@ -35,8 +35,8 @@ const sms = smsHref(Astro.url.pathname);
   <PageHero
     eyebrow="Contact · Text first"
     h1="Help is just a text away."
-    sub="Text me what you need and it comes straight to me. No assistants, no triage layer, no contact-form black hole."
-    sub2="Calling works too, and so does writing it out below."
+    sub="Need a new site, or is the one you have broken, slow, or invisible on Google? Text me what's going on."
+    sub2="It comes straight to me, no assistants and no contact-form black hole."
     bgImage="/photo/local/contact-sunset-wash"
     bgOpacity={0.44}
     showStamp={false}
@@ -44,7 +44,7 @@ const sms = smsHref(Astro.url.pathname);
 
   <Divider label="01" />
 
-  <Contact sectionNumber="01" centered={true} suppressHeader={true} strip={true} />
+  <Contact sectionNumber="01" centered={true} suppressHeader={true} strip={true} why="You text the person who builds it. There's a written scope, half up front, and the price I quote is the price you pay." />
 
   <Divider label="02" />
 
@@ -183,7 +183,50 @@ const sms = smsHref(Astro.url.pathname);
 
   <Divider label="03" />
 
-  <!-- ─────────── Section 03 · Consult policy (geo-aware), collapsed ─────────── -->
+  <!-- ─────────── Section 03 · Quick FAQ ─────────── -->
+  <section class="ct-faq" aria-labelledby="ct-faq-h">
+    <header class="ct-block-head">
+      <h2 class="ct-block-h" id="ct-faq-h">Before you ask.</h2>
+    </header>
+
+    <dl class="ct-faq-list">
+      <div class="ct-faq-item">
+        <dt class="ct-faq-q">How long until you can start?</dt>
+        <dd class="ct-faq-a">
+          Your quote sets the start date, based on what is already on my
+          bench. I cap at 3 active builds in parallel so timelines stay
+          honest.
+        </dd>
+      </div>
+      <div class="ct-faq-item">
+        <dt class="ct-faq-q">Do you require a contract?</dt>
+        <dd class="ct-faq-a">
+          Yes. Every build has a written SOW listing exactly what's
+          included. Protects both of us. 50% deposit on signing, 50% on
+          launch.
+        </dd>
+      </div>
+      <div class="ct-faq-item">
+        <dt class="ct-faq-q">What if I don't know what I need yet?</dt>
+        <dd class="ct-faq-a">
+          That's what the consult is for. Tell me what's broken or what
+          you're trying to do, and I'll tell you what would actually fix
+          it. No charge.
+        </dd>
+      </div>
+      <div class="ct-faq-item">
+        <dt class="ct-faq-q">Are you taking new clients?</dt>
+        <dd class="ct-faq-a">
+          Yes, with the 3-build parallel cap. If I'm full, you'll get a
+          real waitlist date, not a vague "we'll get back to you."
+        </dd>
+      </div>
+    </dl>
+  </section>
+
+  <Divider label="04" />
+
+  <!-- ─────────── Section 04 · Consult policy (below the FAQ, S339 HONE-SPEC) (geo-aware), collapsed ─────────── -->
   <section class="ct-policy" aria-labelledby="ct-policy-h">
     <details class="ct-policy-fold">
     <summary class="ct-block-head ct-policy-summary">
@@ -259,49 +302,6 @@ const sms = smsHref(Astro.url.pathname);
       <span data-ct-geo-text></span>
     </p>
     </details>
-  </section>
-
-  <Divider label="04" />
-
-  <!-- ─────────── Section 04 · Quick FAQ ─────────── -->
-  <section class="ct-faq" aria-labelledby="ct-faq-h">
-    <header class="ct-block-head">
-      <h2 class="ct-block-h" id="ct-faq-h">Before you ask.</h2>
-    </header>
-
-    <dl class="ct-faq-list">
-      <div class="ct-faq-item">
-        <dt class="ct-faq-q">How long until you can start?</dt>
-        <dd class="ct-faq-a">
-          Your quote sets the start date, based on what is already on my
-          bench. I cap at 3 active builds in parallel so timelines stay
-          honest.
-        </dd>
-      </div>
-      <div class="ct-faq-item">
-        <dt class="ct-faq-q">Do you require a contract?</dt>
-        <dd class="ct-faq-a">
-          Yes. Every build has a written SOW listing exactly what's
-          included. Protects both of us. 50% deposit on signing, 50% on
-          launch.
-        </dd>
-      </div>
-      <div class="ct-faq-item">
-        <dt class="ct-faq-q">What if I don't know what I need yet?</dt>
-        <dd class="ct-faq-a">
-          That's what the consult is for. Tell me what's broken or what
-          you're trying to do, and I'll tell you what would actually fix
-          it. No charge.
-        </dd>
-      </div>
-      <div class="ct-faq-item">
-        <dt class="ct-faq-q">Are you taking new clients?</dt>
-        <dd class="ct-faq-a">
-          Yes, with the 3-build parallel cap. If I'm full, you'll get a
-          real waitlist date, not a vague "we'll get back to you."
-        </dd>
-      </div>
-    </dl>
   </section>
 </BaseLayout>
 
