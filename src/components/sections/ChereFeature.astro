@@ -116,10 +116,10 @@ const mediaUrl = (file: string) => {
       </p>
     )}
 
-    <p class="chf-proof">
+    {variant === 'home' && <p class="chf-proof">
       <span class="chf-proof-mark" aria-hidden="true"></span>
       <span>It runs the office at SeaBreeze. <b>A bid that took two of us a full day now takes about an hour.</b></span>
-    </p>
+    </p>}
 
     {(variant === 'work' || variant === 'page') && (
       <div class="chf-tags" role="list">

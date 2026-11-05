@@ -37,6 +37,9 @@ export interface MeasuredSite {
   secFallback?: { grade: string; score: number };
 }
 
+// S339, 2026-11-05: every lhFallback refreshed from the Wall's live
+// /api/workshop read (measured_at 2026-11-05T15:01Z), so a failed live read
+// never shows a buyer an older, lower number than the Wall does.
 export const SITES: MeasuredSite[] = [
   {
     // S339, 2026-10-28: newest client, live on www since 2026-10-27 (the apex
@@ -56,7 +59,7 @@ export const SITES: MeasuredSite[] = [
     // Preston 2026-10-22: signed Tue 10-13, live on her go email Mon 10-19.
     key: 'makai', label: 'makaipainting', name: 'Makai Painting',
     href: 'https://www.makaipainting.com', portfolioSlug: 'makai-painting', builtDays: 5,
-    published: true, lhFallback: [93, 100, 100, 100], secFallback: { grade: 'A+', score: 125 },
+    published: true, lhFallback: [99, 100, 100, 100], secFallback: { grade: 'A+', score: 125 },
   },
   {
     // S339: South Coast Cuisine, live since 2026-09-22 on the apex (www 301s
@@ -65,7 +68,7 @@ export const SITES: MeasuredSite[] = [
     // three with the client editor; the larger figure is the one shown.
     key: 'jen', label: 'southcoastcuisine', name: 'South Coast Cuisine',
     href: 'https://southcoastcuisine.net', portfolioSlug: 'south-coast-cuisine', builtDays: 3,
-    published: true, lhFallback: [97, 100, 100, 100], secFallback: { grade: 'A+', score: 140 },
+    published: true, lhFallback: [99, 100, 100, 100], secFallback: { grade: 'A+', score: 140 },
   },
   {
     // Cutover done 2026-09-11 (S230): the apex serves this build.
@@ -77,7 +80,7 @@ export const SITES: MeasuredSite[] = [
     // direct scan. Neither is copied from the staging host or from an older
     // record. The worker also measures this site live now, so these stand in
     // only when the API is down.
-    lhFallback: [97, 100, 100, 100],
+    lhFallback: [98, 100, 100, 100],
     secFallback: { grade: 'A+', score: 135 },
   },
   {
@@ -88,7 +91,7 @@ export const SITES: MeasuredSite[] = [
   {
     key: 'bbtd', label: 'bandon', name: 'Bandon By The Dunes Realtee',
     href: 'https://www.bandonbythedunesrealtee.net', portfolioSlug: 'bandon-by-the-dunes', builtDays: 18,
-    published: true, lhFallback: [93, 100, 100, 100], secFallback: { grade: 'A+', score: 135 },
+    published: true, lhFallback: [97, 100, 100, 100], secFallback: { grade: 'A+', score: 135 },
   },
   {
     // PSI 2026-09-05 after the contrast pass. One business day, per Preston.
@@ -99,17 +102,17 @@ export const SITES: MeasuredSite[] = [
   {
     key: 'sogn', label: 'sogn', name: 'Sogn Contracting',
     href: 'https://www.sogncontracting.com', portfolioSlug: 'sogn-contracting', builtDays: 3,
-    published: true, lhFallback: [96, 100, 100, 100], secFallback: { grade: 'A+', score: 125 },
+    published: true, lhFallback: [99, 100, 100, 100], secFallback: { grade: 'A+', score: 125 },
   },
   {
     key: 'baseline', label: 'baseline', name: 'Baseline Marketing',
     href: 'https://www.baseline.marketing', portfolioSlug: 'baseline-marketing',
-    published: true, lhFallback: [95, 100, 100, 100], secFallback: { grade: 'A+', score: 125 },
+    published: true, lhFallback: [99, 100, 100, 100], secFallback: { grade: 'A+', score: 125 },
   },
   {
     key: 'winterscode', label: 'winterscode', name: 'Winters Code',
     href: 'https://winterscode.com',
-    published: true, lhFallback: [96, 97, 100, 100], secFallback: { grade: 'A+', score: 125 },
+    published: true, lhFallback: [99, 100, 100, 100], secFallback: { grade: 'A+', score: 125 },
   },
 ];
 

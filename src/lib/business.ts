@@ -221,7 +221,7 @@ export const towns: TownEntry[] = [
       },
       {
         q: 'My Coos Bay business already has a website. Is a rebuild worth it?',
-        a: 'Often, yes. If your current site is slow, built on a page builder, or missing basic security, a custom rebuild usually pays for itself in search visibility and load speed. The free audit shows you exactly where your site stands before you decide.',
+        a: 'Often, yes. If your current site is slow, built on a page builder, or missing basic security, a custom rebuild usually fixes the speed and search basics. The free audit shows you exactly where your site stands before you decide.',
       },
       {
         q: 'Coos Bay is competitive. Can a new site actually move my ranking?',
@@ -373,7 +373,7 @@ export const towns: TownEntry[] = [
       },
       {
         q: 'Have you built for a Bandon business before?',
-        a: 'Yes. Sogn Contracting, a 30-year Bandon contractor, is live with a custom site I built in three days that averages 95+ on Lighthouse. SeaBreeze, Bandon By The Dunes, US Survey Supply and Professors Golf are Bandon businesses too, and their sites are live as well. That is real, indexed, local work you can go look at.',
+        a: 'Yes. Sogn Contracting, a 30-year Bandon contractor, is live with a custom site I built in three business days, its scores posted live on the Wall. SeaBreeze, Bandon By The Dunes, US Survey Supply and Professors Golf are Bandon businesses too, and their sites are live as well. That is real, indexed, local work you can go look at.',
       },
       {
         q: 'My business is seasonal. Does a custom site still make sense?',

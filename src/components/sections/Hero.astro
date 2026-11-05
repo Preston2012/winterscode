@@ -71,11 +71,11 @@ const PHRASES = [
 // once Preston rotates leaked keys and provisions PSI. Wire-up: S10.
 const TRUST_TIPS = {
   price:
-    'Most local business sites start at $1,750 flat, with the pages, the words, real photos, branding, and top Google scores included. One number, everything in. Bigger jobs cost more and I say so up front. The price I quote is the price you pay.',
+    'Most local business sites start at $1,750 flat, with the pages, the words, real photos, branding, and a site built to load fast on a phone, scored live on the Wall. One number, everything in. Bigger jobs cost more and I say so up front. The price I quote is the price you pay.',
   speed:
-    'Site builds start at 3 business days, counted from the day I have what the build needs, and a bigger site gets its timeline in the quote. App builds run 2 to 4 weeks for an MVP, 4 to 8 weeks for a full build.',
+    'Site builds start at 3 business days, counted from the day I have what the build needs, and a bigger site gets its timeline in the quote. App builds run 2 to 4 weeks for an MVP, 4 to 8 weeks for a full build, and 8 to 16 for a custom system.',
   lighthouse:
-    'Google\'s Lighthouse scores any website 0 to 100 on speed, accessibility, search readiness, and best practices. 100 is perfect. Most small-business sites score 50 to 70. Mine sit around a 95 average across every page (some checks dip a few points on heavy interactive pages, but the rolling average holds). Scores shown are mobile (the harder test). Desktop usually runs 2 to 5 points higher.',
+    'Google\'s Lighthouse scores any website 0 to 100 on speed, accessibility, search readiness, and best practices. 100 is perfect. The 96 Coos County sites Google could score averaged 61 out of 100 on a phone. Every site I build scores 90 or better on Google\'s mobile test, measured live on the Wall. Scores shown are mobile (the harder test). Desktop usually runs 2 to 5 points higher.',
   security:
     'Every site I build carries strict browser security headers: the settings that tell a browser what a page may load and who may frame it. Mozilla Observatory grades those headers. It is a header check, not a full security test. Every grade is measured live on the wall.',
 };
@@ -86,7 +86,7 @@ const TRUST_TIPS = {
 // script below swaps in the live value by data-key, never by position.
 const WORKSHOP_PREVIEW = [
   { key: 'deploys', glyph: '⚡', label: 'DEPLOYS', value: '', cap: 'Changes I pushed live to the sites I run' },
-  { key: 'lighthouse', glyph: '▲', label: 'LIGHTHOUSE', value: '~95 avg, mobile', cap: "Google's own test of this site, out of 100" },
+  { key: 'lighthouse', glyph: '▲', label: 'LIGHTHOUSE', value: '90+ on mobile', cap: "Google's own test of this site, out of 100" },
   { key: 'security', glyph: '⬢', label: 'SECURITY', value: 'A+', cap: "Mozilla Observatory's grade for this site's security headers" },
 ];
 ---
@@ -143,7 +143,7 @@ const WORKSHOP_PREVIEW = [
       </span>
       <span class="trust-item" tabindex="0" data-tip data-kind="lighthouse">
         <span class="dot" aria-hidden="true"></span>
-        ~95 Lighthouse avg
+        90+ Lighthouse, every site
         <span class="tip" role="tooltip">{TRUST_TIPS.lighthouse}</span>
       </span>
       <span class="trust-item" tabindex="0" data-tip data-kind="security">

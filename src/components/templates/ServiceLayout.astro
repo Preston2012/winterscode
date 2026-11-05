@@ -130,6 +130,11 @@ const crumbs = breadcrumb ?? [
 ];
 const breadcrumbLd = breadcrumbSchema(crumbs);
 const faqLd = faq.length ? faqSchema(faq) : null;
+// S339 (Nov 4 site audit): divider numbers run in document order. The
+// fixed 04/05/06 after the counted sections printed 04 twice on any page
+// with two sections (real estate, redesign).
+let n = 2;
+const nx = () => String(++n).padStart(2, '0');
 ---
 
 <BaseLayout title={title} description={description} canonicalPath={path}>
@@ -197,7 +202,7 @@ const faqLd = faq.length ? faqSchema(faq) : null;
 
   {sections.map((sec, i) => (
     <>
-      <Divider label={`0${3 + i}`} />
+      <Divider label={nx()} />
       <section class="svc-block svc-section" aria-label={sec.heading}>
         <header class="svc-block-head">
           <h2 class="svc-block-h">{sec.heading}</h2>
@@ -215,7 +220,7 @@ const faqLd = faq.length ? faqSchema(faq) : null;
 
   {why.length > 0 && !whyLink && (
     <>
-      <Divider label={`0${3 + sections.length}`} />
+      <Divider label={nx()} />
       <section class="svc-block svc-why" id="why" aria-labelledby="svc-why-h">
         <header class="svc-block-head">
           <h2 class="svc-block-h" id="svc-why-h">{whyTitle}</h2>
@@ -245,7 +250,7 @@ const faqLd = faq.length ? faqSchema(faq) : null;
 
   {faq.length > 0 && (
     <>
-      <Divider label="04" />
+      <Divider label={nx()} />
       <section class="svc-faq" aria-labelledby="svc-faq-h">
         <header class="svc-block-head">
           <h2 class="svc-block-h" id="svc-faq-h">Questions</h2>
@@ -265,7 +270,7 @@ const faqLd = faq.length ? faqSchema(faq) : null;
     </>
   )}
 
-  <Divider label="05" />
+  <Divider label={nx()} />
 
   <RelatedLinks
     id="svc-related"
@@ -274,7 +279,7 @@ const faqLd = faq.length ? faqSchema(faq) : null;
     links={relatedLinks}
   />
 
-  <Divider label="06" />
+  <Divider label={nx()} />
 
   <Contact sectionNumber="06" centered suppressHeader />
 </BaseLayout>
