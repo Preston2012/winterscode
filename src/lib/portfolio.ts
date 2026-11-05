@@ -201,11 +201,6 @@ export const portfolio: PortfolioItem[] = [
         value:
           'Live and mobile-first. Mozilla Observatory A+, re-verified against the live domain on 2026-09-11, with the grade and Lighthouse both measured live on the wall.',
       },
-      {
-        // S339, Preston 2026-11-05: Search Console screenshots, dated.
-        label: 'Search',
-        value: 'A rebuild on the company\u2019s existing domain. Google Search Console, Sept 11 to Nov 3, 2026: 204 clicks and 17,300 search appearances. Average Google position 8 for “used robotic total station for sale” and for “carlson viking price” (44 appearances each), and 1 for its own name.',
-      },
     ],
     links: [
       { label: 'Visit site →', href: 'https://ussurveysupply.com', primary: true },
