@@ -27,6 +27,12 @@ const ITEMS = [
     lead: 'Locked down.',
     body: 'HTTPS, strict security headers and spam-protected forms, graded live on the Wall.',
   },
+  {
+    // S339, Preston 2026-11-05: client search numbers wait for each client's
+    // OK; until then this says what every build gets, with no figures.
+    lead: 'Set up to be found.',
+    body: 'Google Search Console, your sitemap submitted and your Business Profile filled in, so Google knows the site exists and what it is for. Nobody can promise a ranking.',
+  },
 ];
 ---
 
@@ -64,7 +70,10 @@ const ITEMS = [
   @media (min-width: 1024px) { .why-h { font-size: 38px; } }
 
   .why-grid { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
-  @media (min-width: 740px) { .why-grid { grid-template-columns: 1fr 1fr; gap: 16px; } }
+  @media (min-width: 740px) {
+    .why-grid { grid-template-columns: 1fr 1fr; gap: 16px; }
+    .why-item:last-child:nth-child(odd) { grid-column: 1 / -1; }
+  }
 
   .why-item {
     position: relative;

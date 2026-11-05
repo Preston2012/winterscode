@@ -324,6 +324,11 @@ export const portfolio: PortfolioItem[] = [
         label: 'Result',
         value: 'Live and mobile-first, with Lighthouse and an A+ security grade both measured live on the wall.',
       },
+      {
+        // S339, Preston 2026-11-05: Search Console screenshots, dated.
+        label: 'Search',
+        value: 'A rebuild on the existing domain. Google Search Console, Aug 4 to Nov 3, 2026: 99 clicks and 3,770 search appearances. Average Google position 10 for “property maintenance bandon or”, a search that showed it 227 times.',
+      },
     ],
     links: [
       { label: 'Visit site →', href: 'https://seabreeze.llc', primary: true },
@@ -402,6 +407,11 @@ export const portfolio: PortfolioItem[] = [
       {
         label: 'Result',
         value: 'Live and indexed, with its Lighthouse scores measured live on the wall.',
+      },
+      {
+        // S339, Preston 2026-11-05: Search Console screenshots, dated.
+        label: 'Search',
+        value: 'A brand-new domain, about four months old. Google Search Console, Aug 4 to Nov 3, 2026: 27 clicks and 1,490 search appearances. Average Google position 9 for “bandon concrete”, a search that showed it 24 times.',
       },
       {
         label: 'Upkeep',
