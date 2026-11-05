@@ -1,78 +1,56 @@
 ---
 /**
- * Footer, one centered composition: a brand masthead (seal + tagline) on top,
- * a delicate 3x2 IA column nav in the middle, and the legal line at the base,
- * all on a shared centre axis. Keeps the original chrome: beach-pebble wash,
- * corner brackets, pulsing teal dot, the "I build it…" tagline, and the
- * nominative-use fine print. Column links source from the business data module
- * so Services + Locations stay in sync.
+ * Footer, one centered composition (S339 HONE-SPEC sitewide 3, Shear): the
+ * masthead (seal + credo), one Text line, then five compact lines in place of
+ * the old six columns: main pages, every client site, every town, and the
+ * legal line with the Wall and the changelog. Keeps the original chrome:
+ * beach-pebble wash, corner brackets, pulsing teal dot, the "I build it…"
+ * credo, and the nominative-use fine print. Client and town links read off
+ * the data modules so they stay in sync; the g l shortcut to the Wall lives
+ * in KeyboardShortcuts and is untouched.
+ *
+ * The footer Text is a mint link, not a filled button: the "Ready to build"
+ * closer right above it carries the screen's one filled Text (Look).
  */
-import { services, towns, business } from '../../lib/business';
+import { towns } from '../../lib/business';
 import { sites } from '../../lib/portfolio';
+import { smsHref, telHref, phoneDisplay } from '../../lib/text-cta';
 
 const year = new Date().getFullYear();
+const sms = smsHref(Astro.url.pathname);
 
-const columns: { title: string; links: { label: string; href: string; external?: boolean }[] }[] = [
+type L = { label: string; href: string };
+const lines: { title?: string; aria: string; links: L[] }[] = [
   {
-    title: 'Services',
+    aria: 'Pages',
     links: [
-      ...services.map((s) => ({ label: s.name, href: `/services/${s.slug}` })),
-      { label: 'Logo & Brand Design', href: '/logo-design' },
-      { label: 'All services', href: '/services' },
-    ],
-  },
-  {
-    title: 'Locations',
-    links: towns.map((t) => ({ label: t.name, href: `/web-design-${t.slug}` })),
-  },
-  {
-    title: 'Work',
-    links: [
-      { label: 'All work', href: '/work' },
-      // Read off the portfolio rather than hand-listed. The hand-listed
-      // version named two case studies on the day there were four.
-      // S339, Preston: every published site, in the /work order, not only
-      // the ones with a case page; a site without one opens its /work card.
-      // Chere' closes the list as the one app named here.
-      ...sites.map((p) => ({ label: p.name, href: p.caseStudy ?? `/work#${p.slug}` })),
-      { label: "Chere' (app)", href: '/work#chere' },
-    ],
-  },
-  {
-    title: 'Resources',
-    links: [
+      { label: 'Services', href: '/services' },
+      { label: 'Work', href: '/work' },
+      { label: 'Pricing', href: '/pricing' },
       { label: 'Free site audit', href: '/audit' },
       { label: 'FAQ', href: '/faq' },
-      { label: 'Insights', href: '/insights' },
-      { label: 'Process', href: '/process' },
-      { label: 'Pricing', href: '/pricing' },
-    ],
-  },
-  {
-    title: 'Company',
-    links: [
       { label: 'About', href: '/about' },
       { label: 'Contact', href: '/contact' },
-      { label: 'The Wall', href: '/wall' },
-      { label: 'Changelog', href: '/changelog' },
-      { label: 'GitHub', href: business.github, external: true },
     ],
   },
   {
-    title: 'Industries',
-    links: [
-      { label: 'For Contractors', href: '/web-design-for-contractors' },
-      { label: 'For Real Estate', href: '/web-design-for-real-estate' },
-      { label: 'For Restaurants', href: '/web-design-for-restaurants' },
-    ],
+    // Every published site, in the /work order; a site without a case page
+    // opens its /work card. Sogn stays (Preston's correction).
+    title: 'Work', aria: 'Client sites',
+    links: sites.map((p) => ({ label: p.name, href: p.caseStudy ?? `/work#${p.slug}` })),
+  },
+  {
+    title: 'Towns', aria: 'Towns',
+    links: towns.map((t) => ({ label: t.name, href: `/web-design-${t.slug}` })),
   },
 ];
 
-// Legal links live in the footer chrome (below), not as a column.
-const legalLinks = [
-  { label: 'Privacy', href: '/privacy', external: false },
-  { label: 'Terms', href: '/terms', external: false },
-  { label: 'Credits', href: '/credits', external: false },
+const legalLinks: L[] = [
+  { label: 'Privacy', href: '/privacy' },
+  { label: 'Terms', href: '/terms' },
+  { label: 'Credits', href: '/credits' },
+  { label: 'The Wall', href: '/wall' },
+  { label: 'Changelog', href: '/changelog' },
 ];
 ---
 
@@ -84,43 +62,39 @@ const legalLinks = [
   <span class="wc-foot-corner br" aria-hidden="true"></span>
 
   <div class="wc-foot-inner">
-    <!-- Masthead -->
     <div class="wc-foot-mast">
       <img src="/wc-logo-96.webp" srcset="/wc-logo-96.webp 96w, /wc-logo-160.webp 160w, /wc-logo-256.webp 256w" sizes="46px" width="46" height="46" decoding="async" loading="lazy" alt="" aria-hidden="true" class="wc-foot-seal" />
       <p class="wc-foot-tag">I build it. I ship it. I maintain it.</p>
       <p class="wc-foot-sub">Custom websites &amp; apps · Oregon Coast</p>
     </div>
 
+    <p class="wc-foot-cta">
+      <span class="wc-foot-cta-line">Help is just a text away.</span>
+      <span class="wc-foot-cta-acts">
+        <a href={sms} class="wc-foot-text">Text Preston {phoneDisplay}</a>
+        <span class="wc-foot-dot" aria-hidden="true">&middot;</span>
+        <a href={telHref} class="wc-foot-call">or call</a>
+      </span>
+    </p>
+
     <span class="wc-foot-rule" aria-hidden="true"></span>
 
-    <!-- IA columns -->
-    <nav class="wc-foot-cols" aria-label="Footer">
-      {columns.map((col) => (
-        <div class="wc-foot-col">
-          <h2 class="wc-foot-col-h">{col.title}</h2>
+    <div class="wc-foot-lines">
+      {lines.map((ln) => (
+        <nav class="wc-foot-line" aria-label={ln.aria}>
+          {ln.title && <h2 class="wc-foot-line-h">{ln.title}</h2>}
           <ul>
-            {col.links.map((l) => (
-              <li>
-                {l.external
-                  ? <a href={l.href} rel="noopener" target="_blank">{l.label}</a>
-                  : <a href={l.href}>{l.label}</a>}
-              </li>
-            ))}
+            {ln.links.map((l) => <li><a href={l.href}>{l.label}</a></li>)}
           </ul>
-        </div>
+        </nav>
       ))}
-    </nav>
+    </div>
 
     <span class="wc-foot-rule" aria-hidden="true"></span>
 
-    <!-- Legal -->
     <div class="wc-foot-chrome">
       <nav class="wc-foot-legal" aria-label="Legal">
-        {legalLinks.map((l) => (
-          l.external
-            ? <a href={l.href} rel="noopener" target="_blank">{l.label}</a>
-            : <a href={l.href}>{l.label}</a>
-        ))}
+        {legalLinks.map((l) => <a href={l.href}>{l.label}</a>)}
       </nav>
       <div class="wc-foot-copy">&copy; {year} Winters Code · Bandon, Oregon</div>
       <p class="wc-foot-fine">
@@ -172,53 +146,50 @@ const legalLinks = [
     background: linear-gradient(90deg, transparent, rgba(77, 216, 168, 0.22) 25%, rgba(77, 216, 168, 0.22) 75%, transparent);
   }
 
-  /* IA columns, delicate, centered, 3 wide x 2 tall */
-  .wc-foot-cols {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    align-items: start;
-    gap: 28px 16px;
-    max-width: 580px;
-    margin: 0 auto;
-  }
-  @media (min-width: 740px) { .wc-foot-cols { gap: 34px 28px; max-width: 600px; } }
-  .wc-foot-col-h {
+  /* One Text line under the masthead */
+  .wc-foot-cta { margin: 20px 0 0; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .wc-foot-cta-line { font-family: var(--font-serif); font-size: 15px; color: var(--color-ash-300); }
+  .wc-foot-cta-acts { display: inline-flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: center; }
+  .wc-foot-cta a { display: inline-flex; align-items: center; min-height: 44px; text-decoration: none; transition: color 0.15s ease; }
+  .wc-foot-text { font-family: var(--font-sans); font-weight: 600; font-size: 14px; color: var(--color-wc-green); }
+  .wc-foot-call { font-size: 13px; color: var(--color-ash-400); }
+  .wc-foot-dot { color: var(--color-ash-500); }
+  .wc-foot-cta a:focus-visible { text-decoration: underline; outline: none; }
+  @media (hover: hover) { .wc-foot-cta a:hover { text-decoration: underline; text-underline-offset: 3px; } }
+
+  /* Compact link lines, centered; each link keeps a 44px touch box (G-027) */
+  .wc-foot-lines { display: grid; gap: 18px; max-width: 640px; margin: 0 auto; }
+  .wc-foot-line-h {
     font-family: var(--font-mono);
     font-size: 10px;
     font-weight: 600;
     letter-spacing: 0.16em;
     text-transform: uppercase;
     color: var(--color-copper);
-    margin: 0 0 12px;
+    margin: 0 0 2px;
   }
-  .wc-foot-col-h::after {
-    content: "";
-    display: block;
-    width: 14px;
-    height: 1px;
-    margin: 7px auto 0;
-    background: var(--color-copper);
-    opacity: 0.45;
-  }
-  .wc-foot-col ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
-  .wc-foot-col a {
-    display: inline-block;
+  /* No separator glyphs: a dot that wraps to the start of a centered line
+     reads as a stray mark, so spacing alone sets the links apart. */
+  .wc-foot-line ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; justify-content: center; column-gap: 14px; }
+  .wc-foot-line li { display: inline-flex; align-items: center; }
+  .wc-foot-line a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
     min-width: 44px;
-    padding: 14px 8px;
-    margin: -14px -8px;
+    justify-content: center;
+    padding: 0 2px;
+    margin: -6px 0;
     font-family: var(--font-sans);
-    font-size: 12px;
+    font-size: 12.5px;
     line-height: 1.35;
     color: var(--color-ash-400);
     text-decoration: none;
     transition: color 0.15s ease;
   }
-  @media (min-width: 740px) { .wc-foot-col a { font-size: 13px; } }
-  .wc-foot-col a:focus-visible { color: var(--color-wc-green); outline: none; }
-
-  @media (hover: hover) {
-
-    .wc-foot-col a:hover { color: var(--color-wc-green); outline: none; }}
+  @media (min-width: 740px) { .wc-foot-line a { font-size: 13px; } }
+  .wc-foot-line a:focus-visible { color: var(--color-wc-green); outline: none; }
+  @media (hover: hover) { .wc-foot-line a:hover { color: var(--color-wc-green); } }
 
   /* Legal */
   .wc-foot-chrome { display: flex; flex-direction: column; align-items: center; gap: 10px; }

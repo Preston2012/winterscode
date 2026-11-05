@@ -21,6 +21,7 @@ import Divider from '../ui/Divider.astro';
 import RelatedLinks from '../sections/RelatedLinks.astro';
 import Contact from '../sections/Contact.astro';
 import TextCta from '../ui/TextCta.astro';
+import ClientQuote from '../ui/ClientQuote.astro';
 import { services, towns, townBySlug } from '../../lib/business';
 import type { ServiceEntry, TownEntry } from '../../lib/business';
 import { serviceSchema, breadcrumbSchema, faqSchema } from '../../lib/schema';
@@ -48,6 +49,16 @@ interface Props {
   heroTextPos?: 'top' | 'bottom';
   /** Show the 169-site county audit hook (hub pages). Default true. */
   showAuditHook?: boolean;
+  /** S339 HONE-SPEC: real local work a visitor can go look at, shown right
+   *  after the intro. Each body is verified copy; html allowed. */
+  proof?: { heading: string; items: { body: string; href: string; label: string }[] };
+  /** S339 HONE-SPEC: one body line pointing at nearby work. html allowed. */
+  nearby?: string;
+  /** The US Survey Supply endorsement's closing line under the FAQ
+   *  (Bandon), credited by role; the name is on the case page. */
+  rod?: boolean;
+  /** The page's "why $1,750" line, shown in the closer. */
+  why?: string;
 }
 
 const {
@@ -67,6 +78,10 @@ const {
   heroFocal = 'center',
   heroTextPos = 'bottom',
   showAuditHook = true,
+  proof,
+  nearby,
+  rod = false,
+  why,
 } = Astro.props;
 
 // Link UP to the six services.
@@ -145,7 +160,28 @@ const faqLd = town.faq.length ? faqSchema(town.faq) : null;
   <section class="loc-intro" aria-label={`About ${town.name}`}>
     {intro.map((p) => <p class="loc-lead" set:html={p} />)}
     {town.context && <p class="loc-context" set:html={town.context} />}
+    {nearby && <p class="loc-nearby" set:html={nearby} />}
   </section>
+
+  {proof && (
+    <>
+      <Divider label="01b" />
+      <section class="loc-block loc-proof" aria-labelledby="loc-proof-h">
+        <header class="loc-block-head">
+          <h2 class="loc-block-h" id="loc-proof-h">{proof.heading}</h2>
+        </header>
+        <ul class="loc-proof-list" role="list">
+          {proof.items.map((it) => (
+            <li class="loc-proof-item">
+              <p set:html={it.body} />
+              <a href={it.href} class="loc-link">{it.label}</a>
+            </li>
+          ))}
+        </ul>
+        <TextCta />
+      </section>
+    </>
+  )}
 
   <Divider label="02" />
 
@@ -240,6 +276,11 @@ const faqLd = town.faq.length ? faqSchema(town.faq) : null;
             </details>
           ))}
         </div>
+        {rod && (
+          <div class="loc-rod">
+            <ClientQuote quote={{ text: 'We are proud to endorse and recommend WintersCode.com.', attr: 'General Manager, US Survey Supply' }} />
+          </div>
+        )}
       </section>
     </>
   )}
@@ -283,10 +324,24 @@ const faqLd = town.faq.length ? faqSchema(town.faq) : null;
 
   <Divider label="08" />
 
-  <Contact sectionNumber="08" centered suppressHeader />
+  <Contact sectionNumber="08" centered suppressHeader why={why} />
 </BaseLayout>
 
 <style>
+  .loc-nearby { margin: 14px 0 0; color: var(--color-ash-300); }
+  .loc-proof-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
+  @media (min-width: 740px) { .loc-proof-list { grid-template-columns: 1fr 1fr; } }
+  .loc-proof-item {
+    padding: 18px;
+    background: var(--color-bg-card);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-top: 1px solid var(--copper-hairline);
+    border-radius: var(--radius-card);
+  }
+  .loc-proof-item p { margin: 0 0 6px; font-size: 15px; line-height: 1.55; color: var(--color-ash-300); }
+  .loc-proof-item .loc-link { display: inline-flex; align-items: center; min-height: 44px; }
+  .loc-rod { margin-top: 22px; }
+
   .loc-intro {
     padding: 24px 4px 8px;
     max-width: 720px;

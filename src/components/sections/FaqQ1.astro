@@ -10,15 +10,17 @@
  * after the $1,750 line, with /pricing and /audit as quiet return links. The
  * old "Free consult" button to /contact skipped Text. "live in days" became
  * the CI timeline line, the only public one.
+ *
+ * S339 HONE-SPEC (Nov 4): one filled button per screen, so the Text here is
+ * now plain links, led by "More questions" to /faq.
  */
-import TextCta from '../ui/TextCta.astro';
 ---
 
 <section class="faq-q1" id="faq" aria-labelledby="faq1-q">
   <header class="fq-head">
     <div class="fq-eyebrow">
       <span class="line" aria-hidden="true"></span>
-      <h2 class="fq-h">04 · QUESTION</h2>
+      <h2 class="fq-h">A question</h2>
       <span class="fq-status">the first one everyone asks</span>
     </div>
     <a href="/faq" class="fq-link">more questions →</a>
@@ -32,11 +34,28 @@ import TextCta from '../ui/TextCta.astro';
       days. Your quote lists what is included and what it costs. <em>The price I quote is the price you pay. I
       can steer it start to finish, or you can co-pilot with me.</em>
     </p>
-    <TextCta links={[{ href: '/pricing', label: 'See pricing' }, { href: '/audit', label: 'Free audit of your current site' }]} />
+    <p class="fq-links">
+      <a href="/faq">More questions →</a>
+      <a href="/pricing">See pricing</a>
+      <a href="/audit">Free audit of your current site</a>
+    </p>
   </article>
 </section>
 
 <style>
+  .fq-links { display: flex; flex-wrap: wrap; gap: 0 22px; margin: 16px 0 0; }
+  .fq-links a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    font-size: 14px;
+    color: var(--color-ash-300);
+    text-decoration: underline;
+    text-decoration-color: var(--copper-hairline);
+    text-underline-offset: 4px;
+  }
+  .fq-links a:first-child { color: var(--color-wc-green); text-decoration-color: rgba(77, 216, 168, 0.35); }
+  @media (hover: hover) { .fq-links a:hover { color: var(--color-copper-bright); } }
   .faq-q1 {
     padding: 40px 4px 48px;
     max-width: 720px;

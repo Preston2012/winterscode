@@ -1,0 +1,12 @@
+# S339, 2026-11-05: pages merged on Search Console data (Aug 4 to Nov 3:
+# zero clicks, 0 to 2 impressions each). Workers Static Assets read this file.
+/app-development-bandon /services/app-development 301
+/app-development-bandon.html /services/app-development 301
+/app-development-gold-beach /services/app-development 301
+/app-development-gold-beach.html /services/app-development 301
+/ai-automation-coos-bay /services/ai-automation 301
+/ai-automation-coos-bay.html /services/ai-automation 301
+/website-maintenance /services#care 301
+/website-maintenance.html /services#care 301
+/core-web-vitals-fix /audit 301
+/core-web-vitals-fix.html /audit 301

@@ -80,15 +80,6 @@ const TRUST_TIPS = {
     'Every site I build carries strict browser security headers: the settings that tell a browser what a page may load and who may frame it. Mozilla Observatory grades those headers. It is a header check, not a full security test. Every grade is measured live on the wall.',
 };
 
-// Live from the shop. Values here are what paints before /api/workshop
-// answers, and what stays if it never does, so each is a floor that holds on
-// a slow month (the Wall curation rule), never a frozen live number. The
-// script below swaps in the live value by data-key, never by position.
-const WORKSHOP_PREVIEW = [
-  { key: 'deploys', glyph: '⚡', label: 'DEPLOYS', value: '', cap: 'Changes I pushed live to the sites I run' },
-  { key: 'lighthouse', glyph: '▲', label: 'LIGHTHOUSE', value: '90+ on mobile', cap: "Google's own test of this site, out of 100" },
-  { key: 'security', glyph: '⬢', label: 'SECURITY', value: 'A+', cap: "Mozilla Observatory's grade for this site's security headers" },
-];
 ---
 
 <section class="hero" id="hero">
@@ -155,30 +146,51 @@ const WORKSHOP_PREVIEW = [
   </div>
 
   <!--
-    Live from the shop: the one workshop teaser on Home (S326 DNA). Right
-    column on desktop, under the hero text on tablet and phone. The pulse
-    only turns green once /api/workshop has answered, so the card never
-    claims "live" over numbers that are just the floors above.
+    S339 (Preston 2026-11-05): the hero text and the rotator stay; the right
+    column shows real work instead of the "Live from the shop" panel: Grand
+    and US Survey Supply on phones, side by side (the portfolio clauses in
+    their contracts cover it), with their build facts and one link to the
+    Wall, which carries the live numbers the panel used to show.
   -->
-  <aside class="workshop-preview" aria-labelledby="wp-h">
-    <div class="wp-header">
-      <h2 class="wp-eyebrow" id="wp-h">
-        <span class="wp-pulse" aria-hidden="true"></span>
-        Live from the shop
-      </h2>
-      <a href="/wall" class="wp-link">the whole shop &rarr;</a>
+  <div class="hero-proof">
+    <div class="hero-shots">
+      <figure class="hero-shot">
+        <a href="/work/grand-management" class="hero-phone" aria-label="Grand Management Services, the case study">
+          <span class="hero-phone-notch" aria-hidden="true"></span>
+          <picture>
+            <source type="image/avif" srcset="/work/grand-phone-200.avif 200w, /work/grand-phone-300.avif 300w, /work/grand-phone-400.avif 400w" sizes="(min-width: 1024px) 200px, 42vw" />
+            <img
+              src="/work/grand-phone-300.webp"
+              srcset="/work/grand-phone-200.webp 200w, /work/grand-phone-300.webp 300w, /work/grand-phone-400.webp 400w"
+              sizes="(min-width: 1024px) 200px, 42vw"
+              width="200" height="400"
+              alt="The Grand Management Services homepage on a phone"
+              decoding="async"
+            />
+          </picture>
+        </a>
+        <figcaption class="hero-shot-cap"><b>Grand Management</b> 50 bilingual pages · 13 business days</figcaption>
+      </figure>
+      <figure class="hero-shot">
+        <a href="/work/us-survey-supply" class="hero-phone" aria-label="US Survey Supply, the case study">
+          <span class="hero-phone-notch" aria-hidden="true"></span>
+          <picture>
+            <source type="image/avif" srcset="/work/uss-phone-200.avif 200w, /work/uss-phone-300.avif 300w, /work/uss-phone-400.avif 400w" sizes="(min-width: 1024px) 200px, 42vw" />
+            <img
+              src="/work/uss-phone-300.webp"
+              srcset="/work/uss-phone-200.webp 200w, /work/uss-phone-300.webp 300w, /work/uss-phone-400.webp 400w"
+              sizes="(min-width: 1024px) 200px, 42vw"
+              width="200" height="400"
+              alt="The US Survey Supply homepage on a phone"
+              decoding="async"
+            />
+          </picture>
+        </a>
+        <figcaption class="hero-shot-cap"><b>US Survey Supply</b> 42-page rebuild · 8 business days</figcaption>
+      </figure>
     </div>
-    <ul class="wp-rows">
-      {WORKSHOP_PREVIEW.map((row) => (
-        <li class="wp-row" data-key={row.key} hidden={row.key === 'deploys'}>
-          <span class="wp-glyph" aria-hidden="true">{row.glyph}</span>
-          <span class="wp-label">{row.label}</span>
-          <span class="wp-value">{row.value}</span>
-          <span class="wp-cap">{row.cap}</span>
-        </li>
-      ))}
-    </ul>
-  </aside>
+    <a href="/wall" class="hero-proof-link">Both scored live on the Wall →</a>
+  </div>
 </section>
 
 <script
@@ -286,7 +298,7 @@ const WORKSHOP_PREVIEW = [
     });
   })();
 
-  // Live data fetch from /api/workshop for trust tooltips + Workshop preview.
+  // Live data fetch from /api/workshop for the trust tooltips.
   // Falls back to baked-in last-known-good silently.
   (function () {
     fetch('/api/workshop', { signal: AbortSignal.timeout(8000) })
@@ -317,28 +329,6 @@ const WORKSHOP_PREVIEW = [
           tSec.insertAdjacentHTML('beforeend',
             '<span class="tip-live">current grade: ' + d.security.grade + '</span>');
         }
-        // Live from the shop card. Rows are found by data-key, never by
-        // position (the S245 tooltip lesson above).
-        function wpSet(key, text) {
-          var el = document.querySelector('.wp-row[data-key="' + key + '"] .wp-value');
-          if (el && text) el.textContent = text;
-          return !!(el && text);
-        }
-        var got = 0;
-        // A cached deploy count is a past 30-day window, not this one, so it
-        // only replaces the static floor when the feed itself is live.
-        // The deploys row starts hidden and appears only with a live count,
-        // so the card never states a deploy number it cannot back (S339).
-        if (d.deploys && d.deploys.source === 'live' && typeof d.deploys.count_30d === 'number' && d.deploys.count_30d > 0) {
-          var dr = document.querySelector('.wp-row[data-key="deploys"]');
-          if (wpSet('deploys', d.deploys.count_30d + ' in past 30 days')) { got += 1; if (dr) dr.hidden = false; }
-        }
-        if (d.lighthouse && Array.isArray(d.lighthouse.winterscode) && d.lighthouse.winterscode.length === 4)
-          got += wpSet('lighthouse', d.lighthouse.winterscode.join(' / ')) ? 1 : 0;
-        if (d.security && d.security.grade)
-          got += wpSet('security', d.security.grade) ? 1 : 0;
-        var card = document.querySelector('.workshop-preview');
-        if (card && got) card.classList.add('is-live');
       })
       .catch(function () { /* swallow, stubs already rendered */ });
   })();
@@ -733,9 +723,9 @@ const WORKSHOP_PREVIEW = [
     }
   }
   @media (min-width: 1024px) {
-    /* Centred over the shop card: an absolutely positioned grid child placed in column 2
-       takes that column as its containing block, so auto inline margins centre it on the
-       card's column at every width. */
+    /* Centred over the two phones: an absolutely positioned grid child placed
+       in column 2 takes that column as its containing block, so auto inline
+       margins centre it on the column. The proof clears it with padding. */
     .hero-mark {
       grid-column: 2;
       grid-row: 1 / -1;
@@ -744,134 +734,95 @@ const WORKSHOP_PREVIEW = [
       right: 0;
       width: 140px;
       margin-inline: auto;
-      transform: rotate(-4deg);
-      transform-origin: center;
+      transform: scale(0.8) rotate(-4deg);
+      transform-origin: top center;
     }
+    .hero .hero-proof { margin: 0; padding-top: 128px; }
   }
 
-  /* ─── Live from the shop card: every width (S326 DNA) ─── */
-  .workshop-preview {
-    margin-top: 28px;
-    background: var(--color-bg-card);
-    border: 1px solid var(--copper-hairline);
-    border-radius: var(--radius-card);
-    padding: 4px 16px 16px;
-    position: relative;
-  }
-  @media (min-width: 740px) {
-    .workshop-preview { margin-top: 36px; padding: 4px 20px 18px; max-width: 620px; }
-  }
-  @media (min-width: 1024px) {
-    .workshop-preview { margin-top: 0; max-width: none; }
-  }
-  .workshop-preview::before {
-    content: '';
-    position: absolute;
-    inset: -1px;
-    border-radius: var(--radius-card);
-    pointer-events: none;
-    box-shadow: 0 0 0 1px rgba(200, 128, 74, 0.05);
-  }
-  .wp-header {
+  /* ─── Proof: two real client sites in phone frames, side by side ─── */
+  .hero-proof {
+    margin: 36px 0 0;
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
     align-items: center;
-    gap: 12px;
-    border-bottom: 1px solid var(--copper-hairline);
-    margin-bottom: 14px;
+    gap: 6px;
   }
-  .wp-eyebrow {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    margin: 0;
+  .hero-shots {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    width: 100%;
+    max-width: 380px;
+  }
+  @media (min-width: 740px) { .hero-shots { max-width: 440px; gap: 22px; } }
+  .hero-shot { margin: 0; display: flex; flex-direction: column; align-items: center; gap: 10px; min-width: 0; }
+  .hero-phone {
+    position: relative;
+    display: block;
+    width: 100%;
+    max-width: 200px;
+    aspect-ratio: 1 / 2.06;
+    padding: 24px 8px 10px;
+    border-radius: 28px;
+    background: linear-gradient(160deg, #1d2422, #0c100f);
+    border: 1px solid var(--copper-hairline);
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.6) inset, 0 20px 50px rgba(0, 0, 0, 0.55), 0 0 36px rgba(77, 216, 168, 0.06);
+    transition: transform 240ms ease, box-shadow 240ms ease;
+  }
+  .hero-phone picture, .hero-phone img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 5px 5px 20px 20px;
+    object-fit: cover;
+    object-position: top center;
+  }
+  .hero-phone-notch {
+    position: absolute;
+    z-index: 1;
+    top: 8px;
+    left: 50%;
+    width: 46px;
+    height: 10px;
+    transform: translateX(-50%);
+    border-radius: 8px;
+    background: #050706;
+  }
+  .hero-phone:focus-visible { outline: 2px solid var(--color-wc-green); outline-offset: 6px; }
+  @media (hover: hover) {
+    .hero-phone:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.6) inset, 0 26px 60px rgba(0, 0, 0, 0.6), 0 0 44px rgba(77, 216, 168, 0.12);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) { .hero-phone { transition: none; } }
+  .hero-shot-cap {
+    hyphens: manual;
+    text-align: center;
     font-family: var(--font-mono);
-    font-size: 10px;
-    line-height: 1.2;
-    letter-spacing: 0.18em;
-    color: var(--color-copper);
-    text-transform: uppercase;
-    font-weight: 600;
+    font-size: 10.5px;
+    line-height: 1.5;
+    letter-spacing: 0.04em;
+    color: var(--color-ash-400);
   }
-  .wp-link {
+  .hero-shot-cap :global(b) {
+    display: block;
+    font-family: var(--font-sans);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0;
+    color: var(--color-ash-100);
+  }
+  .hero-proof-link {
     display: inline-flex;
     align-items: center;
     min-height: 44px;
-    font-family: var(--font-sans);
-    font-size: 12px;
-    color: var(--color-ash-400);
+    font-size: 13px;
+    color: var(--color-ash-300);
     text-decoration: underline;
     text-decoration-color: var(--copper-hairline);
     text-underline-offset: 4px;
-    white-space: nowrap;
-    transition: color 200ms;
   }
-  @media (hover: hover) {
-    .wp-link:hover { color: var(--color-wc-green); }
-  }
-  .wp-row[hidden] { display: none; }
-  .wp-rows {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: grid;
-    gap: 12px;
-  }
-  .wp-row {
-    display: grid;
-    grid-template-columns: 16px 84px minmax(0, 1fr);
-    column-gap: 10px;
-    row-gap: 3px;
-    align-items: baseline;
-    font-family: var(--font-mono);
-    font-size: 11px;
-    color: var(--color-ash-300);
-    line-height: 1.4;
-  }
-  @media (min-width: 740px) {
-    .wp-row { grid-template-columns: 16px 96px minmax(0, 1fr); }
-  }
-  .wp-glyph {
-    color: var(--color-copper);
-    font-size: 12px;
-    line-height: 1;
-  }
-  .wp-label {
-    color: var(--color-ash-500);
-    letter-spacing: 0.08em;
-    font-size: 10px;
-    text-transform: uppercase;
-  }
-  .wp-value {
-    color: var(--color-ash-100);
-    font-size: 12px;
-    overflow-wrap: anywhere;
-  }
-  .wp-cap {
-    grid-column: 3;
-    font-family: var(--font-sans);
-    font-size: 12px;
-    line-height: 1.45;
-    color: var(--color-ash-400);
-  }
-  /* Grey and still until /api/workshop answers; green and breathing after. */
-  .wp-pulse {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--color-ash-500);
-    flex: none;
-  }
-  .workshop-preview.is-live .wp-pulse {
-    background: var(--color-wc-green);
-    box-shadow: 0 0 8px rgba(77, 216, 168, 0.5);
-    animation: wp-pulse 2.4s ease-in-out infinite;
-  }
-  @keyframes wp-pulse {
-    0%, 100% { opacity: 0.6; transform: scale(1); }
-    50% { opacity: 1; transform: scale(1.2); }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .workshop-preview.is-live .wp-pulse { animation: none; }
-  }
+  @media (hover: hover) { .hero-proof-link:hover { color: var(--color-copper-bright); } }
 </style>

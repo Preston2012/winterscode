@@ -23,7 +23,7 @@
  * locks while open.
  */
 
-import { smsHref, telHref, phoneDisplay, bookHref, mailHref } from '../../lib/text-cta';
+import { smsHref, telHref, phoneDisplay } from '../../lib/text-cta';
 
 export interface Props {}
 
@@ -33,7 +33,7 @@ const menuItems = [
   { href: '/work',     label: 'Work',     num: '01', note: 'sites and apps, scored live' },
   { href: '/services', label: 'Services', num: '02', note: 'sites, apps and care plans' },
   { href: '/about',    label: 'About',    num: '03', note: 'who builds it' },
-  { href: '/contact',  label: 'Contact',  num: '04', note: 'text, call or book' },
+  { href: '/contact',  label: 'Contact',  num: '04', note: 'text or call' },
 ];
 const path = Astro.url.pathname.replace(/\.html$/, '').replace(/\/$/, '') || '/';
 const isHere = (href: string) =>
@@ -96,10 +96,9 @@ const sms = smsHref(Astro.url.pathname);
         <span>Text Preston</span>
         <span class="menu-text-num">{phoneDisplay}</span>
       </a>
+      <!-- S339 HONE-SPEC sitewide 2: Book a call and Email live on /contact only. -->
       <div class="menu-quiet-row">
-        <a href={telHref} data-menu-link>Call</a>
-        <a href={bookHref} target="_blank" rel="noopener" data-menu-link>Book a call</a>
-        <a href={mailHref} data-menu-link>Email</a>
+        <a href={telHref} data-menu-link>or call {phoneDisplay}</a>
       </div>
       <p class="plate-mark" aria-hidden="true">Bandon &middot; Oregon</p>
     </div>
@@ -456,7 +455,7 @@ const sms = smsHref(Astro.url.pathname);
   .menu-text-num { font-family: var(--font-mono); font-size: 13px; letter-spacing: 0.02em; }
   .menu-quiet-row {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     gap: 4px;
     margin-top: 8px;
   }

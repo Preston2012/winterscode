@@ -5,7 +5,8 @@ import MobileMenu from '../components/layout/MobileMenu.astro';
 import Hero from '../components/sections/Hero.astro';
 import Tangle from '../components/sections/Tangle.astro';
 import SelectedWork from '../components/sections/SelectedWork.astro';
-import LocalProofStrip from '../components/sections/LocalProofStrip.astro';
+import WhyPrice from '../components/sections/WhyPrice.astro';
+import CareLine from '../components/sections/CareLine.astro';
 import ClientWord from '../components/sections/ClientWord.astro';
 import ServicesTeaser from '../components/sections/ServicesTeaser.astro';
 import AboutTeaser from '../components/sections/AboutTeaser.astro';
@@ -15,7 +16,7 @@ import Divider from '../components/ui/Divider.astro';
 ---
 
 <BaseLayout
-  title="Winters Code · Custom websites and apps for the Oregon coast"
+  title="Oregon Coast Web Design & Apps · Bandon · Winters Code"
   description="Custom websites, apps, and tools for Oregon coast businesses, built in Bandon. Sites from $1,750, starting at 3 business days. Help is just a text away."
 >
   <Fragment slot="head">
@@ -24,27 +25,30 @@ import Divider from '../components/ui/Divider.astro';
     <link rel="preload" as="image" href="/wc-seal-256.webp" type="image/webp" fetchpriority="high" />
   </Fragment>
 
+  <!-- S339 HONE-SPEC (Nov 4) order: hero, why $1,750, Rod, the work, care,
+       the tangle, services, about, the first question, the closer. Each
+       section is one beat that points at its own page. "Built on the coast"
+       and the logo band are off Home; their pages are unchanged. -->
   <Header homepage />
   <MobileMenu />
 
   <Hero />
 
-  <Divider label="WC" ariaLabel="The tangle, return to top" />
+  <WhyPrice />
 
-  <Tangle />
+  <Divider label="WC" ariaLabel="In the client's words, return to top" />
+
+  <ClientWord />
 
   <Divider label="WC" ariaLabel="Selected work, return to top" />
 
   <SelectedWork />
 
-  <!-- S339, Preston 2026-10-28: the client's word right after the work. -->
-  <Divider label="WC" ariaLabel="In the client's words, return to top" />
+  <CareLine />
 
-  <ClientWord />
+  <Divider label="WC" ariaLabel="The tangle, return to top" />
 
-  <Divider label="WC" ariaLabel="On the coast, return to top" />
-
-  <LocalProofStrip />
+  <Tangle />
 
   <Divider label="WC" ariaLabel="Services, return to top" />
 
@@ -60,5 +64,8 @@ import Divider from '../components/ui/Divider.astro';
 
   <Divider label="WC" ariaLabel="Reach out, return to top" />
 
-  <Contact sectionNumber="05" />
+  <Contact
+    sectionNumber=""
+    why="You're not renting a template. You own a hand-built site that loads fast on a phone and comes with the words, photos and branding, from someone in Bandon you can text."
+  />
 </BaseLayout>

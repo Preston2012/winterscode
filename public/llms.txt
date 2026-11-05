@@ -26,9 +26,8 @@ Contact: Preston Winters. Text or call (541) 551-0731. Email preston@winterscode
 - [Custom Software](https://winterscode.com/services/custom-software): Tools built for a specific business need.
 - [AI Automation](https://winterscode.com/services/ai-automation): AI workflows for small teams.
 - [SEO and Performance](https://winterscode.com/services/seo-performance): Speed and search work, measured before and after.
-- [Core Web Vitals Fix](https://winterscode.com/core-web-vitals-fix): Repairs for slow sites.
 - [Website Redesign](https://winterscode.com/website-redesign): Rebuilds of dated or slow sites.
-- [Website Maintenance](https://winterscode.com/website-maintenance): Care plans, Basic from $75/mo and Pro from $250/mo.
+- [Care plans](https://winterscode.com/services#care): Basic from $75/mo and Pro from $250/mo.
 - [Logo Design](https://winterscode.com/logo-design): Brand marks and identity.
 
 ## Work
