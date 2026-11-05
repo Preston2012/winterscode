@@ -204,7 +204,7 @@ export const portfolio: PortfolioItem[] = [
       {
         // S339, Preston 2026-11-05: Search Console screenshots, dated.
         label: 'Search',
-        value: 'A rebuild on the company\u2019s existing domain. Google Search Console, Sept 11 to Nov 3, 2026: 204 clicks and 17,300 search appearances. Averaged spot 8 for “used robotic total station for sale” and for “carlson viking price”, and spot 1 for its own name.',
+        value: 'A rebuild on the company\u2019s existing domain. Google Search Console, Sept 11 to Nov 3, 2026: 204 clicks and 17,300 search appearances. Average Google position 8 for “used robotic total station for sale” and for “carlson viking price” (44 appearances each), and 1 for its own name.',
       },
     ],
     links: [
@@ -332,7 +332,7 @@ export const portfolio: PortfolioItem[] = [
       {
         // S339, Preston 2026-11-05: Search Console screenshots, dated.
         label: 'Search',
-        value: 'A rebuild on the existing domain. Google Search Console, Aug 4 to Nov 3, 2026: 99 clicks and 3,770 search appearances. Averaged spot 7 for “handyman bandon” and spot 10 for “property maintenance bandon or”, a search that showed it 227 times.',
+        value: 'A rebuild on the existing domain. Google Search Console, Aug 4 to Nov 3, 2026: 99 clicks and 3,770 search appearances. Average Google position 10 for “property maintenance bandon or”, a search that showed it 227 times.',
       },
     ],
     links: [
@@ -416,7 +416,7 @@ export const portfolio: PortfolioItem[] = [
       {
         // S339, Preston 2026-11-05: Search Console screenshots, dated.
         label: 'Search',
-        value: 'A brand-new domain, about four months old. Google Search Console, Aug 4 to Nov 3, 2026: 27 clicks and 1,490 search appearances. Averaged spot 6 for “remodeling services north bend or” and spot 9 for “bandon concrete”.',
+        value: 'A brand-new domain, about four months old. Google Search Console, Aug 4 to Nov 3, 2026: 27 clicks and 1,490 search appearances. Average Google position 9 for “bandon concrete”, a search that showed it 24 times.',
       },
       {
         label: 'Upkeep',
