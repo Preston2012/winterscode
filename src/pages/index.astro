@@ -19,6 +19,12 @@ import Divider from '../components/ui/Divider.astro';
   title="Oregon Coast Web Design & Apps · Bandon · Winters Code"
   description="Custom websites, apps, and tools for Oregon coast businesses, built in Bandon. Sites from $1,750, starting at 3 business days. Help is just a text away."
 >
+  <Fragment slot="head">
+    <!-- Preload the hero stamp (homepage LCP element). Fetching during HTML
+         parse instead of after the picture element pulls LCP toward FCP on mobile. -->
+    <link rel="preload" as="image" href="/wc-seal-256.webp" type="image/webp" fetchpriority="high" />
+  </Fragment>
+
   <!-- S339 HONE-SPEC (Nov 4) order: hero, why $1,750, Rod, the work, care,
        the tangle, services, about, the first question, the closer. Each
        section is one beat that points at its own page. "Built on the coast"

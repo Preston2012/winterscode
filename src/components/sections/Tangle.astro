@@ -6,7 +6,7 @@
  * Spec ref: docs/design/S6_PLUS.md Section 3 (~line 440).
  *
  * Three stages:
- *   1. The mess, 5 chaotic cards (3 replaced as pills, 2 kept as rounded
+ *   1. The mess, 14 chaotic cards (8 replaced as pills, 6 kept as rounded
  *      squares) with red dashed / orange solid / gray faded connection lines.
  *   2. Interaction (desktop + tablet portrait only), tap cards to highlight
  *      "the ones YOU actually use." Mobile auto-plays after 3s in viewport.
@@ -30,14 +30,32 @@
 // type: 'kept' = rounded square (integrate). 'replaced' = pill (build in).
 // badge: status snippet shown on card.
 const CARDS = [
-  // S339 HONE-SPEC (Nov 4): trimmed from 16 tiles to 5 so the beat reads in
-  // a glance. Three the site replaces, two it connects. The Hootsuite tile,
-  // which named a third-party price, is out with the rest.
+  // 8 replaced (pill, fade out in untangle) + 8 kept (rounded, orbit
+  // the WC mark in untangled state). Total 16. design doc S6+ revision
+  // expanded from original 14 for richer pain coverage. Replaced =
+  // client cancels that subscription after we ship. Kept = client keeps
+  // the tool, we integrate it cleanly into the new site.
+  //
+  // Truncation budget on mobile card (~96px wide, 11px mono): under 14
+  // chars safe on one line, 15+ wraps. 'Constant Contact' (16) accepts
+  // mobile wrap intentionally. recognition is worth the visual cost.
+  // 'GCal' + 'Google Biz' abbreviated to fit cleanly.
   { id: 'wix',        name: 'Wix',              badge: 'expired plan',          type: 'replaced' },
+  { id: 'squarespace', name: 'Squarespace',     badge: 'trial ending',          type: 'replaced' },
   { id: 'godaddy',    name: 'GoDaddy',          badge: 'auto-renew wrong card', type: 'replaced' },
   { id: 'mailchimp',  name: 'Mailchimp',        badge: 'forgot password',       type: 'replaced' },
+  { id: 'constant',   name: 'Constant Contact', badge: "haven't logged in",     type: 'replaced' },
+  { id: 'calendly',   name: 'Calendly',         badge: 'calendar conflict',     type: 'replaced' },
+  { id: 'hootsuite',  name: 'Hootsuite',        badge: '$49/mo billing',        type: 'replaced' },
+  { id: 'hospitable', name: 'Hospitable',       badge: '3 conflicting calendars', type: 'replaced' },
   { id: 'square',     name: 'Square',           badge: '3 unread',              type: 'kept' },
+  { id: 'quickbooks', name: 'QuickBooks',       badge: 'needs login',           type: 'kept' },
+  { id: 'stripe',     name: 'Stripe',           badge: '2 chargebacks',         type: 'kept' },
+  { id: 'gmail',      name: 'Gmail',            badge: '47 unread',             type: 'kept' },
+  { id: 'gcal',       name: 'GCal',             badge: 'double-booked',         type: 'kept' },
+  { id: 'facebook',   name: 'Facebook',         badge: '2FA loop again',        type: 'kept' },
   { id: 'gbiz',       name: 'Google Biz',       badge: 'needs verification',    type: 'kept' },
+  { id: 'yelp',       name: 'Yelp',             badge: 'managed by ex-employee', type: 'kept' },
 ] as const;
 
 // Chaotic positions for mess state, semi-random but deterministic so
@@ -45,30 +63,68 @@ const CARDS = [
 // Coords are percentages of the visual field.
 // Picked by eye to feel "messy desk" not "uniform grid."
 const MESS_POSITIONS = {
-  wix:       { x: 22, y: 20, rot: -14 },
-  mailchimp: { x: 70, y: 16, rot: 17  },
-  square:    { x: 82, y: 52, rot: -9  },
-  godaddy:   { x: 28, y: 64, rot: 11  },
-  gbiz:      { x: 60, y: 84, rot: -16 },
+  // Deliberately chaotic. Clusters at top-left, mid-right, bottom-center.
+  // Sparse zones top-right and bottom-left. Rotations -22 to +22 deg.
+  // Overlapping edges intentional. Reads as 'messy desk' not 'tidy grid'.
+  wix:         { x: 18, y: 11, rot: -14 },
+  mailchimp:   { x: 36, y: 17, rot: 18  },
+  square:      { x: 62, y: 9,  rot: -8  },
+  quickbooks:  { x: 81, y: 19, rot: 22  },
+  squarespace: { x: 12, y: 32, rot: 11  },
+  calendly:    { x: 44, y: 30, rot: -19 },
+  hootsuite:   { x: 70, y: 36, rot: 7   },
+  gmail:       { x: 89, y: 41, rot: -15 },
+  facebook:    { x: 22, y: 52, rot: 16  },
+  godaddy:     { x: 50, y: 49, rot: -6  },
+  constant:    { x: 67, y: 60, rot: 20  },
+  stripe:      { x: 86, y: 64, rot: -12 },
+  yelp:        { x: 14, y: 72, rot: 8   },
+  gcal:        { x: 39, y: 78, rot: -17 },
+  gbiz:        { x: 60, y: 84, rot: 14  },
+  hospitable:  { x: 83, y: 87, rot: -9  },
 } as const;
 
 // Connection lines for mess state. Locked subset of card pairs.
 // type: 'red' = doesn't sync (most). 'orange' = manual workaround. 'gray' = abandoned.
 const CONNECTIONS = [
-  // red: doesn't sync. orange: manual workaround. gray: abandoned.
-  { from: 'mailchimp', to: 'square',  type: 'red'    },
-  { from: 'gbiz',      to: 'wix',     type: 'red'    },
-  { from: 'godaddy',   to: 'wix',     type: 'orange' },
-  { from: 'square',    to: 'gbiz',    type: 'orange' },
-  { from: 'mailchimp', to: 'godaddy', type: 'gray'   },
+  // red: doesn't sync (the most common pain)
+  { from: 'mailchimp',   to: 'square',      type: 'red'    },
+  { from: 'square',      to: 'quickbooks',  type: 'red'    },
+  { from: 'stripe',      to: 'quickbooks',  type: 'red'    },
+  { from: 'gmail',       to: 'yelp',        type: 'red'    },
+  { from: 'hospitable',  to: 'gcal',        type: 'red'    },
+  { from: 'facebook',    to: 'gbiz',        type: 'red'    },
+  // orange: manual workaround
+  { from: 'wix',         to: 'quickbooks',  type: 'orange' },
+  { from: 'godaddy',     to: 'wix',         type: 'orange' },
+  { from: 'gcal',        to: 'calendly',    type: 'orange' },
+  { from: 'gbiz',        to: 'yelp',        type: 'orange' },
+  // gray: abandoned / duplicate
+  { from: 'constant',    to: 'mailchimp',   type: 'gray'   },
+  { from: 'hootsuite',   to: 'facebook',    type: 'gray'   },
+  { from: 'squarespace', to: 'wix',         type: 'gray'   },
 ] as const;
 
 // Tree positions for after-state. Kept cards arranged around center.
 // Replaced cards fade out so we only need positions for kept.
 const TREE_POSITIONS: Record<string, { x: number; y: number }> = {
-  // The two kept tools settle either side of the WC mark at (50, 50).
-  square: { x: 22, y: 34 },
-  gbiz:   { x: 78, y: 66 },
+  // 8 kept cards arranged in a symmetric ring around the WC mark at
+  // (50, 50). Two-card top, two-card bottom, two-card each side. The
+  // ring spaces evenly at roughly 45° intervals so the after-state
+  // reads as a clean integrated hub, not a list.
+  //
+  // Replaced cards fade out so we only need positions for kept.
+  // 'Google Biz' uses id 'gbiz' for the abbreviated card name that
+  // avoids the 'Google Busin…' truncation that killed the original
+  // 14-card layout. Same logic for 'GCal'.
+  square:     { x: 30, y: 18 },  // top-left
+  quickbooks: { x: 70, y: 18 },  // top-right
+  yelp:       { x: 16, y: 38 },  // upper-left side
+  gmail:      { x: 84, y: 38 },  // upper-right side
+  facebook:   { x: 16, y: 62 },  // lower-left side
+  gbiz:       { x: 84, y: 62 },  // lower-right side
+  stripe:     { x: 30, y: 82 },  // bottom-left
+  gcal:       { x: 70, y: 82 },  // bottom-right
 };
 ---
 
@@ -92,7 +148,7 @@ const TREE_POSITIONS: Record<string, { x: number; y: number }> = {
 
   <!-- Live region announces state changes for screen readers -->
   <div class="sr-only" aria-live="polite" aria-atomic="true" id="tangle-announce">
-    A chaotic field of 5 disconnected business tools.
+    A chaotic field of 16 disconnected business tools.
   </div>
 
   <!--
@@ -134,7 +190,7 @@ const TREE_POSITIONS: Record<string, { x: number; y: number }> = {
       <span>WC</span>
     </div>
 
-    <!-- 5 cards -->
+    <!-- 16 cards -->
     {CARDS.map((card) => {
       const mess = MESS_POSITIONS[card.id as keyof typeof MESS_POSITIONS];
       const tree = TREE_POSITIONS[card.id];
@@ -170,7 +226,7 @@ const TREE_POSITIONS: Record<string, { x: number; y: number }> = {
   <div class="tangle-cta">
     <button
       type="button"
-      class="btn btn-secondary tangle-untangle"
+      class="btn btn-primary tangle-untangle"
       id="tangle-untangle"
       data-tangle-action="untangle"
       aria-controls="tangle"
@@ -195,7 +251,7 @@ const TREE_POSITIONS: Record<string, { x: number; y: number }> = {
     // If reduced motion: jump straight to untangled on load.
     if (reduceMotion) {
       section.dataset.stage = 'untangled';
-      announce.textContent = 'Tools organized: 2 integrated, 3 replaced by Winters Code.';
+      announce.textContent = 'Tools organized: 6 integrated, 8 replaced by Winters Code.';
       return;
     }
 
@@ -209,7 +265,7 @@ const TREE_POSITIONS: Record<string, { x: number; y: number }> = {
       }
       untangled = true;
       section.dataset.stage = 'untangled';
-      announce.textContent = 'Tools organized: 2 integrated, 3 replaced by Winters Code.';
+      announce.textContent = 'Tools organized: 6 integrated, 8 replaced by Winters Code.';
     }
 
     button.addEventListener('click', untangle);
@@ -353,14 +409,13 @@ const TREE_POSITIONS: Record<string, { x: number; y: number }> = {
     width: 100%;
     max-width: 720px;
     margin: 0 auto;
-    height: 340px;
+    height: 420px;
   }
-  /* S339: five tiles, so a tighter field than the old sixteen needed. */
   @media (min-width: 740px) {
-    .tangle-stage { height: 400px; max-width: 720px; }
+    .tangle-stage { height: 520px; max-width: 860px; }
   }
   @media (min-width: 1024px) {
-    .tangle-stage { height: 440px; max-width: 760px; }
+    .tangle-stage { height: 600px; max-width: 960px; }
   }
 
   /* SVG behind cards */
