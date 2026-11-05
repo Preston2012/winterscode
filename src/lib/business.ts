@@ -243,7 +243,7 @@ export const towns: TownEntry[] = [
     heroAlt:
       'The Coos Bay waterfront boardwalk, flags along the walkway and boats at the docks.',
     neighbors: ['north-bend', 'coquille'],
-    combos: ['ai-automation'],
+    combos: [], // S339: /ai-automation-coos-bay merged into /services/ai-automation (301)
   },
   {
     slug: 'north-bend',
@@ -391,7 +391,7 @@ export const towns: TownEntry[] = [
     heroAlt:
       'Sea stacks standing off the beach at Bandon, Oregon, on a clear day.',
     neighbors: ['coquille', 'coos-bay'],
-    combos: ['app-development'],
+    combos: [], // S339: /app-development-bandon merged into /services/app-development (301)
   },
   {
     slug: 'coquille',
@@ -723,7 +723,7 @@ export const towns: TownEntry[] = [
     heroAlt:
       'The concrete arch bridge carrying Highway 101 over the Rogue River at Gold Beach, Oregon.',
     neighbors: ['port-orford', 'bandon'],
-    combos: ['app-development'],
+    combos: [], // S339: /app-development-gold-beach merged into /services/app-development (301)
   },
 ];
 
