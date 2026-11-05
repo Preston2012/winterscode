@@ -28,7 +28,7 @@ const quoted = portfolio
     <div class="cw-list">
       {quoted.map((p) => (
         <div class="cw-item">
-          <ClientQuote quote={p.quote!} size="home" />
+          <ClientQuote quote={{ text: p.quote!.text, attr: p.quote!.shortAttr ?? p.quote!.attr }} size="home" />
           <p class="cw-links">
             {p.caseStudy
               ? <a href={p.caseStudy}>See the {p.name} build →</a>

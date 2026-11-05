@@ -75,7 +75,10 @@ export interface PortfolioItem {
    *  true as a fact and a testimonial as a shape, and nobody said it.
    *  Only a real quote from a real named client goes in here. An empty
    *  field renders nothing, which is the correct state until there is one. */
-  quote?: { text: string; attr: string };
+  /** attr is the full credit, used on the client's case page. shortAttr,
+   *  when set, is the credit everywhere else (S339, Preston 2026-11-05: Rod
+   *  Taylor's name only on the USS case study). */
+  quote?: { text: string; attr: string; shortAttr?: string };
   /** Links shown at the bottom of expanded detail. */
   links: { label: string; href: string; primary?: boolean }[];
   /** Internal path to this project's case study, when one exists. The /work
@@ -156,6 +159,7 @@ export const portfolio: PortfolioItem[] = [
     quote: {
       text: 'Winters Code hit our company just as needed at all the right points: Initiative to show what we were lacking in our website, and a stark contrast that could be realized upgrading to their concepts. This was followed by great intuitive inputs, despite relative unfamiliarity with our very specialized market. Expert receipt and application of assets and inputs we provided, along with very productive follow-ups yielded a final website product that reflects brilliantly - and very professionally - on our brand. We are proud to endorse and recommend WintersCode.com.',
       attr: 'Rod Taylor, General Manager, US Survey Supply',
+      shortAttr: 'General Manager, US Survey Supply',
     },
     numeral: 'i.',
     name: 'US Survey Supply',

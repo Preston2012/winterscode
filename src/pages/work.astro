@@ -164,7 +164,7 @@ const workLd = {
               {p.quote && (
                 <p class="wk-quote-short">
                   &ldquo;{lastSentence(p.quote.text)}&rdquo;
-                  <span class="wk-quote-by">{p.quote.attr.split(',').slice(0, 2).join(',')}</span>
+                  <span class="wk-quote-by">{p.quote.shortAttr ?? p.quote.attr}</span>
                 </p>
               )}
 

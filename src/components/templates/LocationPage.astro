@@ -54,7 +54,8 @@ interface Props {
   proof?: { heading: string; items: { body: string; href: string; label: string }[] };
   /** S339 HONE-SPEC: one body line pointing at nearby work. html allowed. */
   nearby?: string;
-  /** Rod Taylor's closing line under the FAQ (Bandon). */
+  /** The US Survey Supply endorsement's closing line under the FAQ
+   *  (Bandon), credited by role; the name is on the case page. */
   rod?: boolean;
   /** The page's "why $1,750" line, shown in the closer. */
   why?: string;
@@ -277,7 +278,7 @@ const faqLd = town.faq.length ? faqSchema(town.faq) : null;
         </div>
         {rod && (
           <div class="loc-rod">
-            <ClientQuote quote={{ text: 'We are proud to endorse and recommend WintersCode.com.', attr: 'Rod Taylor, General Manager, US Survey Supply' }} />
+            <ClientQuote quote={{ text: 'We are proud to endorse and recommend WintersCode.com.', attr: 'General Manager, US Survey Supply' }} />
           </div>
         )}
       </section>
