@@ -23,7 +23,7 @@ import CaseStudyLayout from '../../components/templates/CaseStudyLayout.astro';
     {
       h: 'Why nothing came off a shelf',
       body: [
-        "Reach for a chart library and you get its opinions along with its code. Its axis conventions, its tooltip, its animation curve, its idea of what a data point is. That is fine when you are plotting revenue by quarter. It is useless when the thing you need to show is three language models scored against each other on one sentence, because no library has a component for that, and the closest thing it has will quietly reshape your product into something it already knows how to draw.",
+        "Reach for a chart library and you get its opinions along with its code. Its axis conventions, its tooltip, its animation curve, its idea of what a data point is. That is fine when you are plotting revenue by quarter. It is useless when the thing you need to show is three language models scored against each other on one sentence, because no library has a chart for that, and the closest thing it has will quietly reshape your product into something it already knows how to draw.",
         "Writing them meant every widget could be the exact shape of the idea underneath it. The Framing Radar is a radar because framing genuinely has axes. Crossfire is a split view because two models genuinely disagree. Constellation Nav is a node map because the relationships genuinely are a graph. Each one is a named feature of the product, not decoration on a page about the product.",
         "The second effect is weight. Twenty-two interactive visualizations would normally mean a large charting dependency plus a UI kit plus whatever they both pull in. This site serves nine JavaScript chunks total and the visuals are inline SVG, which the browser already knows how to draw.",
       ],
@@ -31,7 +31,7 @@ import CaseStudyLayout from '../../components/templates/CaseStudyLayout.astro';
     {
       h: 'Checked, not claimed',
       body: [
-        "Anyone can write no dependencies on a portfolio page. So before publishing this, I pulled every JavaScript bundle the homepage requests and searched all nine of them for the names: chart libraries, D3, Highcharts, Plotly, component kits, Tailwind, Bootstrap. Nothing. The one hit was <code>appBootstrap</code>, which is the Next.js router's own hydration function and has nothing to do with the CSS framework of the same name.",
+        "Anyone can write no dependencies on a portfolio page. So before publishing this, I pulled every JavaScript bundle the homepage requests and searched all nine of them for the names: chart libraries, D3, Highcharts, Plotly, UI kits, Tailwind, Bootstrap. Nothing. The one hit was <code>appBootstrap</code>, which is the Next.js router's own hydration function and has nothing to do with the CSS framework of the same name.",
         "That is a small thing to do and it is the whole difference between a claim and a fact. It is also the same check I run on client sites, which is why the audit tool on this site exists at all.",
       ],
     },
