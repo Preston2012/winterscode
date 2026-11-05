@@ -201,6 +201,11 @@ export const portfolio: PortfolioItem[] = [
         value:
           'Live and mobile-first. Mozilla Observatory A+, re-verified against the live domain on 2026-09-11, with the grade and Lighthouse both measured live on the wall.',
       },
+      {
+        // S339, Preston 2026-11-05: Search Console screenshots, dated.
+        label: 'Search',
+        value: 'Google Search Console, Sept 11 to early Nov 2026: 204 clicks and 17,300 search appearances. Averages spot 8 for “used robotic total station for sale” and for “carlson viking price”, and spot 1 for its own name.',
+      },
     ],
     links: [
       { label: 'Visit site →', href: 'https://ussurveysupply.com', primary: true },
@@ -324,6 +329,11 @@ export const portfolio: PortfolioItem[] = [
         label: 'Result',
         value: 'Live and mobile-first, with Lighthouse and an A+ security grade both measured live on the wall.',
       },
+      {
+        // S339, Preston 2026-11-05: Search Console screenshots, dated.
+        label: 'Search',
+        value: 'Google Search Console, Aug to early Nov 2026: 99 clicks and 3,770 search appearances. Averages spot 7 for “handyman bandon” and spot 10 for “property maintenance bandon or”, a search that showed it 227 times.',
+      },
     ],
     links: [
       { label: 'Visit site →', href: 'https://seabreeze.llc', primary: true },
@@ -402,6 +412,11 @@ export const portfolio: PortfolioItem[] = [
       {
         label: 'Result',
         value: 'Live and indexed, with its Lighthouse scores measured live on the wall.',
+      },
+      {
+        // S339, Preston 2026-11-05: Search Console screenshots, dated.
+        label: 'Search',
+        value: 'Google Search Console, Aug to early Nov 2026: 27 clicks and 1,490 search appearances. Averages spot 6 for “remodeling services north bend or” and spot 9 for “bandon concrete”.',
       },
       {
         label: 'Upkeep',

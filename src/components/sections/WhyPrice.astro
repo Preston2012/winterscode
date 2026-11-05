@@ -27,6 +27,11 @@ const ITEMS = [
     lead: 'Locked down.',
     body: 'HTTPS, strict security headers and spam-protected forms, graded live on the Wall.',
   },
+  {
+    // S339, Preston 2026-11-05: Search Console, Sept 11 to early Nov 2026.
+    lead: 'Found on Google.',
+    body: 'Since it went live in September, US Survey Supply has drawn 204 clicks from Google and averages spot 8 for searches like \u201cused robotic total station for sale.\u201d Nobody can promise a ranking. These are the real numbers.',
+  },
 ];
 ---
 
@@ -64,7 +69,10 @@ const ITEMS = [
   @media (min-width: 1024px) { .why-h { font-size: 38px; } }
 
   .why-grid { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
-  @media (min-width: 740px) { .why-grid { grid-template-columns: 1fr 1fr; gap: 16px; } }
+  @media (min-width: 740px) {
+    .why-grid { grid-template-columns: 1fr 1fr; gap: 16px; }
+    .why-item:last-child:nth-child(odd) { grid-column: 1 / -1; }
+  }
 
   .why-item {
     position: relative;
