@@ -11,5 +11,11 @@
   // no API key, no third party holding a lead.
   "send_email": [
     { "name": "NOTIFY", "destination_address": "droiddna2013@gmail.com" }
-  ]
+  ],
+  // The demi-api origin the Instrument proxies (api/chat, api/memories,
+  // api/limit) call. Config, not a secret. The handlers answer 503 naming it
+  // when it is missing, with no hardcoded fallback (rule I-230).
+  "vars": {
+    "WC_DEMO_UPSTREAM": "https://demi.baseline.marketing"
+  }
 }

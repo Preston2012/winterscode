@@ -16,7 +16,8 @@
  *
  * Env vars required:
  *   - WC_DEMO_TOKEN: shared secret matching demi-api's WC_DEMO_TOKEN
- *   - WC_DEMO_UPSTREAM (optional, default https://demi.baseline.marketing)
+ *   - WC_DEMO_UPSTREAM: demi-api origin, e.g. https://demi.baseline.marketing.
+ *     Required: unset answers 503 naming it, never a hardcoded upstream (rule I-230).
  */
 
 export const prerender = false;
@@ -25,7 +26,6 @@ import type { APIRoute } from 'astro';
 // @ts-ignore : virtual module from @astrojs/cloudflare adapter
 import { env as cfEnv } from 'cloudflare:workers';
 
-const DEFAULT_UPSTREAM = 'https://demi.baseline.marketing';
 const MAX_MESSAGE_CHARS = 4_000;
 const MAX_HISTORY_MESSAGES = 8;
 const MAX_HISTORY_CHARS = 800;
@@ -75,9 +75,10 @@ export const POST: APIRoute = async ({ request }) => {
   if (!token) {
     return jsonError('demo_not_configured', 503);
   }
-  const upstream =
-    (cfEnv as Record<string, string | undefined>).WC_DEMO_UPSTREAM ??
-    DEFAULT_UPSTREAM;
+  const upstream = (cfEnv as Record<string, string | undefined>).WC_DEMO_UPSTREAM;
+  if (!upstream) {
+    return jsonError('demo_not_configured: WC_DEMO_UPSTREAM is not set', 503);
+  }
 
   // Forward client IP so the upstream rate limiter counts the visitor,
   // not the Worker. Cloudflare gives us the real IP in CF-Connecting-IP.
