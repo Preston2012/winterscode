@@ -66,6 +66,13 @@ interface WorkCard {
   };
 }
 
+export interface Props {
+  /** S339 HONE-SPEC: the logo band is off Home in the Nov 4 order; pass
+   *  brand to bring it back. The /logo-design page is unchanged. */
+  brand?: boolean;
+}
+const { brand = false } = Astro.props;
+
 const CARDS: WorkCard[] = [
   {
     // S339, Preston 2026-10-28: Grand leads the homepage, and the card shows
@@ -323,10 +330,10 @@ const HOME_SITES = HOME_ORDER
   <header class="selected-head">
     <div class="selected-eyebrow">
       <span class="line" aria-hidden="true"></span>
-      <h2 class="selected-h" id="selected-h">02 · SELECTED WORK</h2>
-      <span class="selected-status">built and live</span>
+      <h2 class="selected-h" id="selected-h">Selected work</h2>
+      <span class="selected-status">every score is measured live</span>
     </div>
-    <a href="/work" class="selected-link">see all →</a>
+    <a href="/wall" class="selected-link">See the Wall →</a>
   </header>
 
   <div class="sw-group-head">
@@ -392,6 +399,11 @@ const HOME_SITES = HOME_ORDER
       </li>
     ))}
   </ul>
+
+  <p class="sw-more">
+    <a href="/work">See all the work →</a>
+    <a href="/web-design-coos-bay">More web design in Coos Bay →</a>
+  </p>
 
   <!-- S339, Preston 2026-10-22: Chere' leads Apps & software on the
        homepage, above any other app, with its demo video. -->
@@ -478,7 +490,7 @@ const HOME_SITES = HOME_ORDER
     and storefronts, sold with a build or alone), different sentences, and no
     line is shared between the two pages.
   -->
-  <div class="sw-brand-block">
+  {brand && <div class="sw-brand-block">
   <div class="sw-brand-head">
     <span class="line" aria-hidden="true"></span>
     <h3 class="sw-brand-label">Logo &amp; graphic design</h3>
@@ -513,7 +525,7 @@ const HOME_SITES = HOME_ORDER
       <span class="sw-brand-cta">See the logo work &rarr;</span>
     </div>
   </a>
-  </div>
+  </div>}
 </section>
 
 <style>
@@ -581,6 +593,20 @@ const HOME_SITES = HOME_ORDER
   @media (hover: hover) {
 
     .selected-link:hover { color: var(--color-wc-green); }}
+
+  .sw-more { display: flex; flex-wrap: wrap; gap: 0 22px; margin: 14px 0 34px; }
+  .sw-more a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    font-family: var(--font-sans);
+    font-size: 14px;
+    color: var(--color-ash-300);
+    text-decoration: underline;
+    text-decoration-color: var(--copper-hairline);
+    text-underline-offset: 4px;
+  }
+  @media (hover: hover) { .sw-more a:hover { color: var(--color-copper-bright); } }
 
   /* ─── Grid ─── */
   .selected-grid {

@@ -220,8 +220,12 @@ export const towns: TownEntry[] = [
         a: 'Yes. Coos Bay is about 30 minutes from the shop in Bandon. The first consult is a free 30-minute video call, and I come up to Coos Bay in person when a project calls for it; an in-person meeting carries a $250 travel deposit that credits back to your project when you sign.',
       },
       {
+        q: 'How much does a website cost in Coos Bay?',
+        a: 'Most local business sites are $1,750, one price with everything in. Care plans are optional from $75 a month. Every build has a written scope: 50% on signing, 50% at launch.',
+      },
+      {
         q: 'My Coos Bay business already has a website. Is a rebuild worth it?',
-        a: 'Often, yes. If your current site is slow, built on a page builder, or missing basic security, a custom rebuild usually pays for itself in search visibility and load speed. The free audit shows you exactly where your site stands before you decide.',
+        a: 'Often, yes. If your current site is slow, built on a page builder, or missing basic security, a custom rebuild usually fixes the speed and search basics. The free audit shows you exactly where your site stands before you decide.',
       },
       {
         q: 'Coos Bay is competitive. Can a new site actually move my ranking?',
@@ -239,7 +243,7 @@ export const towns: TownEntry[] = [
     heroAlt:
       'The Coos Bay waterfront boardwalk, flags along the walkway and boats at the docks.',
     neighbors: ['north-bend', 'coquille'],
-    combos: ['ai-automation'],
+    combos: [], // S339: /ai-automation-coos-bay merged into /services/ai-automation (301)
   },
   {
     slug: 'north-bend',
@@ -289,7 +293,7 @@ export const towns: TownEntry[] = [
     faq: [
       {
         q: 'Can you build a site that handles bookings for a North Bend business?',
-        a: 'Yes. Booking widgets, reservation forms, and calendar integrations are part of a website build. For travel and hospitality businesses near the airport and casino, I can wire the booking flow so a visitor can act in one or two taps.',
+        a: 'Yes. Booking widgets, reservation forms, and calendar integrations are a quoted add-on to a website build, priced in writing before you sign. For travel and hospitality businesses near the airport and casino, I can wire the booking flow so a visitor can act in one or two taps.',
       },
       {
         q: 'How far is North Bend from your shop?',
@@ -373,7 +377,7 @@ export const towns: TownEntry[] = [
       },
       {
         q: 'Have you built for a Bandon business before?',
-        a: 'Yes. Sogn Contracting, a 30-year Bandon contractor, is live with a custom site I built in three days that averages 95+ on Lighthouse. SeaBreeze, Bandon By The Dunes, US Survey Supply and Professors Golf are Bandon businesses too, and their sites are live as well. That is real, indexed, local work you can go look at.',
+        a: 'Yes. Sogn Contracting, a 30-year Bandon contractor, is live with a custom site I built in three business days. SeaBreeze, Bandon By The Dunes, US Survey Supply and Professors Golf are Bandon businesses too, and their sites are live and scored on the Wall.',
       },
       {
         q: 'My business is seasonal. Does a custom site still make sense?',
@@ -381,13 +385,13 @@ export const towns: TownEntry[] = [
       },
       {
         q: 'Do you work with Bandon Dunes area lodging and rentals?',
-        a: 'Yes. Lodging and vacation rentals are a good fit because the whole job is turning a search into a booking. I can wire a booking flow, keep the photos sharp, and make sure the site loads before a visitor on resort wifi gives up and books somewhere else.',
+        a: 'Yes. Lodging and vacation rentals are a good fit because the whole job is turning a search into a booking. I can wire a booking flow as a quoted add-on, keep the photos sharp, and make sure the site loads before a visitor on resort wifi gives up and books somewhere else.',
       },
     ],
     heroAlt:
       'Sea stacks standing off the beach at Bandon, Oregon, on a clear day.',
     neighbors: ['coquille', 'coos-bay'],
-    combos: ['app-development'],
+    combos: [], // S339: /app-development-bandon merged into /services/app-development (301)
   },
   {
     slug: 'coquille',
@@ -705,7 +709,7 @@ export const towns: TownEntry[] = [
       },
       {
         q: 'Can you build a site that takes bookings for a Rogue River business?',
-        a: 'Yes. Booking flows, trip calendars, and inquiry forms are core to a tourism build. I make it so a traveler planning a Rogue jet-boat or fishing trip can see availability and book or message you in a tap or two.',
+        a: 'Yes. Booking flows, trip calendars, and inquiry forms are core to a tourism build. I make it so a traveler planning a Rogue jet-boat or fishing trip can see availability and book or message you in a tap or two. Online booking is a quoted add-on, priced in writing before you sign.',
       },
       {
         q: 'My season is only three months. Is a custom site worth it?',
@@ -719,7 +723,7 @@ export const towns: TownEntry[] = [
     heroAlt:
       'The concrete arch bridge carrying Highway 101 over the Rogue River at Gold Beach, Oregon.',
     neighbors: ['port-orford', 'bandon'],
-    combos: ['app-development'],
+    combos: [], // S339: /app-development-gold-beach merged into /services/app-development (301)
   },
 ];
 

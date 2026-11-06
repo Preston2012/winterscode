@@ -116,10 +116,10 @@ const mediaUrl = (file: string) => {
       </p>
     )}
 
-    <p class="chf-proof">
+    {variant === 'home' && <p class="chf-proof">
       <span class="chf-proof-mark" aria-hidden="true"></span>
       <span>It runs the office at SeaBreeze. <b>A bid that took two of us a full day now takes about an hour.</b></span>
-    </p>
+    </p>}
 
     {(variant === 'work' || variant === 'page') && (
       <div class="chf-tags" role="list">
@@ -128,7 +128,8 @@ const mediaUrl = (file: string) => {
     )}
 
     <div class="chf-cta" data-textbar-hide>
-      <a class="btn btn-primary chf-btn" href={sms}>
+      <!-- S339 HONE-SPEC: outline, so the screen keeps one filled Text. -->
+      <a class="btn btn-secondary chf-btn" href={sms}>
         <span>In beta. Text me for access</span>
         <span class="chf-num">{phoneDisplay}</span>
       </a>

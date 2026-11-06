@@ -17,18 +17,24 @@ import TextCta from '../components/ui/TextCta.astro';
 // the accordion and the FAQPage JSON-LD, so every edit is both.
 
 // One flat list powers both the FAQPage schema and the rendered accordion.
-const faqs = [
+const faqs: { q: string; a: string; html?: string }[] = [
   {
     q: 'How much does a website cost?',
     a: 'A Winters Code site starts at $1,750 with everything included, and it is yours to keep. Bigger sites and apps are quoted: every project gets a free consult and a written quote that holds for 14 days. The full breakdown is on the pricing page.',
   },
   {
+    // S339 HONE-SPEC: the price doubt, answered right after the price.
+    q: 'Why $1,750 and not a few hundred?',
+    a: 'Because $1,750 is the whole price, not the opening bid. Before you compare, ask any quote five questions: who owns the domain and code, are the words, photos and logo included, what does it score on Google\u2019s phone test, is there a required monthly fee, and who answers when it breaks. If the cheaper quote answers all five the same way, take it.',
+    html: 'Because $1,750 is the whole price, not the opening bid. Before you compare, ask any quote <a href="/pricing#compare">five questions</a>: who owns the domain and code, are the words, photos and logo included, what does it score on Google\u2019s phone test, is there a required monthly fee, and who answers when it breaks. If the cheaper quote answers all five the same way, take it.',
+  },
+  {
     q: 'How fast can you build it?',
-    a: 'Sites in days, apps in weeks. Sites start at 3 business days, counted from the day I have what the build needs, and a bigger build gets its timeline in the quote. Apps run 2 to 16 weeks depending on scope. No agency runaround, no "next quarter."',
+    a: 'Sites in days, apps in weeks. Sites start at 3 business days, counted from the day I have what the build needs, and a bigger build gets its timeline in the quote. Apps run 2 to 4 weeks for an MVP, 4 to 8 weeks for a full build, and 8 to 16 for a custom system. No agency runaround, no "next quarter."',
   },
   {
     q: 'Why not WordPress, Squarespace, or Wix?',
-    a: 'Those are mass-produced platforms: slower, plugin-dependent, and rented rather than owned. I audited 169 Coos County sites: the three platforms most businesses use averaged 60, 48 and 60 out of 100 on mobile speed, and graded a D, an F and a C- on Mozilla Observatory\u2019s security-header check. Mine is custom code, which loads faster, reads cleanly to Google, stays secure, and belongs to you.',
+    a: 'Those are mass-produced platforms: slower, plugin-dependent, and rented rather than owned. I audited 169 Coos County sites: the three platforms most businesses use averaged 60, 48 and 60 out of 100 on mobile speed, among the sites Google could score, and graded a D, an F and a C- on Mozilla Observatory\u2019s security-header check. Mine is custom code, which loads faster, reads cleanly to Google, ships with strict security headers and spam-protected forms, and belongs to you.',
   },
   {
     q: 'Do I own the site, or am I renting it?',
@@ -44,7 +50,7 @@ const faqs = [
   },
   {
     q: 'Do you maintain the site after launch?',
-    a: 'Yes. Monthly care plans start at $75 and cover hosting, SSL, daily backups, security patches, and edits. The person who built it is the person who maintains it, and the phone number stays the same.',
+    a: 'Yes. Monthly care plans start at $75 and cover hosting, SSL, daily backups, security patches, and edits. Pro plans start at $250. The person who built it is the person who maintains it, and the phone number stays the same.',
   },
   {
     q: 'What areas do you serve?',
@@ -52,7 +58,7 @@ const faqs = [
   },
   {
     q: 'How are you this fast?',
-    a: 'A modern stack (Astro, React, Flutter), one person making every call, and AI tooling I built myself that keeps each project’s decisions on file, so nothing gets relearned between builds.',
+    a: 'One person making every call, a modern stack (Astro, React, Flutter), and tooling I built myself that keeps each project\u2019s decisions on file, so nothing gets relearned between builds.',
   },
   {
     q: 'How do we start?',
@@ -69,8 +75,8 @@ const breadcrumbLd = breadcrumbSchema(crumbs);
 ---
 
 <BaseLayout
-  title="FAQ · Common Questions · Winters Code"
-  description="Answers to the questions Oregon coast businesses ask most: cost, timeline, why not WordPress, ownership, maintenance, service area, and how to start."
+  title="FAQ · Website Cost, Timeline & Ownership · Winters Code"
+  description="What a website costs on the Oregon coast ($1,750, everything in), how long it takes, who owns it, why not WordPress, and how to start. Plain answers."
   canonicalPath="/faq"
 >
   <Fragment slot="head">
@@ -106,7 +112,7 @@ const breadcrumbLd = breadcrumbSchema(crumbs);
             <span class="faqp-q-text">{item.q}</span>
             <span class="faqp-toggle" aria-hidden="true">+</span>
           </summary>
-          <div class="faqp-a"><p>{item.a}</p></div>
+          <div class="faqp-a">{item.html ? <p set:html={item.html} /> : <p>{item.a}</p>}</div>
         </details>
       ))}
     </div>
@@ -185,5 +191,6 @@ const breadcrumbLd = breadcrumbSchema(crumbs);
     border-top: 1px solid rgba(255, 255, 255, 0.04);
   }
   @media (min-width: 740px) { .faqp-a { font-size: 16px; } }
+  .faqp-a :global(a) { color: var(--color-wc-green); text-decoration: underline; text-decoration-color: rgba(77, 216, 168, 0.35); text-underline-offset: 3px; }
   .faqp-a p { margin: 14px 0 0; max-width: 64ch; }
 </style>

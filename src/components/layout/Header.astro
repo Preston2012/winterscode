@@ -77,12 +77,12 @@ const navItems = [
        get the pair in the thumb bar (TextBar) instead. Book and Email live
        in the mobile menu, the closing contact block and /contact. -->
   <div class="topnav-contact">
-    <a href={telHref} class="call">Call</a>
     <a href={sms} class="text-cta">
       <span>Text</span>
       <span class="text-cta-who">Preston</span>
       <span class="text-cta-num">{phoneDisplay}</span>
     </a>
+    <a href={telHref} class="call">Call</a>
   </div>
 
   <!-- Mobile/tablet menu button, hidden on desktop. Wired by inline script in MobileMenu. -->

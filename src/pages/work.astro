@@ -56,6 +56,12 @@ const secTier = (g: string) => {
   return c === 'A' ? 'good' : c === 'B' || c === 'C' ? 'ok' : 'low';
 };
 const measuredSite = (slug: string) => SITES.find((s) => s.portfolioSlug === slug);
+// The client's own closing sentence, for the card face (the full quote is on
+// the case page). Verbatim, nothing trimmed inside the sentence.
+const lastSentence = (t: string) => {
+  const x = t.trim(); const cut = x.slice(0, -1).lastIndexOf('. ');
+  return cut > 0 ? x.slice(cut + 2) : x;
+};
 const visitOf = (p: { links: { label: string; href: string; primary?: boolean }[] }) =>
   p.links.find((l) => l.primary) ?? p.links[0];
 
@@ -85,7 +91,7 @@ const workLd = {
 ---
 
 <BaseLayout
-  title="Work · Winters Code"
+  title="Work · Oregon Coast Sites I've Built · Winters Code"
   description="Sites and apps I've built for Oregon coast businesses, with live Lighthouse and security grades on every site. Sites start at 3 business days."
 >
   <Fragment slot="head">
@@ -100,15 +106,15 @@ const workLd = {
   <PageHero
     eyebrow="WORK · SITES, THEN APPS"
     h1="Sites and apps I've built."
-    sub="Sites live and serving traffic, Lighthouse measured on every one, live. One app live on App Store and Play Store, three more in private beta. Scores and build durations from real data."
+    sub="Live sites for working coast businesses. Every score is read live, so you can check it yourself."
     sub2="I design and I build, end to end."
   />
 
   <nav class="wk-index" aria-label="On this page">
     <p class="wk-index-k">On this page</p>
     <ol>
-      <li><a href="#wk-sites-h"><span class="wk-ix-num">01</span><span class="wk-ix-name">Sites</span><span class="wk-ix-meta">live Lighthouse</span></a></li>
-      <li><a href="#wk-apps-h"><span class="wk-ix-num">02</span><span class="wk-ix-name">Mobile apps</span><span class="wk-ix-meta">iOS &amp; Android</span></a></li>
+      <li><a href="#wk-sites-h"><span class="wk-ix-num">01</span><span class="wk-ix-name">Sites</span><span class="wk-ix-meta">scored live</span></a></li>
+      <li><a href="#wk-apps-h"><span class="wk-ix-num">02</span><span class="wk-ix-name">Apps</span><span class="wk-ix-meta">iOS &amp; Android</span></a></li>
       <li><a href="#wk-brand-h"><span class="wk-ix-num">03</span><span class="wk-ix-name">Branding</span><span class="wk-ix-meta">logos and marks</span></a></li>
       <li><a href="#wk-process-h"><span class="wk-ix-num">04</span><span class="wk-ix-name">How I work</span><span class="wk-ix-meta">text, quote, build</span></a></li>
     </ol>
@@ -121,7 +127,7 @@ const workLd = {
         <span class="line" aria-hidden="true"></span>
         <h2 class="wk-h" id="wk-sites-h">01 · SITES</h2>
         <span class="wk-meta">
-          live Lighthouse on every one
+          Scores are Google's phone test and Mozilla's security-header grade, checked live.
           <Explainer label="?">
             Each card shows two measurements, read fresh from the client's live site within a moment of opening (the last known numbers show first). Lighthouse is Google's own test, 0 to 100 each for speed, accessibility, search readiness and best practices, on mobile, the harder test. Mozilla Observatory grades a site's security headers, A+ at the top; it is a header check, not a full security test. If a score drops on a client site I built, you'll see it here.
           </Explainer>
@@ -130,11 +136,15 @@ const workLd = {
     </header>
 
     <ul class="wk-grid wk-grid-sites" role="list">
-      {sites.map((p) => (
+      {sites.map((p, i) => (
+        <>
+        {p.family && !sites[i - 1]?.family && (
+          <li class="wk-group-label" role="listitem"><span class="line" aria-hidden="true"></span>Built for family</li>
+        )}
         <li class="wk-card-wrap" role="listitem">
           <article
             id={p.slug}
-            class="wk-card wk-card-site"
+            class:list={['wk-card', 'wk-card-site', { 'wk-card-lead': i === 0 }]}
             data-slug={p.slug}
             data-status={p.status}
           >
@@ -149,40 +159,23 @@ const workLd = {
                 </span>
                 {p.family && <span class="wk-status wk-family" title="Built for family">FAMILY</span>}
               </div>
-              <p class="wk-meta-line">{p.meta}</p>
+              <p class="wk-face">{p.face ?? p.meta}</p>
 
-              <div class="wk-tags" role="list">
-                {p.tags.map((t) => (
-                  <span class="wk-tag" role="listitem">{t}</span>
-                ))}
-              </div>
+              {p.quote && (
+                <p class="wk-quote-short">
+                  &ldquo;{lastSentence(p.quote.text)}&rdquo;
+                  <span class="wk-quote-by">{p.quote.shortAttr ?? p.quote.attr}</span>
+                </p>
+              )}
 
-              <div
-                class="wk-lighthouse"
-                data-lh-site={p.slug}
-                aria-live="polite"
-              >
-                <span class="wk-lh-label">LIGHTHOUSE</span>
-                <span class="wk-lh-scores" data-lh-scores>
-                  {measuredSite(p.slug)?.lhFallback
-                    ? measuredSite(p.slug)!.lhFallback!.map((n, i) => (
-                        <span class={`wk-lh-pill wk-lh-pill-${lhTier(n)}`}>{LH_LABELS[i]} {n}</span>
-                      ))
-                    : <span class="wk-lh-pending">not measured yet</span>}
-                </span>
-                <span class="wk-lh-measured" data-lh-measured>{measuredSite(p.slug)?.lhFallback ? 'last known read' : ''}</span>
-              </div>
+              <p class="wk-chip" data-chip-site={p.slug}>
+                <span data-chip-perf>{measuredSite(p.slug)?.lhFallback?.[0] ?? '·'}</span> on a phone
+                <span aria-hidden="true">&middot;</span>
+                <span data-chip-grade>{measuredSite(p.slug)?.secFallback?.grade ?? '·'}</span>
+              </p>
 
               <div class="wk-cta-row">
                 <a class="wk-text" href={smsAboutHref(Astro.url.pathname, p.name)}>Text me about a build like this</a>
-                <div class="wk-security" data-sec-site={p.slug} aria-live="polite">
-                  <span class="wk-sec-label">MOZILLA</span>
-                  <span class="wk-sec-grade" data-sec-grade>
-                    {measuredSite(p.slug)?.secFallback
-                      ? <span class={`wk-sec-pill wk-sec-pill-${secTier(measuredSite(p.slug)!.secFallback!.grade)}`}>{fmtGrade(measuredSite(p.slug)!.secFallback)}</span>
-                      : <span class="wk-sec-pending">not checked yet</span>}
-                  </span>
-                </div>
               </div>
               <div class="wk-quiet-row">
                 {p.caseStudy && <a class="wk-quiet" href={p.caseStudy}>Read the case study</a>}
@@ -200,6 +193,37 @@ const workLd = {
               </button>
 
               <div class="wk-detail" id={`${p.slug}-detail`} hidden>
+                <p class="wk-meta-line">{p.meta}</p>
+                <div class="wk-tags" role="list">
+                  {p.tags.map((t) => (
+                    <span class="wk-tag" role="listitem">{t}</span>
+                  ))}
+                </div>
+
+                <div
+                  class="wk-lighthouse"
+                  data-lh-site={p.slug}
+                  aria-live="polite"
+                >
+                  <span class="wk-lh-label">LIGHTHOUSE</span>
+                  <span class="wk-lh-scores" data-lh-scores>
+                    {measuredSite(p.slug)?.lhFallback
+                      ? measuredSite(p.slug)!.lhFallback!.map((n, i) => (
+                          <span class={`wk-lh-pill wk-lh-pill-${lhTier(n)}`}>{LH_LABELS[i]} {n}</span>
+                        ))
+                      : <span class="wk-lh-pending">not measured yet</span>}
+                  </span>
+                  <span class="wk-lh-measured" data-lh-measured>{measuredSite(p.slug)?.lhFallback ? 'last known read' : ''}</span>
+                </div>
+                <div class="wk-security" data-sec-site={p.slug} aria-live="polite">
+                  <span class="wk-sec-label">MOZILLA</span>
+                  <span class="wk-sec-grade" data-sec-grade>
+                    {measuredSite(p.slug)?.secFallback
+                      ? <span class={`wk-sec-pill wk-sec-pill-${secTier(measuredSite(p.slug)!.secFallback!.grade)}`}>{fmtGrade(measuredSite(p.slug)!.secFallback)}</span>
+                      : <span class="wk-sec-pending">not checked yet</span>}
+                  </span>
+                </div>
+
                 <dl class="wk-detail-rows">
                   {p.details.map((d) => (
                     <div class="wk-detail-row">
@@ -208,20 +232,14 @@ const workLd = {
                     </div>
                   ))}
                 </dl>
-
-                {p.quote && (
-                  <blockquote class="wk-quote">
-                    <p>{p.quote.text}</p>
-                    <cite>{p.quote.attr}</cite>
-                  </blockquote>
-                )}
-
               </div>
             </div>
           </article>
         </li>
+        </>
       ))}
     </ul>
+    <p class="wk-body-link"><a href="/web-design-coos-bay">Web design in Coos Bay →</a></p>
   </section>
 
   <Divider label="02" />
@@ -231,8 +249,8 @@ const workLd = {
     <header class="wk-head">
       <div class="wk-eyebrow">
         <span class="line" aria-hidden="true"></span>
-        <h2 class="wk-h" id="wk-apps-h">02 · MOBILE APPS</h2>
-        <span class="wk-meta">{apps.length} built on iOS & Android</span>
+        <h2 class="wk-h" id="wk-apps-h">02 · APPS</h2>
+        <span class="wk-meta">{apps.length} built, iOS and Android</span>
       </div>
     </header>
 
@@ -240,7 +258,7 @@ const workLd = {
     <div class="wk-feature"><ChereFeature variant="work" /></div>
 
     <ul class="wk-grid wk-grid-apps" role="list">
-      {apps.filter((p) => p.slug !== 'chere').map((p) => (
+      {apps.filter((p) => p.slug === 'stainslayer-ai').map((p) => (
         <li class="wk-card-wrap" role="listitem">
           <article
             id={p.slug}
@@ -374,6 +392,147 @@ const workLd = {
         </li>
       ))}
     </ul>
+
+    <!-- S339 HONE-SPEC: Chere' and StainSlayer stay open; the rest of the
+         shop's own apps sit behind one fold. -->
+    <details class="wk-more">
+      <summary class="wk-more-sum">More from the shop <span class="wk-more-icon" aria-hidden="true">+</span></summary>
+      <ul class="wk-grid wk-grid-apps" role="list">
+        {apps.filter((p) => p.slug !== 'chere' && p.slug !== 'stainslayer-ai').map((p) => (
+          <li class="wk-card-wrap" role="listitem">
+            <article
+              id={p.slug}
+              class="wk-card"
+              data-slug={p.slug}
+              data-status={p.status}
+              data-widget={p.slug === 'demiurge-mykonos' ? 'true' : undefined}
+            >
+              {p.slug === 'demiurge-mykonos' && (
+                <div class="mk-primer">
+                  <div class="mk-row">
+                    <span class="mk-name">MyKonos</span>
+                    <span class="mk-beta">Beta</span>
+                  </div>
+                  <p class="mk-desc">An AI companion app I built. Open the demo below and it runs on its real engine, right here in your browser. <b>It remembers between chats.</b> Tell it something, reset, ask again, <span class='hl-green'>it still knows.</span></p>
+                </div>
+              )}
+              <div class="wk-preview" aria-hidden={p.slug === 'demiurge-mykonos' ? undefined : (p.image ? undefined : 'true')}>
+                {p.slug === 'demiurge-mykonos' ? (
+                  <details class="mk-demo">
+                    <summary class="mk-demo-toggle">
+                      <span class="d" aria-hidden="true"></span>
+                      Try the live demo
+                      <span class="mk-demo-icon" aria-hidden="true">+</span>
+                    </summary>
+                    <Instrument />
+                  </details>
+                ) : p.image ? (
+                  <a class="wk-preview-link" href={(p.links.find((l) => l.primary) ?? p.links[0])?.href} target="_blank" rel="noopener" aria-label={`Visit ${p.name}`}>
+                  <picture>
+                    {p.image.srcSmall && (
+                      <source
+                        type="image/webp"
+                        srcset={`${p.image.srcXSmall ? p.image.srcXSmall + " 480w, " : ""}${p.image.srcSmall} 720w, ${p.image.src} 1280w`}
+                        sizes="(min-width: 1024px) 50vw, 100vw"
+                      />
+                    )}
+                    <img
+                      src={p.image.src}
+                      alt={p.image.alt}
+                      width={p.image.width}
+                      height={p.image.height}
+                      loading="lazy"
+                      decoding="async"
+                      class="wk-img"
+                    />
+                  </picture>
+                  </a>
+                ) : (
+                  <span class="wk-mark" aria-hidden="true">{p.numeral}</span>
+                )}
+              </div>
+
+              <div class="wk-body">
+                <div class="wk-title-row">
+                  <h3 class="wk-title">{p.slug === 'demiurge-mykonos' ? p.name : <a class="wk-title-link" href={(p.links.find((l) => l.primary) ?? p.links[0])?.href} target="_blank" rel="noopener">{p.name}</a>}</h3>
+                  {p.slug !== 'demiurge-mykonos' && (
+                    <span class={`wk-status wk-status-${p.status}`}>
+                      {p.status.toUpperCase()}
+                    </span>
+                    <span class={`wk-status wk-build-${p.build}`}>
+                      {p.build === 'rebuild' ? 'REBUILD' : 'NEW BUILD'}
+                    </span>
+                  )}
+                </div>
+                <p class="wk-meta-line">{p.meta}</p>
+
+                <div class="wk-tags" role="list">
+                  {p.tags.map((t) => (
+                    <span class="wk-tag" role="listitem">{t}</span>
+                  ))}
+                </div>
+
+                {(p.links.find((l) => l.primary) ?? p.links[0]) && (
+                  <a class="wk-visit" href={(p.links.find((l) => l.primary) ?? p.links[0]).href} target="_blank" rel="noopener">
+                    {(p.links.find((l) => l.primary) ?? p.links[0]).label}
+                  </a>
+                )}
+                {p.relatedCase && (
+                  <a class="wk-quiet wk-related" id={p.relatedCase.href.split('/').pop()} href={p.relatedCase.href}>{p.relatedCase.label}</a>
+                )}
+                <button
+                  type="button"
+                  class="wk-expand-btn"
+                  data-toggle-target={p.slug}
+                  aria-expanded="false"
+                  aria-controls={`${p.slug}-detail`}
+                >
+                  <span data-toggle-label>more details</span>
+                  <span class="wk-expand-icon" aria-hidden="true">+</span>
+                </button>
+
+                <div
+                  class="wk-detail"
+                  id={`${p.slug}-detail`}
+                  hidden
+                >
+                  <dl class="wk-detail-rows">
+                    {p.details.map((d) => (
+                      <div class="wk-detail-row">
+                        <dt>{d.label}</dt>
+                        <dd>{d.value}</dd>
+                      </div>
+                    ))}
+                  </dl>
+
+                  {p.quote && (
+                    <blockquote class="wk-quote">
+                      <p>{p.quote.text}</p>
+                      <cite>{p.quote.attr}</cite>
+                    </blockquote>
+                  )}
+
+                  {p.links.length > 0 && (
+                    <div class="wk-links">
+                      {p.links.map((link) => (
+                        <a
+                          href={link.href}
+                          class={link.primary ? 'wk-link wk-link-primary' : 'wk-link'}
+                          target="_blank"
+                          rel="noopener"
+                        >
+                          {link.label}
+                        </a>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </article>
+          </li>
+        ))}
+      </ul>
+    </details>
   </section>
 
   <Divider label="03" />
@@ -503,7 +662,7 @@ const workLd = {
 
   <Divider label="05" />
 
-  <Contact sectionNumber="05" />
+  <Contact sectionNumber="05" why="Every site here is live, yours to keep, and scored on a phone where you can check it yourself." />
 </BaseLayout>
 
 <script is:inline>
@@ -586,6 +745,9 @@ const workLd = {
             pill.textContent = labels[i] + ' ' + n;
             target.appendChild(pill);
           });
+          // The card face's one chip carries the phone score (S339).
+          const chipPerf = document.querySelector('[data-chip-site="' + slug + '"] [data-chip-perf]');
+          if (chipPerf) chipPerf.textContent = String(scores[0]);
           if (measured) {
             measured.textContent = lh.measured ? 'measured ' + lh.measured : 'measured live';
           }
@@ -632,6 +794,8 @@ const workLd = {
             pill.className = 'wk-sec-pill wk-sec-pill-' + tier;
             pill.textContent = typeof info.score === 'number' ? (g + ' (' + info.score + ')') : g;
             target.appendChild(pill);
+            const chipGrade = document.querySelector('[data-chip-site="' + slug + '"] [data-chip-grade]');
+            if (chipGrade) chipGrade.textContent = g;
           }
         }
       } catch (e) {
@@ -1038,31 +1202,86 @@ const workLd = {
 
   /* CTA row: the card's Text button + live Mozilla grade in the same line.
      S326 DNA: Text is the card primary; case study and live site are quiet. */
+  /* S339 HONE-SPEC (Look): a mint text link, not a filled button. The only
+     filled Text buttons on /work are in the header and the closer. */
   .wk-text {
     display: inline-flex;
     align-items: center;
     min-height: 44px;
-    padding: 0 16px;
-    border-radius: var(--radius-btn);
-    background: var(--color-wc-green);
-    color: var(--color-bg-deep);
+    color: var(--color-wc-green);
     font-family: var(--font-sans);
     font-size: 14px;
     font-weight: 600;
-    text-decoration: none;
+    text-decoration: underline;
+    text-decoration-color: rgba(77, 216, 168, 0.35);
+    text-underline-offset: 4px;
     touch-action: manipulation;
-    transition: background 160ms, transform 160ms;
   }
-  .wk-text:focus-visible {
-    outline: 2px solid var(--color-wc-green-bright);
-    outline-offset: 2px;
+  .wk-text:focus-visible { outline: 2px solid var(--color-wc-green-bright); outline-offset: 2px; }
+  @media (hover: hover) { .wk-text:hover { text-decoration-color: var(--color-wc-green); } }
+
+  .wk-face { margin: 0; font-size: 15px; line-height: 1.5; color: var(--color-ash-200, var(--color-ash-100)); }
+  .wk-quote-short {
+    margin: 2px 0 0;
+    padding-left: 12px;
+    border-left: 2px solid var(--color-copper);
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 15px;
+    line-height: 1.45;
+    color: var(--color-ash-100);
   }
-  @media (hover: hover) {
-    .wk-text:hover {
-      background: var(--color-wc-green-bright);
-      transform: translateY(-1px);
-    }
+  .wk-quote-by { display: block; margin-top: 4px; font-family: var(--font-mono); font-style: normal; font-size: 11px; letter-spacing: 0.06em; color: var(--color-copper-bright); }
+  .wk-chip {
+    align-self: flex-start;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin: 2px 0 0;
+    padding: 5px 10px;
+    border: 1px solid rgba(77, 216, 168, 0.35);
+    border-radius: 999px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.03em;
+    color: var(--color-wc-green);
+    width: fit-content;
   }
+  .wk-detail .wk-meta-line { margin-bottom: 8px; }
+  .wk-detail .wk-security { margin: 8px 0 10px; }
+  @media (min-width: 1024px) { .wk-card-lead { grid-column: 1 / -1; } }
+  .wk-group-label {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 18px 0 -4px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--color-copper);
+  }
+  .wk-group-label .line { width: 28px; height: 1px; background: var(--color-copper); }
+  .wk-body-link { margin: 18px 0 0; }
+  .wk-body-link a, .wk-more-sum {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    font-size: 14px;
+    color: var(--color-ash-300);
+    text-decoration: underline;
+    text-decoration-color: var(--copper-hairline);
+    text-underline-offset: 4px;
+  }
+  @media (hover: hover) { .wk-body-link a:hover, .wk-more-sum:hover { color: var(--color-copper-bright); } }
+  .wk-more { margin-top: 24px; }
+  .wk-more-sum { cursor: pointer; list-style: none; gap: 8px; font-family: var(--font-serif); font-size: 18px; text-decoration: none; color: var(--color-ash-100); }
+  .wk-more-sum::-webkit-details-marker { display: none; }
+  .wk-more-icon { font-family: var(--font-mono); color: var(--color-copper); }
+  .wk-more[open] .wk-more-icon { transform: rotate(45deg); }
+  .wk-more > .wk-grid { margin-top: 16px; }
   .wk-quiet-row {
     display: flex;
     flex-wrap: wrap;

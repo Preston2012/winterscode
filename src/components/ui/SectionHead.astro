@@ -5,7 +5,8 @@
  */
 
 export interface Props {
-  /** The 2-digit section number, e.g. "01" / "02" / "03" / "04". */
+  /** The 2-digit section number, e.g. "01" / "02" / "03" / "04". Empty
+   *  drops the numeral (Home, S339 HONE-SPEC: sections are unnumbered). */
   number: string;
   /** Small uppercase tracker text above the H2 (e.g. "Try it"). */
   kicker: string;
@@ -17,7 +18,7 @@ const { number, kicker, title } = Astro.props;
 ---
 
 <div class="section-head">
-  <div class="section-numeral" aria-hidden="true">{number}</div>
+  {number && <div class="section-numeral" aria-hidden="true">{number}</div>}
   <div class="section-title">
     <div class="kicker mono">{kicker}</div>
     <h2 class="h2">{title}</h2>

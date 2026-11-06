@@ -1,0 +1,115 @@
+---
+/**
+ * WhyPrice (S339 HONE-SPEC, Nov 4): the homepage beat right under the hero,
+ * in place of the four trust chips. It answers the first doubt a stranger
+ * has about $1,750 before they reach the work.
+ *
+ * Every line is sourced on the site: "yours to keep" and the included list
+ * on /pricing, the 169-site audit and its 61 average on
+ * /insights/coos-county-website-audit, the security defaults on /about and
+ * /services. No score is printed for my own sites here; the Wall carries
+ * those live. The five questions live at /pricing#compare.
+ */
+const ITEMS = [
+  {
+    lead: "It's yours.",
+    body: 'Custom code, not a rented template. The domain is in your name and the site runs on your own account. Skip the care plan and nothing turns off.',
+  },
+  {
+    lead: "Everything's in.",
+    body: 'The pages, the words, real photos and branding. The price I quote is the price you pay.',
+  },
+  {
+    lead: 'Fast on a phone.',
+    body: 'In my audit of 169 Coos County business sites, the ones Google could score averaged 61 out of 100 on a phone. Every site I build is scored live on the Wall, so you can check it yourself.',
+  },
+  {
+    lead: 'Locked down.',
+    body: 'HTTPS, strict security headers and spam-protected forms, graded live on the Wall.',
+  },
+  {
+    // S339, Preston 2026-11-05: client search numbers wait for each client's
+    // OK; until then this says what every build gets, with no figures.
+    lead: 'Set up to be found.',
+    body: 'Google Search Console, your sitemap submitted and your Business Profile filled in, so Google knows the site exists and what it is for. Nobody can promise a ranking.',
+  },
+];
+---
+
+<section class="why" aria-labelledby="why-h">
+  <h2 class="why-h" id="why-h">Why $1,750 and not a few hundred</h2>
+  <ul class="why-grid" role="list">
+    {ITEMS.map((it, i) => (
+      <li class="why-item">
+        <span class="why-n mono" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+        <p><strong>{it.lead}</strong> {it.body}</p>
+      </li>
+    ))}
+  </ul>
+  <p class="why-more">
+    Comparing quotes? <a href="/pricing#compare">Ask these five questions →</a>
+  </p>
+</section>
+
+<style>
+  .why { max-width: 720px; margin: 0 auto; padding: 36px 4px 40px; }
+  @media (min-width: 740px) { .why { max-width: 860px; padding: 48px 4px 52px; } }
+  @media (min-width: 1024px) { .why { max-width: 960px; padding: 60px 0 64px; } }
+
+  .why-h {
+    margin: 0 0 22px;
+    font-family: var(--font-serif);
+    font-weight: 500;
+    font-size: 26px;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    color: var(--color-ash-100);
+    text-wrap: balance;
+  }
+  @media (min-width: 740px) { .why-h { font-size: 32px; margin-bottom: 28px; } }
+  @media (min-width: 1024px) { .why-h { font-size: 38px; } }
+
+  .why-grid { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
+  @media (min-width: 740px) {
+    .why-grid { grid-template-columns: 1fr 1fr; gap: 16px; }
+    .why-item:last-child:nth-child(odd) { grid-column: 1 / -1; }
+  }
+
+  .why-item {
+    position: relative;
+    padding: 18px 18px 18px 54px;
+    background: var(--color-bg-card);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-top: 1px solid var(--copper-hairline);
+    border-radius: var(--radius-card);
+  }
+  .why-n {
+    position: absolute;
+    top: 19px;
+    left: 18px;
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    color: var(--color-copper);
+  }
+  .why-item p { margin: 0; hyphens: manual; font-size: 14px; line-height: 1.55; color: var(--color-ash-300); }
+  @media (min-width: 1024px) { .why-item p { font-size: 15px; } }
+  .why-item strong {
+    font-family: var(--font-serif);
+    font-weight: 500;
+    font-size: 17px;
+    color: var(--color-ash-100);
+    margin-right: 2px;
+  }
+
+  .why-more { margin: 18px 0 0; font-size: 14px; color: var(--color-ash-400); }
+  .why-more a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    color: var(--color-wc-green);
+    text-decoration: underline;
+    text-decoration-color: rgba(77, 216, 168, 0.35);
+    text-underline-offset: 4px;
+  }
+  @media (hover: hover) { .why-more a:hover { text-decoration-color: var(--color-wc-green); } }
+</style>

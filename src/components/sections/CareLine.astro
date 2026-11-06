@@ -1,0 +1,64 @@
+---
+/**
+ * CareLine (S339 HONE-SPEC, Nov 4): one line after Selected Work, so the
+ * price question "and after launch?" is answered where the work is. Text is
+ * a link here, not a filled button (one filled button per screen).
+ * Care pricing matches /pricing and /services: Basic from $75 a month.
+ */
+import { smsHref } from '../../lib/text-cta';
+const sms = smsHref(Astro.url.pathname);
+---
+
+<aside class="care" aria-label="Care plans">
+  <p class="care-line">
+    <span class="care-mark" aria-hidden="true"></span>
+    Optional care from $75 a month. The person who built it keeps it running.
+  </p>
+  <p class="care-acts">
+    <a href={sms} class="care-text">Text Preston</a>
+    <span aria-hidden="true">&middot;</span>
+    <a href="/pricing">See pricing</a>
+  </p>
+</aside>
+
+<style>
+  .care {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 18px 4px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 4px 20px;
+    border-top: 1px solid var(--copper-hairline);
+    border-bottom: 1px solid var(--copper-hairline);
+  }
+  @media (min-width: 740px) { .care { max-width: 860px; padding: 20px 4px; } }
+  @media (min-width: 1024px) { .care { max-width: 960px; padding: 22px 0; } }
+  .care-line {
+    margin: 0;
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    font-family: var(--font-serif);
+    font-size: 17px;
+    line-height: 1.4;
+    color: var(--color-ash-100);
+  }
+  @media (min-width: 1024px) { .care-line { font-size: 19px; } }
+  .care-mark { flex: none; width: 7px; height: 7px; border-radius: 50%; background: var(--color-wc-green); transform: translateY(-2px); }
+  .care-acts { margin: 0; display: flex; align-items: center; gap: 10px; color: var(--color-ash-500); }
+  .care-acts a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    font-size: 14px;
+    color: var(--color-ash-300);
+    text-decoration: underline;
+    text-decoration-color: var(--copper-hairline);
+    text-underline-offset: 4px;
+  }
+  .care-acts .care-text { color: var(--color-wc-green); text-decoration-color: rgba(77, 216, 168, 0.35); font-weight: 600; }
+  @media (hover: hover) { .care-acts a:hover { color: var(--color-copper-bright); } }
+</style>

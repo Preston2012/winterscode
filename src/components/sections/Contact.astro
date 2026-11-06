@@ -51,6 +51,17 @@ export interface Props {
    * collapsed policy, because /contact carries the full policy further down.
    */
   strip?: boolean;
+  /**
+   * policy: show the collapsed consult policy. S339, the Nov 4 site audit:
+   * it sat in the closer on 43 pages, so deposits came up before anyone
+   * asked about a consult. Now /pricing only; /contact carries its own table.
+   */
+  policy?: boolean;
+  /**
+   * why: S339 HONE-SPEC, the page's "Why $1,750" line, shown under the body
+   * line in the closer. Optional; each page passes its own.
+   */
+  why?: string;
 }
 const {
   sectionNumber = '07',
@@ -59,6 +70,8 @@ const {
   headerKicker = 'Reach out',
   headerTitle = 'Ready to build?',
   strip = false,
+  policy = false,
+  why,
 } = Astro.props;
 
 const phone = '5415510731';
@@ -68,7 +81,7 @@ const cal = 'https://cal.com/preston-winters';
 const sms = smsHref(Astro.url.pathname);
 ---
 
-<section class={`terminus${centered ? " terminus-centered" : ""}`} id="contact" data-textbar-hide>
+<section class={`terminus${centered ? " terminus-centered" : ""}${!sectionNumber && !suppressHeader ? " terminus-nonum" : ""}`} id="contact" data-textbar-hide>
   <!-- Rivets at each corner, magazine binding feel -->
   <div class="rivet tl" aria-hidden="true"></div>
   <div class="rivet tr" aria-hidden="true"></div>
@@ -80,14 +93,22 @@ const sms = smsHref(Astro.url.pathname);
       <SectionHead number={sectionNumber} kicker={headerKicker} title={headerTitle} />
     )}
 
-    <p class="body-text terminus-body">
-      Custom websites and apps for Oregon coast businesses, built in Bandon.
-      Sites from $1,750, starting at 3 business days. One text gets it started.
-    </p>
+    {strip ? (
+      <p class="body-text terminus-body">Sites from $1,750, everything in.</p>
+    ) : (
+      <p class="body-text terminus-body">
+        Custom websites and apps for Oregon coast businesses, built in Bandon.
+        Sites from $1,750, starting at 3 business days. One text gets it started.
+      </p>
+    )}
+    {why && <p class="body-text terminus-body terminus-why">{why}</p>}
   </div>
 
   <div class="terminus-right">
-    <div class="contact-action-row">
+    <!-- S339 HONE-SPEC sitewide 6: the shared closer keeps one filled Text,
+         Call as a plain link and the reply line. Book and Email, and the
+         second button, are /contact (strip) only. -->
+    <div class:list={['contact-action-row', { solo: !strip }]}>
       <a href={sms} class="contact-action-btn contact-text">
         <div class="contact-stack">
           <span class="contact-label">Text Preston</span>
@@ -95,12 +116,12 @@ const sms = smsHref(Astro.url.pathname);
         </div>
       </a>
 
-      <a href={`tel:${phone}`} class="contact-action-btn">
+      {strip && <a href={`tel:${phone}`} class="contact-action-btn">
         <div class="contact-stack">
           <span class="contact-label">Call Preston</span>
           <span class="contact-sub mono">{phoneDisplay}</span>
         </div>
-      </a>
+      </a>}
     </div>
 
     {strip ? (
@@ -113,12 +134,18 @@ const sms = smsHref(Astro.url.pathname);
       <p class="contact-reply">I answer my texts within a few hours during business days.</p>
     )}
 
-    <div class="contact-quiet-row">
-      <a href={cal} target="_blank" rel="noopener">Book a 30-min call</a>
-      <a href={`mailto:${email}?subject=Winters%20Code%20consult%20request`}>Email {email}</a>
-    </div>
+    {strip ? (
+      <div class="contact-quiet-row">
+        <a href={cal} target="_blank" rel="noopener">Book a 30-min call</a>
+        <a href={`mailto:${email}?subject=Winters%20Code%20consult%20request`}>Email {email}</a>
+      </div>
+    ) : (
+      <div class="contact-quiet-row">
+        <a href={`tel:${phone}`}>or call {phoneDisplay}</a>
+      </div>
+    )}
 
-    {!strip && <details class="consult-policy">
+    {!strip && policy && <details class="consult-policy">
       <summary class="consult-policy-title mono">Consult policy</summary>
       <ul>
         <li><strong>Bandon:</strong> free in-person or video</li>
@@ -199,6 +226,10 @@ const sms = smsHref(Astro.url.pathname);
   .rivet.tr { top: 7px; right: 7px; }
   .rivet.bl { bottom: 7px; left: 7px; }
   .rivet.br { bottom: 7px; right: 7px; }
+
+  .terminus-why { margin-top: 10px; color: var(--color-ash-300); }
+  /* No numeral (Home, S339): the body lines up under the heading. */
+  .terminus-nonum .terminus-body { padding-left: 0; }
 
   /* ─── Reply line, right under the buttons ─── */
   .contact-reply {
@@ -331,6 +362,7 @@ const sms = smsHref(Astro.url.pathname);
       margin-top: 0;
     }
   }
+  .contact-action-row.solo { grid-template-columns: 1fr; }
   .contact-action-btn {
     min-width: 0;
     display: flex;

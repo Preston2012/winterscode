@@ -86,10 +86,6 @@ const sms = smsHref(Astro.url.pathname);
         <li>Page title + meta description</li>
         <li>Sitemap + robots.txt presence</li>
       </ul>
-      <p class="au-what-foot">
-        Real audit, not a pitch. If something looks off, I'll tell you
-        what I'd fix first.
-      </p>
     </div>
   </section>
 
@@ -157,8 +153,11 @@ const sms = smsHref(Astro.url.pathname);
 
     <!-- Soft CTA, warm not pushy. Text first, prefilled from the result. -->
     <footer class="au-cta" data-au-cta data-textbar-hide hidden>
-      <p class="au-cta-text">
-        Want help with any of this? I&apos;m down the road.
+      <p class="au-cta-text">Want help with any of this?</p>
+      <p class="au-cta-split">
+        Some sites need an afternoon of fixes. Some need a rebuild, which
+        starts at $2,500. A brand-new site is $1,750, everything in. Text me
+        these results and I&apos;ll tell you which one you are before we talk money.
       </p>
       <div class="au-cta-actions">
         <a href={sms} class="btn btn-primary au-cta-text-btn" data-au-sms data-sms-base={smsBase}>Text me these results</a>
@@ -169,7 +168,13 @@ const sms = smsHref(Astro.url.pathname);
         Change anything before you send it.
       </p>
       <p class="au-cta-another">
+        <button type="button" class="au-cta-another-link au-copy" data-au-copy>Copy a link to these results</button>
         <a href="#au-form-h" class="au-cta-another-link" data-au-another>Audit another site →</a>
+        <a href="/pricing" class="au-cta-another-link">What's included</a>
+      </p>
+      <p class="au-cta-keep">
+        This link reruns the check live. Results are cached for six hours, and
+        nothing else is kept. <a href="/privacy">Details</a>
       </p>
     </footer>
     </div>
@@ -187,9 +192,8 @@ const sms = smsHref(Astro.url.pathname);
       mostly on a phone and were bouncing.
     </p>
     <p class="au-pitch-body">
-      Most agencies want you to fill out a form to "request a free audit"
-      so they can call you. Mine just runs. No email, no pitch deck, no
-      sales call.
+      Mine just runs. No email, no form, no sales call. If you want help,
+      you text me.
     </p>
     <p class="au-pitch-sig">
       Preston Winters<br />
@@ -291,6 +295,9 @@ const sms = smsHref(Astro.url.pathname);
     // Text me these results: the prefill is the audited site, its grade and
     // the first fix, so the conversation starts where the visitor already is.
     const smsLink = document.querySelector('[data-au-sms]');
+    // S339 HONE-SPEC: the host of the last finished audit, for the rerun
+    // link. An audit link carries only the site address (see /privacy).
+    let lastHost = '';
     const smsBaseHref = smsLink ? smsLink.getAttribute('data-sms-base') : null;
     function setTextResults(url, grade, topFixes) {
       if (!smsLink || !smsBaseHref) return;
@@ -301,7 +308,9 @@ const sms = smsHref(Astro.url.pathname);
       const fix = topFixes && topFixes.length && topFixes[0].summary ? String(topFixes[0].summary).trim() : '';
       if (fix) body += ' Top fix: ' + fix + (/[.!?]$/.test(fix) ? '' : '.') + ' Can you help with it?';
       else body += ' I would like to talk about the site.';
+      body += ' Results: winterscode.com/audit?url=' + host;
       smsLink.setAttribute('href', smsBaseHref + encodeURIComponent(body));
+      lastHost = host;
     }
     function smsByHand(url) {
       const base = smsBaseHref || 'sms:+15415510731?&body=';
@@ -572,6 +581,44 @@ const sms = smsHref(Astro.url.pathname);
       clearError();
       runAudit(v);
     });
+
+    // "Copy a link to these results": the link reruns the check live.
+    const copyBtn = document.querySelector('[data-au-copy]');
+    if (copyBtn) {
+      copyBtn.addEventListener('click', function () {
+        const host = lastHost || urlInput.value.replace(/^https?:\/\//, '').replace(/\/.*$/, '');
+        if (!host) return;
+        const link = location.origin + '/audit?url=' + encodeURIComponent(host);
+        const done = function () {
+          copyBtn.textContent = 'Link copied';
+          setTimeout(function () { copyBtn.textContent = 'Copy a link to these results'; }, 2400);
+        };
+        const fallback = function () {
+          const ta = document.createElement('textarea');
+          ta.value = link; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
+          document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); done(); } catch (e) { copyBtn.textContent = link; }
+          document.body.removeChild(ta);
+        };
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(link).then(done, fallback);
+        } else {
+          fallback();
+        }
+      });
+    }
+
+    // ?url= reruns the audit on load. Nothing new is stored; the page stays
+    // out of the index for these addresses, the canonical stays /audit.
+    const qUrl = new URLSearchParams(location.search).get('url');
+    if (qUrl) {
+      const m = document.createElement('meta');
+      m.name = 'robots';
+      m.content = 'noindex';
+      document.head.appendChild(m);
+      urlInput.value = qUrl.slice(0, 300);
+      if (form.requestSubmit) form.requestSubmit(); else form.dispatchEvent(new Event('submit', { cancelable: true }));
+    }
   })();
 </script>
 
@@ -1084,7 +1131,29 @@ const sms = smsHref(Astro.url.pathname);
     text-decoration-color: var(--copper-hairline);
     text-underline-offset: 3px;
   }
+  .au-cta-split {
+    hyphens: manual;
+    margin: 10px auto 0;
+    max-width: 560px;
+    text-align: center;
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--color-ash-300);
+  }
+  .au-cta-keep {
+    margin: 6px auto 0;
+    max-width: 520px;
+    text-align: center;
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--color-ash-500);
+  }
+  .au-cta-keep a { color: var(--color-ash-300); text-decoration: underline; text-decoration-color: var(--copper-hairline); text-underline-offset: 3px; display: inline-flex; align-items: center; min-height: 44px; }
   .au-cta-another {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0 20px;
     margin: 14px 0 0;
     text-align: center;
     font-family: var(--font-mono);
@@ -1095,14 +1164,22 @@ const sms = smsHref(Astro.url.pathname);
   }
   @media (min-width: 740px) { .au-cta-another { font-size: 12px; } }
   .au-cta-another-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    background: none;
+    border: 0;
+    font: inherit;
+    letter-spacing: inherit;
+    text-transform: inherit;
+    cursor: pointer;
     color: var(--color-copper-bright);
-    text-decoration: none;
-    border-bottom: 1px dotted var(--copper-dim);
-    padding-bottom: 1px;
+    text-decoration: underline dotted var(--copper-dim);
+    text-underline-offset: 4px;
   }
   @media (hover: hover) {
 
-    .au-cta-another-link:hover { color: var(--color-copper); border-bottom-color: var(--color-copper); }}
+    .au-cta-another-link:hover { color: var(--color-copper); text-decoration-color: var(--color-copper); }}
 
   /* ─── Structural-grade fallback banner (only when PSI fails) ─── */
   .au-banner-structural {
