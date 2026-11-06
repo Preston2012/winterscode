@@ -14,7 +14,8 @@
  *
  * Env vars required:
  *   - WC_DEMO_TOKEN: shared secret matching demi-api
- *   - WC_DEMO_UPSTREAM (optional, default https://demi.baseline.marketing)
+ *   - WC_DEMO_UPSTREAM: demi-api origin, e.g. https://demi.baseline.marketing.
+ *     Required: unset answers 503 naming it, never a hardcoded upstream (rule I-230).
  */
 
 export const prerender = false;
@@ -22,8 +23,6 @@ export const prerender = false;
 import type { APIRoute } from 'astro';
 // @ts-ignore : virtual module from @astrojs/cloudflare adapter
 import { env as cfEnv } from 'cloudflare:workers';
-
-const DEFAULT_UPSTREAM = 'https://demi.baseline.marketing';
 
 export const GET: APIRoute = async ({ request }) => {
   const token = (cfEnv as Record<string, string | undefined>).WC_DEMO_TOKEN;
@@ -33,9 +32,13 @@ export const GET: APIRoute = async ({ request }) => {
       { status: 503, headers: { 'content-type': 'application/json' } },
     );
   }
-  const upstream =
-    (cfEnv as Record<string, string | undefined>).WC_DEMO_UPSTREAM ??
-    DEFAULT_UPSTREAM;
+  const upstream = (cfEnv as Record<string, string | undefined>).WC_DEMO_UPSTREAM;
+  if (!upstream) {
+    return new Response(
+      JSON.stringify({ error: 'demo_not_configured: WC_DEMO_UPSTREAM is not set', memories: [] }),
+      { status: 503, headers: { 'content-type': 'application/json' } },
+    );
+  }
 
   const clientIp =
     request.headers.get('cf-connecting-ip') ??
