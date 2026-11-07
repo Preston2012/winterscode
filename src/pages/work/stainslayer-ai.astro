@@ -1,5 +1,15 @@
 ---
 import CaseStudyLayout from '../../components/templates/CaseStudyLayout.astro';
+import { v } from '../../lib/asset';
+
+// Three real screens from the app as it ran, each as AVIF with a WebP fallback at two widths.
+const shots = [
+  { n: 'home', cap: 'Home: scan, mode, stain of the day', alt: 'StainSlayer home screen: a Scan Stain Now button, Eco Mode and Free badges, and a Stain Of The Day card.' },
+  { n: 'scan', cap: 'Emergency scan: fabric, age, type', alt: 'StainSlayer Emergency Scan screen with fabric type, a stain age slider and water or oil based choices.' },
+  { n: 'result', cap: 'The verdict, with its safety lines', alt: 'StainSlayer result screen: four numbered removal steps, a safety notice and a Report this advice button.' },
+];
+const shot = (s) => `<span class="cs-shot"><picture><source type="image/avif" srcset="${v(`/work/stainslayer-${s.n}-360.avif`)} 360w, ${v(`/work/stainslayer-${s.n}-598.avif`)} 598w" sizes="(min-width: 768px) 240px, 70vw"><img src="${v(`/work/stainslayer-${s.n}-598.webp`)}" srcset="${v(`/work/stainslayer-${s.n}-360.webp`)} 360w, ${v(`/work/stainslayer-${s.n}-598.webp`)} 598w" sizes="(min-width: 768px) 240px, 70vw" width="598" height="1300" loading="lazy" decoding="async" alt="${s.alt}"></picture><span class="cs-cap">${s.cap}</span></span>`;
+const gallery = `<span class="cs-shots">${shots.map(shot).join('')}</span>`;
 ---
 <CaseStudyLayout
   slug="stainslayer-ai"
@@ -10,16 +20,23 @@ import CaseStudyLayout from '../../components/templates/CaseStudyLayout.astro';
   sub="Photograph a stain, pick the fabric, get the removal steps in seconds. Built, approved and kept live on the App Store and Google Play from January to November 2026, then retired on purpose."
   intro={[
     "StainSlayer AI was my own product, not a client build. A spill happens, the stain is fresh, and the right first move depends on what it landed on. Search results are long, generic and sometimes dangerous to mix. StainSlayer answered from a photo: what to do first, what never to use on this fabric, and when to stop and spot-test.",
-    "It went live on Google Play on <span class='hl-green'>January 14, 2026</span>, ran on the App Store as well, and stayed up on both stores, approved and in good standing, until I retired it on November 7, 2026. Along the way it reached version 1.0.8 and <span class='hl-copper'>100+ downloads</span> on Google Play with no marketing budget at all.",
+    "It went live on Google Play on <span class='hl-green'>January 14, 2026</span> and on the App Store two days later, and stayed live on both, approved and in good standing, until I retired it on November 7, 2026. Along the way it reached version 1.0.8 and <span class='hl-copper'>100+ downloads</span> on Google Play with no marketing budget at all.",
     "The point of it was the part most side projects never reach: getting a paid AI app through review on both stores and keeping it there.",
   ]}
   stats={[
     { value: '2', label: 'app stores, both approved' },
-    { value: '~10', label: 'months live on Google Play' },
+    { value: '~10', label: 'months live on both stores' },
     { value: '4', label: 'modes, from Eco to Emergency' },
     { value: '3', label: 'ways to pay: subscription, one-time buy, ads' },
   ]}
   sections={[
+    {
+      h: 'What it looked like',
+      body: [
+        "Three screens from the app as it ran: the home screen, an Emergency scan and the verdict.",
+        gallery,
+      ],
+    },
     {
       h: 'The answer has to be safe',
       body: [
@@ -38,7 +55,7 @@ import CaseStudyLayout from '../../components/templates/CaseStudyLayout.astro';
       h: 'Why it is retired',
       body: [
         "It never had a marketing budget, and it never earned enough to justify one. The AI models it was built on have since been replaced by better and cheaper ones, and a paid AI app on two stores needs steady upkeep. Rather than leave an aging app on the market, I took it down from both stores in November 2026.",
-        "Shipping it is the part that stays true: an AI app, built alone, live and approved on the App Store and Google Play for most of a year.",
+        "Shipping it is the part that stays true: an AI app, built alone, live and approved on the App Store and Google Play for almost ten months.",
       ],
     },
   ]}
@@ -52,3 +69,14 @@ import CaseStudyLayout from '../../components/templates/CaseStudyLayout.astro';
     { href: '/pricing', label: 'See pricing' },
   ]}
 />
+
+<style is:global>
+  .cs-shots { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 8px; }
+  .cs-shot { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+  .cs-shot img { display: block; width: 100%; height: auto; border-radius: 16px; border: 1px solid var(--copper-hairline); }
+  .cs-cap { font-size: 0.8125rem; line-height: 1.4; color: var(--color-ash-300); text-align: center; }
+  @media (max-width: 639px) {
+    .cs-shots { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: 70%; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 8px; }
+    .cs-shot { scroll-snap-align: center; }
+  }
+</style>

@@ -600,7 +600,7 @@ export const portfolio: PortfolioItem[] = [
       },
       {
         label: 'Status',
-        value: 'Released on Google Play January 14, 2026 and live on the App Store too, version 1.0.8 and 100+ downloads; retired from both stores November 7, 2026.',
+        value: 'Live on Google Play from January 14, 2026 and the App Store from January 16, until both were retired on November 7, 2026. Version 1.0.8, 100+ downloads on Google Play.',
       },
     ],
     links: [],
