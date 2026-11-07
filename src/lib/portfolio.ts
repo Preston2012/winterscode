@@ -20,7 +20,7 @@ import { v } from './asset';
  * around one.
  */
 export type PortfolioCategory = 'site' | 'app' | 'brand';
-export type PortfolioStatus = 'live' | 'beta' | 'planned';
+export type PortfolioStatus = 'live' | 'beta' | 'planned' | 'retired';
 
 export interface PortfolioImage {
   /** Primary card hero, wide aspect (~2:1). */
@@ -575,9 +575,9 @@ export const portfolio: PortfolioItem[] = [
     numeral: 'iii.',
     name: 'StainSlayer AI',
     category: 'app',
-    meta: 'AI stain ID · 4 modes · live on App Store + Play Store',
+    meta: 'AI stain ID · 4 modes · App Store + Google Play, Jan to Nov 2026',
     tags: ['FLUTTER', 'VISION', 'IN-APP PURCHASES'],
-    status: 'live',
+    status: 'retired',
     build: 'new',
     order: 20,
     image: {
@@ -596,24 +596,15 @@ export const portfolio: PortfolioItem[] = [
       {
         label: 'Scope',
         value:
-          'Snap a stain, get step-by-step removal. Four modes: Normal, Eco (non-toxic), Emergency (time-sensitive), Fun. Subscription tiers and pay-per-use credits. Photos processed instantly and never stored.',
+          'Snap a stain, get step-by-step removal. Four modes: Normal, Eco (non-toxic), Emergency (time-sensitive), Fun. Subscription tiers and pay-per-use credits. Each photo went to the AI for its answer; the app did not keep it.',
       },
       {
         label: 'Status',
-        value: 'Live on App Store and Google Play.',
+        value: 'Released on Google Play January 14, 2026 and live on the App Store too, version 1.0.8 and 100+ downloads; retired from both stores November 7, 2026.',
       },
     ],
-    links: [
-      {
-        label: 'App Store →',
-        href: 'https://apps.apple.com/us/app/stainslayer-ai/id6757208835',
-        primary: true,
-      },
-      {
-        label: 'Play Store →',
-        href: 'https://play.google.com/store/apps/details?id=com.mycompany.stainslayerai',
-      },
-    ],
+    links: [],
+    caseStudy: '/work/stainslayer-ai',
   },
   {
     slug: 'choplight',

@@ -287,7 +287,7 @@ const workLd = {
                   <Instrument />
                 </details>
               ) : p.image ? (
-                <a class="wk-preview-link" href={(p.links.find((l) => l.primary) ?? p.links[0])?.href} target="_blank" rel="noopener" aria-label={`Visit ${p.name}`}>
+                <a class="wk-preview-link" href={p.caseStudy ?? (p.links.find((l) => l.primary) ?? p.links[0])?.href} target={p.caseStudy ? undefined : "_blank"} rel={p.caseStudy ? undefined : "noopener"} aria-label={p.caseStudy ? `${p.name} case study` : `Visit ${p.name}`}>
                 <picture>
                   {p.image.srcSmall && (
                     <source
@@ -314,7 +314,7 @@ const workLd = {
 
             <div class="wk-body">
               <div class="wk-title-row">
-                <h3 class="wk-title">{p.slug === 'demiurge-mykonos' ? p.name : <a class="wk-title-link" href={(p.links.find((l) => l.primary) ?? p.links[0])?.href} target="_blank" rel="noopener">{p.name}</a>}</h3>
+                <h3 class="wk-title">{p.slug === 'demiurge-mykonos' ? p.name : p.caseStudy ? <a class="wk-title-link" href={p.caseStudy}>{p.name}</a> : <a class="wk-title-link" href={(p.links.find((l) => l.primary) ?? p.links[0])?.href} target="_blank" rel="noopener">{p.name}</a>}</h3>
                 {p.slug !== 'demiurge-mykonos' && (
                   <span class={`wk-status wk-status-${p.status}`}>
                     {p.status.toUpperCase()}
@@ -336,6 +336,9 @@ const workLd = {
                 <a class="wk-visit" href={(p.links.find((l) => l.primary) ?? p.links[0]).href} target="_blank" rel="noopener">
                   {(p.links.find((l) => l.primary) ?? p.links[0]).label}
                 </a>
+              )}
+              {p.caseStudy && (
+                <a class="wk-visit" href={p.caseStudy}>Read the case study</a>
               )}
               {p.relatedCase && (
                 <a class="wk-quiet wk-related" id={p.relatedCase.href.split('/').pop()} href={p.relatedCase.href}>{p.relatedCase.label}</a>
@@ -1089,6 +1092,11 @@ const workLd = {
     background: rgba(240, 184, 120, 0.15);
     color: var(--color-amber);
     border: 1px solid rgba(240, 184, 120, 0.3);
+  }
+  .wk-status-retired {
+    background: transparent;
+    color: var(--color-ash-300);
+    border: 1px solid var(--copper-hairline);
   }
   .wk-status-planned {
     background: rgba(200, 128, 74, 0.10);

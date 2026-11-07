@@ -1,0 +1,54 @@
+---
+import CaseStudyLayout from '../../components/templates/CaseStudyLayout.astro';
+---
+<CaseStudyLayout
+  slug="stainslayer-ai"
+  title="StainSlayer AI · Case Study · Winters Code"
+  description="An AI stain-removal app built by one developer and kept live on both the App Store and Google Play for most of 2026, with subscriptions, a one-time purchase and ads."
+  eyebrow="Work · Case Study"
+  h1="Two app stores, one developer."
+  sub="Photograph a stain, pick the fabric, get the removal steps in seconds. Built, approved and kept live on the App Store and Google Play from January to November 2026, then retired on purpose."
+  intro={[
+    "StainSlayer AI was my own product, not a client build. A spill happens, the stain is fresh, and the right first move depends on what it landed on. Search results are long, generic and sometimes dangerous to mix. StainSlayer answered from a photo: what to do first, what never to use on this fabric, and when to stop and spot-test.",
+    "It went live on Google Play on <span class='hl-green'>January 14, 2026</span>, ran on the App Store as well, and stayed up on both stores, approved and in good standing, until I retired it on November 7, 2026. Along the way it reached version 1.0.8 and <span class='hl-copper'>100+ downloads</span> on Google Play with no marketing budget at all.",
+    "The point of it was the part most side projects never reach: getting a paid AI app through review on both stores and keeping it there.",
+  ]}
+  stats={[
+    { value: '2', label: 'app stores, both approved' },
+    { value: '~10', label: 'months live on Google Play' },
+    { value: '4', label: 'modes, from Eco to Emergency' },
+    { value: '3', label: 'ways to pay: subscription, one-time buy, ads' },
+  ]}
+  sections={[
+    {
+      h: 'The answer has to be safe',
+      body: [
+        "A stain app that is confidently wrong ruins a shirt, and one that suggests mixing the wrong two cleaners is worse than useless. So every answer carried a spot-test reminder, a warning against dangerous chemical mixes and a nudge to read the care label, and the guidance changed with the fabric: cotton, wool, silk or upholstery.",
+        "There were four modes. Normal for everyday food, coffee, dirt and makeup. Eco for lower-toxicity methods that may need a second pass. Emergency for fast, focused steps on wine, blood or ink, with no ads in the way. And Fun, plainly labeled as entertainment, for the silly answers people asked for anyway. Every answer had a Report this advice button that came to me.",
+      ],
+    },
+    {
+      h: 'Everything around the AI call',
+      body: [
+        "The vision call was the easy part. The work was everything both stores require before a paid AI app can go live: subscriptions and a one-time Emergency mode purchase through Apple and Google billing, ads for free users that stayed out of Emergency mode, privacy and data-safety disclosures, an age rating, support and legal pages, and the review rounds on each platform.",
+        "One Flutter codebase served both phones. That is the same path I take a client app down: one build, two stores, and someone who has already been through each store's review.",
+      ],
+    },
+    {
+      h: 'Why it is retired',
+      body: [
+        "It never had a marketing budget, and it never earned enough to justify one. The AI models it was built on have since been replaced by better and cheaper ones, and a paid AI app on two stores needs steady upkeep. Rather than leave an aging app on the market, I took it down from both stores in November 2026.",
+        "Shipping it is the part that stays true: an AI app, built alone, live and approved on the App Store and Google Play for most of a year.",
+      ],
+    },
+  ]}
+  relatedLinks={[
+    { href: '/services/app-development', label: 'App Development', sub: 'The same path, for your app' },
+    { href: '/services/ai-automation', label: 'AI and Automation', sub: 'Vision and language models' },
+    { href: '/work', label: 'All work', sub: 'More projects' },
+  ]}
+  endLinks={[
+    { href: '/services/app-development', label: 'App development' },
+    { href: '/pricing', label: 'See pricing' },
+  ]}
+/>

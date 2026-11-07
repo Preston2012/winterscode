@@ -72,7 +72,7 @@ export const services: ServiceEntry[] = [
     name: 'App Development',
     shortLabel: 'App Development',
     blurb:
-      'Cross-platform iOS and Android apps in Flutter. One codebase, two stores. Live products already on the App Store and Play Store.',
+      'Cross-platform iOS and Android apps in Flutter. One codebase, two stores. I have taken my own app through review and live on both the App Store and Google Play.',
     serviceType: 'Mobile app development',
   },
   {

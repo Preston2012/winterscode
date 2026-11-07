@@ -32,7 +32,7 @@ interface WorkCard {
   title: string;
   desc: string;
   stack: [string, string];
-  status: 'LIVE' | 'BETA' | 'PROD';
+  status: 'LIVE' | 'BETA' | 'PROD' | 'RETIRED';
   /** S339: a build for Preston's own family's business; shows a FAMILY pill. */
   family?: boolean;
   /** Rebuild of a site the client already had, or a first build. */
@@ -248,9 +248,9 @@ const CARDS: WorkCard[] = [
     // StainSlayer keeps its full card on /work.
     published: false,
     title: 'StainSlayer AI',
-    desc: 'Vision AI stain analysis. App Store + Play Store.',
+    desc: 'Vision AI stain analysis. Live on both stores, Jan to Nov 2026.',
     stack: ['Flutter', 'Supabase'],
-    status: 'LIVE',
+    status: 'RETIRED',
     build: 'new',
     built_in_days: 30,
     image: {
