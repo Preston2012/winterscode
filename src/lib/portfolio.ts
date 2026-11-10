@@ -132,7 +132,7 @@ export const portfolio: PortfolioItem[] = [
       {
         label: 'Scope',
         value:
-          'Rebuild of a Coos Bay property manager off WordPress: 50 bilingual pages, English and Spanish. Rentals live from AppFolio with town, bedroom and rent filters; 16 subsidized communities in 14 towns, each with its own page; their applications online, encrypted in the applicant\u2019s browser and opened only in a back office the staff signs in to; all eight of the old forms rebuilt; and all 80 old addresses redirected to their new pages. Built in 13 business days.',
+          'Rebuild of a Coos Bay property manager off WordPress: 50 bilingual pages, English and Spanish. Rentals live from AppFolio with town, bedroom and rent filters; 16 subsidized communities in 14 towns, each with its own page and a short form to request its application; all eight of the old forms rebuilt; and all 80 old addresses redirected to their new pages. Built in 13 business days.',
       },
       {
         label: 'Result',
@@ -141,7 +141,7 @@ export const portfolio: PortfolioItem[] = [
       },
       {
         label: 'Stack',
-        value: 'Astro · Cloudflare Pages · Pages Functions · AppFolio listings · applications encrypted in the browser · English and Spanish',
+        value: 'Astro · Cloudflare Pages · Pages Functions · AppFolio listings · English and Spanish',
       },
     ],
     links: [
