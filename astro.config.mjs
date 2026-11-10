@@ -169,7 +169,7 @@ export default defineConfig({
     // real interactive island worth that weight.
     mdx(),
     sitemap({
-      filter: (page) => !page.includes('/404') && !page.includes('/chere/onboard'),
+      filter: (page) => !page.includes('/404') && !page.includes('/chere/onboard') && !page.includes('/journey'),
       serialize: (item) => {
         const route = routeOf(item.url);
         return {

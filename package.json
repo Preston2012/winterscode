@@ -7,7 +7,7 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "node scripts/gen-asset-versions.mjs && astro build && node scripts/strip-dev-vars.mjs && node scripts/csp-postprocess.mjs",
+    "build": "node scripts/gen-asset-versions.mjs && node scripts/copy-mediapipe.mjs && astro build && node scripts/strip-dev-vars.mjs && node scripts/csp-postprocess.mjs",
     "preview": "astro preview",
     "astro": "astro"
   },
@@ -19,10 +19,12 @@
     "@fontsource-variable/literata": "^5.3.0",
     "@fontsource/ibm-plex-sans": "^5.2.8",
     "@fontsource/jetbrains-mono": "^5.2.8",
+    "@mediapipe/tasks-vision": "1.1.1",
     "@tailwindcss/postcss": "^4.3.0",
     "@tailwindcss/vite": "^4.3.0",
     "astro": "^7.3.3",
-    "tailwindcss": "^4.3.0"
+    "tailwindcss": "^4.3.0",
+    "three": "0.186.1"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.9",

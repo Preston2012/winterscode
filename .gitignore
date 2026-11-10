@@ -47,3 +47,6 @@ docs/*
 *credential*
 *secret*
 .goldens/last-diff.tsv
+
+# MediaPipe wasm runtime for /journey, copied from node_modules at build.
+public/journey/mp/

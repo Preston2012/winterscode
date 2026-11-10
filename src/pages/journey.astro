@@ -1,0 +1,294 @@
+---
+/**
+ * /journey: the guided homepage cut (S339 prototype, preview only).
+ *
+ * A window into Bandon that the visitor scrolls through: the pile of tools
+ * flies in front of the view, one pull untangles it, and what is left is one
+ * phone, one person and the view again. Native scroll drives every beat, so
+ * nothing hijacks the wheel or the thumb, and every word is real HTML.
+ *
+ * Not linked from anywhere and kept out of search (robots meta, X-Robots-Tag
+ * in _headers, sitemap filter) until Preston rules on it.
+ *
+ * The 3D stage is src/scripts/journey/stage.ts. Head tracking (MediaPipe face
+ * detector, opt-in) needs 'wasm-unsafe-eval', granted on this page only.
+ */
+import '../styles/fonts.css';
+import { business } from '../lib/business';
+import { smsHref } from '../lib/text-cta';
+
+Astro.csp?.insertScriptResource("'wasm-unsafe-eval'");
+
+const sms = smsHref('/');
+const tel = `tel:${business.phone}`;
+const BEATS = ['The window', 'The pile', 'The knot', 'One pull', 'One site', 'Fast on a phone', 'The price', 'A text away', 'Down the road'];
+---
+<!doctype html>
+<html lang="en" class="journey">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Winters Code · Bandon, Oregon</title>
+  <meta name="description" content="Custom websites for Oregon coast businesses, built in Bandon by Preston Winters. One site, one login, one person you can count on." />
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="canonical" href="https://winterscode.com/" />
+  <meta name="theme-color" content="#0a0d0c" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/wc-stamp-32.png" />
+  <link rel="icon" href="/favicon.ico" sizes="any" />
+  <link rel="preload" href="/_fonts/fraunces-normal-400-700.woff2" as="font" type="font/woff2" crossorigin />
+</head>
+<body>
+  <div class="backdrop" aria-hidden="true"></div>
+  <canvas id="stage" aria-hidden="true"></canvas>
+  <div class="scrim" aria-hidden="true"></div>
+  <video id="cam" playsinline muted aria-hidden="true"></video>
+
+  <header class="chrome">
+    <a class="brand" href="/" aria-label="Winters Code home">
+      <img src="/wc-stamp-64.webp" width="32" height="32" alt="" />
+      <span>Winters Code</span>
+    </a>
+    <a class="classic" href="/">Regular site →</a>
+  </header>
+
+  <nav class="rail" aria-label="Story progress">
+    {BEATS.map((b, i) => <button type="button" aria-label={`${i + 1}. ${b}`} aria-current={i === 0 ? 'step' : 'false'}><span></span></button>)}
+  </nav>
+
+  <div class="controls">
+    <button type="button" id="head" class="ctl" data-state="off" hidden>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z" /><circle cx="12" cy="12" r="3.2" /></svg>
+      <span class="lbl">Look through the window</span>
+    </button>
+    <button type="button" id="tilt" class="ctl" hidden>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="2.5" width="10" height="19" rx="2.5" /><path d="M3 9c-1 2-1 4 0 6M21 9c1 2 1 4 0 6" /></svg>
+      <span class="lbl">Tilt to look</span>
+    </button>
+  </div>
+
+  <main id="story">
+    <section class="beat b0" data-beat="0">
+      <div class="copy">
+        <p class="eyebrow">Winters Code · Bandon, Oregon</p>
+        <h1>You didn't go into business to manage software.</h1>
+        <p class="creed"><em><a href={sms}>Help is just a text away.</a></em></p>
+        <div class="cta">
+          <a class="btn primary" href={sms}>Text Preston →</a>
+          <a class="btn" href="/work">See the work →</a>
+        </div>
+        <p class="hint" aria-hidden="true"><span class="hint-fine">Move your mouse, the view moves with you.</span><span class="hint-coarse">Tilt your phone, the view moves with you.</span> Scroll to start.</p>
+      </div>
+    </section>
+
+    <section class="beat b1" data-beat="1">
+      <div class="copy">
+        <h2>A pile of tools that don't talk to each other.</h2>
+        <p>A lot of small businesses here run on a pile of disconnected tools. Each one was supposed to make things simpler.</p>
+        <p class="hint" aria-hidden="true">Tap a card.</p>
+      </div>
+    </section>
+
+    <section class="beat b2" data-beat="2">
+      <div class="copy">
+        <h2>Every one has its own login.</h2>
+        <p>Its own bill, its own password reset, its own way of breaking. And they all ping you.</p>
+      </div>
+    </section>
+
+    <section class="beat b3" data-beat="3">
+      <div class="copy">
+        <h2>One pull.</h2>
+        <p>I'll set it up. I'll connect what you keep. I'll replace what you don't need.</p>
+        <img class="still" src="/wc-seal-256.webp" width="160" height="160" alt="The Winters Code seal" loading="lazy" />
+      </div>
+    </section>
+
+    <section class="beat b4" data-beat="4">
+      <div class="copy">
+        <h2>One site. One login.</h2>
+        <p><strong>Grand Management</strong> in Coos Bay: 50 bilingual pages in 13 business days.</p>
+        <a class="more" href="/work/grand-management">The Grand case →</a>
+        <img class="still phone" src="/work/grand-phone-300.webp" width="300" height="600" alt="Grand Management's site on a phone" loading="lazy" />
+      </div>
+    </section>
+
+    <section class="beat b5" data-beat="5">
+      <div class="copy">
+        <h2>Fast on a phone.</h2>
+        <p><strong>US Survey Supply</strong>: a 42-page rebuild in 8 business days. Both sites are scored live on the Wall, so you can check them yourself.</p>
+        <a class="more" href="/wall">The Wall →</a>
+        <img class="still phone" src="/work/uss-phone-300.webp" width="300" height="600" alt="US Survey Supply's site on a phone" loading="lazy" />
+      </div>
+    </section>
+
+    <section class="beat b6" data-beat="6">
+      <div class="copy">
+        <h2>Why $1,750 and not a few hundred.</h2>
+        <p><strong>It's yours.</strong> Custom code, not a rented template, with the domain in your name. <strong>Everything's in.</strong> The pages, the words, real photos and branding. The price I quote is the price you pay.</p>
+        <a class="more" href="/pricing">Pricing →</a>
+      </div>
+    </section>
+
+    <section class="beat b7" data-beat="7">
+      <div class="copy">
+        <h2>Help is just a text away.</h2>
+        <p>Hours changed, a new photo, a page to add. Text me what you need.</p>
+      </div>
+    </section>
+
+    <section class="beat b8" data-beat="8">
+      <div class="copy">
+        <h2>One person you can count on.</h2>
+        <p class="close"><em>I'm down the road. I pick up the phone.</em></p>
+        <div class="cta">
+          <a class="btn primary" href={sms}>Text Preston →</a>
+          <a class="btn" href={tel}>Call {business.phoneDisplay}</a>
+        </div>
+        <p class="foot">I build it. I ship it. I maintain it. <a href="/">Regular site</a> · <a href="/contact">Contact</a></p>
+        <p class="static-note" id="static-note"></p>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    import '../scripts/journey/main';
+  </script>
+</body>
+</html>
+
+<style is:global>
+  :root {
+    --deep: #0a0d0c; --stone: #11151a; --card: #161b1f; --raised: #1d2429;
+    --ash-100: #dde4e6; --ash-300: #aab7ba; --ash-500: #97a3a6; --ash-700: #3a4549;
+    --green: #4dd8a8; --green-bright: #5fe8b5; --copper: #d3823c; --copper-bright: #f4a874;
+    --serif: 'Fraunces', 'Fraunces fallback', Georgia, serif;
+    --sans: 'IBM Plex Sans', 'IBM Plex fallback', -apple-system, system-ui, sans-serif;
+    --mono: 'JetBrains Mono', ui-monospace, monospace;
+    --gut: max(16px, env(safe-area-inset-left));
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  html, body { margin: 0; background: var(--deep); color: var(--ash-100); font-family: var(--sans); line-height: 1.55; overflow-x: clip; -webkit-font-smoothing: antialiased; }
+  body.over-card { cursor: pointer; }
+  a { color: inherit; }
+
+  #stage { position: fixed; inset: 0; width: 100vw; height: 100vh; height: 100lvh; display: block; opacity: 0; transition: opacity 0.9s ease; }
+  .ready #stage { opacity: 1; }
+  /* Before the stage is ready, and in the plain view, the photo itself is the window. */
+  .backdrop {
+    position: fixed; inset: 0;
+    background: linear-gradient(rgba(10,13,12,.5), rgba(10,13,12,.7)), url('/photo/local/facerock-sunset-768.webp') center / cover no-repeat;
+  }
+  @media (min-width: 900px) { .backdrop { background-image: linear-gradient(rgba(10,13,12,.5), rgba(10,13,12,.7)), url('/photo/local/facerock-sunset-1600.webp'); } }
+  .ready .backdrop { opacity: 0; transition: opacity 1s ease 0.4s; }
+
+  /* Legibility: a dark side on desktop, a dark foot on phones, fading out at the close. */
+  .scrim {
+    position: fixed; inset: 0; pointer-events: none;
+    background: linear-gradient(90deg, rgba(10,13,12,.86) 0%, rgba(10,13,12,.55) 34%, rgba(10,13,12,0) 60%);
+  }
+  @media (max-aspect-ratio: 17/20) {
+    .scrim { background: linear-gradient(0deg, rgba(10,13,12,.94) 0%, rgba(10,13,12,.8) 32%, rgba(10,13,12,0) 56%); }
+  }
+
+  .chrome {
+    position: fixed; z-index: 5; top: 0; left: 0; right: 0;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: max(14px, env(safe-area-inset-top)) var(--gut) 0;
+    pointer-events: none;
+  }
+  .chrome a { pointer-events: auto; text-decoration: none; display: inline-flex; align-items: center; gap: 10px; min-height: 44px; }
+  .brand span { font-family: var(--serif); font-weight: 500; font-size: 17px; letter-spacing: -0.01em; }
+  .classic { font-family: var(--mono); font-size: 12px; color: var(--ash-300); padding: 0 4px; }
+  .classic:hover, .classic:focus-visible { color: var(--green); }
+
+  .rail {
+    position: fixed; z-index: 5; right: max(10px, env(safe-area-inset-right)); top: 50%; transform: translateY(-50%);
+    display: flex; flex-direction: column; gap: 2px;
+  }
+  .rail button { width: 44px; height: 30px; padding: 0; border: 0; background: none; cursor: pointer; display: grid; place-items: center end; }
+  .rail span { display: block; width: 12px; height: 2px; background: rgba(221,228,230,.35); border-radius: 1px; transition: width .3s ease, background .3s ease; }
+  .rail button[aria-current='step'] span { width: 26px; background: var(--copper-bright); }
+  .rail button:focus-visible { outline: 2px solid var(--green); outline-offset: -4px; border-radius: 4px; }
+  @media (max-aspect-ratio: 17/20) { .rail { top: auto; bottom: auto; top: 76px; transform: none; gap: 0; } .rail button { height: 22px; } .rail span { width: 8px; } .rail button[aria-current='step'] span { width: 18px; } }
+
+  .controls { position: fixed; z-index: 6; left: var(--gut); bottom: max(16px, env(safe-area-inset-bottom)); display: flex; gap: 8px; }
+  .ctl {
+    display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 14px;
+    font: 500 13px var(--sans); color: var(--ash-100); cursor: pointer;
+    background: rgba(17,21,26,.72); border: 1px solid rgba(221,228,230,.16); border-radius: 22px;
+    -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+  }
+  .ctl svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.6; }
+  .ctl:hover, .ctl:focus-visible { border-color: var(--green); }
+  .ctl[data-state='on'] { border-color: var(--green); color: var(--green-bright); }
+  .ctl[data-state='loading'] { opacity: .7; cursor: progress; }
+  .ctl[hidden] { display: none; }
+  /* The smallest phones get icon buttons; the label stays for screen readers. */
+  @media (max-width: 360px) {
+    .ctl { padding: 0; width: 44px; justify-content: center; }
+    .ctl .lbl { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  }
+  .static .controls { display: none; }
+  /* The controls sit at the top on phones, where the text is not. */
+  @media (max-aspect-ratio: 17/20) { .controls { bottom: auto; top: calc(max(14px, env(safe-area-inset-top)) + 50px); left: var(--gut); } .ctl { min-height: 40px; font-size: 12px; padding: 0 12px; } }
+  /* Hidden until the head button fades in as the hero settles; out of the way once the story moves. */
+  .ready .controls { opacity: calc(1 - clamp(0, (var(--beat, 0) - 0.6) * 3, 1)); transition: opacity .2s; }
+  .cam-on .controls { opacity: 1; }
+
+  #cam { position: fixed; z-index: 6; width: 64px; height: 64px; border-radius: 50%; object-fit: cover; transform: scaleX(-1); right: 64px; bottom: 18px; border: 2px solid var(--green); display: none; }
+  .cam-on #cam { display: block; }
+  @media (max-aspect-ratio: 17/20) { #cam { right: auto; left: calc(var(--gut) + 4px); top: calc(max(14px, env(safe-area-inset-top)) + 100px); bottom: auto; width: 52px; height: 52px; } }
+
+  /* ── The story ── */
+  #story { position: relative; z-index: 2; pointer-events: none; }
+  .beat { min-height: 100vh; min-height: 100svh; display: flex; align-items: center; padding: 96px var(--gut) 72px clamp(24px, 7vw, 120px); }
+  .copy { max-width: 31rem; pointer-events: auto; text-shadow: 0 1px 18px rgba(10,13,12,.55); }
+  .beat a, .beat button { pointer-events: auto; }
+  @media (max-aspect-ratio: 17/20) {
+    .beat { align-items: flex-end; padding: 0 var(--gut) max(64px, calc(env(safe-area-inset-bottom) + 40px)); }
+    .b0 { align-items: flex-end; }
+    .copy { max-width: 34rem; }
+  }
+  .eyebrow { margin: 0 0 14px; font-family: var(--mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--copper-bright); }
+  h1, h2 { font-family: var(--serif); font-weight: 500; letter-spacing: -0.015em; text-wrap: balance; margin: 0 0 16px; }
+  h1 { font-size: clamp(38px, 5.2vw, 72px); line-height: 1.02; }
+  h2 { font-size: clamp(30px, 3.6vw, 50px); line-height: 1.06; }
+  .copy p { font-size: clamp(16px, 1.25vw, 19px); color: var(--ash-100); margin: 0 0 14px; max-width: 30rem; }
+  .creed { font-family: var(--serif); font-size: clamp(20px, 1.8vw, 26px) !important; }
+  .creed a { text-decoration: none; border-bottom: 1px solid rgba(244,168,116,.5); }
+  .creed a:hover, .creed a:focus-visible { color: var(--copper-bright); }
+  .close { font-family: var(--serif); font-size: clamp(22px, 2.2vw, 30px) !important; }
+  .cta { display: flex; flex-wrap: wrap; gap: 10px; margin: 22px 0 18px; }
+  .btn {
+    display: inline-flex; align-items: center; min-height: 48px; padding: 0 20px; border-radius: 8px;
+    font-weight: 600; font-size: 15px; text-decoration: none; color: var(--ash-100);
+    border: 1px solid rgba(221,228,230,.28); background: rgba(17,21,26,.55);
+  }
+  .btn.primary { background: var(--green); color: #062018; border-color: var(--green); }
+  .btn:hover, .btn:focus-visible { border-color: var(--green-bright); }
+  .btn.primary:hover, .btn.primary:focus-visible { background: var(--green-bright); }
+  .more { display: inline-flex; align-items: center; min-height: 44px; font-family: var(--mono); font-size: 13px; color: var(--green); text-decoration: none; }
+  .more:hover, .more:focus-visible { text-decoration: underline; }
+  .hint { font-family: var(--mono); font-size: 12px !important; color: var(--ash-300) !important; margin-top: 8px !important; }
+  .hint-coarse { display: none; }
+  @media (pointer: coarse) { .hint-fine { display: none; } .hint-coarse { display: inline; } }
+  .b1 .hint { display: none; }
+  .ready .b1 .hint { display: block; }
+  .foot { font-family: var(--mono); font-size: 12px !important; color: var(--ash-500) !important; margin-top: 28px !important; }
+  .foot a { color: var(--ash-300); }
+  :focus-visible { outline: 2px solid var(--green); outline-offset: 3px; }
+  .still { display: none; }
+  .static-note { font-family: var(--mono); font-size: 11px !important; color: var(--ash-500) !important; }
+  .static-note:empty { display: none; }
+
+  /* ── Plain view: every beat as a readable section over the photo ── */
+  .static #stage, .static .scrim { display: none; }
+  .static .beat { min-height: auto; padding-top: 72px; padding-bottom: 72px; }
+  .static .b0 { min-height: 100svh; }
+  .static .still { display: block; margin-top: 18px; border-radius: 22px; max-width: 220px; height: auto; }
+  .static .still.phone { box-shadow: 0 24px 60px rgba(0,0,0,.5); }
+  .static .copy { background: rgba(10,13,12,.72); padding: 24px; border-radius: 14px; }
+  .static .rail { display: none; }
+  .static .hint { display: none; }
+</style>

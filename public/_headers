@@ -94,3 +94,13 @@
 
 /work/sogn-contracting
   Cache-Control: public, max-age=0, must-revalidate, s-maxage=600
+
+# /journey is a preview prototype: out of search until it is ruled on.
+/journey
+  Cache-Control: public, max-age=0, must-revalidate, s-maxage=600
+  X-Robots-Tag: noindex, nofollow
+
+# MediaPipe runtime and face model for /journey's opt-in head tracking.
+/journey/mp/*
+  Cache-Control: public, max-age=604800
+  X-Robots-Tag: noindex
