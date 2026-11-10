@@ -20,8 +20,18 @@ function fallback(reason: string) {
   if (note) note.textContent = `Plain view: ${reason}.`;
 }
 
-function webgl2(): boolean {
-  try { return !!document.createElement('canvas').getContext('webgl2'); } catch { return false; }
+/** 'gpu', 'software' (a CPU pretending to be a graphics chip), or 'none'. */
+function webgl2(): 'gpu' | 'software' | 'none' {
+  try {
+    const gl = document.createElement('canvas').getContext('webgl2');
+    if (!gl) return 'none';
+    const ext = gl.getExtension('WEBGL_debug_renderer_info');
+    const r = String(gl.getParameter(ext ? ext.UNMASKED_RENDERER_WEBGL : gl.RENDERER) || '');
+    gl.getExtension('WEBGL_lose_context')?.loseContext();
+    // A software renderer draws every frame on the CPU: the page would stutter
+    // and the main thread would never go quiet. Those devices get the plain view.
+    return /swiftshader|llvmpipe|softpipe|software/i.test(r) ? 'software' : 'gpu';
+  } catch { return 'none'; }
 }
 
 const beats = Array.from(document.querySelectorAll<HTMLElement>('.beat'));
@@ -44,8 +54,12 @@ function markRail(t: number) {
 markRail(beatNow());
 
 if (reduce || params.has('static')) fallback(reduce ? 'your device asks for less motion' : 'requested');
-else if (!webgl2()) fallback('this browser cannot draw the 3D view');
-else afterLoad(boot);
+else {
+  const gl = webgl2();
+  if (gl === 'none') fallback('this browser cannot draw the 3D view');
+  else if (gl === 'software' && !params.has('force3d')) fallback('this device has no graphics chip for the 3D view');
+  else afterLoad(boot);
+}
 
 /** The 3D stage waits until the page has loaded and the browser is idle, so the
  *  words, the buttons and the photo are up and usable before any GPU work. */

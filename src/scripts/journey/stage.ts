@@ -339,8 +339,8 @@ export class Stage {
     this.D = (H / 2) / Math.tan((fov * Math.PI) / 360);
     this.scale = this.portrait ? clamp(this.W / 7.4, 0.5, 0.75) : clamp(this.W / 17.8, 0.72, 1);
     this.focus.set(this.portrait ? 0 : this.W * 0.22, this.portrait ? H * 0.15 : 0, 0);
-    const dpr = Math.min(devicePixelRatio || 1, this.portrait ? 2 : 1.5);
-    this.renderer.setPixelRatio(dpr);
+    this.dpr = Math.min(this.dpr > 0 && this.frames > 0 ? this.dpr : 9, devicePixelRatio || 1, this.portrait ? 2 : 1.5);
+    this.renderer.setPixelRatio(this.dpr);
     this.renderer.setSize(w, h, false);
     this.shapePhoto();
   }
@@ -349,13 +349,38 @@ export class Stage {
     if (this.running || document.hidden) return;
     this.running = true;
     this.last = performance.now();
-    const loop = () => { if (!this.running) return; this.raf = requestAnimationFrame(loop); this.frame(); };
+    const loop = () => { if (!this.running) return; this.raf = requestAnimationFrame(loop); this.tick(); };
     loop();
   }
 
   stop() { this.running = false; cancelAnimationFrame(this.raf); }
 
   renderOnce() { this.frame(); }
+
+  // Frame budget. A phone that cannot hold the frame rate drops resolution,
+  // and once nothing is moving the stage draws every other frame.
+  private dpr = 1;
+  private frames = 0;
+  private slowSum = 0;
+  private prevTick = performance.now();
+  private tick() {
+    const now = performance.now();
+    const gap = now - this.prevTick;
+    this.prevTick = now;
+    this.slowSum += gap;
+    if (++this.frames % 90 === 0) {
+      const avg = this.slowSum / 90;
+      this.slowSum = 0;
+      if (avg > 30 && this.dpr > 0.75) {
+        this.dpr = this.dpr > 1 ? 1 : 0.75;
+        this.renderer.setPixelRatio(this.dpr);
+        this.renderer.setSize(innerWidth, innerHeight, false);
+      }
+    }
+    const still = Math.abs(this.tTarget - this.t) < 1e-3 && now - this.inputAt > 8000 && this.threadClock < 0;
+    if (still && this.frames % 2) return;
+    this.frame();
+  }
 
   private frame() {
     const now = performance.now();

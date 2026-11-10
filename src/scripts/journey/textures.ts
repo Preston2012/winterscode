@@ -135,16 +135,20 @@ export class PhoneScreen {
     g.globalAlpha = 1;
     g.fillStyle = C.deep;
     g.fillRect(0, 0, cv.width, cv.height);
+    // The next screen slides up over the last, the way a phone moves between
+    // apps, so a visitor who stops halfway sees two clean screens, not a blur.
     const base = Math.floor(s), f = s - base;
-    this.layer(base, m, 1);
-    if (f > 0.001 && base < 3) this.layer(base + 1, m, f);
+    const e = f < 0.5 ? 4 * f * f * f : 1 - Math.pow(-2 * f + 2, 3) / 2;
+    this.layer(base, m, 1 - e * 0.5, -e * cv.height * 0.25);
+    if (f > 0.001 && base < 3) this.layer(base + 1, m, 1, (1 - e) * cv.height);
     g.globalAlpha = 1;
     this.texture.needsUpdate = true;
   }
 
-  private layer(i: number, m: number, a: number) {
+  private layer(i: number, m: number, a: number, dy: number) {
     const g = this.g;
     g.save();
+    g.translate(0, dy);
     g.globalAlpha = a;
     if (i === 0) this.shot(this.shots.grand);
     else if (i === 1) this.shot(this.shots.uss);
