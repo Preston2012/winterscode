@@ -55,6 +55,8 @@ const BEATS = ['The window', 'The pile', 'The knot', 'One pull', 'One site', 'Fa
     {BEATS.map((b, i) => <button type="button" aria-label={`${i + 1}. ${b}`} aria-current={i === 0 ? 'step' : 'false'}><span></span></button>)}
   </nav>
 
+  <div class="progress" aria-hidden="true"><span></span></div>
+
   <div class="controls">
     <button type="button" id="head" class="ctl" data-state="off" hidden>
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z" /><circle cx="12" cy="12" r="3.2" /></svg>
@@ -210,7 +212,14 @@ const BEATS = ['The window', 'The pile', 'The knot', 'One pull', 'One site', 'Fa
   .rail span { display: block; width: 12px; height: 2px; background: rgba(221,228,230,.35); border-radius: 1px; transition: width .3s ease, background .3s ease; }
   .rail button[aria-current='step'] span { width: 26px; background: var(--copper-bright); }
   .rail button:focus-visible { outline: 2px solid var(--green); outline-offset: -4px; border-radius: 4px; }
-  @media (max-aspect-ratio: 17/20) { .rail { top: auto; bottom: auto; top: 76px; transform: none; gap: 0; } .rail button { height: 22px; } .rail span { width: 8px; } .rail button[aria-current='step'] span { width: 18px; } }
+  /* Phones scroll with the thumb, so the rail becomes a thin progress line instead of nine tiny targets. */
+  .progress { display: none; }
+  @media (max-aspect-ratio: 17/20) {
+    .rail { display: none; }
+    .progress { display: block; position: fixed; z-index: 5; left: 0; right: 0; top: 0; height: 2px; background: rgba(221,228,230,.12); }
+    .progress span { display: block; height: 100%; background: var(--copper-bright); transform-origin: left; transform: scaleX(calc(var(--beat, 0) / 8)); }
+    .static .progress { display: none; }
+  }
 
   .controls { position: fixed; z-index: 6; left: var(--gut); bottom: max(16px, env(safe-area-inset-bottom)); display: flex; gap: 8px; }
   .ctl {
@@ -231,7 +240,7 @@ const BEATS = ['The window', 'The pile', 'The knot', 'One pull', 'One site', 'Fa
   }
   .static .controls { display: none; }
   /* The controls sit at the top on phones, where the text is not. */
-  @media (max-aspect-ratio: 17/20) { .controls { bottom: auto; top: calc(max(14px, env(safe-area-inset-top)) + 50px); left: var(--gut); } .ctl { min-height: 40px; font-size: 12px; padding: 0 12px; } }
+  @media (max-aspect-ratio: 17/20) { .controls { bottom: auto; top: calc(max(14px, env(safe-area-inset-top)) + 50px); left: var(--gut); } .ctl { font-size: 12px; padding: 0 12px; } }
   /* Hidden until the head button fades in as the hero settles; out of the way once the story moves. */
   .ready .controls { opacity: calc(1 - clamp(0, (var(--beat, 0) - 0.6) * 3, 1)); transition: opacity .2s; }
   .cam-on .controls { opacity: 1; }

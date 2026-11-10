@@ -45,7 +45,17 @@ markRail(beatNow());
 
 if (reduce || params.has('static')) fallback(reduce ? 'your device asks for less motion' : 'requested');
 else if (!webgl2()) fallback('this browser cannot draw the 3D view');
-else boot();
+else afterLoad(boot);
+
+/** The 3D stage waits until the page has loaded and the browser is idle, so the
+ *  words, the buttons and the photo are up and usable before any GPU work. */
+function afterLoad(fn: () => void) {
+  const go = () => {
+    const ric = (window as unknown as { requestIdleCallback?: (cb: () => void, o: { timeout: number }) => void }).requestIdleCallback;
+    if (ric) ric(fn, { timeout: 1200 }); else setTimeout(fn, 200);
+  };
+  if (document.readyState === 'complete') go(); else addEventListener('load', go, { once: true });
+}
 
 async function boot() {
   root.classList.add('booting');
