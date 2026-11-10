@@ -4,6 +4,9 @@
    ═══════════════════════════════════════════════════════════ */
 @import "./fonts.css";
 @import "tailwindcss";
+/* /journey styles itself and never loads this sheet; keep its words out of the utility scan. */
+@source not "../scripts/journey";
+@source not "../pages/journey.astro";
 
 /* ─────────────────────────────────────────────────────────────
    DESIGN TOKENS (Tailwind v4 @theme, these become utility classes)
