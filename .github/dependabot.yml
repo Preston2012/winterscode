@@ -1,0 +1,35 @@
+version: 2
+
+# Fleet Dependabot standard (S426, Preston 2026-11-15). This repo: monthly version updates.
+#
+# - Version updates: one grouped pull request per package manager per month, for minor and
+#   patch releases. Majors stay outside the group and come alone, because a major deserves
+#   its own look. A 7 day cooldown means a release is a week old before it is proposed.
+# - Security fixes: open when the advisory is published, not on the monthly schedule, and
+#   arrive grouped per package manager (minor and patch). A major security fix comes alone.
+#   Group rules in this file override the repository's grouped security setting for every
+#   directory named here, so every entry carries its own security group.
+# - Nothing auto-merges. Codex reviews each pull request, and dependency updates go live
+#   through the fleet's dependency batch (goldens before and after, byte-identical).
+
+updates:
+  - package-ecosystem: npm  # "ecosystem" is Dependabot's own key name (W-7)
+    directories:
+      - "/"
+    schedule:
+      interval: monthly
+      time: "06:00"
+      timezone: Etc/UTC
+    cooldown:
+      default-days: 7
+    open-pull-requests-limit: 2
+    groups:
+      npm-security:
+        applies-to: security-updates
+        update-types:
+          - minor
+          - patch
+      npm-minor-patch:
+        update-types:
+          - minor
+          - patch
