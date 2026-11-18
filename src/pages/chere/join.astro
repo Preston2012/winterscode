@@ -31,12 +31,21 @@ const crumbs = [
 const sms = smsBase + encodeURIComponent("Hi Preston, I installed Chere'. My phone's key is: ");
 
 const PKG = 'com.winterscode.chere.demo';
-const ios = [
+// Official store badges (the same files baseline.marketing uses). Apple's badge may only link to an App
+// Store page, so it sits on Get TestFlight (TestFlight's own App Store page), never on the beta link.
+const BADGES: Record<string, { src: string; alt: string; w: number; h: number }> = {
+  appstore: { src: '/chere/badge-appstore.svg', alt: 'Download on the App Store', w: 120, h: 40 },
+  googleplay: { src: '/chere/badge-googleplay.svg', alt: 'Get it on Google Play', w: 135, h: 40 },
+};
+
+type Step = { h: string; p: string; href: string; cta: string; badge?: string };
+const ios: Step[] = [
   {
     h: 'Get TestFlight',
     p: "Apple's free app for trying apps before they're in the App Store.",
     href: 'https://apps.apple.com/us/app/testflight/id899247664',
     cta: 'Get TestFlight',
+    badge: 'appstore',
   },
   {
     h: "Join the Chere' beta",
@@ -45,7 +54,7 @@ const ios = [
     cta: "Join the beta",
   },
 ];
-const android = [
+const android: Step[] = [
   {
     h: 'Join the testers group',
     p: 'Use the Google account your phone is signed in with, then tap Join group.',
@@ -63,6 +72,7 @@ const android = [
     p: 'Updates come through Play from here on, like any other app.',
     href: `https://play.google.com/store/apps/details?id=${PKG}`,
     cta: 'Open Google Play',
+    badge: 'googleplay',
   },
 ];
 
@@ -113,11 +123,11 @@ const QR_D = 'M0 0h1v1h-1zM1 0h1v1h-1zM2 0h1v1h-1zM3 0h1v1h-1zM4 0h1v1h-1zM5 0h1
     <section class="jn-lane jn-lane-ios" aria-labelledby="jn-ios-h">
       <header class="jn-lane-head">
         <svg class="jn-glyph" viewBox="0 0 24 24" aria-hidden="true"><rect x="6.5" y="2.5" width="11" height="19" rx="2.6" /><path d="M10.5 18.5h3" /></svg>
-        <div>
+        <div class="jn-lane-titles">
+          <span class="jn-yours mono">YOUR PHONE</span>
           <h2 class="jn-lane-h" id="jn-ios-h">iPhone or iPad</h2>
-          <p class="jn-lane-sub mono">THROUGH APPLE TESTFLIGHT</p>
+          <p class="jn-lane-sub mono">VIA TESTFLIGHT</p>
         </div>
-        <span class="jn-yours mono">YOUR PHONE</span>
       </header>
       <ol class="jn-steps">
         {ios.map((s, i) => (
@@ -126,7 +136,13 @@ const QR_D = 'M0 0h1v1h-1zM1 0h1v1h-1zM2 0h1v1h-1zM3 0h1v1h-1zM4 0h1v1h-1zM5 0h1
             <div class="jn-step-body">
               <h3 class="jn-step-h">{s.h}</h3>
               <p class="jn-step-p">{s.p}</p>
-              <a class="btn btn-secondary jn-btn" href={s.href} rel="noopener">{s.cta}<span aria-hidden="true" class="jn-arrow">→</span></a>
+              {s.badge ? (
+                <a class="jn-badge" href={s.href} rel="noopener" aria-label={BADGES[s.badge].alt}>
+                  <img src={BADGES[s.badge].src} alt={BADGES[s.badge].alt} width={BADGES[s.badge].w} height={BADGES[s.badge].h} decoding="async" />
+                </a>
+              ) : (
+                <a class="btn btn-secondary jn-btn" href={s.href} rel="noopener">{s.cta}<span aria-hidden="true" class="jn-arrow">→</span></a>
+              )}
             </div>
           </li>
         ))}
@@ -143,11 +159,11 @@ const QR_D = 'M0 0h1v1h-1zM1 0h1v1h-1zM2 0h1v1h-1zM3 0h1v1h-1zM4 0h1v1h-1zM5 0h1
     <section class="jn-lane jn-lane-android" aria-labelledby="jn-and-h">
       <header class="jn-lane-head">
         <svg class="jn-glyph" viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="2.5" width="12" height="19" rx="2" /><circle cx="12" cy="5.4" r=".6" /></svg>
-        <div>
+        <div class="jn-lane-titles">
+          <span class="jn-yours mono">YOUR PHONE</span>
           <h2 class="jn-lane-h" id="jn-and-h">Android</h2>
-          <p class="jn-lane-sub mono">THROUGH GOOGLE PLAY</p>
+          <p class="jn-lane-sub mono">VIA GOOGLE PLAY</p>
         </div>
-        <span class="jn-yours mono">YOUR PHONE</span>
       </header>
       <ol class="jn-steps">
         {android.map((s, i) => (
@@ -156,10 +172,23 @@ const QR_D = 'M0 0h1v1h-1zM1 0h1v1h-1zM2 0h1v1h-1zM3 0h1v1h-1zM4 0h1v1h-1zM5 0h1
             <div class="jn-step-body">
               <h3 class="jn-step-h">{s.h}</h3>
               <p class="jn-step-p">{s.p}</p>
-              <a class="btn btn-secondary jn-btn" href={s.href} rel="noopener">{s.cta}<span aria-hidden="true" class="jn-arrow">→</span></a>
+              {s.badge ? (
+                <a class="jn-badge" href={s.href} rel="noopener" aria-label={BADGES[s.badge].alt}>
+                  <img src={BADGES[s.badge].src} alt={BADGES[s.badge].alt} width={BADGES[s.badge].w} height={BADGES[s.badge].h} decoding="async" />
+                </a>
+              ) : (
+                <a class="btn btn-secondary jn-btn" href={s.href} rel="noopener">{s.cta}<span aria-hidden="true" class="jn-arrow">→</span></a>
+              )}
             </div>
           </li>
         ))}
+        <li class="jn-step">
+          <span class="jn-n mono" aria-hidden="true">04</span>
+          <div class="jn-step-body">
+            <h3 class="jn-step-h">Open Chere'</h3>
+            <p class="jn-step-p">It shows a short key for your phone. That's the last step, below.</p>
+          </div>
+        </li>
       </ol>
     </section>
   </div>
@@ -278,6 +307,7 @@ const QR_D = 'M0 0h1v1h-1zM1 0h1v1h-1zM2 0h1v1h-1zM3 0h1v1h-1zM4 0h1v1h-1zM5 0h1
   }
 
   .jn-lane-head { display: flex; align-items: center; gap: 14px; margin-bottom: 8px; }
+  .jn-lane-titles { min-width: 0; display: flex; flex-direction: column; align-items: flex-start; }
   .jn-glyph {
     width: 40px; height: 40px; flex: none;
     padding: 8px;
@@ -292,11 +322,13 @@ const QR_D = 'M0 0h1v1h-1zM1 0h1v1h-1zM2 0h1v1h-1zM3 0h1v1h-1zM4 0h1v1h-1zM5 0h1
   .jn-lane-sub { margin: 2px 0 0; font-size: 10.5px; letter-spacing: 0.14em; color: var(--color-ash-500); }
   .jn-yours {
     display: none;
-    margin-left: auto;
-    padding: 4px 8px;
+    margin-bottom: 6px;
+    padding: 3px 9px;
     border-radius: 999px;
     font-size: 10px;
-    letter-spacing: 0.14em;
+    line-height: 1.4;
+    letter-spacing: 0.12em;
+    white-space: nowrap;
     color: var(--color-bg-deep);
     background: var(--color-wc-green);
   }
@@ -325,6 +357,14 @@ const QR_D = 'M0 0h1v1h-1zM1 0h1v1h-1zM2 0h1v1h-1zM3 0h1v1h-1zM4 0h1v1h-1zM5 0h1
     margin-top: 12px;
   }
   @media (min-width: 740px) { .jn-btn { width: auto; min-width: 220px; } }
+  .jn-badge {
+    display: inline-flex;
+    margin-top: 12px;
+    border-radius: 10px;
+    line-height: 0;
+  }
+  .jn-badge img { height: 52px; width: auto; display: block; }
+  .jn-badge:focus-visible { outline: 2px solid var(--color-wc-green); outline-offset: 3px; }
   .jn-arrow { transition: transform 160ms ease; }
   @media (hover: hover) { .jn-btn:hover .jn-arrow { transform: translateX(3px); } }
   @media (prefers-reduced-motion: reduce) { .jn-arrow { transition: none; } }
