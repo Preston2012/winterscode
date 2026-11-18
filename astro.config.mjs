@@ -169,7 +169,9 @@ export default defineConfig({
     // real interactive island worth that weight.
     mdx(),
     sitemap({
-      filter: (page) => !page.includes('/404') && !page.includes('/chere/onboard'),
+      // /gauge is built and previewed privately: noindex, out of the nav, and out of the sitemap until
+      // Preston approves it (the app is being rebuilt and the name is not cleared yet).
+      filter: (page) => !page.includes('/404') && !page.includes('/chere/onboard') && !page.includes('/gauge'),
       serialize: (item) => {
         const route = routeOf(item.url);
         return {

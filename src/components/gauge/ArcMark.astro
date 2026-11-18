@@ -1,0 +1,33 @@
+---
+/**
+ * ArcMark, the Gauge mark: a 270 degree arc and a single needle, drawn exactly
+ * as the locked brand brief draws it (100 x 100 box, radius 38). No sun, no
+ * cloud, no thermometer. It is an instrument.
+ *
+ * Decorative by default (aria-hidden). Pass a label to make it an image.
+ */
+interface Props {
+  size?: number;
+  /** Arc and hub colour. */
+  color?: string;
+  /** Needle colour. */
+  needle?: string;
+  label?: string;
+}
+const { size = 40, color = '#2dd4bf', needle = '#e2e8f0', label } = Astro.props;
+---
+
+<svg
+  width={size}
+  height={size}
+  viewBox="0 0 100 100"
+  fill="none"
+  role={label ? 'img' : undefined}
+  aria-label={label}
+  aria-hidden={label ? undefined : 'true'}
+  focusable="false"
+>
+  <path d="M 23.2 76.8 A 38 38 0 1 1 76.8 76.8" stroke={color} stroke-width="3.5" stroke-linecap="round" />
+  <line x1="50" y1="50" x2="68" y2="30" stroke={needle} stroke-width="2" stroke-linecap="round" />
+  <circle cx="50" cy="50" r="3" fill={color} />
+</svg>
