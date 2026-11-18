@@ -15,6 +15,7 @@
 import { spawnSync } from 'node:child_process'
 import { realpathSync } from 'node:fs'
 import { join } from 'node:path'
+import { fileURLToPath } from 'node:url'
 
 const KEEP = [
   // process basics: node, git (astro.config.mjs runs git log), temp files, locale
@@ -30,7 +31,9 @@ const KEEP = [
 const env = { ASTRO_TELEMETRY_DISABLED: '1' }
 for (const k of KEEP) if (process.env[k] !== undefined) env[k] = process.env[k]
 
-const ROOT = new URL('..', import.meta.url).pathname
+// fileURLToPath, not .pathname: .pathname keeps percent-encoding (a space reads as %20), so a
+// checkout path with a space or a non-ASCII character would not resolve (Codex P2 on #42).
+const ROOT = fileURLToPath(new URL('..', import.meta.url))
 const astro = realpathSync(join(ROOT, 'node_modules', '.bin', 'astro'))
 const r = spawnSync(process.execPath, [astro, 'build', ...process.argv.slice(2)], {
   cwd: ROOT,
