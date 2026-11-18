@@ -27,6 +27,7 @@ import Breadcrumbs from '../../components/ui/Breadcrumbs.astro';
 import ArcMark from '../../components/gauge/ArcMark.astro';
 import ArcDial from '../../components/gauge/ArcDial.astro';
 import GrainDefs from '../../components/gauge/GrainDefs.astro';
+import NowcastDial from '../../components/gauge/NowcastDial.astro';
 import { breadcrumbSchema } from '../../lib/schema';
 
 const path = '/gauge';
@@ -45,7 +46,7 @@ const CRIMSON = '#ef4444';
 const W = 600;
 const H = 200;
 const offsets = [-1, -0.64, -0.3, 0, 0.32, 0.66, 1];
-const xs = Array.from({ length: 101 }, (_, i) => (i / 100) * W);
+const xs = Array.from({ length: 61 }, (_, i) => (i / 60) * W);
 const centre = (t: number) => 104 + 20 * Math.sin(t * 5.4) - 12 * t;
 const spread = (t: number) => 1.5 + 66 * Math.pow(t, 1.75);
 const strandY = (k: number, t: number) =>
@@ -129,6 +130,48 @@ const ledger = [
   { s: 'Under way', k: 'Being built', v: 'The app, rebuilt to match the design.' },
   { s: 'Not yet', k: 'Released', v: 'No download, no store listing and no public release.' },
 ];
+
+// ── The scrub: 48 invented hours in 15 minute steps. Every value below is made up for the
+// illustration and the page says so. The page script reads this and drives the palette, the
+// agreement dial, the rain countdown, the clean window and the dew point from one clock.
+const START_HOUR = 13;
+const STEPS = 193;
+const gauss = (t: number, m: number, sd: number, a: number) => a * Math.exp(-((t - m) ** 2) / (2 * sd * sd));
+const series = { s: [] as number[], p: [] as number[], a: [] as number[], d: [] as number[] };
+for (let i = 0; i < STEPS; i++) {
+  const t = i / 4;
+  const pr = Math.min(0.98, 0.04 + gauss(t, 7.5, 1.1, 0.85) + gauss(t, 22, 2.2, 0.9) + gauss(t, 33, 1.5, 0.6));
+  const clock = (START_HOUR + t) % 24;
+  const night = clock >= 20.5 || clock < 6;
+  const cloud = (t > 3.5 && t < 11) || (t > 17 && t < 30) || (t > 31 && t < 36);
+  let st = 0;
+  if (pr > 0.45) st = t > 20.5 && t < 24.5 && pr > 0.6 ? 3 : 2;
+  else if (cloud) st = 1;
+  else st = night ? 6 : 0;
+  const dip = gauss(t, 22, 3, 0.14) + gauss(t, 7.5, 1.5, 0.06);
+  const a = Math.max(0.36, Math.min(0.97, 0.97 - 0.5 * Math.pow(t / 48, 1.15) - dip + 0.02 * Math.sin(t * 1.7)));
+  const d = 50 + 7 * Math.sin((t / 48) * Math.PI * 1.4) + 12 * pr + (night ? -1.5 : 0);
+  series.s.push(st);
+  series.p.push(Math.round(pr * 100));
+  series.a.push(Math.round(a * 100));
+  series.d.push(Math.round(d * 10) / 10);
+}
+const seriesJson = JSON.stringify({
+  ...series,
+  start: START_HOUR,
+  st: states.map((s) => ({ n: s.name, c: s.text })),
+});
+
+// Hourly rain bars under the braid. Grain level follows agreement: sure bars are smooth teal,
+// unsure ones are grainy amber.
+const rainBars = Array.from({ length: 49 }, (_, h) => {
+  const i = Math.min(STEPS - 1, h * 4);
+  const pct = series.p[i];
+  const ag = series.a[i];
+  const grain = (ag >= 80 ? 0 : ag >= 65 ? 1 : ag >= 50 ? 2 : 3) as 0 | 1 | 2 | 3;
+  const hh = Math.max(2, (pct / 100) * 46);
+  return { x: (h / 48) * W - 4.5, y: 52 - hh, h: hh, grain, color: ag >= 65 ? TEAL : AMBER };
+});
 ---
 
 <BaseLayout
@@ -151,6 +194,9 @@ const ledger = [
 
     <!-- ───────────── Hero ───────────── -->
     <section class="gz-stage gz-hero" aria-labelledby="gz-h1">
+      <div class="gz-field" aria-hidden="true">
+        {states.map((s, i) => (<i style={`--fc:${s.accent};--fd:${-i * 6}s`}></i>))}
+      </div>
       <div class="gz-hero-copy">
         <p class="gz-brandline">
           <ArcMark size={34} />
@@ -171,6 +217,9 @@ const ledger = [
           <div><dt>Accounts</dt><dd>0</dd></div>
           <div><dt>Trackers</dt><dd>0</dd></div>
         </dl>
+        <p class="gz-pausewrap">
+          <button type="button" class="gz-pause" data-gz-pause aria-pressed="false">Pause motion</button>
+        </p>
       </div>
       <figure class="gz-hero-dial">
         <ArcDial
@@ -208,6 +257,7 @@ const ledger = [
                   color={d.color}
                   grain={d.grain}
                   ticks={false}
+                  breathe={d.grain === 2}
                   label={`Example dial at ${d.num} agreement.`}
                 />
                 <figcaption>
@@ -240,6 +290,7 @@ const ledger = [
               <svg class="gz-bar" viewBox="0 0 300 14" preserveAspectRatio="none" role="img" aria-label="A grainy amber bar: the sources disagree.">
                 <rect width="300" height="14" rx="3" fill="#12171b" />
                 <rect width="150" height="14" rx="3" fill={AMBER} filter="url(#gz-g2)" />
+                <rect class="gz-breathe" width="150" height="14" rx="3" fill={AMBER} filter="url(#gz-g3)" />
               </svg>
             </div>
             <div class="gz-barrow">
@@ -248,6 +299,7 @@ const ledger = [
                 {hours.map((h, i) => (
                   <rect x={i * 25 + 1} y="0" width="23" height="26" rx="2" fill={h.color} filter={h.grain ? `url(#gz-g${h.grain})` : undefined} />
                 ))}
+                {hours.map((h, i) => (h.grain >= 2 ? <rect class="gz-breathe" x={i * 25 + 1} y="0" width="23" height="26" rx="2" fill={h.color} filter="url(#gz-g3)" /> : null))}
               </svg>
               <div class="gz-axis"><span>Now</span><span>+6 h</span><span>+12 h</span></div>
             </div>
@@ -265,7 +317,7 @@ const ledger = [
           <h3 class="gz-h3" id="gz-i3">Every source on one clock.</h3>
           <div class="gz-visual gz-braid">
             <div class="gz-braidtags" aria-hidden="true"><span style={`color:${TEAL}`}>Sources agree</span><span style={`color:${AMBER}`}>Sources split</span></div>
-            <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Seven forecast strands on one time axis. They braid into a single thin line at the start and fan out toward the end.">
+            <svg class="gz-draw" data-draw viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Seven forecast strands on one time axis. They braid into a single thin line at the start and fan out toward the end.">
               <defs>
                 <linearGradient id="gz-braid-g" x1="0" x2="1" y1="0" y2="0">
                   <stop offset="0" stop-color={TEAL} />
@@ -275,15 +327,16 @@ const ledger = [
                 <linearGradient id="gz-braid-e" x1="0" x2="1" y1="0" y2="0">
                   <stop offset="0" stop-color={TEAL} stop-opacity="0" />
                   <stop offset="0.5" stop-color={AMBER} stop-opacity="0.04" />
-                  <stop offset="1" stop-color={AMBER} stop-opacity="0.16" />
+                  <stop offset="1" stop-color={AMBER} stop-opacity="0.34" />
                 </linearGradient>
               </defs>
               {[0, 1, 2, 3, 4].map((i) => (
                 <line x1={i * 150} y1="8" x2={i * 150} y2={H - 8} stroke="#1b2024" stroke-width="1" />
               ))}
-              <path d={envelope} fill="url(#gz-braid-e)" />
-              {strands.map((d) => (
-                <path d={d} fill="none" stroke="url(#gz-braid-g)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+              <path d={envelope} fill="url(#gz-braid-e)" filter="url(#gz-g2)" />
+              <path class="gz-breathe" d={envelope} fill="url(#gz-braid-e)" filter="url(#gz-g3)" />
+              {strands.map((d, i) => (
+                <path class="gz-strand" pathLength="1" style={`--i:${i}`} d={d} fill="none" stroke="url(#gz-braid-g)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
               ))}
             </svg>
             <div class="gz-axis"><span>Now</span><span>+12 h</span><span>+24 h</span><span>+36 h</span><span>+48 h</span></div>
@@ -300,8 +353,8 @@ const ledger = [
           <p class="gz-kicker">Idea 4 · The alert ladder</p>
           <h3 class="gz-h3" id="gz-i4">Escalation that sounds like it.</h3>
           <ol class="gz-visual gz-ladder">
-            {ladder.map((r) => (
-              <li class={`gz-rung gz-rung--${r.key}`} style={`--rc:${r.color};--rt:${r.text}`}>
+            {ladder.map((r, i) => (
+              <li class={`gz-rung gz-rung--${r.key}`} style={`--rc:${r.color};--rt:${r.text};--i:${i}`}>
                 <div class="gz-rung-dial">
                   <ArcDial value={r.v} color={r.color} ticks={false} label={`Countdown dial, ${r.name.toLowerCase()} rung, ${r.time.replace(/ /g, '')}.`} />
                 </div>
@@ -326,10 +379,104 @@ const ledger = [
       <p class="gz-fig gz-fig--wide">Illustrations. Every figure and sentence above is an example, not live data.</p>
     </section>
 
+    <!-- ───────────── The lab: one clock drives everything ───────────── -->
+    <section class="gz-stage" aria-labelledby="gz-lab-h">
+      <header class="gz-head">
+        <p class="gz-kicker">02 / Try the instrument</p>
+        <h2 class="gz-h2" id="gz-lab-h">One clock. Everything follows it.</h2>
+        <p class="gz-lead">
+          This is how Gauge is meant to read a single forecast. Drag through 48 hours and the palette,
+          the agreement dial, the rain countdown, the dry window and the dew point all move together.
+          The numbers are invented for the illustration. Nothing here is a forecast.
+        </p>
+      </header>
+
+      <div class="gz-panel" data-gz-panel data-series={seriesJson}>
+        <div class="gz-sky" aria-hidden="true">
+          {states.map((s, i) => (<i class:list={[{ on: i === 0 }]} style={`background:${s.bg}`}></i>))}
+        </div>
+        <div class="gz-panel-in">
+          <div class="gz-ph">
+            <p class="gz-ph-state"><span class="gz-mini">Sky</span> <strong class="gz-acc" data-r="state">Clear Sky</strong></p>
+            <p class="gz-num gz-ph-clock"><span data-r="clock">1:00 PM</span> <span class="gz-mini">·</span> <span data-r="offset">Now</span></p>
+          </div>
+
+          <div class="gz-cards">
+            <figure class="gz-pc gz-pc--dial" data-r="agree">
+              <p class="gz-mini gz-pc-k">Forecast agreement</p>
+              <ArcDial
+                value={0.97}
+                readout="97%"
+                caption="MODEL AGREEMENT"
+                live={true}
+                breathe={true}
+                label="Illustration of the agreement dial. Its value follows the scrubber below."
+              />
+              <figcaption class="gz-num" data-r="agree-note">States it cleanly</figcaption>
+            </figure>
+
+            <figure class="gz-pc gz-pc--dial">
+              <p class="gz-mini gz-pc-k">Nowcast Pulse</p>
+              <NowcastDial label="Illustration of the rain countdown dial for the next two hours. Its value follows the scrubber below." value={1} minutes="2 H+" />
+              <figcaption class="gz-num" data-r="nc-note">No rain in the next 2 hours</figcaption>
+            </figure>
+
+            <div class="gz-pc-col">
+              <div class="gz-pc gz-cw" data-r="cwcard">
+                <p class="gz-mini gz-pc-k">Next clean window</p>
+                <p class="gz-cw-main" data-r="cw">Now to 7:00 PM</p>
+                <p class="gz-num gz-cw-note" data-r="cwn">95% agreement</p>
+              </div>
+              <div class="gz-pc gz-dew">
+                <p class="gz-mini gz-pc-k">Dew point comfort</p>
+                <p class="gz-dew-main"><span class="gz-dew-n" data-r="dew">51</span><span class="gz-dew-u">°F</span> <span class="gz-dew-l" data-r="dewlab">Comfortable</span></p>
+                <div class="gz-dewbar" role="img" aria-label="Dew point scale from 40 to 80 degrees Fahrenheit. Comfortable up to 55, humid up to 65, sticky up to 70, oppressive above 70.">
+                  <i style="flex:15;background:#2dd4bf"></i><i style="flex:10;background:#d4a72d"></i><i style="flex:5;background:#ef6a50"></i><i style="flex:10;background:#ef4444"></i>
+                  <b class="gz-dewmk" data-r="dewmk" style="left:27.5%"></b>
+                </div>
+                <div class="gz-dewticks" aria-hidden="true"><span style="left:0">40</span><span style="left:37.5%">55</span><span style="left:62.5%">65</span><span style="left:75%">70</span><span style="left:100%">80</span></div>
+                <p class="gz-mini gz-dewkey">55 comfortable · 65 sticky · 70+ oppressive</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="gz-tl">
+            <div class="gz-tlhead"><span class="gz-mini">Next 48 hours</span><span class="gz-mini">Teal is sure, amber grain is not</span></div>
+            <svg class="gz-draw gz-tlbraid" data-draw viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Seven forecast strands on one 48 hour axis. They braid thin at the start and fan out later. A marker shows the time you chose.">
+              <defs>
+                <linearGradient id="gz-pb-g" x1="0" x2="1" y1="0" y2="0">
+                  <stop offset="0" stop-color={TEAL} /><stop offset="0.45" stop-color={TEAL} /><stop offset="1" stop-color={AMBER} />
+                </linearGradient>
+                <linearGradient id="gz-pb-e" x1="0" x2="1" y1="0" y2="0">
+                  <stop offset="0" stop-color={TEAL} stop-opacity="0" /><stop offset="0.5" stop-color={AMBER} stop-opacity="0.04" /><stop offset="1" stop-color={AMBER} stop-opacity="0.34" />
+                </linearGradient>
+              </defs>
+              {[0, 1, 2, 3, 4].map((i) => (<line x1={i * 150} y1="8" x2={i * 150} y2={H - 8} stroke="#1b2024" stroke-width="1" />))}
+              <path d={envelope} fill="url(#gz-pb-e)" filter="url(#gz-g2)" />
+              <path class="gz-breathe" d={envelope} fill="url(#gz-pb-e)" filter="url(#gz-g3)" />
+              {strands.map((d, i) => (<path class="gz-strand" pathLength="1" style={`--i:${i}`} d={d} fill="none" stroke="url(#gz-pb-g)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />))}
+              <line class="gz-playhead" data-ph="line" x1="0" x2="0" y1="4" y2={H - 4} />
+              <circle class="gz-playdot" data-ph="dot" cx="0" cy="12" r="5" />
+            </svg>
+            <svg class="gz-tlrain" viewBox="0 0 600 56" preserveAspectRatio="none" role="img" aria-label="Hourly chance of rain across the 48 hours. Sure hours are smooth teal bars, unsure hours are grainy amber.">
+              {rainBars.map((b) => (<rect x={b.x.toFixed(1)} y={b.y.toFixed(1)} width="9" height={b.h.toFixed(1)} rx="1.5" fill={b.color} filter={b.grain ? `url(#gz-g${b.grain})` : undefined} />))}
+              <line class="gz-playhead" data-ph="line" x1="0" x2="0" y1="0" y2="56" />
+            </svg>
+            <div class="gz-axis"><span>Now</span><span>+12 h</span><span>+24 h</span><span>+36 h</span><span>+48 h</span></div>
+            <div class="gz-scrub">
+              <label for="gz-scrub" class="gz-scrublabel">Scrub the 48 hours <span class="gz-mini">Arrow keys move 15 minutes</span></label>
+              <input id="gz-scrub" class="gz-range" type="range" min="0" max="192" step="1" value="0" aria-valuetext="Now, 1:00 PM, Clear Sky" />
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="gz-fig gz-fig--wide">Illustration. Invented numbers, drawn in your browser. Not a forecast.</p>
+    </section>
+
     <!-- ───────────── Seven skies ───────────── -->
     <section class="gz-stage" aria-labelledby="gz-states-h">
       <header class="gz-head">
-        <p class="gz-kicker">02 / The sky sets the palette</p>
+        <p class="gz-kicker">03 / The sky sets the palette</p>
         <h2 class="gz-h2" id="gz-states-h">Seven skies, one instrument.</h2>
         <p class="gz-lead">
           The whole interface takes its color from the conditions outside and crossfades between
@@ -359,7 +506,7 @@ const ledger = [
     <!-- ───────────── Voice ───────────── -->
     <section class="gz-stage" aria-labelledby="gz-voice-h">
       <header class="gz-head">
-        <p class="gz-kicker">03 / The voice</p>
+        <p class="gz-kicker">04 / The voice</p>
         <h2 class="gz-h2" id="gz-voice-h">The Flight Engineer.</h2>
         <p class="gz-lead">
           Precise, calm and never prescriptive. Numbers first, context second, and doubt said out
@@ -390,7 +537,7 @@ const ledger = [
     <!-- ───────────── Promise + data ───────────── -->
     <section class="gz-stage" aria-labelledby="gz-promise-h">
       <header class="gz-head">
-        <p class="gz-kicker">04 / The promise</p>
+        <p class="gz-kicker">05 / The promise</p>
         <h2 class="gz-h2" id="gz-promise-h">Free, open and private.</h2>
         <p class="gz-lead">
           These are commitments for the finished app, not features you can use today. Gauge is to be
@@ -409,7 +556,7 @@ const ledger = [
 
     <section class="gz-stage" aria-labelledby="gz-data-h">
       <header class="gz-head">
-        <p class="gz-kicker">05 / Where the numbers come from</p>
+        <p class="gz-kicker">06 / Where the numbers come from</p>
         <h2 class="gz-h2" id="gz-data-h">Every number says where it came from.</h2>
       </header>
       <div class="gz-data">
@@ -438,7 +585,7 @@ const ledger = [
     <!-- ───────────── Status ───────────── -->
     <section class="gz-stage" aria-labelledby="gz-status-h">
       <header class="gz-head">
-        <p class="gz-kicker">06 / Where Gauge stands</p>
+        <p class="gz-kicker">07 / Where Gauge stands</p>
         <h2 class="gz-h2" id="gz-status-h">In development, and saying so.</h2>
         <p class="gz-lead">
           The design is locked and the app is being rebuilt to match it. Until it does, there is
@@ -467,6 +614,9 @@ const ledger = [
   @font-face { font-family: 'Space Grotesk'; font-style: normal; font-weight: 700; font-display: swap; src: url('/_fonts/gauge-space-grotesk-700.woff2') format('woff2'); }
   @font-face { font-family: 'Poppins'; font-style: normal; font-weight: 400; font-display: swap; src: url('/_fonts/gauge-poppins-400.woff2') format('woff2'); }
   @font-face { font-family: 'Poppins'; font-style: normal; font-weight: 600; font-display: swap; src: url('/_fonts/gauge-poppins-600.woff2') format('woff2'); }
+
+  /* Paused or reduced: every ambient animation and transition stops and the page shows its still, complete state. */
+  .gz.gz-still *, .gz.gz-still *::before, .gz.gz-still *::after { animation: none !important; transition: none !important; }
 </style>
 
 <style>
@@ -633,4 +783,275 @@ const ledger = [
   .gz-lk { font-family: var(--gz-display); font-weight: 500; font-size: 18px; color: var(--gz-1); }
   .gz-lv { font-size: 15px; line-height: 1.6; color: var(--gz-2); }
   .gz-close { margin: 24px 0 0; font-size: 15px; line-height: 1.6; color: var(--gz-2); }
+
+  /* ───────────── motion and the live lab ───────────── */
+  .gz-pausewrap { display: none; margin: 18px 0 0; }
+  .gz-js .gz-pausewrap { display: block; }
+  @media (prefers-reduced-motion: reduce) { .gz-js .gz-pausewrap { display: none; } }
+  .gz-pause {
+    font: 500 12px/1 var(--gz-mono); letter-spacing: 0.12em; text-transform: uppercase;
+    min-height: 44px; padding: 0 18px; cursor: pointer;
+    color: var(--gz-teal); background: #000; border: 2px solid var(--gz-teal); border-radius: 10px;
+  }
+  .gz-pause:focus-visible { outline: 2px solid var(--gz-1); outline-offset: 3px; }
+
+  .gz-hero { position: relative; overflow: hidden; }
+  .gz-hero > * { position: relative; z-index: 1; }
+  .gz-hero > .gz-field { position: absolute; z-index: 0; inset: 0; pointer-events: none; }
+  .gz-field i { position: absolute; inset: -25%; opacity: 0; background: radial-gradient(circle at 74% 42%, var(--fc) 0%, rgba(0, 0, 0, 0) 56%); }
+  .gz-field i:first-child { opacity: 0.14; }
+  @media (prefers-reduced-motion: no-preference) {
+    .gz-field i { animation: gz-field 42s linear infinite; animation-delay: var(--fd); }
+  }
+  @keyframes gz-field { 0% { opacity: 0; } 5% { opacity: 0.15; } 16% { opacity: 0.15; } 22% { opacity: 0; } 100% { opacity: 0; } }
+
+  .gz-breathe { opacity: 0.4; }
+  @media (prefers-reduced-motion: no-preference) {
+    .gz-breathe { animation: gz-breathe 5.5s ease-in-out infinite; }
+  }
+  @keyframes gz-breathe { 0%, 100% { opacity: 0.1; } 50% { opacity: 0.75; } }
+
+  .gz-strand { stroke-dasharray: 1; }
+  @media (prefers-reduced-motion: no-preference) {
+    .gz-js:not(.gz-still) .gz-draw:not(.gz-drawn) .gz-strand { stroke-dashoffset: 1; }
+    .gz-js .gz-draw .gz-strand { transition: stroke-dashoffset 2.4s cubic-bezier(0.3, 0.6, 0.2, 1) calc(var(--i) * 0.14s); }
+  }
+
+  .gz-rung { position: relative; }
+  .gz-rung::after { content: ''; position: absolute; inset: -1px; border-radius: 10px; border: 2px solid var(--rc); opacity: 0; pointer-events: none; }
+  @media (prefers-reduced-motion: no-preference) {
+    .gz-rung::after { animation: gz-rung 9s ease-in-out infinite; animation-delay: calc(var(--i) * 3s); }
+  }
+  @keyframes gz-rung { 0% { opacity: 0; } 8% { opacity: 1; } 30% { opacity: 1; } 38% { opacity: 0; } 100% { opacity: 0; } }
+
+  .gz-panel { position: relative; border: 1px solid var(--gz-line); border-radius: 14px; overflow: hidden; background: #000; --pa: #fbbf24; }
+  .gz-sky { position: absolute; inset: 0; }
+  .gz-sky i { position: absolute; inset: 0; opacity: 0; }
+  .gz-sky i.on { opacity: 1; }
+  @media (prefers-reduced-motion: no-preference) { .gz-sky i { transition: opacity 0.8s ease; } }
+  .gz-panel-in { position: relative; padding: 18px 14px; }
+  @media (min-width: 740px) { .gz-panel-in { padding: 26px 26px; } }
+  .gz-ph { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+  .gz-ph p { margin: 0; }
+  .gz-ph-state strong { font-family: var(--gz-display); font-weight: 500; font-size: 24px; margin-left: 8px; }
+  .gz-acc { color: var(--pa); }
+  @media (prefers-reduced-motion: no-preference) { .gz-acc { transition: color 0.8s ease; } }
+  .gz-ph-clock { font-size: 14px; color: var(--gz-1); }
+
+  .gz-cards { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  @media (min-width: 640px) { .gz-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (min-width: 1000px) { .gz-cards { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.15fr); } }
+  .gz-pc { background: rgba(0, 0, 0, 0.74); border: 1px solid var(--gz-line); border-radius: 12px; padding: 16px; margin: 0; min-width: 0; }
+  .gz-pc-k { margin: 0 0 10px; text-transform: uppercase; letter-spacing: 0.14em; }
+  .gz-pc--dial { display: flex; flex-direction: column; }
+  .gz-pc--dial :global(svg) { width: 100%; max-width: 230px; margin: 0 auto; }
+  .gz-pc--dial figcaption { text-align: center; margin-top: 8px; font-size: 12px; color: var(--gz-1); }
+  .gz-pc-col { display: grid; gap: 12px; align-content: start; min-width: 0; }
+  @media (min-width: 640px) and (max-width: 999px) { .gz-pc-col { grid-column: 1 / -1; grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  .gz-cw { border-color: rgba(45, 212, 191, 0.4); }
+  .gz-cw.gz-warn { border-color: rgba(212, 167, 45, 0.6); }
+  .gz-cw-main { margin: 0 0 6px; font-family: var(--gz-display); font-weight: 500; font-size: 22px; line-height: 1.2; color: var(--gz-1); }
+  .gz-cw-note { margin: 0; font-size: 12px; color: var(--gz-teal); }
+  .gz-cw.gz-warn .gz-cw-note { color: #e0b53d; }
+  .gz-pc--dial.gz-warn figcaption { color: #e0b53d; }
+
+  .gz-dew-main { margin: 0 0 12px; display: flex; align-items: baseline; gap: 4px; flex-wrap: wrap; }
+  .gz-dew-n { font-family: var(--gz-display); font-weight: 600; font-size: 34px; line-height: 1; color: var(--gz-1); font-variant-numeric: tabular-nums; }
+  .gz-dew-u { font-family: var(--gz-mono); font-size: 13px; color: var(--gz-2); }
+  .gz-dew-l { margin-left: 8px; font-family: var(--gz-mono); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gz-1); }
+  .gz-dewbar { position: relative; display: flex; height: 10px; border-radius: 5px; margin: 0 7px; }
+  .gz-dewbar i { display: block; height: 100%; }
+  .gz-dewbar i:first-of-type { border-radius: 5px 0 0 5px; }
+  .gz-dewbar i:nth-of-type(4) { border-radius: 0 5px 5px 0; }
+  .gz-dewmk { position: absolute; top: -7px; width: 4px; height: 24px; margin-left: -2px; background: var(--gz-1); border: 1px solid #000; border-radius: 2px; }
+  @media (prefers-reduced-motion: no-preference) { .gz-dewmk { transition: left 0.6s cubic-bezier(0.34, 1.3, 0.64, 1); } }
+  .gz-dewticks { position: relative; height: 16px; margin: 10px 7px 0; }
+  .gz-dewticks span { position: absolute; transform: translateX(-50%); font-family: var(--gz-mono); font-size: 11px; color: var(--gz-2); }
+  .gz-dewkey { margin: 8px 0 0; }
+
+  .gz-tl { margin-top: 14px; background: rgba(0, 0, 0, 0.74); border: 1px solid var(--gz-line); border-radius: 12px; padding: 14px 14px 10px; }
+  .gz-tlhead { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 8px; }
+  .gz-tl svg { display: block; width: 100%; height: auto; }
+  .gz-tlrain { height: 56px; margin-top: 4px; }
+  .gz-playhead { stroke: var(--pa); stroke-width: 1.6; }
+  .gz-playdot { fill: var(--pa); stroke: #000; stroke-width: 2; }
+  @media (prefers-reduced-motion: no-preference) { .gz-playhead, .gz-playdot { transition: stroke 0.8s ease, fill 0.8s ease; } }
+  .gz-scrub { display: none; margin-top: 12px; }
+  .gz-js .gz-scrub { display: block; }
+  .gz-scrublabel { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; font-size: 14px; color: var(--gz-1); margin-bottom: 4px; }
+  .gz-range { -webkit-appearance: none; appearance: none; width: 100%; height: 44px; background: transparent; margin: 0; cursor: pointer; }
+  .gz-range::-webkit-slider-runnable-track { height: 4px; background: #2a3138; border-radius: 2px; }
+  .gz-range::-moz-range-track { height: 4px; background: #2a3138; border-radius: 2px; }
+  .gz-range::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 28px; height: 28px; margin-top: -12px; border-radius: 50%; background: #000; border: 2px solid var(--gz-teal); }
+  .gz-range::-moz-range-thumb { width: 24px; height: 24px; border-radius: 50%; background: #000; border: 2px solid var(--gz-teal); }
+  .gz-range:focus-visible { outline: 2px solid var(--gz-teal); outline-offset: 2px; border-radius: 8px; }
 </style>
+
+<script>
+  const root = document.querySelector<HTMLElement>('.gz');
+  if (root) {
+    root.classList.add('gz-js');
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let still = mq.matches;
+    const btn = root.querySelector<HTMLButtonElement>('[data-gz-pause]');
+    let kick = () => {};
+    const setStill = (v: boolean) => {
+      still = v;
+      root.classList.toggle('gz-still', v);
+      if (btn) {
+        btn.setAttribute('aria-pressed', String(v));
+        btn.textContent = v ? 'Resume motion' : 'Pause motion';
+      }
+      kick();
+    };
+    btn?.addEventListener('click', () => setStill(!still));
+    mq.addEventListener('change', (e) => setStill(e.matches));
+
+    // Timelines draw in once, when they scroll into view.
+    const io = new IntersectionObserver(
+      (es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('gz-drawn'); io.unobserve(e.target); } }),
+      { threshold: 0.25 },
+    );
+    root.querySelectorAll('[data-draw]').forEach((d) => io.observe(d));
+
+    const panel = root.querySelector<HTMLElement>('[data-gz-panel]');
+    if (panel) {
+      const D = JSON.parse(panel.dataset.series || '{}');
+      const STEPS = D.s.length;
+      const slider = panel.querySelector<HTMLInputElement>('.gz-range')!;
+      const r = (k: string) => panel.querySelector<HTMLElement>(`[data-r="${k}"]`)!;
+      const layers = Array.from(panel.querySelectorAll<HTMLElement>('.gz-sky i'));
+      const agFig = r('agree');
+      const agSvg = agFig.querySelector<SVGElement>('.gz-dial')!;
+      const agFills = Array.from(agSvg.querySelectorAll<SVGElement>('.gz-fill'));
+      const agRead = agSvg.querySelector('.gz-read')!;
+      const nc = panel.querySelector<SVGElement>('.gz-nc')!;
+      const heads = Array.from(panel.querySelectorAll<SVGElement>('[data-ph]'));
+      const cwCard = r('cwcard');
+
+      const fmt = (t: number) => {
+        const m = Math.round((D.start + t) * 60) % 1440;
+        let h = Math.floor(m / 60);
+        const mi = m % 60;
+        const ap = h >= 12 ? 'PM' : 'AM';
+        h = h % 12 || 12;
+        return `${h}:${String(mi).padStart(2, '0')} ${ap}`;
+      };
+      const off = (t: number) => {
+        if (t === 0) return 'Now';
+        const h = Math.floor(t);
+        const m = Math.round((t - h) * 60);
+        return `Now +${h} h${m ? ` ${m} m` : ''}`;
+      };
+
+      let cur = -1;
+      const render = (i: number) => {
+        if (i === cur) return;
+        cur = i;
+        const t = i / 4;
+        const st = D.s[i];
+        const a = D.a[i];
+        const p = D.p;
+
+        layers.forEach((l, k) => l.classList.toggle('on', k === st));
+        r('state').textContent = D.st[st].n;
+        panel.style.setProperty('--pa', D.st[st].c);
+        r('clock').textContent = fmt(t);
+        r('offset').textContent = off(t);
+
+        // Agreement dial: arc, needle, grain and colour all follow the number.
+        const warn = a < 65;
+        agSvg.style.setProperty('--v', String(a));
+        agSvg.style.setProperty('--na', `${135 + (a / 100) * 270}deg`);
+        agSvg.style.setProperty('--c', warn ? '#d4a72d' : '#2dd4bf');
+        agFills.forEach((f) => {
+          if (f.classList.contains('gz-breathe')) { (f as unknown as HTMLElement).style.display = warn ? '' : 'none'; return; }
+          const g = warn ? 'url(#gz-g2)' : a < 80 ? 'url(#gz-g1)' : '';
+          if (g) f.setAttribute('filter', g); else f.removeAttribute('filter');
+        });
+        agRead.textContent = `${a}%`;
+        r('agree-note').textContent = warn ? 'Leads with the doubt' : a < 80 ? 'Holds, with some grain' : 'States it cleanly';
+        agFig.classList.toggle('gz-warn', warn);
+
+        // Nowcast Pulse: minutes until rain reaches 50 percent, looking two hours ahead.
+        let mins = -1;
+        if (p[i] >= 50) mins = 0;
+        else for (let k = i + 1; k <= Math.min(STEPS - 1, i + 8); k++) if (p[k] >= 50) { mins = (k - i) * 15; break; }
+        const num = nc.querySelector('[data-r="nc-num"]')!;
+        const cap = nc.querySelector('[data-r="nc-cap"]')!;
+        if (mins === 0) { num.textContent = 'NOW'; cap.textContent = 'RAIN OCCURRING'; nc.style.setProperty('--v', '0'); r('nc-note').textContent = 'Rain is occurring now'; }
+        else if (mins > 0) { num.textContent = String(mins); cap.textContent = 'MIN UNTIL RAIN'; nc.style.setProperty('--v', String((mins / 120) * 100)); r('nc-note').textContent = `Rain in ${mins} minutes`; }
+        else { num.textContent = '2 H+'; cap.textContent = 'NO RAIN IN 2 H'; nc.style.setProperty('--v', '100'); r('nc-note').textContent = 'No rain in the next 2 hours'; }
+
+        // Next Clean Window: the first dry run of an hour or more, within 12 hours.
+        let found: { s: number; e: number } | null = null;
+        let k = i;
+        while (k < STEPS) {
+          if (p[k] < 30) {
+            let e = k;
+            while (e < STEPS && p[e] < 30) e++;
+            if (e - k >= 4) { found = { s: k, e }; break; }
+            k = e;
+          } else k++;
+        }
+        if (!found || (found.s - i) / 4 > 12) {
+          const tail = STEPS - 1 - i < 48;
+          r('cw').textContent = tail ? 'Past the end of the range' : 'No clean window in the next 12 hours';
+          r('cwn').textContent = tail ? 'Fewer than 12 hours left' : 'Rain holds on';
+          cwCard.classList.remove('gz-warn');
+        } else {
+          let sum = 0;
+          for (let q = found.s; q < found.e; q++) sum += D.a[q];
+          const conf = Math.round(sum / (found.e - found.s));
+          const dur = (found.e - found.s) / 4;
+          r('cw').textContent = found.e >= STEPS && dur >= 18
+            ? 'Clear for 18+ hours'
+            : `${found.s === i ? 'Now' : fmt(found.s / 4)} to ${found.e >= STEPS ? 'the end of the range' : fmt(found.e / 4)}`;
+          r('cwn').textContent = conf < 65 ? `${conf}% agreement. May shift` : `${conf}% agreement`;
+          cwCard.classList.toggle('gz-warn', conf < 65);
+        }
+
+        // Dew point comfort scale, 40 to 80 F.
+        const d = D.d[i];
+        r('dew').textContent = String(Math.round(d));
+        r('dewlab').textContent = d <= 55 ? 'Comfortable' : d < 65 ? 'Humid' : d < 70 ? 'Sticky' : 'Oppressive';
+        r('dewmk').style.left = `${Math.min(100, Math.max(0, ((d - 40) / 40) * 100))}%`;
+
+        // Playhead on both timelines (600 unit axis).
+        const x = (t / 48) * 600;
+        heads.forEach((h) => {
+          if (h.dataset.ph === 'dot') h.setAttribute('cx', x.toFixed(1));
+          else { h.setAttribute('x1', x.toFixed(1)); h.setAttribute('x2', x.toFixed(1)); }
+        });
+        slider.setAttribute('aria-valuetext', `${off(t)}, ${fmt(t)}, ${D.st[st].n}`);
+      };
+
+      // A gentle autoplay until the reader takes over, paused when off screen or when motion is paused.
+      let visible = false;
+      let touched = false;
+      let raf = 0;
+      let pos = 0;
+      let hold = 0;
+      let last = 0;
+      const frame = (ts: number) => {
+        raf = 0;
+        if (!visible || still || touched) { last = 0; return; }
+        if (!last) last = ts;
+        const dt = Math.min(100, ts - last);
+        last = ts;
+        if (hold > 0) { hold -= dt; if (hold <= 0) pos = 0; }
+        else { pos += dt * (192 / 30000); if (pos >= 192) { pos = 192; hold = 2500; } }
+        const i = Math.round(pos);
+        if (i !== cur) { slider.value = String(i); render(i); }
+        raf = requestAnimationFrame(frame);
+      };
+      kick = () => { if (!raf && visible && !still && !touched) raf = requestAnimationFrame(frame); };
+
+      slider.addEventListener('input', () => { touched = true; pos = Number(slider.value); render(pos); });
+      new IntersectionObserver((es) => { visible = es[0].isIntersecting; last = 0; kick(); }, { threshold: 0.15 }).observe(panel);
+      render(0);
+    }
+
+    setStill(mq.matches);
+  }
+</script>
