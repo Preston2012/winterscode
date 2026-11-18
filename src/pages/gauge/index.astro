@@ -137,21 +137,21 @@ const ledger = [
 const START_HOUR = 13;
 const STEPS = 193;
 const gauss = (t: number, m: number, sd: number, a: number) => a * Math.exp(-((t - m) ** 2) / (2 * sd * sd));
-// ONE TABLE drives the dew point word, the bar bands, the tick labels and the legend. Bounds are
-// half open [lo, hi) on the rounded value, so no number maps to two words, and the legend names
-// every word the readout can show. The anchors are the spec's: 55 comfortable, 65 sticky, 70+ oppressive.
+// ONE TABLE drives the dew point word, the bar bands, the tick labels and the legend. The bands are the
+// National Weather Service's (weather.gov/arx/heat_index): 55 and below dry and comfortable, 56 to 64
+// sticky, 65 and up oppressive. The readout is a whole number, and the bounds sit half a degree
+// between whole numbers, so no value maps to two words and the legend names every word the readout can show.
 const DEW_MIN = 40;
 const DEW_MAX = 80;
 const DEW = [
-  { w: 'Comfortable', lo: DEW_MIN, hi: 65, fill: 'linear-gradient(90deg,#2dd4bf,#d4a72d)' },
-  { w: 'Sticky', lo: 65, hi: 70, fill: '#ef6a50' },
-  { w: 'Oppressive', lo: 70, hi: 999, fill: '#ef4444' },
+  { w: 'Comfortable', lo: DEW_MIN, hi: 55.5, range: '55 and below', fill: '#2dd4bf' },
+  { w: 'Sticky', lo: 55.5, hi: 64.5, range: '56 to 64', fill: 'linear-gradient(90deg,#d4a72d,#ef6a50)' },
+  { w: 'Oppressive', lo: 64.5, hi: 999, range: '65 and up', fill: '#ef4444' },
 ];
-const dewRange = (z: (typeof DEW)[number], i: number) =>
-  i === 0 ? `under ${z.hi}` : z.hi === 999 ? `${z.lo} and up` : `${z.lo} to ${z.hi - 1}`;
+const dewRange = (z: (typeof DEW)[number]) => z.range;
 const dewPct = (v: number) => ((Math.min(DEW_MAX, Math.max(DEW_MIN, v)) - DEW_MIN) / (DEW_MAX - DEW_MIN)) * 100;
-const dewTicks = [DEW_MIN, 65, 70, DEW_MAX];
-const dewAria = `Dew point scale from ${DEW_MIN} to ${DEW_MAX} degrees Fahrenheit. ${DEW.map((z, i) => `${z.w} ${dewRange(z, i)}`).join(', ')}.`;
+const dewTicks = [DEW_MIN, 55, 65, DEW_MAX];
+const dewAria = `Dew point scale from ${DEW_MIN} to ${DEW_MAX} degrees Fahrenheit. ${DEW.map((z) => `${z.w} ${dewRange(z)}`).join(', ')}.`;
 
 const series = { s: [] as number[], p: [] as number[], a: [] as number[], d: [] as number[] };
 for (let i = 0; i < STEPS; i++) {
@@ -458,7 +458,7 @@ const rainBars = Array.from({ length: 49 }, (_, h) => {
                   {dewTicks.map((v, i) => (<span class:list={[{ 'gz-dt-first': i === 0, 'gz-dt-last': i === dewTicks.length - 1 }]} style={`left:${dewPct(v).toFixed(1)}%`}>{v}</span>))}
                 </div>
                 <ul class="gz-dewkey" data-r="dewkey">
-                  {DEW.map((z, i) => (<li data-w={z.w}><span class="gz-dewkey-w">{z.w}</span> <span class="gz-mini">{dewRange(z, i)}</span></li>))}
+                  {DEW.map((z, i) => (<li data-w={z.w}><span class="gz-dewkey-w">{z.w}</span> <span class="gz-mini">{dewRange(z)}</span></li>))}
                 </ul>
               </div>
             </div>
