@@ -1,5 +1,5 @@
 # build-output golden. path	bytes	sha256 of normalised content
-# only the volatiles named in NORMALISERS are normalised; nothing else is
+# only the volatiles named in NORMALISERS and the repo root token are normalised; nothing else is
 client/.assetsignore	24	4f83140d5f4293ab55bd1207327e995c83258f1e7d3145b1b5d7a3d17fdfe0a7
 client/404.html	51787	0626c99691e76f4d509f4d2d7b711e18584367f7c34e5824bfa7a1c990b5bfd5
 client/_astro/onboard.astro_astro_type_script_index_0_lang.vfgxY16T.js	20776	d5ae0441e3ff854bd68a60eb390c7646758a3da54031c269e48c4057df7856c0
@@ -322,7 +322,7 @@ server/chunks/upload_Chatt7a2.mjs	2305	98418347cac3799ca100e4ade3bd29abdb50a29f3
 server/chunks/upload_Chatt7a2.mjs.map	4192	6a6c1a4d3f24ef30aa9f19ca1cc3649724571e5b13812b7a1bd2c2eebb0fe4b2
 server/chunks/workshop_D0FEqi5l.mjs	22212	6005c8be027ea80df2023f0f0c411d773e82cc78ef0532031eed5968dc9663b7
 server/chunks/workshop_D0FEqi5l.mjs.map	62393	8546d66df7eaa92df39bf9c252e5529bf9e4fbb331e7848a70d35d84a7944531
-server/entry.mjs	392131	191d7ffba9fa47a0a2ad0c19987f35475d68089d994ae6cfd04de5395a918a5f
+server/entry.mjs	390451	fdd1c1aedef3b85e8a912357b40c745eb5045687953f45f80bc8f78ff055ee01
 server/entry.mjs.map	611814	34ffa93da3e22bd8dd29054ade0e186666cdb417ccda58c976ffdaaadb5c972c
 server/virtual_astro_middleware.mjs	138	568b25a585b343305700dbfe87b626a2713bfd6105c50acbc9de102afc4ddd98
-server/wrangler.json	1616	575aeaae56dcba6921a9c0daf039b9cef3e0875a6a6001836a6e1d959f4f466b
+server/wrangler.json	1568	80a56255af2dc81d206b5bf937cd6badba218f38d9595677cedd1f2cf871e5d0
