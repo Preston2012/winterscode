@@ -1,0 +1,511 @@
+---
+/**
+ * /chere/join, one page to get Chere' onto a phone (S384, Preston 2026-11-16: "a page where
+ * people can join iOS or Android easily and it's sexy and well done").
+ *
+ * Two lanes, iPhone and Android, each three taps. A visitor's own phone comes first and is
+ * marked "Your phone" by a one-line script that reads the user agent; with no script both lanes
+ * show in the same order. A computer gets a QR code to carry the page to a phone. The last step
+ * is the same on both: text Preston the key the app shows, and he texts back a setup code.
+ * Under it, the Chere' master video (2026-11-10 cut, 720p web encode), Preston 2026-11-16:
+ * "Below text me your key should be the latest Chere' video".
+ *
+ * Links: TestFlight's public link for Chere' (Apple approved build 2501 for outside testers),
+ * and on Android the testers Google Group, Play's opt-in page and the Play listing. The Android
+ * lane's buttons open a coming-soon note until Google approves the Closed testing release (ANDROID_LIVE).
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/layout/Header.astro';
+import MobileMenu from '../../components/layout/MobileMenu.astro';
+import Breadcrumbs from '../../components/ui/Breadcrumbs.astro';
+import { breadcrumbSchema } from '../../lib/schema';
+import { smsBase, phoneDisplay } from '../../lib/text-cta';
+import { v } from '../../lib/asset';
+
+const path = '/chere/join';
+const crumbs = [
+  { name: 'Home', path: '/' },
+  { name: "Chere'", path: '/chere' },
+  { name: 'Get the app', path },
+];
+const sms = smsBase + encodeURIComponent("Hi Preston, I installed Chere'. My phone's key is: ");
+
+const PKG = 'com.winterscode.chere.demo';
+// Android goes live when Google approves the Closed testing release. Until then each Android button
+// opens the coming-soon note (Preston, 2026-11-17: "put a coming soon pop-up on the play button for
+// now until the link is live"). Set true and rebuild to make them real links.
+const ANDROID_LIVE = false;
+const smsAndroid = smsBase + encodeURIComponent("Hi Preston, I'd like Chere' on my Android phone. ");
+// Official store badges (the same files baseline.marketing uses). Apple's badge may only link to an App
+// Store page, so it sits on Get TestFlight (TestFlight's own App Store page), never on the beta link.
+const BADGES: Record<string, { src: string; alt: string; w: number; h: number }> = {
+  appstore: { src: '/chere/badge-appstore.svg', alt: 'Download on the App Store', w: 120, h: 40 },
+  googleplay: { src: '/chere/badge-googleplay.svg', alt: 'Get it on Google Play', w: 135, h: 40 },
+};
+
+type Step = { h: string; p: string; href: string; cta: string; badge?: string };
+const ios: Step[] = [
+  {
+    h: 'Get TestFlight',
+    p: "Apple's free app for trying apps before they're in the App Store.",
+    href: 'https://apps.apple.com/us/app/testflight/id899247664',
+    cta: 'Get TestFlight',
+    badge: 'appstore',
+  },
+  {
+    h: "Join the Chere' beta",
+    p: 'It opens in TestFlight. Tap Accept, then Install.',
+    href: 'https://testflight.apple.com/join/9jFFH197',
+    cta: "Join the beta",
+  },
+];
+const android: Step[] = [
+  {
+    h: 'Join the testers group',
+    p: 'Use the Google account your phone is signed in with, then tap Join group.',
+    href: 'https://groups.google.com/g/chere-testers',
+    cta: 'Join the group',
+  },
+  {
+    h: 'Become a tester',
+    p: 'One tap on Google Play says you are in.',
+    href: `https://play.google.com/apps/testing/${PKG}`,
+    cta: 'Become a tester',
+  },
+  {
+    h: 'Install from Google Play',
+    p: 'Updates come through Play from here on, like any other app.',
+    href: `https://play.google.com/store/apps/details?id=${PKG}`,
+    cta: 'Open Google Play',
+    badge: 'googleplay',
+  },
+];
+
+// The video goes through the byte-range route (src/pages/media/[file].ts), which iPhone Safari needs.
+const mediaUrl = (file: string) => {
+  const ver = v(`/work/${file}`).split('?')[1];
+  return `/media/${file}${ver ? `?${ver}` : ''}`;
+};
+
+const QR_N = 29;
+const QR_D = 'M0 0h1v1h-1zM1 0h1v1h-1zM2 0h1v1h-1zM3 0h1v1h-1zM4 0h1v1h-1zM5 0h1v1h-1zM6 0h1v1h-1zM9 0h1v1h-1zM10 0h1v1h-1zM13 0h1v1h-1zM14 0h1v1h-1zM15 0h1v1h-1zM17 0h1v1h-1zM18 0h1v1h-1zM19 0h1v1h-1zM20 0h1v1h-1zM22 0h1v1h-1zM23 0h1v1h-1zM24 0h1v1h-1zM25 0h1v1h-1zM26 0h1v1h-1zM27 0h1v1h-1zM28 0h1v1h-1zM0 1h1v1h-1zM6 1h1v1h-1zM11 1h1v1h-1zM13 1h1v1h-1zM14 1h1v1h-1zM15 1h1v1h-1zM16 1h1v1h-1zM20 1h1v1h-1zM22 1h1v1h-1zM28 1h1v1h-1zM0 2h1v1h-1zM2 2h1v1h-1zM3 2h1v1h-1zM4 2h1v1h-1zM6 2h1v1h-1zM8 2h1v1h-1zM11 2h1v1h-1zM13 2h1v1h-1zM15 2h1v1h-1zM19 2h1v1h-1zM20 2h1v1h-1zM22 2h1v1h-1zM24 2h1v1h-1zM25 2h1v1h-1zM26 2h1v1h-1zM28 2h1v1h-1zM0 3h1v1h-1zM2 3h1v1h-1zM3 3h1v1h-1zM4 3h1v1h-1zM6 3h1v1h-1zM8 3h1v1h-1zM9 3h1v1h-1zM12 3h1v1h-1zM14 3h1v1h-1zM15 3h1v1h-1zM17 3h1v1h-1zM18 3h1v1h-1zM19 3h1v1h-1zM22 3h1v1h-1zM24 3h1v1h-1zM25 3h1v1h-1zM26 3h1v1h-1zM28 3h1v1h-1zM0 4h1v1h-1zM2 4h1v1h-1zM3 4h1v1h-1zM4 4h1v1h-1zM6 4h1v1h-1zM8 4h1v1h-1zM10 4h1v1h-1zM15 4h1v1h-1zM16 4h1v1h-1zM17 4h1v1h-1zM18 4h1v1h-1zM19 4h1v1h-1zM20 4h1v1h-1zM22 4h1v1h-1zM24 4h1v1h-1zM25 4h1v1h-1zM26 4h1v1h-1zM28 4h1v1h-1zM0 5h1v1h-1zM6 5h1v1h-1zM8 5h1v1h-1zM10 5h1v1h-1zM11 5h1v1h-1zM12 5h1v1h-1zM17 5h1v1h-1zM20 5h1v1h-1zM22 5h1v1h-1zM28 5h1v1h-1zM0 6h1v1h-1zM1 6h1v1h-1zM2 6h1v1h-1zM3 6h1v1h-1zM4 6h1v1h-1zM5 6h1v1h-1zM6 6h1v1h-1zM8 6h1v1h-1zM10 6h1v1h-1zM12 6h1v1h-1zM14 6h1v1h-1zM16 6h1v1h-1zM18 6h1v1h-1zM20 6h1v1h-1zM22 6h1v1h-1zM23 6h1v1h-1zM24 6h1v1h-1zM25 6h1v1h-1zM26 6h1v1h-1zM27 6h1v1h-1zM28 6h1v1h-1zM8 7h1v1h-1zM11 7h1v1h-1zM12 7h1v1h-1zM14 7h1v1h-1zM16 7h1v1h-1zM19 7h1v1h-1zM0 8h1v1h-1zM2 8h1v1h-1zM3 8h1v1h-1zM4 8h1v1h-1zM5 8h1v1h-1zM6 8h1v1h-1zM9 8h1v1h-1zM17 8h1v1h-1zM22 8h1v1h-1zM23 8h1v1h-1zM24 8h1v1h-1zM25 8h1v1h-1zM26 8h1v1h-1zM2 9h1v1h-1zM3 9h1v1h-1zM4 9h1v1h-1zM13 9h1v1h-1zM14 9h1v1h-1zM15 9h1v1h-1zM18 9h1v1h-1zM19 9h1v1h-1zM20 9h1v1h-1zM21 9h1v1h-1zM22 9h1v1h-1zM23 9h1v1h-1zM24 9h1v1h-1zM28 9h1v1h-1zM0 10h1v1h-1zM1 10h1v1h-1zM3 10h1v1h-1zM4 10h1v1h-1zM6 10h1v1h-1zM7 10h1v1h-1zM8 10h1v1h-1zM9 10h1v1h-1zM10 10h1v1h-1zM12 10h1v1h-1zM13 10h1v1h-1zM14 10h1v1h-1zM15 10h1v1h-1zM17 10h1v1h-1zM18 10h1v1h-1zM24 10h1v1h-1zM3 11h1v1h-1zM4 11h1v1h-1zM7 11h1v1h-1zM8 11h1v1h-1zM13 11h1v1h-1zM16 11h1v1h-1zM19 11h1v1h-1zM20 11h1v1h-1zM23 11h1v1h-1zM24 11h1v1h-1zM25 11h1v1h-1zM27 11h1v1h-1zM1 12h1v1h-1zM3 12h1v1h-1zM4 12h1v1h-1zM6 12h1v1h-1zM9 12h1v1h-1zM12 12h1v1h-1zM14 12h1v1h-1zM17 12h1v1h-1zM19 12h1v1h-1zM23 12h1v1h-1zM25 12h1v1h-1zM26 12h1v1h-1zM1 13h1v1h-1zM5 13h1v1h-1zM7 13h1v1h-1zM11 13h1v1h-1zM12 13h1v1h-1zM16 13h1v1h-1zM17 13h1v1h-1zM18 13h1v1h-1zM19 13h1v1h-1zM22 13h1v1h-1zM23 13h1v1h-1zM24 13h1v1h-1zM28 13h1v1h-1zM0 14h1v1h-1zM5 14h1v1h-1zM6 14h1v1h-1zM8 14h1v1h-1zM10 14h1v1h-1zM12 14h1v1h-1zM15 14h1v1h-1zM16 14h1v1h-1zM18 14h1v1h-1zM20 14h1v1h-1zM21 14h1v1h-1zM25 14h1v1h-1zM26 14h1v1h-1zM0 15h1v1h-1zM1 15h1v1h-1zM2 15h1v1h-1zM3 15h1v1h-1zM5 15h1v1h-1zM11 15h1v1h-1zM14 15h1v1h-1zM15 15h1v1h-1zM18 15h1v1h-1zM20 15h1v1h-1zM21 15h1v1h-1zM22 15h1v1h-1zM23 15h1v1h-1zM27 15h1v1h-1zM1 16h1v1h-1zM2 16h1v1h-1zM4 16h1v1h-1zM6 16h1v1h-1zM7 16h1v1h-1zM17 16h1v1h-1zM25 16h1v1h-1zM26 16h1v1h-1zM0 17h1v1h-1zM1 17h1v1h-1zM2 17h1v1h-1zM3 17h1v1h-1zM4 17h1v1h-1zM8 17h1v1h-1zM9 17h1v1h-1zM10 17h1v1h-1zM11 17h1v1h-1zM13 17h1v1h-1zM14 17h1v1h-1zM16 17h1v1h-1zM18 17h1v1h-1zM19 17h1v1h-1zM20 17h1v1h-1zM22 17h1v1h-1zM23 17h1v1h-1zM24 17h1v1h-1zM26 17h1v1h-1zM28 17h1v1h-1zM0 18h1v1h-1zM2 18h1v1h-1zM5 18h1v1h-1zM6 18h1v1h-1zM7 18h1v1h-1zM12 18h1v1h-1zM13 18h1v1h-1zM14 18h1v1h-1zM15 18h1v1h-1zM16 18h1v1h-1zM21 18h1v1h-1zM23 18h1v1h-1zM24 18h1v1h-1zM26 18h1v1h-1zM0 19h1v1h-1zM4 19h1v1h-1zM5 19h1v1h-1zM7 19h1v1h-1zM12 19h1v1h-1zM13 19h1v1h-1zM16 19h1v1h-1zM20 19h1v1h-1zM22 19h1v1h-1zM27 19h1v1h-1zM0 20h1v1h-1zM3 20h1v1h-1zM4 20h1v1h-1zM6 20h1v1h-1zM8 20h1v1h-1zM9 20h1v1h-1zM10 20h1v1h-1zM11 20h1v1h-1zM14 20h1v1h-1zM17 20h1v1h-1zM20 20h1v1h-1zM21 20h1v1h-1zM22 20h1v1h-1zM23 20h1v1h-1zM24 20h1v1h-1zM26 20h1v1h-1zM27 20h1v1h-1zM28 20h1v1h-1zM8 21h1v1h-1zM10 21h1v1h-1zM11 21h1v1h-1zM12 21h1v1h-1zM16 21h1v1h-1zM20 21h1v1h-1zM24 21h1v1h-1zM25 21h1v1h-1zM26 21h1v1h-1zM27 21h1v1h-1zM28 21h1v1h-1zM0 22h1v1h-1zM1 22h1v1h-1zM2 22h1v1h-1zM3 22h1v1h-1zM4 22h1v1h-1zM5 22h1v1h-1zM6 22h1v1h-1zM12 22h1v1h-1zM15 22h1v1h-1zM17 22h1v1h-1zM18 22h1v1h-1zM19 22h1v1h-1zM20 22h1v1h-1zM22 22h1v1h-1zM24 22h1v1h-1zM25 22h1v1h-1zM26 22h1v1h-1zM0 23h1v1h-1zM6 23h1v1h-1zM8 23h1v1h-1zM9 23h1v1h-1zM14 23h1v1h-1zM18 23h1v1h-1zM19 23h1v1h-1zM20 23h1v1h-1zM24 23h1v1h-1zM27 23h1v1h-1zM28 23h1v1h-1zM0 24h1v1h-1zM2 24h1v1h-1zM3 24h1v1h-1zM4 24h1v1h-1zM6 24h1v1h-1zM8 24h1v1h-1zM12 24h1v1h-1zM17 24h1v1h-1zM20 24h1v1h-1zM21 24h1v1h-1zM22 24h1v1h-1zM23 24h1v1h-1zM24 24h1v1h-1zM26 24h1v1h-1zM27 24h1v1h-1zM0 25h1v1h-1zM2 25h1v1h-1zM3 25h1v1h-1zM4 25h1v1h-1zM6 25h1v1h-1zM8 25h1v1h-1zM10 25h1v1h-1zM11 25h1v1h-1zM14 25h1v1h-1zM16 25h1v1h-1zM18 25h1v1h-1zM19 25h1v1h-1zM20 25h1v1h-1zM25 25h1v1h-1zM26 25h1v1h-1zM27 25h1v1h-1zM28 25h1v1h-1zM0 26h1v1h-1zM2 26h1v1h-1zM3 26h1v1h-1zM4 26h1v1h-1zM6 26h1v1h-1zM8 26h1v1h-1zM9 26h1v1h-1zM10 26h1v1h-1zM12 26h1v1h-1zM13 26h1v1h-1zM15 26h1v1h-1zM16 26h1v1h-1zM19 26h1v1h-1zM20 26h1v1h-1zM21 26h1v1h-1zM22 26h1v1h-1zM23 26h1v1h-1zM24 26h1v1h-1zM25 26h1v1h-1zM26 26h1v1h-1zM27 26h1v1h-1zM0 27h1v1h-1zM6 27h1v1h-1zM12 27h1v1h-1zM16 27h1v1h-1zM20 27h1v1h-1zM21 27h1v1h-1zM23 27h1v1h-1zM25 27h1v1h-1zM27 27h1v1h-1zM0 28h1v1h-1zM1 28h1v1h-1zM2 28h1v1h-1zM3 28h1v1h-1zM4 28h1v1h-1zM5 28h1v1h-1zM6 28h1v1h-1zM8 28h1v1h-1zM9 28h1v1h-1zM10 28h1v1h-1zM11 28h1v1h-1zM13 28h1v1h-1zM14 28h1v1h-1zM17 28h1v1h-1zM18 28h1v1h-1zM19 28h1v1h-1zM22 28h1v1h-1zM23 28h1v1h-1zM24 28h1v1h-1zM25 28h1v1h-1zM26 28h1v1h-1z';
+---
+
+<BaseLayout
+  title="Get Chere' on Your Phone · Winters Code"
+  description="Install the Chere' beta on iPhone, iPad or Android in a few taps, then text Preston the key the app shows to connect your phone to your business."
+  canonicalPath={path}
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(crumbs))} />
+    <script is:inline>document.documentElement.dataset.os=/android/i.test(navigator.userAgent)?'android':/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)?'ios':'other';</script>
+  </Fragment>
+
+  <Header />
+  <MobileMenu />
+  <Breadcrumbs items={crumbs} />
+
+  <section class="jn-hero" aria-labelledby="jn-h1">
+    <div class="jn-eyebrow mono">CHERE' · BETA</div>
+    <h1 class="h1 jn-h1" id="jn-h1">Get Chere' on your phone.</h1>
+    <p class="jn-sub">
+      A few taps, then one text. Pick your phone below and go top to bottom.
+    </p>
+  </section>
+
+  <div class="jn-qr" aria-hidden="true">
+    <svg viewBox={`-2 -2 ${QR_N + 4} ${QR_N + 4}`} class="jn-qr-code" shape-rendering="crispEdges" role="img">
+      <rect x="-2" y="-2" width={QR_N + 4} height={QR_N + 4} rx="1.5" fill="#f2efe8" />
+      <path d={QR_D} fill="#0a0d0c" />
+    </svg>
+    <p class="jn-qr-text">
+      <span class="jn-qr-h">On a computer?</span>
+      Scan the code with your phone's camera to open the install steps there.
+    </p>
+  </div>
+
+  <div class="jn-lanes">
+    <section class="jn-lane jn-lane-ios" aria-labelledby="jn-ios-h">
+      <header class="jn-lane-head">
+        <svg class="jn-glyph" viewBox="0 0 24 24" aria-hidden="true"><rect x="6.5" y="2.5" width="11" height="19" rx="2.6" /><path d="M10.5 18.5h3" /></svg>
+        <div class="jn-lane-titles">
+          <span class="jn-yours mono">YOUR PHONE</span>
+          <h2 class="jn-lane-h" id="jn-ios-h">iPhone or iPad</h2>
+          <p class="jn-lane-sub mono">VIA TESTFLIGHT</p>
+        </div>
+      </header>
+      <ol class="jn-steps">
+        {ios.map((s, i) => (
+          <li class="jn-step">
+            <span class="jn-n mono" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+            <div class="jn-step-body">
+              <h3 class="jn-step-h">{s.h}</h3>
+              <p class="jn-step-p">{s.p}</p>
+              {s.badge ? (
+                <a class="jn-badge" href={s.href} rel="noopener" aria-label={BADGES[s.badge].alt}>
+                  <img src={BADGES[s.badge].src} alt={BADGES[s.badge].alt} width={BADGES[s.badge].w} height={BADGES[s.badge].h} decoding="async" />
+                </a>
+              ) : (
+                <a class="btn btn-secondary jn-btn" href={s.href} rel="noopener">{s.cta}<span aria-hidden="true" class="jn-arrow">→</span></a>
+              )}
+            </div>
+          </li>
+        ))}
+        <li class="jn-step">
+          <span class="jn-n mono" aria-hidden="true">03</span>
+          <div class="jn-step-body">
+            <h3 class="jn-step-h">Open Chere'</h3>
+            <p class="jn-step-p">It shows a short key for your phone. That's the last step, below.</p>
+          </div>
+        </li>
+      </ol>
+    </section>
+
+    <section class="jn-lane jn-lane-android" aria-labelledby="jn-and-h">
+      <header class="jn-lane-head">
+        <svg class="jn-glyph" viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="2.5" width="12" height="19" rx="2" /><circle cx="12" cy="5.4" r=".6" /></svg>
+        <div class="jn-lane-titles">
+          <span class="jn-yours mono">YOUR PHONE</span>
+          <h2 class="jn-lane-h" id="jn-and-h">Android</h2>
+          <p class="jn-lane-sub mono">VIA GOOGLE PLAY</p>
+        </div>
+      </header>
+      <ol class="jn-steps">
+        {android.map((s, i) => (
+          <li class="jn-step">
+            <span class="jn-n mono" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+            <div class="jn-step-body">
+              <h3 class="jn-step-h">{s.h}</h3>
+              <p class="jn-step-p">{s.p}</p>
+              {ANDROID_LIVE ? (
+                s.badge ? (
+                  <a class="jn-badge" href={s.href} rel="noopener" aria-label={BADGES[s.badge].alt}>
+                    <img src={BADGES[s.badge].src} alt={BADGES[s.badge].alt} width={BADGES[s.badge].w} height={BADGES[s.badge].h} decoding="async" />
+                  </a>
+                ) : (
+                  <a class="btn btn-secondary jn-btn" href={s.href} rel="noopener">{s.cta}<span aria-hidden="true" class="jn-arrow">→</span></a>
+                )
+              ) : s.badge ? (
+                <button type="button" class="jn-badge jn-badge-btn" popovertarget="jn-soon" aria-label={`${BADGES[s.badge].alt}, coming soon`}>
+                  <img src={BADGES[s.badge].src} alt="" width={BADGES[s.badge].w} height={BADGES[s.badge].h} decoding="async" />
+                </button>
+              ) : (
+                <button type="button" class="btn btn-secondary jn-btn" popovertarget="jn-soon">{s.cta}<span aria-hidden="true" class="jn-arrow">→</span></button>
+              )}
+            </div>
+          </li>
+        ))}
+        <li class="jn-step">
+          <span class="jn-n mono" aria-hidden="true">04</span>
+          <div class="jn-step-body">
+            <h3 class="jn-step-h">Open Chere'</h3>
+            <p class="jn-step-p">It shows a short key for your phone. That's the last step, below.</p>
+          </div>
+        </li>
+      </ol>
+    </section>
+  </div>
+
+  {!ANDROID_LIVE && (
+    <div id="jn-soon" popover class="jn-soon" role="dialog" aria-labelledby="jn-soon-h">
+      <p class="jn-soon-eyebrow mono">ANDROID</p>
+      <h2 class="jn-soon-h" id="jn-soon-h">Coming soon to Google Play.</h2>
+      <p class="jn-soon-p">Google is reviewing Chere' for Android right now. Text me and I'll send you the link the day it's live.</p>
+      <a href={smsAndroid} class="btn btn-primary jn-soon-btn">
+        <span>Text Preston</span>
+        <span class="jn-connect-num">{phoneDisplay}</span>
+      </a>
+      <button type="button" class="jn-soon-close" popovertarget="jn-soon" popovertargetaction="hide">Close</button>
+    </div>
+    <script is:inline>
+      /* iOS Safari 15.6 to 16.x ignores the popover attribute: the note would sit open and Close would do
+         nothing. Where togglePopover is missing, the same buttons drive a data-open fallback. */
+      (function () {
+        var box = document.getElementById('jn-soon');
+        if (!box || typeof box.togglePopover === 'function') return;
+        var last = null;
+        function openBox(from) {
+          last = from;
+          box.setAttribute('data-open', '');
+          var c = box.querySelector('.jn-soon-close');
+          if (c) c.focus();
+        }
+        function closeBox() {
+          if (!box.hasAttribute('data-open')) return;
+          box.removeAttribute('data-open');
+          if (last && last.focus) last.focus();
+        }
+        var triggers = document.querySelectorAll('[popovertarget="jn-soon"]');
+        for (var i = 0; i < triggers.length; i++) {
+          triggers[i].addEventListener('click', function (e) {
+            var t = e.currentTarget;
+            if (t.getAttribute('popovertargetaction') === 'hide') closeBox();
+            else openBox(t);
+          });
+        }
+        document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeBox(); });
+        document.addEventListener('click', function (e) {
+          if (box.hasAttribute('data-open') && !box.contains(e.target) && !e.target.closest('[popovertarget="jn-soon"]')) closeBox();
+        });
+      })();
+    </script>
+  )}
+
+  <section class="jn-connect" aria-labelledby="jn-connect-h" data-textbar-hide>
+    <div class="jn-connect-n mono" aria-hidden="true">LAST STEP</div>
+    <h2 class="h2 jn-connect-h" id="jn-connect-h">Text me your phone's key.</h2>
+    <p class="jn-connect-p">
+      Chere' shows a short key the first time it opens. It isn't a password, so texting it is
+      fine. I text back a one-time setup code for that phone, and you're connected to your
+      business.
+    </p>
+    <a href={sms} class="btn btn-primary jn-connect-btn">
+      <span>Text Preston</span>
+      <span class="jn-connect-num">{phoneDisplay}</span>
+    </a>
+    <p class="jn-foot">
+      Stuck on a step? <a href="/chere/support">Chere' support</a> has the details, and
+      <a href="/chere/privacy">the privacy page</a> says what the app keeps.
+    </p>
+  </section>
+
+  <section class="jn-video" aria-labelledby="jn-video-h">
+    <h2 class="h2 jn-video-h" id="jn-video-h">See it work first.</h2>
+    <p class="jn-video-p">A minute and a half: a kitchen photo becomes a priced estimate.</p>
+    <div class="jn-player">
+      <video
+        controls
+        playsinline
+        preload="none"
+        width="1280"
+        height="720"
+        poster={v('/work/chere-master-poster-1280.webp')}
+        aria-label="Chere' video, 1 minute 32 seconds, with music. A kitchen photo becomes a priced estimate."
+      >
+        <source src={mediaUrl('chere-master.webm')} type="video/webm" />
+        <source src={mediaUrl('chere-master.mp4')} type="video/mp4" />
+      </video>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .jn-hero {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 40px 4px 8px;
+    text-align: center;
+  }
+  @media (min-width: 740px) { .jn-hero { padding: 64px 4px 12px; } }
+  .jn-eyebrow {
+    color: var(--color-copper);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    font-weight: 600;
+    margin-bottom: 14px;
+  }
+  .jn-h1 { margin: 0 0 14px; }
+  .jn-sub {
+    margin: 0 auto;
+    max-width: 520px;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 17px;
+    line-height: 1.55;
+    color: var(--color-ash-300);
+  }
+  @media (min-width: 1024px) { .jn-sub { font-size: 19px; } }
+
+  /* The QR only shows where a phone is not already in hand. */
+  .jn-qr { display: none; }
+  @media (min-width: 900px) {
+    :root:not([data-os='ios']):not([data-os='android']) .jn-qr {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      max-width: 420px;
+      margin: 28px auto 0;
+      padding: 14px 18px 14px 14px;
+      border: 1px solid var(--copper-hairline);
+      border-radius: var(--radius-card);
+      background: var(--color-bg-card);
+    }
+  }
+  .jn-qr-code { width: 112px; height: 112px; flex: none; border-radius: 6px; }
+  .jn-qr-text { margin: 0; font-size: 14px; line-height: 1.5; color: var(--color-ash-300); }
+  .jn-qr-h { display: block; font-family: var(--font-serif); font-size: 17px; color: var(--color-ash-100); margin-bottom: 2px; }
+
+  .jn-lanes {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    max-width: 1040px;
+    margin: 32px auto 0;
+  }
+  @media (min-width: 900px) {
+    .jn-lanes { grid-template-columns: 1fr 1fr; gap: 22px; margin-top: 40px; }
+  }
+  /* The visitor's own phone goes first. */
+  :root[data-os='android'] .jn-lane-android { order: -1; }
+
+  .jn-lane {
+    position: relative;
+    padding: 22px 18px 10px;
+    border: 1px solid var(--color-ash-700);
+    border-radius: 16px;
+    background:
+      radial-gradient(120% 70% at 0% 0%, rgba(77, 216, 168, 0.06), transparent 60%),
+      var(--color-bg-card);
+  }
+  @media (min-width: 740px) { .jn-lane { padding: 28px 26px 14px; } }
+  :root[data-os='ios'] .jn-lane-ios,
+  :root[data-os='android'] .jn-lane-android {
+    border-color: rgba(77, 216, 168, 0.45);
+    box-shadow: 0 0 0 1px rgba(77, 216, 168, 0.12), 0 18px 48px -24px rgba(77, 216, 168, 0.35);
+  }
+
+  .jn-lane-head { display: flex; align-items: center; gap: 14px; margin-bottom: 8px; }
+  .jn-lane-titles { min-width: 0; display: flex; flex-direction: column; align-items: flex-start; }
+  .jn-glyph {
+    width: 40px; height: 40px; flex: none;
+    padding: 8px;
+    border-radius: 10px;
+    background: var(--color-bg-raised);
+    fill: none;
+    stroke: var(--color-wc-green);
+    stroke-width: 1.6;
+    stroke-linecap: round;
+  }
+  .jn-lane-h { margin: 0; font-family: var(--font-serif); font-size: 22px; font-weight: 600; color: var(--color-ash-100); }
+  .jn-lane-sub { margin: 2px 0 0; font-size: 10.5px; letter-spacing: 0.14em; color: var(--color-ash-500); }
+  .jn-yours {
+    display: none;
+    margin-bottom: 6px;
+    padding: 3px 9px;
+    border-radius: 999px;
+    font-size: 10px;
+    line-height: 1.4;
+    letter-spacing: 0.12em;
+    white-space: nowrap;
+    color: var(--color-bg-deep);
+    background: var(--color-wc-green);
+  }
+  :root[data-os='ios'] .jn-lane-ios .jn-yours,
+  :root[data-os='android'] .jn-lane-android .jn-yours { display: inline-block; }
+
+  .jn-steps { list-style: none; margin: 0; padding: 0; }
+  .jn-step {
+    display: grid;
+    grid-template-columns: 34px 1fr;
+    gap: 12px;
+    padding: 16px 0;
+    border-top: 1px solid rgba(170, 183, 186, 0.12);
+  }
+  .jn-step:first-child { border-top: 0; }
+  .jn-n { padding-top: 3px; font-size: 12px; letter-spacing: 0.08em; color: var(--color-copper); }
+  .jn-step-h { margin: 0 0 4px; font-family: var(--font-sans); font-size: 16px; font-weight: 600; color: var(--color-ash-100); }
+  .jn-step-p { margin: 0; font-size: 14.5px; line-height: 1.55; color: var(--color-ash-300); }
+  .jn-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    width: 100%;
+    min-height: 48px;
+    margin-top: 12px;
+  }
+  @media (min-width: 740px) { .jn-btn { width: auto; min-width: 220px; } }
+  .jn-badge {
+    display: inline-flex;
+    margin-top: 12px;
+    border-radius: 10px;
+    line-height: 0;
+  }
+  .jn-badge img { height: 52px; width: auto; display: block; }
+  .jn-badge:focus-visible { outline: 2px solid var(--color-wc-green); outline-offset: 3px; }
+  .jn-arrow { transition: transform 160ms ease; }
+  @media (hover: hover) { .jn-btn:hover .jn-arrow { transform: translateX(3px); } }
+  @media (prefers-reduced-motion: reduce) { .jn-arrow { transition: none; } }
+
+  .jn-connect {
+    max-width: 640px;
+    margin: 40px auto 0;
+    padding: 28px 22px;
+    text-align: center;
+    border: 1px solid var(--copper-hairline);
+    border-radius: 16px;
+    background: radial-gradient(90% 80% at 50% 0%, rgba(211, 130, 60, 0.10), transparent 70%), var(--color-bg-stone);
+  }
+  @media (min-width: 740px) { .jn-connect { margin-top: 56px; padding: 36px 40px; } }
+  .jn-connect-n { font-size: 11px; letter-spacing: 0.18em; color: var(--color-copper); margin-bottom: 10px; }
+  .jn-connect-h { margin: 0 0 10px; }
+  .jn-connect-p { margin: 0 auto 20px; max-width: 480px; font-size: 15px; line-height: 1.6; color: var(--color-ash-300); }
+  .jn-connect-btn { display: inline-flex; align-items: center; gap: 12px; min-height: 52px; }
+  .jn-connect-num { font-family: var(--font-mono); font-size: 13px; opacity: 0.8; }
+  .jn-foot { margin: 20px 0 0; font-size: 13.5px; color: var(--color-ash-500); }
+  .jn-foot a {
+    color: var(--color-copper-bright);
+    text-decoration: underline;
+    text-decoration-color: var(--copper-hairline);
+    text-underline-offset: 3px;
+  }
+
+  .jn-badge-btn { background: none; border: 0; padding: 0; cursor: pointer; }
+  /* Hidden unless the browser opens it as a popover (:popover-open) or the script's fallback sets data-open.
+     Where popover is unsupported the :popover-open rule is dropped, so the note stays hidden by default. */
+  .jn-soon { display: none; }
+  .jn-soon:popover-open { display: block; }
+  .jn-soon[data-open] {
+    display: block;
+    position: fixed;
+    inset: 0;
+    height: fit-content;
+    max-height: 92vh;
+    overflow: auto;
+    z-index: 1000;
+    box-shadow: 0 0 0 100vmax rgba(5, 8, 8, 0.72), 0 30px 80px -30px rgba(0, 0, 0, 0.9);
+  }
+  .jn-soon {
+    margin: auto;
+    width: min(92vw, 400px);
+    padding: 26px 22px 18px;
+    text-align: center;
+    color: var(--color-ash-100);
+    border: 1px solid var(--copper-hairline);
+    border-radius: 16px;
+    background: radial-gradient(90% 70% at 50% 0%, rgba(77, 216, 168, 0.10), transparent 70%), var(--color-bg-stone);
+    box-shadow: 0 30px 80px -30px rgba(0, 0, 0, 0.9);
+  }
+  .jn-soon::backdrop { background: rgba(5, 8, 8, 0.72); }
+  .jn-soon-eyebrow { margin: 0 0 8px; font-size: 11px; letter-spacing: 0.18em; color: var(--color-copper); }
+  .jn-soon-h { margin: 0 0 10px; font-family: var(--font-serif); font-size: 24px; line-height: 1.2; color: var(--color-ash-100); }
+  .jn-soon-p { margin: 0 0 20px; font-size: 15px; line-height: 1.6; color: var(--color-ash-300); }
+  .jn-soon-btn { display: inline-flex; align-items: center; gap: 12px; min-height: 52px; }
+  .jn-soon-close {
+    display: block;
+    margin: 14px auto 0;
+    min-height: 44px;
+    padding: 0 18px;
+    font: inherit;
+    font-size: 14px;
+    color: var(--color-ash-300);
+    background: none;
+    border: 0;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .jn-video { max-width: 760px; margin: 48px auto 80px; text-align: center; }
+  @media (min-width: 740px) { .jn-video { margin-top: 64px; } }
+  .jn-video-h { margin: 0 0 8px; }
+  .jn-video-p { margin: 0 auto 20px; max-width: 480px; font-size: 15px; line-height: 1.6; color: var(--color-ash-300); }
+  .jn-player {
+    overflow: hidden;
+    border: 1px solid var(--color-ash-700);
+    border-radius: 14px;
+    background: var(--color-bg-card);
+    box-shadow: 0 24px 60px -32px rgba(0, 0, 0, 0.8);
+  }
+  .jn-player video { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; background: #000; }
+</style>
