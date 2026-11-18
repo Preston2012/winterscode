@@ -462,7 +462,7 @@ export const portfolio: PortfolioItem[] = [
     numeral: 'v.',
     name: 'Baseline Marketing',
     category: 'site',
-    meta: 'baseline.marketing · 13 pages · 22 custom widgets',
+    meta: 'baseline.marketing · 13 pages · 21 custom widgets',
     tags: ['NEXT.JS', 'TYPESCRIPT', 'CLOUDFLARE'],
     status: 'live',
     build: 'new',
@@ -483,7 +483,7 @@ export const portfolio: PortfolioItem[] = [
       {
         label: 'Scope',
         value:
-          '13-page marketing + portfolio site for my own product, Baseline. 22 custom interactive widgets built from scratch (radar charts, timelines, signal gauges, heatmaps, constellation maps). No chart libraries, no Tailwind, no UI kits.',
+          '13-page marketing + portfolio site for my own product, Baseline, a free app. 21 custom interactive widgets built from scratch (radar charts, timelines, signal gauges, heatmaps, constellation maps). No chart libraries, no Tailwind, no UI kits.',
       },
     ],
     links: [
@@ -536,8 +536,8 @@ export const portfolio: PortfolioItem[] = [
     numeral: 'iv.',
     name: 'Baseline',
     category: 'app',
-    meta: 'Political intelligence · 106 figures · 28 screens · 4 AI models',
-    tags: ['FLUTTER', 'SUPABASE', 'DEMIURGE'],
+    meta: 'Free · no ads · 32 screens · 43 features',
+    tags: ['FLUTTER', 'SELF-HOSTED', 'DEMIURGE'],
     status: 'beta',
     build: 'new',
     order: 30,
@@ -553,16 +553,16 @@ export const portfolio: PortfolioItem[] = [
     details: [
       {
         label: 'Stack',
-        value: 'Flutter · Supabase · 22 edge functions · 4 AI models in parallel',
+        value: 'Flutter · 139K lines of Dart · 32 server functions · backend self-hosted',
       },
       {
         label: 'Scope',
         value:
-          'Multi-AI political speech analysis. 106 tracked figures. Claude, GPT, and Grok analyze each statement independently. When they disagree, that disagreement is the signal.',
+          'Measures public speech. Claude, GPT, and Grok analyze each statement independently. When they disagree, that disagreement is the signal. Free, no ads, no subscriptions, no purchases, and guests are welcome.',
       },
       {
         label: 'Status',
-        value: 'Built · in private beta · public marketing at baseline.marketing',
+        value: 'Built · coming to Google Play and the App Store, not in either store yet · public site at baseline.marketing',
       },
     ],
     links: [
