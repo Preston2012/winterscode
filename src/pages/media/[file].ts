@@ -24,6 +24,9 @@ export const prerender = false;
 const MEDIA: Record<string, { path: string; type: string }> = {
   'chere-demo.mp4': { path: '/work/chere-demo.mp4', type: 'video/mp4' },
   'chere-demo.webm': { path: '/work/chere-demo.webm', type: 'video/webm' },
+  // S384: the Chere' master video (2026-11-10 cut, 720p web encode), on /chere/join.
+  'chere-master.mp4': { path: '/work/chere-master.mp4', type: 'video/mp4' },
+  'chere-master.webm': { path: '/work/chere-master.webm', type: 'video/webm' },
 };
 
 function headers(type: string, size: number, etag: string | null): Record<string, string> {
