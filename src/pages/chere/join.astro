@@ -217,6 +217,38 @@ const QR_D = 'M0 0h1v1h-1zM1 0h1v1h-1zM2 0h1v1h-1zM3 0h1v1h-1zM4 0h1v1h-1zM5 0h1
       </a>
       <button type="button" class="jn-soon-close" popovertarget="jn-soon" popovertargetaction="hide">Close</button>
     </div>
+    <script is:inline>
+      /* iOS Safari 15.6 to 16.x ignores the popover attribute: the note would sit open and Close would do
+         nothing. Where togglePopover is missing, the same buttons drive a data-open fallback. */
+      (function () {
+        var box = document.getElementById('jn-soon');
+        if (!box || typeof box.togglePopover === 'function') return;
+        var last = null;
+        function openBox(from) {
+          last = from;
+          box.setAttribute('data-open', '');
+          var c = box.querySelector('.jn-soon-close');
+          if (c) c.focus();
+        }
+        function closeBox() {
+          if (!box.hasAttribute('data-open')) return;
+          box.removeAttribute('data-open');
+          if (last && last.focus) last.focus();
+        }
+        var triggers = document.querySelectorAll('[popovertarget="jn-soon"]');
+        for (var i = 0; i < triggers.length; i++) {
+          triggers[i].addEventListener('click', function (e) {
+            var t = e.currentTarget;
+            if (t.getAttribute('popovertargetaction') === 'hide') closeBox();
+            else openBox(t);
+          });
+        }
+        document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeBox(); });
+        document.addEventListener('click', function (e) {
+          if (box.hasAttribute('data-open') && !box.contains(e.target) && !e.target.closest('[popovertarget="jn-soon"]')) closeBox();
+        });
+      })();
+    </script>
   )}
 
   <section class="jn-connect" aria-labelledby="jn-connect-h" data-textbar-hide>
@@ -419,6 +451,20 @@ const QR_D = 'M0 0h1v1h-1zM1 0h1v1h-1zM2 0h1v1h-1zM3 0h1v1h-1zM4 0h1v1h-1zM5 0h1
   }
 
   .jn-badge-btn { background: none; border: 0; padding: 0; cursor: pointer; }
+  /* Hidden unless the browser opens it as a popover (:popover-open) or the script's fallback sets data-open.
+     Where popover is unsupported the :popover-open rule is dropped, so the note stays hidden by default. */
+  .jn-soon { display: none; }
+  .jn-soon:popover-open { display: block; }
+  .jn-soon[data-open] {
+    display: block;
+    position: fixed;
+    inset: 0;
+    height: fit-content;
+    max-height: 92vh;
+    overflow: auto;
+    z-index: 1000;
+    box-shadow: 0 0 0 100vmax rgba(5, 8, 8, 0.72), 0 30px 80px -30px rgba(0, 0, 0, 0.9);
+  }
   .jn-soon {
     margin: auto;
     width: min(92vw, 400px);
