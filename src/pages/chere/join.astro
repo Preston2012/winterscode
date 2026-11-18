@@ -98,7 +98,7 @@ const QR_D = 'M0 0h1v1h-1zM1 0h1v1h-1zM2 0h1v1h-1zM3 0h1v1h-1zM4 0h1v1h-1zM5 0h1
 >
   <Fragment slot="head">
     <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(crumbs))} />
-    <script is:inline>document.documentElement.dataset.os=/android/i.test(navigator.userAgent)?'android':/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)?'ios':'other';</script>
+    <script is:inline>document.documentElement.dataset.os=/android/i.test(navigator.userAgent)?'android':/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)?'ios':'other';document.documentElement.dataset.apple=/iphone|ipad|ipod|macintosh|mac os/i.test(navigator.userAgent)||navigator.platform==='MacIntel'?'1':'0';</script>
   </Fragment>
 
   <Header />
@@ -146,7 +146,7 @@ const QR_D = 'M0 0h1v1h-1zM1 0h1v1h-1zM2 0h1v1h-1zM3 0h1v1h-1zM4 0h1v1h-1zM5 0h1
                   <img src={BADGES[s.badge].src} alt={BADGES[s.badge].alt} width={BADGES[s.badge].w} height={BADGES[s.badge].h} decoding="async" />
                 </a>
               ) : (
-                <a class="btn btn-secondary jn-btn" href={s.href} rel="noopener">{s.cta}<span aria-hidden="true" class="jn-arrow">→</span></a>
+                <a class="btn btn-secondary jn-btn" href={s.href} rel="noopener" data-apple-join={s.href.includes('testflight.apple.com') ? '' : undefined}>{s.cta}<span aria-hidden="true" class="jn-arrow">→</span></a>
               )}
             </div>
           </li>
@@ -250,6 +250,40 @@ const QR_D = 'M0 0h1v1h-1zM1 0h1v1h-1zM2 0h1v1h-1zM3 0h1v1h-1zM4 0h1v1h-1zM5 0h1
       })();
     </script>
   )}
+
+  <div id="jn-apple" popover class="jn-soon" role="dialog" aria-label="Join on iPhone or iPad">
+    <p class="jn-soon-eyebrow mono">IPHONE AND IPAD</p>
+    <p class="jn-soon-p">Chere' for iPhone and iPad installs through TestFlight. Open this page on your iPhone or iPad to join.</p>
+    <button type="button" class="jn-soon-close" data-apple-close>Close</button>
+  </div>
+  <script is:inline>
+    /* On a device that is not an iPhone, iPad or Mac the TestFlight page can only say "open this on your
+       iPhone", so the Join button opens this note instead. Script off, or an Apple device: the link works as is.
+       Where togglePopover is missing (iOS Safari 15.6 to 16.x), data-open drives the same box. */
+    (function () {
+      var box = document.getElementById('jn-apple');
+      var link = document.querySelector('[data-apple-join]');
+      if (!box || !link || document.documentElement.dataset.apple === '1') return;
+      var native = typeof box.showPopover === 'function';
+      var closeBtn = box.querySelector('[data-apple-close]');
+      function isOpen() { return native ? box.matches(':popover-open') : box.hasAttribute('data-open'); }
+      function openBox() {
+        if (native) box.showPopover(); else box.setAttribute('data-open', '');
+        if (closeBtn) closeBtn.focus();
+      }
+      function closeBox() {
+        if (!isOpen()) return;
+        if (native) box.hidePopover(); else box.removeAttribute('data-open');
+        link.focus();
+      }
+      link.addEventListener('click', function (e) { e.preventDefault(); openBox(); });
+      if (closeBtn) closeBtn.addEventListener('click', closeBox);
+      document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeBox(); });
+      document.addEventListener('click', function (e) {
+        if (!native && box.hasAttribute('data-open') && !box.contains(e.target) && !e.target.closest('[data-apple-join]')) closeBox();
+      });
+    })();
+  </script>
 
   <section class="jn-connect" aria-labelledby="jn-connect-h" data-textbar-hide>
     <div class="jn-connect-n mono" aria-hidden="true">LAST STEP</div>
