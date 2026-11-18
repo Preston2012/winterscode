@@ -1,0 +1,265 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/ui/Breadcrumbs.astro';
+import { breadcrumbSchema } from '../../lib/schema';
+import { smsBase } from '../../lib/text-cta';
+
+// Every sms link carries the +1 number and a prefill (S339, the sitewide sms rule).
+const sms = smsBase + encodeURIComponent('Hi Preston, a question about Gauge and my data: ');
+
+const lastUpdated = '2026-11-18';
+const crumbs = [
+  { name: 'Home', path: '/' },
+  { name: 'Gauge privacy', path: '/gauge/privacy' },
+];
+---
+
+<BaseLayout
+  title="Gauge Privacy Policy · Winters Code"
+  description="What the Gauge weather app keeps on your phone, what it sends to the National Weather Service and OpenStreetMap, and how it uses your location."
+  canonicalPath="/gauge/privacy"
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(crumbs))} />
+  </Fragment>
+
+  <Breadcrumbs items={crumbs} />
+
+  <article class="legal-page">
+    <div class="legal-eyebrow mono">GAUGE · PRIVACY POLICY</div>
+    <h1 class="h1 legal-h1">Gauge privacy, in plain English.</h1>
+    <p class="legal-tagline">
+      Gauge is a weather app. It needs a place to show you a forecast, and that is about all
+      it needs. Here is exactly what it does with your data.
+    </p>
+    <p class="small legal-updated">Effective and last updated: {lastUpdated}. Describes Gauge version 0.1.</p>
+
+    <div class="legal-body">
+      <p class="legal-lead">
+        Short version: no account, no ads, no analytics, no tracking. Gauge has no server of
+        its own and sends nothing to me. It talks to two public services, listed below, and
+        no others.
+      </p>
+
+      <h2 class="h2 legal-h2">Who this covers</h2>
+      <p>
+        Gauge is made by Winters Code, which is me, Preston Winters, in Bandon, Oregon. This
+        policy covers the Gauge app on iPhone and Android.
+      </p>
+
+      <h2 class="h2 legal-h2">What stays on your phone</h2>
+      <ul class="legal-list">
+        <li>Your saved places, up to 20, and the place you last selected.</li>
+        <li>
+          A saved copy of recent National Weather Service responses, so Gauge can show a
+          forecast with its real age when you are offline.
+        </li>
+      </ul>
+      <p>
+        Gauge makes no backup of its own. On Android, app backup is turned off. On iPhone and
+        iPad, your device's own backup may include this data. Uninstalling the app removes it
+        from the phone.
+      </p>
+
+      <h2 class="h2 legal-h2">What leaves your phone</h2>
+      <p>Gauge talks to two outside services and no others.</p>
+      <ul class="legal-list">
+        <li>
+          <strong>National Weather Service (api.weather.gov).</strong> To get a forecast and
+          alerts, Gauge sends the place's coordinates, rounded to four decimal places (about
+          11 meters), in the request address. The requests are: the point lookup
+          (<span class="mono">/points</span>) for those coordinates; the active alerts for
+          those coordinates; the daily forecast, the hourly forecast and the list of nearby
+          observation stations, at the addresses the point lookup returns, all on
+          api.weather.gov; and the latest reading from up to the three nearest stations, also
+          on api.weather.gov. Requests carry a User-Agent that names Gauge and the Winters
+          Code website, as the service asks apps to do.
+        </li>
+        <li>
+          <strong>OpenStreetMap Nominatim (nominatim.openstreetmap.org).</strong> Only when
+          you type a US city or ZIP code and submit it, the text you typed is sent to look up
+          the place. Nothing else is sent there, and it is never used for your phone's
+          location.
+        </li>
+      </ul>
+      <p>
+        Like any internet request, these services can see your phone's internet address. Each
+        has its own privacy practices, which I cannot see or change.
+      </p>
+
+      <h2 class="h2 legal-h2">Your location</h2>
+      <ul class="legal-list">
+        <li>Gauge asks for location only when you tap "Use my location", and only while the app is open.</li>
+        <li>
+          It asks the phone for a low accuracy position. On Android it can ask for approximate
+          or precise location, and you can choose approximate.
+        </li>
+        <li>
+          The place is saved on your phone as "Current location", with coordinates rounded to
+          four decimal places.
+        </li>
+        <li>
+          You can use Gauge without ever sharing your location, by searching for a US city or
+          ZIP code instead.
+        </li>
+      </ul>
+
+      <h2 class="h2 legal-h2">What I never do</h2>
+      <ul class="legal-list">
+        <li>No accounts and no sign-in.</li>
+        <li>No ads, and no advertising identifier.</li>
+        <li>No analytics, crash-reporting or tracking kits in the app.</li>
+        <li>Nothing is sold or shared, because I never receive any of your data.</li>
+      </ul>
+
+      <h2 class="h2 legal-h2">Children</h2>
+      <p>Gauge collects no personal information from anyone, including children.</p>
+
+      <h2 class="h2 legal-h2">When this changes</h2>
+      <p>
+        If Gauge changes what it collects, this page changes first, the date at the top moves,
+        and the change shows up in the site's public history (<a href="/changelog">/changelog</a>).
+      </p>
+
+      <h2 class="h2 legal-h2">Questions</h2>
+      <p>
+        Email <a href="mailto:preston@winterscode.com">preston@winterscode.com</a>, text
+        <a href={sms}>541-551-0731</a>, or use the <a href="/contact">contact page</a>.
+      </p>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .legal-page {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 48px 4px 64px;
+  }
+  @media (min-width: 740px) {
+    .legal-page {
+      padding: 64px 4px 80px;
+    }
+  }
+  @media (min-width: 1024px) {
+    .legal-page {
+      padding: 80px 0 96px;
+    }
+  }
+
+  .legal-eyebrow {
+    color: var(--color-copper);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    font-weight: 600;
+    margin-bottom: 16px;
+  }
+  @media (min-width: 740px) {
+    .legal-eyebrow { font-size: 12px; }
+  }
+
+  .legal-h1 {
+    margin: 0 0 16px;
+  }
+
+  .legal-tagline {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 17px;
+    color: var(--color-ash-300);
+    line-height: 1.55;
+    margin: 0 0 16px;
+    max-width: 600px;
+  }
+  @media (min-width: 1024px) {
+    .legal-tagline { font-size: 19px; }
+  }
+
+  .legal-updated {
+    margin-top: 8px;
+    color: var(--color-ash-500);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+  }
+
+  .legal-body {
+    margin-top: 36px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    color: var(--color-ash-300);
+    font-size: 15px;
+    line-height: 1.65;
+  }
+  @media (min-width: 1024px) {
+    .legal-body { font-size: 16px; }
+  }
+  .legal-body p {
+    margin: 0;
+  }
+
+  .legal-lead {
+    padding: 16px 18px;
+    background: rgba(77, 216, 168, 0.05);
+    border: 1px solid rgba(77, 216, 168, 0.25);
+    border-radius: var(--radius-card);
+    color: var(--color-ash-100);
+    font-style: italic;
+    font-family: var(--font-serif);
+    font-size: 16px !important;
+    line-height: 1.6 !important;
+  }
+  @media (min-width: 1024px) {
+    .legal-lead {
+      font-size: 18px !important;
+      padding: 20px 24px;
+    }
+  }
+
+  .legal-h2 {
+    margin-top: 24px;
+    margin-bottom: 4px;
+  }
+  @media (min-width: 740px) {
+    .legal-h2 { margin-top: 28px; }
+  }
+
+  .legal-body strong {
+    color: var(--color-ash-100);
+    font-weight: 600;
+  }
+  .legal-body a {
+    color: var(--color-copper-bright);
+    text-decoration: underline;
+    text-decoration-color: var(--copper-hairline);
+    text-underline-offset: 3px;
+  }
+  @media (hover: hover) {
+
+    .legal-body a:hover {
+    color: var(--color-wc-green);
+    text-decoration-color: var(--color-wc-green-dim);
+  }}
+
+  .legal-list {
+    margin: 4px 0 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .legal-list li {
+    padding-left: 18px;
+    position: relative;
+  }
+  .legal-list li::before {
+    content: '·';
+    position: absolute;
+    left: 4px;
+    top: 0;
+    color: var(--color-copper);
+    font-weight: 700;
+  }
+</style>
