@@ -1,0 +1,1100 @@
+---
+/**
+ * /gauge, Gauge's own page inside the Winters Code frame (S429, Preston 2026-11-18 12:06 PT:
+ * "have you guys made a page for gauge yet? ... For now it gets a page on my website but it
+ * will need its own website").
+ *
+ * STATE: built and previewed privately. It stays noindex, out of the nav and out of the sitemap
+ * until Preston approves it, because the app is being rebuilt and the name "Gauge" and the
+ * feature names are not cleared yet.
+ *
+ * COPY RULE. Say what Gauge is being built to do. Never that a feature exists today. No
+ * trademark symbols on the feature names (their clearance is not done). Every figure drawn on
+ * this page is an illustration and is labelled as one. There are no download buttons and no
+ * store badges, because there is nothing to download.
+ *
+ * BRAND. Gauge's own locked brand, not the site's: true black canvas, teal #2dd4bf for the
+ * interactive and the confident, amber #d4a72d for disagreement, Space Grotesk, Poppins and
+ * JetBrains Mono with tabular figures, the 270 degree arc, uncertainty shown as texture, seven
+ * atmospheric states, the Flight Engineer voice. Zero shadows, 2px interactive borders. Every
+ * visual is built in code (SVG and CSS) from the brand, with no stock images and no screenshots
+ * of the current app. No scripts at all, so the repo's CSP has nothing to hash here.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/layout/Header.astro';
+import MobileMenu from '../../components/layout/MobileMenu.astro';
+import Breadcrumbs from '../../components/ui/Breadcrumbs.astro';
+import ArcMark from '../../components/gauge/ArcMark.astro';
+import ArcDial from '../../components/gauge/ArcDial.astro';
+import GrainDefs from '../../components/gauge/GrainDefs.astro';
+import NowcastDial from '../../components/gauge/NowcastDial.astro';
+import { breadcrumbSchema } from '../../lib/schema';
+
+const path = '/gauge';
+const crumbs = [
+  { name: 'Home', path: '/' },
+  { name: 'Gauge', path },
+];
+
+const TEAL = '#2dd4bf';
+const AMBER = '#d4a72d';
+const VIOLET = '#a855f7';
+const CRIMSON = '#ef4444';
+
+// ── The braid: seven forecast strands on one time axis. They share a path where the sources
+// agree and fan out where they split. Pure arithmetic, computed once at build time.
+const W = 600;
+const H = 200;
+const offsets = [-1, -0.64, -0.3, 0, 0.32, 0.66, 1];
+const xs = Array.from({ length: 61 }, (_, i) => (i / 60) * W);
+const centre = (t: number) => 104 + 20 * Math.sin(t * 5.4) - 12 * t;
+const spread = (t: number) => 1.5 + 66 * Math.pow(t, 1.75);
+const strandY = (k: number, t: number) =>
+  centre(t) + spread(t) * (offsets[k] * 0.92 + 0.24 * Math.sin(t * 9.5 + k * 1.9) * t);
+const strands = offsets.map((_, k) =>
+  xs.map((x, i) => `${i === 0 ? 'M' : 'L'}${x.toFixed(1)} ${strandY(k, x / W).toFixed(1)}`).join(' '),
+);
+const upper = xs.map((x) => `${x.toFixed(1)} ${(centre(x / W) - spread(x / W) * 1.05).toFixed(1)}`);
+const lower = xs.map((x) => `${x.toFixed(1)} ${(centre(x / W) + spread(x / W) * 1.05).toFixed(1)}`).reverse();
+const envelope = `M${upper.join(' L')} L${lower.join(' L')} Z`;
+
+// ── Twelve hourly cells whose grain rises as the forecast frays.
+const hours = Array.from({ length: 12 }, (_, i) => ({
+  grain: (i < 3 ? 0 : i < 6 ? 1 : i < 9 ? 2 : 3) as 0 | 1 | 2 | 3,
+  color: i < 6 ? TEAL : AMBER,
+}));
+
+// ── Three dials for idea 01. Below 65 percent agreement the arc turns amber and grainy.
+const dials = [
+  { v: 0.94, color: TEAL, grain: 0 as const, num: '94%', note: 'States it cleanly' },
+  { v: 0.71, color: TEAL, grain: 1 as const, num: '71%', note: 'Holds, with some grain' },
+  { v: 0.48, color: AMBER, grain: 2 as const, num: '48%', note: 'Leads with the doubt' },
+];
+
+// ── The alert ladder.
+const ladder = [
+  {
+    key: 'watch',
+    name: 'Watch',
+    color: AMBER,
+    text: '#d4a72d',
+    v: 0.82,
+    time: '3 H 10 M',
+    line: 'Storm conditions possible this afternoon. Winds near 30 mph by 4 PM.',
+    voice: 'Flight Engineer',
+  },
+  {
+    key: 'warning',
+    name: 'Warning',
+    color: VIOLET,
+    text: '#c084fc',
+    v: 0.38,
+    time: '0 H 38 M',
+    line: 'Severe storm moving northeast at 28 mph. Gusts to 60 mph. Arrival 38 minutes.',
+    voice: 'Flight Engineer',
+  },
+  {
+    key: 'emergency',
+    name: 'Emergency',
+    color: CRIMSON,
+    text: '#f87171',
+    v: 0.08,
+    time: '0 H 04 M',
+    line: 'Tornado warning. Take shelter now. Go to an interior room on the lowest floor.',
+    voice: 'Air Traffic Controller',
+  },
+];
+
+// ── The seven atmospheric states, from the locked brand brief.
+const states = [
+  { name: 'Clear Sky', tag: 'Warm gold', accent: '#fbbf24', text: '#fbbf24', bg: 'linear-gradient(135deg,#1a1400 0%,#0f0f0f 40%,#0a0f12 100%)', border: 'rgba(251,191,36,0.22)', dots: ['#fbbf24', '#f59e0b', '#d97706'] },
+  { name: 'Overcast', tag: 'Cool steel', accent: '#94a3b8', text: '#aab6c6', bg: 'linear-gradient(135deg,#0f1218 0%,#0a0a0a 40%,#0d1017 100%)', border: 'rgba(148,163,184,0.2)', dots: ['#cbd5e1', '#94a3b8', '#64748b'] },
+  { name: 'Rain', tag: 'Electric indigo', accent: '#818cf8', text: '#818cf8', bg: 'linear-gradient(135deg,#0a0a1a 0%,#0a0a0f 40%,#0f0a1f 100%)', border: 'rgba(129,140,248,0.25)', dots: ['#818cf8', '#6366f1', '#4f46e5'] },
+  { name: 'Severe Storm', tag: 'Violet charge', accent: '#a855f7', text: '#c084fc', bg: 'linear-gradient(135deg,#12050f 0%,#0a0a0a 30%,#0a051a 100%)', border: 'rgba(168,85,247,0.28)', dots: ['#c084fc', '#a855f7', '#7c3aed'] },
+  { name: 'Snow', tag: 'Frozen cyan', accent: '#22d3ee', text: '#22d3ee', bg: 'linear-gradient(135deg,#0a1015 0%,#0a0a0f 40%,#0f1520 100%)', border: 'rgba(34,211,238,0.22)', dots: ['#a5f3fc', '#22d3ee', '#0891b2'] },
+  { name: 'Extreme Heat', tag: 'Warm ember', accent: '#ef6a50', text: '#ef6a50', bg: 'linear-gradient(135deg,#1a0a05 0%,#0f0a0a 40%,#150505 100%)', border: 'rgba(239,106,80,0.26)', dots: ['#ef6a50', '#ef4444', '#dc2626'] },
+  { name: 'Clear Night', tag: 'Deep indigo', accent: '#6366f1', text: '#a5b4fc', bg: 'linear-gradient(135deg,#050510 0%,#000005 40%,#03030f 100%)', border: 'rgba(129,140,248,0.2)', dots: ['#6366f1', '#4338ca', '#312e81'] },
+];
+
+const promise = [
+  { k: 'Free', v: 'Every feature, for everyone. There is no paid tier and no trial.' },
+  { k: 'Open source', v: 'Anyone can read the code and check how a forecast was made.' },
+  { k: 'No ads', v: 'Not now and not later. Nothing on the screen is there to sell you something.' },
+  { k: 'No accounts', v: 'Nothing to sign up for. You open it and it works.' },
+  { k: 'No tracking', v: 'Gauge is not built to follow you or to build a profile of you.' },
+];
+
+const ledger = [
+  { s: 'Done', k: 'Designed', v: 'The mark, the dial, the seven skies and the voice are locked.' },
+  { s: 'Done', k: 'Specified', v: 'Each feature is written down with the data it needs and where that data comes from.' },
+  { s: 'Under way', k: 'Being built', v: 'The app, rebuilt to match the design.' },
+  { s: 'Not yet', k: 'Released', v: 'No download, no store listing and no public release.' },
+];
+
+// ── The scrub: 48 invented hours in 15 minute steps. Every value below is made up for the
+// illustration and the page says so. The page script reads this and drives the palette, the
+// agreement dial, the rain countdown, the clean window and the dew point from one clock.
+const START_HOUR = 13;
+const STEPS = 193;
+const gauss = (t: number, m: number, sd: number, a: number) => a * Math.exp(-((t - m) ** 2) / (2 * sd * sd));
+// ONE TABLE drives the dew point word, the bar bands, the tick labels and the legend. The bands are the
+// National Weather Service's (weather.gov/arx/heat_index): 55 and below dry and comfortable, 56 to 64
+// sticky, 65 and up oppressive. The readout is a whole number, and the bounds sit half a degree
+// between whole numbers, so no value maps to two words and the legend names every word the readout can show.
+const DEW_MIN = 40;
+const DEW_MAX = 80;
+const DEW = [
+  { w: 'Comfortable', lo: DEW_MIN, hi: 55.5, range: '55 and below', fill: '#2dd4bf' },
+  { w: 'Sticky', lo: 55.5, hi: 64.5, range: '56 to 64', fill: 'linear-gradient(90deg,#d4a72d,#ef6a50)' },
+  { w: 'Oppressive', lo: 64.5, hi: 999, range: '65 and up', fill: '#ef4444' },
+];
+const dewRange = (z: (typeof DEW)[number]) => z.range;
+const dewPct = (v: number) => ((Math.min(DEW_MAX, Math.max(DEW_MIN, v)) - DEW_MIN) / (DEW_MAX - DEW_MIN)) * 100;
+const dewTicks = [DEW_MIN, 55, 65, DEW_MAX];
+const dewAria = `Dew point scale from ${DEW_MIN} to ${DEW_MAX} degrees Fahrenheit. ${DEW.map((z) => `${z.w} ${dewRange(z)}`).join(', ')}.`;
+
+const series = { s: [] as number[], p: [] as number[], a: [] as number[], d: [] as number[] };
+for (let i = 0; i < STEPS; i++) {
+  const t = i / 4;
+  const pr = Math.min(0.98, 0.04 + gauss(t, 7.5, 1.1, 0.85) + gauss(t, 22, 2.2, 0.9) + gauss(t, 33, 1.5, 0.6));
+  const clock = (START_HOUR + t) % 24;
+  const night = clock >= 20.5 || clock < 6;
+  const cloud = (t > 3.5 && t < 11) || (t > 17 && t < 30) || (t > 31 && t < 36);
+  // The sky is read from the SAME rounded rain figure the nowcast uses (50 percent and up is rain),
+  // so the two can never disagree.
+  const pct = Math.round(pr * 100);
+  let st = 0;
+  if (pct >= 50) st = t > 20.5 && t < 24.5 && pct >= 60 ? 3 : 2;
+  else if (cloud) st = 1;
+  else st = night ? 6 : 0;
+  const dip = gauss(t, 22, 3, 0.14) + gauss(t, 7.5, 1.5, 0.06);
+  const a = Math.max(0.36, Math.min(0.97, 0.97 - 0.5 * Math.pow(t / 48, 1.15) - dip + 0.02 * Math.sin(t * 1.7)));
+  const d = 50 + 7 * Math.sin((t / 48) * Math.PI * 1.4) + 12 * pr + (night ? -1.5 : 0);
+  series.s.push(st);
+  series.p.push(pct);
+  series.a.push(Math.round(a * 100));
+  series.d.push(Math.round(d * 10) / 10);
+}
+const seriesJson = JSON.stringify({
+  ...series,
+  start: START_HOUR,
+  st: states.map((s) => ({ n: s.name, c: s.text })),
+  dz: DEW.map((z) => ({ w: z.w, hi: z.hi })),
+});
+
+// Hourly rain bars under the braid. Grain level follows agreement: sure bars are smooth teal,
+// unsure ones are grainy amber.
+const rainBars = Array.from({ length: 49 }, (_, h) => {
+  const i = Math.min(STEPS - 1, h * 4);
+  const pct = series.p[i];
+  const ag = series.a[i];
+  const grain = (ag >= 80 ? 0 : ag >= 65 ? 1 : ag >= 50 ? 2 : 3) as 0 | 1 | 2 | 3;
+  const hh = Math.max(2, (pct / 100) * 46);
+  return { x: (h / 48) * W - 4.5, y: 52 - hh, h: hh, grain, color: ag >= 65 ? TEAL : AMBER };
+});
+---
+
+<BaseLayout
+  title="Gauge · A Forecast Instrument, In Development · Winters Code"
+  description="Gauge is a free, open source weather app being built to show how sure a forecast is. No ads, no accounts, no tracking. In development."
+  canonicalPath={path}
+  ogImage={null}
+  noindex={true}
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(crumbs))} />
+  </Fragment>
+
+  <Header />
+  <MobileMenu />
+  <Breadcrumbs items={crumbs} />
+
+  <div class="gz">
+    <GrainDefs />
+
+    <!-- ───────────── Hero ───────────── -->
+    <section class="gz-stage gz-hero" aria-labelledby="gz-h1">
+      <div class="gz-field" aria-hidden="true">
+        {states.map((s, i) => (<i style={`--fc:${s.accent};--fd:${-i * 6}s`}></i>))}
+      </div>
+      <div class="gz-hero-copy">
+        <p class="gz-brandline">
+          <ArcMark size={34} />
+          <span class="gz-wordmark">GAUGE</span>
+        </p>
+        <p class="gz-kicker">A precision atmospheric instrument</p>
+        <h1 class="gz-h1" id="gz-h1">Weather, measured.</h1>
+        <p class="gz-sub">
+          Gauge is being built to show how sure a forecast is, not only what it says. Numbers first.
+          Uncertainty stated plainly.
+        </p>
+        <p class="gz-status">
+          <span class="gz-status-dot" aria-hidden="true"></span>
+          <span><strong>In development.</strong> Nothing to download yet, and no store listing.</span>
+        </p>
+        <dl class="gz-stats">
+          <div><dt>Ads</dt><dd>0</dd></div>
+          <div><dt>Accounts</dt><dd>0</dd></div>
+          <div><dt>Trackers</dt><dd>0</dd></div>
+        </dl>
+        <p class="gz-pausewrap">
+          <button type="button" class="gz-pause" data-gz-pause aria-pressed="false">Pause motion</button>
+        </p>
+      </div>
+      <figure class="gz-hero-dial">
+        <ArcDial
+          value={0.92}
+          readout="92%"
+          caption="MODEL AGREEMENT"
+          animate={true}
+          label="Illustration of the Gauge dial: an arc filled to 92 percent, labelled model agreement."
+        />
+        <figcaption class="gz-fig">Illustration. Not live data.</figcaption>
+      </figure>
+    </section>
+
+    <!-- ───────────── Four ideas ───────────── -->
+    <section class="gz-stage" aria-labelledby="gz-ideas-h">
+      <header class="gz-head">
+        <p class="gz-kicker">01 / What it is</p>
+        <h2 class="gz-h2" id="gz-ideas-h">A weather app designed like an instrument.</h2>
+        <p class="gz-lead">
+          Most weather apps hand you one number and a cartoon sun. Gauge is being built around four
+          ideas that show how much to trust the number.
+        </p>
+      </header>
+
+      <div class="gz-ideas">
+        <!-- 1. The arc -->
+        <article class="gz-card" aria-labelledby="gz-i1">
+          <p class="gz-kicker">Idea 1 · The arc</p>
+          <h3 class="gz-h3" id="gz-i1">Agreement you can read at a glance.</h3>
+          <div class="gz-visual gz-dials">
+            {dials.map((d) => (
+              <figure class="gz-dialfig">
+                <ArcDial
+                  value={d.v}
+                  color={d.color}
+                  grain={d.grain}
+                  ticks={false}
+                  breathe={d.grain === 2}
+                  label={`Example dial at ${d.num} agreement.`}
+                />
+                <figcaption>
+                  <span class="gz-num" style={`color:${d.color}`}>{d.num}</span>
+                  <span class="gz-mini">{d.note}</span>
+                </figcaption>
+              </figure>
+            ))}
+          </div>
+          <p class="gz-text">
+            Every forecast gets a dial, and the arc fills as the sources agree. Above 65 percent it
+            stays teal. Below that it turns amber and Gauge leads with the doubt.
+          </p>
+        </article>
+
+        <!-- 2. Honest uncertainty -->
+        <article class="gz-card" aria-labelledby="gz-i2">
+          <p class="gz-kicker">Idea 2 · Honest uncertainty</p>
+          <h3 class="gz-h3" id="gz-i2">Doubt shows up as texture.</h3>
+          <div class="gz-visual gz-bars">
+            <div class="gz-barrow">
+              <div class="gz-barlabel"><span>Rain at 3 PM</span><span class="gz-num" style={`color:${TEAL}`}>92% agree</span></div>
+              <svg class="gz-bar" viewBox="0 0 300 14" preserveAspectRatio="none" role="img" aria-label="A smooth teal bar: high agreement.">
+                <rect width="300" height="14" rx="3" fill="#12171b" />
+                <rect width="276" height="14" rx="3" fill={TEAL} />
+              </svg>
+            </div>
+            <div class="gz-barrow">
+              <div class="gz-barlabel"><span>Tomorrow</span><span class="gz-num" style={`color:${AMBER}`}>3 of 6 say rain</span></div>
+              <svg class="gz-bar" viewBox="0 0 300 14" preserveAspectRatio="none" role="img" aria-label="A grainy amber bar: the sources disagree.">
+                <rect width="300" height="14" rx="3" fill="#12171b" />
+                <rect width="150" height="14" rx="3" fill={AMBER} filter="url(#gz-g2)" />
+                <rect class="gz-breathe" width="150" height="14" rx="3" fill={AMBER} filter="url(#gz-g3)" />
+              </svg>
+            </div>
+            <div class="gz-barrow">
+              <div class="gz-barlabel"><span>Next 12 hours</span><span class="gz-mini">Fraying with distance</span></div>
+              <svg class="gz-bar gz-bar--strip" viewBox="0 0 300 26" preserveAspectRatio="none" role="img" aria-label="Twelve hourly cells, smooth teal at first and increasingly grainy amber toward the end.">
+                {hours.map((h, i) => (
+                  <rect x={i * 25 + 1} y="0" width="23" height="26" rx="2" fill={h.color} filter={h.grain ? `url(#gz-g${h.grain})` : undefined} />
+                ))}
+                {hours.map((h, i) => (h.grain >= 2 ? <rect class="gz-breathe" x={i * 25 + 1} y="0" width="23" height="26" rx="2" fill={h.color} filter="url(#gz-g3)" /> : null))}
+              </svg>
+              <div class="gz-axis"><span>Now</span><span>+6 h</span><span>+12 h</span></div>
+            </div>
+          </div>
+          <p class="gz-text">
+            A sure forecast is a smooth fill. An unsure one breaks into grain, so you feel the
+            confidence before you read a number. The same texture runs through bars, timelines and
+            ribbons.
+          </p>
+        </article>
+
+        <!-- 3. One timeline -->
+        <article class="gz-card" aria-labelledby="gz-i3">
+          <p class="gz-kicker">Idea 3 · The aligned timeline</p>
+          <h3 class="gz-h3" id="gz-i3">Every source on one clock.</h3>
+          <div class="gz-visual gz-braid">
+            <div class="gz-braidtags" aria-hidden="true"><span style={`color:${TEAL}`}>Sources agree</span><span style={`color:${AMBER}`}>Sources split</span></div>
+            <svg class="gz-draw" data-draw viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Seven forecast strands on one time axis. They braid into a single thin line at the start and fan out toward the end.">
+              <defs>
+                <linearGradient id="gz-braid-g" x1="0" x2="1" y1="0" y2="0">
+                  <stop offset="0" stop-color={TEAL} />
+                  <stop offset="0.45" stop-color={TEAL} />
+                  <stop offset="1" stop-color={AMBER} />
+                </linearGradient>
+                <linearGradient id="gz-braid-e" x1="0" x2="1" y1="0" y2="0">
+                  <stop offset="0" stop-color={TEAL} stop-opacity="0" />
+                  <stop offset="0.5" stop-color={AMBER} stop-opacity="0.04" />
+                  <stop offset="1" stop-color={AMBER} stop-opacity="0.34" />
+                </linearGradient>
+              </defs>
+              {[0, 1, 2, 3, 4].map((i) => (
+                <line x1={i * 150} y1="8" x2={i * 150} y2={H - 8} stroke="#1b2024" stroke-width="1" />
+              ))}
+              <path d={envelope} fill="url(#gz-braid-e)" filter="url(#gz-g2)" />
+              <path class="gz-breathe" d={envelope} fill="url(#gz-braid-e)" filter="url(#gz-g3)" />
+              {strands.map((d, i) => (
+                <path class="gz-strand" pathLength="1" style={`--i:${i}`} d={d} fill="none" stroke="url(#gz-braid-g)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+              ))}
+            </svg>
+            <div class="gz-axis"><span>Now</span><span>+12 h</span><span>+24 h</span><span>+36 h</span><span>+48 h</span></div>
+          </div>
+          <p class="gz-text">
+            Forecast sources are drawn as strands on a single time axis. Where they agree, the
+            strands braid into one thin line. Where they split, the line frays, and its width is the
+            disagreement.
+          </p>
+        </article>
+
+        <!-- 4. The alert ladder -->
+        <article class="gz-card" aria-labelledby="gz-i4">
+          <p class="gz-kicker">Idea 4 · The alert ladder</p>
+          <h3 class="gz-h3" id="gz-i4">Escalation that sounds like it.</h3>
+          <ol class="gz-visual gz-ladder">
+            {ladder.map((r, i) => (
+              <li class={`gz-rung gz-rung--${r.key}`} style={`--rc:${r.color};--rt:${r.text};--i:${i}`}>
+                <div class="gz-rung-dial">
+                  <ArcDial value={r.v} color={r.color} ticks={false} label={`Countdown dial, ${r.name.toLowerCase()} rung, ${r.time.replace(/ /g, '')}.`} />
+                </div>
+                <div class="gz-rung-body">
+                  <p class="gz-rung-top">
+                    <span class="gz-chip">{r.name}</span>
+                    <span class="gz-num gz-rung-time">{r.time}</span>
+                  </p>
+                  <p class="gz-rung-line">{r.line}</p>
+                  <p class="gz-mini">Voice: {r.voice}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
+          <p class="gz-text">
+            Alerts climb three rungs: watch, warning, emergency. Each has its own color, its own
+            countdown and its own voice. At the top rung the screen is taken over and the wording
+            turns imperative.
+          </p>
+        </article>
+      </div>
+      <p class="gz-fig gz-fig--wide">Illustrations. Every figure and sentence above is an example, not live data.</p>
+    </section>
+
+    <!-- ───────────── The lab: one clock drives everything ───────────── -->
+    <section class="gz-stage" aria-labelledby="gz-lab-h">
+      <header class="gz-head">
+        <p class="gz-kicker">02 / Try the instrument</p>
+        <h2 class="gz-h2" id="gz-lab-h">One clock. Everything follows it.</h2>
+        <p class="gz-lead">
+          This is how Gauge is meant to read a single forecast. Drag through 48 hours and the palette,
+          the agreement dial, the rain countdown, the dry window and the dew point all move together.
+          The numbers are invented for the illustration. Nothing here is a forecast.
+        </p>
+      </header>
+
+      <div class="gz-panel" data-gz-panel data-series={seriesJson}>
+        <div class="gz-sky" aria-hidden="true">
+          {states.map((s, i) => (<i class:list={[{ on: i === 0 }]} style={`background:${s.bg}`}></i>))}
+        </div>
+        <div class="gz-panel-in">
+          <div class="gz-ph">
+            <p class="gz-ph-state"><span class="gz-mini">Sky</span> <strong class="gz-acc" data-r="state">Clear Sky</strong></p>
+            <p class="gz-num gz-ph-clock"><span data-r="clock">1:00 PM</span> <span class="gz-mini">·</span> <span data-r="offset">Now</span></p>
+          </div>
+
+          <div class="gz-cards">
+            <figure class="gz-pc gz-pc--dial" data-r="agree">
+              <p class="gz-mini gz-pc-k">Forecast agreement</p>
+              <ArcDial
+                value={0.97}
+                readout="97%"
+                caption="MODEL AGREEMENT"
+                live={true}
+                breathe={true}
+                label="Illustration of the agreement dial. Its value follows the scrubber below."
+              />
+              <figcaption class="gz-num" data-r="agree-note">States it cleanly</figcaption>
+            </figure>
+
+            <figure class="gz-pc gz-pc--dial">
+              <p class="gz-mini gz-pc-k">Nowcast Pulse</p>
+              <NowcastDial label="Illustration of the rain countdown dial for the next two hours. Its value follows the scrubber below." value={1} minutes="2 H+" />
+              <figcaption class="gz-num" data-r="nc-note">No rain in the next 2 hours</figcaption>
+            </figure>
+
+            <div class="gz-pc-col">
+              <div class="gz-pc gz-cw" data-r="cwcard">
+                <p class="gz-mini gz-pc-k">Next clean window</p>
+                <p class="gz-cw-main" data-r="cw">Now to 7:00 PM</p>
+                <p class="gz-num gz-cw-note" data-r="cwn">95% agreement</p>
+              </div>
+              <div class="gz-pc gz-dew">
+                <p class="gz-mini gz-pc-k">Dew point comfort</p>
+                <p class="gz-dew-main"><span class="gz-dew-n" data-r="dew">51</span><span class="gz-dew-u">°F</span> <span class="gz-dew-l" data-r="dewlab">Comfortable</span></p>
+                <div class="gz-dewbar" role="img" aria-label={dewAria}>
+                  {DEW.map((z) => (<i style={`flex:${Math.min(z.hi, DEW_MAX) - z.lo};background:${z.fill}`}></i>))}
+                  <b class="gz-dewmk" data-r="dewmk" style={`left:${dewPct(51).toFixed(1)}%`}></b>
+                </div>
+                <div class="gz-dewticks" aria-hidden="true">
+                  {dewTicks.map((v, i) => (<span class:list={[{ 'gz-dt-first': i === 0, 'gz-dt-last': i === dewTicks.length - 1 }]} style={`left:${dewPct(v).toFixed(1)}%`}>{v}</span>))}
+                </div>
+                <ul class="gz-dewkey" data-r="dewkey">
+                  {DEW.map((z, i) => (<li data-w={z.w}><span class="gz-dewkey-w">{z.w}</span> <span class="gz-mini">{dewRange(z)}</span></li>))}
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="gz-tl">
+            <div class="gz-tlhead"><span class="gz-mini">Next 48 hours</span><span class="gz-mini">Teal is sure, amber grain is not</span></div>
+            <svg class="gz-draw gz-tlbraid" data-draw viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Seven forecast strands on one 48 hour axis. They braid thin at the start and fan out later. A marker shows the time you chose.">
+              <defs>
+                <linearGradient id="gz-pb-g" x1="0" x2="1" y1="0" y2="0">
+                  <stop offset="0" stop-color={TEAL} /><stop offset="0.45" stop-color={TEAL} /><stop offset="1" stop-color={AMBER} />
+                </linearGradient>
+                <linearGradient id="gz-pb-e" x1="0" x2="1" y1="0" y2="0">
+                  <stop offset="0" stop-color={TEAL} stop-opacity="0" /><stop offset="0.5" stop-color={AMBER} stop-opacity="0.04" /><stop offset="1" stop-color={AMBER} stop-opacity="0.34" />
+                </linearGradient>
+              </defs>
+              {[0, 1, 2, 3, 4].map((i) => (<line x1={i * 150} y1="8" x2={i * 150} y2={H - 8} stroke="#1b2024" stroke-width="1" />))}
+              <path d={envelope} fill="url(#gz-pb-e)" filter="url(#gz-g2)" />
+              <path class="gz-breathe" d={envelope} fill="url(#gz-pb-e)" filter="url(#gz-g3)" />
+              {strands.map((d, i) => (<path class="gz-strand" pathLength="1" style={`--i:${i}`} d={d} fill="none" stroke="url(#gz-pb-g)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />))}
+              <line class="gz-playhead" data-ph="line" x1="0" x2="0" y1="4" y2={H - 4} />
+              <circle class="gz-playdot" data-ph="dot" cx="0" cy="12" r="5" />
+            </svg>
+            <svg class="gz-tlrain" viewBox="0 0 600 56" preserveAspectRatio="none" role="img" aria-label="Hourly chance of rain across the 48 hours. Sure hours are smooth teal bars, unsure hours are grainy amber.">
+              {rainBars.map((b) => (<rect x={b.x.toFixed(1)} y={b.y.toFixed(1)} width="9" height={b.h.toFixed(1)} rx="1.5" fill={b.color} filter={b.grain ? `url(#gz-g${b.grain})` : undefined} />))}
+              <line class="gz-playhead" data-ph="line" x1="0" x2="0" y1="0" y2="56" />
+            </svg>
+            <div class="gz-axis"><span>Now</span><span>+12 h</span><span>+24 h</span><span>+36 h</span><span>+48 h</span></div>
+            <div class="gz-scrub">
+              <label for="gz-scrub" class="gz-scrublabel">Scrub the 48 hours <span class="gz-mini">Arrow keys move 15 minutes</span></label>
+              <input id="gz-scrub" class="gz-range" type="range" min="0" max="192" step="1" value="0" aria-valuetext="Now, 1:00 PM, Clear Sky, forecast agreement 97 percent" />
+              <p class="sr-only" data-r="live" aria-live="polite" aria-atomic="true"></p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="gz-fig gz-fig--wide">Illustration. Invented numbers, drawn in your browser. Not a forecast.</p>
+    </section>
+
+    <!-- ───────────── Seven skies ───────────── -->
+    <section class="gz-stage" aria-labelledby="gz-states-h">
+      <header class="gz-head">
+        <p class="gz-kicker">03 / The sky sets the palette</p>
+        <h2 class="gz-h2" id="gz-states-h">Seven skies, one instrument.</h2>
+        <p class="gz-lead">
+          The whole interface takes its color from the conditions outside and crossfades between
+          seven states. Saturation is capped, and every state is meant to hold WCAG AA contrast, so
+          the mood never costs legibility.
+        </p>
+      </header>
+      <ul class="gz-states">
+        {states.map((s) => (
+          <li class="gz-state" style={`--sb:${s.bg};--sbd:${s.border};--st:${s.text}`}>
+            <ArcMark size={30} color={s.accent} />
+            <span class="gz-state-name">{s.name}</span>
+            <span class="gz-state-tag">{s.tag}</span>
+            <span class="gz-dots" aria-hidden="true">
+              {s.dots.map((d) => (<i style={`background:${d}`}></i>))}
+            </span>
+          </li>
+        ))}
+        <li class="gz-state gz-state--aa">
+          <span class="gz-aa" aria-hidden="true">AA</span>
+          <span class="gz-state-name">Contrast floor</span>
+          <span class="gz-state-tag">Tested in every state</span>
+        </li>
+      </ul>
+    </section>
+
+    <!-- ───────────── Voice ───────────── -->
+    <section class="gz-stage" aria-labelledby="gz-voice-h">
+      <header class="gz-head">
+        <p class="gz-kicker">04 / The voice</p>
+        <h2 class="gz-h2" id="gz-voice-h">The Flight Engineer.</h2>
+        <p class="gz-lead">
+          Precise, calm and never prescriptive. Numbers first, context second, and doubt said out
+          loud. In an emergency the voice becomes an air traffic controller: still exact, now
+          imperative.
+        </p>
+      </header>
+      <div class="gz-voice">
+        <figure class="gz-quote gz-quote--good">
+          <figcaption>Says it cleanly</figcaption>
+          <blockquote>Rain at 3 PM. 92% model agreement.</blockquote>
+        </figure>
+        <figure class="gz-quote gz-quote--doubt">
+          <figcaption>Leads with the doubt</figcaption>
+          <blockquote>Models split on tomorrow. Three say dry, three say rain. This forecast will change.</blockquote>
+        </figure>
+        <figure class="gz-quote gz-quote--alarm">
+          <figcaption>Takes over when it matters</figcaption>
+          <blockquote>Take shelter now. Go to an interior room on the lowest floor.</blockquote>
+        </figure>
+        <figure class="gz-quote gz-quote--no">
+          <figcaption>Never this</figcaption>
+          <blockquote>Looks like a rainy one, better grab that umbrella!</blockquote>
+        </figure>
+      </div>
+    </section>
+
+    <!-- ───────────── Promise + data ───────────── -->
+    <section class="gz-stage" aria-labelledby="gz-promise-h">
+      <header class="gz-head">
+        <p class="gz-kicker">05 / The promise</p>
+        <h2 class="gz-h2" id="gz-promise-h">Free, open and private.</h2>
+        <p class="gz-lead">
+          These are commitments for the finished app, not features you can use today. Gauge is to be
+          funded by donations and grants, so nobody has to be the product.
+        </p>
+      </header>
+      <dl class="gz-promise">
+        {promise.map((p) => (
+          <div class="gz-prow">
+            <dt>{p.k}</dt>
+            <dd>{p.v}</dd>
+          </div>
+        ))}
+      </dl>
+    </section>
+
+    <section class="gz-stage" aria-labelledby="gz-data-h">
+      <header class="gz-head">
+        <p class="gz-kicker">06 / Where the numbers come from</p>
+        <h2 class="gz-h2" id="gz-data-h">Every number says where it came from.</h2>
+      </header>
+      <div class="gz-data">
+        <div class="gz-data-copy">
+          <p class="gz-text">
+            Gauge starts on the US National Weather Service, whose data is open and free to use for
+            any purpose. Each figure is meant to carry its source and its age, so you can judge how
+            fresh it is.
+          </p>
+          <p class="gz-text">
+            The plan is to compare several forecasts side by side, including AI weather models such
+            as ECMWF's AIFS next to the physics-based ones, and to weight each source by how often
+            it has been right for your location. None of that is running yet. The weighting waits
+            on a stored record of past forecasts, so it can be proven before it is used. Every new
+            source is checked against its terms of use before it goes in.
+          </p>
+        </div>
+        <figure class="gz-readout">
+          <figcaption>Example readout</figcaption>
+          <dl>
+            <div><dt>Source</dt><dd>National Weather Service</dd></div>
+            <div><dt>Issued</dt><dd class="gz-num">42 minutes ago</dd></div>
+            <div><dt>Status</dt><dd><span class="gz-ok">Current</span></dd></div>
+          </dl>
+        </figure>
+      </div>
+    </section>
+
+    <!-- ───────────── Status ───────────── -->
+    <section class="gz-stage" aria-labelledby="gz-status-h">
+      <header class="gz-head">
+        <p class="gz-kicker">07 / Where Gauge stands</p>
+        <h2 class="gz-h2" id="gz-status-h">In development, and saying so.</h2>
+        <p class="gz-lead">
+          The design is locked and the app is being rebuilt to match it. Until it does, there is
+          nothing to install.
+        </p>
+      </header>
+      <ol class="gz-ledger">
+        {ledger.map((l) => (
+          <li class={`gz-lrow gz-lrow--${l.s.toLowerCase().replace(' ', '-')}`}>
+            <span class="gz-lstate">{l.s}</span>
+            <span class="gz-lk">{l.k}</span>
+            <span class="gz-lv">{l.v}</span>
+          </li>
+        ))}
+      </ol>
+      <p class="gz-close">
+        Questions about Gauge? <a href="/contact">Get in touch</a>. Built in Bandon, Oregon, by Winters Code.
+      </p>
+    </section>
+  </div>
+</BaseLayout>
+
+<style is:global>
+  @font-face { font-family: 'Space Grotesk'; font-style: normal; font-weight: 400; font-display: swap; src: url('/_fonts/gauge-space-grotesk-400.woff2') format('woff2'); }
+  @font-face { font-family: 'Space Grotesk'; font-style: normal; font-weight: 500; font-display: swap; src: url('/_fonts/gauge-space-grotesk-500.woff2') format('woff2'); }
+  @font-face { font-family: 'Space Grotesk'; font-style: normal; font-weight: 700; font-display: swap; src: url('/_fonts/gauge-space-grotesk-700.woff2') format('woff2'); }
+  @font-face { font-family: 'Poppins'; font-style: normal; font-weight: 400; font-display: swap; src: url('/_fonts/gauge-poppins-400.woff2') format('woff2'); }
+  @font-face { font-family: 'Poppins'; font-style: normal; font-weight: 600; font-display: swap; src: url('/_fonts/gauge-poppins-600.woff2') format('woff2'); }
+
+  /* Paused or reduced: every ambient animation and transition stops and the page shows its still, complete state. */
+  .gz.gz-still *, .gz.gz-still *::before, .gz.gz-still *::after { animation: none !important; transition: none !important; }
+</style>
+
+<style>
+  .gz {
+    --gz-display: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+    --gz-body: 'Poppins', ui-sans-serif, system-ui, sans-serif;
+    --gz-mono: 'JetBrains Mono', ui-monospace, monospace;
+    --gz-teal: #2dd4bf;
+    --gz-amber: #d4a72d;
+    --gz-line: #1b2024;
+    --gz-1: #e2e8f0;
+    --gz-2: #94a3b8;
+    --gz-3: #7b8aa0;
+    display: grid;
+    gap: 16px;
+    padding: 8px 0 0;
+    font-family: var(--gz-body);
+    color: var(--gz-1);
+    font-variant-numeric: tabular-nums;
+  }
+  .gz * { box-sizing: border-box; }
+  .gz a { color: var(--gz-teal); text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 2px; display: inline-block; padding: 12px 2px; }
+  .gz a:focus-visible { outline: 2px solid var(--gz-teal); outline-offset: 3px; border-radius: 2px; }
+
+  .gz-stage {
+    background: #000;
+    border: 1px solid var(--gz-line);
+    border-radius: 16px;
+    padding: 28px 18px;
+    min-width: 0;
+  }
+  @media (min-width: 740px) { .gz-stage { padding: 44px 36px; } }
+  @media (min-width: 1024px) { .gz-stage { padding: 56px 56px; } }
+
+  /* ── type ── */
+  .gz-kicker { font-family: var(--gz-mono); font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gz-teal); margin: 0 0 12px; }
+  .gz-h1 { font-family: var(--gz-display); font-weight: 400; font-size: clamp(40px, 9.5vw, 88px); line-height: 1.02; letter-spacing: -0.025em; margin: 0 0 20px; color: var(--gz-1); text-wrap: balance; }
+  .gz-h2 { font-family: var(--gz-display); font-weight: 500; font-size: clamp(27px, 4.6vw, 42px); line-height: 1.12; letter-spacing: -0.02em; margin: 0 0 14px; color: var(--gz-1); text-wrap: balance; }
+  .gz-h3 { font-family: var(--gz-display); font-weight: 500; font-size: 22px; line-height: 1.2; letter-spacing: -0.01em; margin: 0 0 16px; color: var(--gz-1); }
+  .gz-sub, .gz-lead { font-size: 16px; line-height: 1.7; color: var(--gz-2); margin: 0 0 18px; max-width: 58ch; }
+  @media (min-width: 740px) { .gz-sub { font-size: 18px; } .gz-lead { font-size: 17px; } }
+  .gz-text { font-size: 15px; line-height: 1.7; color: var(--gz-2); margin: 0; }
+  .gz-mini { font-family: var(--gz-mono); font-size: 11px; letter-spacing: 0.08em; color: var(--gz-3); }
+  .gz-num { font-family: var(--gz-mono); font-size: 12px; letter-spacing: 0.04em; font-variant-numeric: tabular-nums; }
+  .gz-fig { font-family: var(--gz-mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gz-3); margin: 10px 0 0; text-align: center; }
+  .gz-fig--wide { margin-top: 24px; }
+  .gz-head { margin-bottom: 28px; max-width: 760px; }
+
+  /* ── hero ── */
+  .gz-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 28px;
+    align-items: center;
+    background:
+      radial-gradient(circle at 78% 42%, rgba(45, 212, 191, 0.07), rgba(0, 0, 0, 0) 55%),
+      #000;
+  }
+  @media (min-width: 880px) { .gz-hero { grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr); gap: 40px; } }
+  .gz-brandline { display: flex; align-items: center; gap: 12px; margin: 0 0 22px; }
+  .gz-wordmark { font-family: var(--gz-display); font-weight: 700; font-size: 18px; letter-spacing: 0.34em; color: var(--gz-teal); }
+  .gz-status {
+    display: inline-flex; align-items: flex-start; gap: 10px;
+    margin: 6px 0 26px; padding: 12px 14px;
+    border: 2px solid var(--gz-amber); border-radius: 10px;
+    font-size: 14px; line-height: 1.5; color: var(--gz-1);
+    max-width: 100%;
+  }
+  .gz-status strong { color: var(--gz-amber); font-weight: 600; }
+  .gz-status-dot { flex: none; width: 10px; height: 10px; border-radius: 50%; background: var(--gz-amber); margin-top: 6px; }
+  .gz-stats { display: flex; gap: 28px; margin: 0; flex-wrap: wrap; }
+  .gz-stats div { min-width: 0; }
+  .gz-stats dt { font-family: var(--gz-mono); font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gz-3); }
+  .gz-stats dd { margin: 4px 0 0; font-family: var(--gz-display); font-weight: 500; font-size: 34px; color: var(--gz-teal); line-height: 1; }
+  .gz-hero-dial { margin: 0; width: min(100%, 440px); justify-self: center; }
+
+  /* ── ideas ── */
+  .gz-ideas { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  @media (min-width: 900px) { .gz-ideas { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  .gz-card { background: #0a0a0a; border: 1px solid var(--gz-line); border-radius: 12px; padding: 22px 18px; display: flex; flex-direction: column; min-width: 0; }
+  @media (min-width: 740px) { .gz-card { padding: 28px 26px; } }
+  .gz-visual { margin: 4px 0 20px; min-width: 0; }
+
+  .gz-dials { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+  .gz-dialfig { margin: 0; text-align: center; min-width: 0; }
+  .gz-dialfig figcaption { display: grid; gap: 4px; margin-top: 4px; }
+  .gz-dialfig .gz-num { font-size: 18px; font-weight: 500; }
+  .gz-dialfig .gz-mini { font-size: 10px; letter-spacing: 0.04em; }
+
+  .gz-bars { display: grid; gap: 16px; }
+  .gz-barlabel { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; font-size: 13px; color: var(--gz-1); margin-bottom: 7px; }
+  .gz-bar { display: block; width: 100%; height: 14px; }
+  .gz-bar--strip { height: 28px; }
+  .gz-axis { display: flex; justify-content: space-between; margin-top: 7px; font-family: var(--gz-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gz-3); }
+
+  .gz-braid svg { display: block; width: 100%; height: auto; }
+  .gz-braidtags { display: flex; justify-content: space-between; font-family: var(--gz-mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 6px; }
+
+  .gz-ladder { list-style: none; margin: 4px 0 20px; padding: 0; display: grid; gap: 10px; }
+  .gz-rung { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 14px; align-items: center; padding: 12px; border: 1px solid var(--gz-line); border-left: 2px solid var(--rc); border-radius: 10px; background: #000; }
+  .gz-rung--emergency { border: 2px solid var(--rc); background: #12050a; }
+  .gz-rung-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 0 0 6px; flex-wrap: wrap; }
+  .gz-chip { font-family: var(--gz-mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--rt); border: 1px solid var(--rc); border-radius: 999px; padding: 3px 10px; }
+  .gz-rung-time { color: var(--gz-1); }
+  .gz-rung-line { margin: 0 0 6px; font-size: 14px; line-height: 1.5; color: var(--gz-1); }
+  .gz-rung--emergency .gz-rung-line { font-weight: 600; }
+
+  /* ── skies ── */
+  .gz-states { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  @media (min-width: 640px) { .gz-states { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; } }
+  .gz-state { background: var(--sb); border: 1px solid var(--sbd); border-radius: 12px; padding: 16px 14px; display: flex; flex-direction: column; gap: 4px; min-height: 156px; min-width: 0; }
+  .gz-state :global(svg) { margin-bottom: 8px; }
+  .gz-state-name { font-family: var(--gz-display); font-weight: 500; font-size: 17px; color: var(--st); line-height: 1.2; }
+  .gz-state-tag { font-family: var(--gz-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gz-2); }
+  .gz-dots { margin-top: auto; padding-top: 12px; display: flex; gap: 6px; }
+  .gz-dots i { display: block; width: 14px; height: 14px; border-radius: 50%; }
+  .gz-state--aa { background: #0a0a0a; border: 2px solid var(--gz-line); }
+  .gz-aa { font-family: var(--gz-display); font-weight: 700; font-size: 30px; color: var(--gz-teal); margin-bottom: 8px; line-height: 1; }
+  .gz-state--aa .gz-state-name { color: var(--gz-1); }
+
+  /* ── voice ── */
+  .gz-voice { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  @media (min-width: 740px) { .gz-voice { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  .gz-quote { margin: 0; padding: 20px 18px; border-radius: 10px; border: 1px solid var(--gz-line); background: #0a0a0a; min-width: 0; }
+  .gz-quote figcaption { font-family: var(--gz-mono); font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; margin-bottom: 10px; }
+  .gz-quote blockquote { margin: 0; font-size: 16px; line-height: 1.6; color: var(--gz-1); }
+  .gz-quote--good { border-color: rgba(45, 212, 191, 0.35); }
+  .gz-quote--good figcaption { color: var(--gz-teal); }
+  .gz-quote--doubt { border-color: rgba(212, 167, 45, 0.4); }
+  .gz-quote--doubt figcaption { color: var(--gz-amber); }
+  .gz-quote--alarm { border-color: rgba(168, 85, 247, 0.45); background: #0d0714; }
+  .gz-quote--alarm figcaption { color: #c084fc; }
+  .gz-quote--alarm blockquote { font-weight: 600; }
+  .gz-quote--no figcaption { color: #f87171; }
+  .gz-quote--no blockquote { color: var(--gz-3); text-decoration: line-through; text-decoration-color: rgba(239, 68, 68, 0.6); }
+
+  /* ── promise ── */
+  .gz-promise { margin: 0; display: grid; border-top: 1px solid var(--gz-line); }
+  .gz-prow { display: grid; grid-template-columns: minmax(0, 1fr); gap: 4px; padding: 18px 0; border-bottom: 1px solid var(--gz-line); }
+  @media (min-width: 740px) { .gz-prow { grid-template-columns: 220px minmax(0, 1fr); gap: 24px; align-items: baseline; } }
+  .gz-prow dt { font-family: var(--gz-display); font-weight: 500; font-size: 22px; color: var(--gz-teal); }
+  .gz-prow dd { margin: 0; font-size: 15px; line-height: 1.6; color: var(--gz-2); }
+
+  /* ── data ── */
+  .gz-data { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; align-items: start; }
+  @media (min-width: 880px) { .gz-data { grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); gap: 40px; } }
+  .gz-data-copy { display: grid; gap: 16px; }
+  .gz-readout { margin: 0; border: 2px solid var(--gz-line); border-radius: 12px; padding: 18px; background: #0a0a0a; }
+  .gz-readout figcaption { font-family: var(--gz-mono); font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gz-3); margin-bottom: 12px; }
+  .gz-readout dl { margin: 0; display: grid; gap: 10px; }
+  .gz-readout dl div { display: grid; grid-template-columns: 84px minmax(0, 1fr); gap: 12px; align-items: baseline; }
+  .gz-readout dt { font-family: var(--gz-mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gz-3); }
+  .gz-readout dd { margin: 0; font-family: var(--gz-mono); font-size: 14px; color: var(--gz-1); overflow-wrap: anywhere; }
+  .gz-ok { color: var(--gz-teal); }
+
+  /* ── status ledger ── */
+  .gz-ledger { list-style: none; margin: 0; padding: 0; display: grid; border-top: 1px solid var(--gz-line); }
+  .gz-lrow { display: grid; grid-template-columns: minmax(0, 1fr); gap: 4px; padding: 16px 0; border-bottom: 1px solid var(--gz-line); }
+  @media (min-width: 740px) { .gz-lrow { grid-template-columns: 120px 160px minmax(0, 1fr); gap: 20px; align-items: baseline; } }
+  .gz-lstate { font-family: var(--gz-mono); font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; }
+  .gz-lrow--done .gz-lstate { color: var(--gz-teal); }
+  .gz-lrow--under-way .gz-lstate { color: var(--gz-amber); }
+  .gz-lrow--not-yet .gz-lstate { color: var(--gz-3); }
+  .gz-lk { font-family: var(--gz-display); font-weight: 500; font-size: 18px; color: var(--gz-1); }
+  .gz-lv { font-size: 15px; line-height: 1.6; color: var(--gz-2); }
+  .gz-close { margin: 24px 0 0; font-size: 15px; line-height: 1.6; color: var(--gz-2); }
+
+  /* ───────────── motion and the live lab ───────────── */
+  .gz-pausewrap { visibility: hidden; margin: 18px 0 0; }
+  .gz-js .gz-pausewrap { visibility: visible; }
+  @media (prefers-reduced-motion: reduce) { .gz-pausewrap, .gz-js .gz-pausewrap { display: none; } }
+  .gz-pause {
+    font: 500 12px/1 var(--gz-mono); letter-spacing: 0.12em; text-transform: uppercase;
+    min-height: 44px; padding: 0 18px; cursor: pointer;
+    color: var(--gz-teal); background: #000; border: 2px solid var(--gz-teal); border-radius: 10px;
+  }
+  .gz-pause:focus-visible { outline: 2px solid var(--gz-1); outline-offset: 3px; }
+
+  .gz-hero { position: relative; overflow: hidden; }
+  .gz-hero > * { position: relative; z-index: 1; }
+  .gz-hero > .gz-field { position: absolute; z-index: 0; inset: 0; pointer-events: none; }
+  .gz-field i { position: absolute; inset: -25%; opacity: 0; background: radial-gradient(circle at 74% 42%, var(--fc) 0%, rgba(0, 0, 0, 0) 56%); }
+  .gz-field i:first-child { opacity: 0.14; }
+  @media (prefers-reduced-motion: no-preference) {
+    .gz-field i { animation: gz-field 42s linear infinite; animation-delay: var(--fd); }
+  }
+  @keyframes gz-field { 0% { opacity: 0; } 5% { opacity: 0.15; } 16% { opacity: 0.15; } 22% { opacity: 0; } 100% { opacity: 0; } }
+
+  .gz-breathe { opacity: 0.4; }
+  @media (prefers-reduced-motion: no-preference) {
+    .gz-breathe { animation: gz-breathe 5.5s ease-in-out infinite; }
+  }
+  @keyframes gz-breathe { 0%, 100% { opacity: 0.1; } 50% { opacity: 0.75; } }
+
+  .gz-strand { stroke-dasharray: 1; }
+  @media (prefers-reduced-motion: no-preference) {
+    .gz-js:not(.gz-still) .gz-draw:not(.gz-drawn) .gz-strand { stroke-dashoffset: 1; }
+    .gz-js .gz-draw .gz-strand { transition: stroke-dashoffset 2.4s cubic-bezier(0.3, 0.6, 0.2, 1) calc(var(--i) * 0.14s); }
+  }
+
+  .gz-rung { position: relative; }
+  .gz-rung::after { content: ''; position: absolute; inset: -1px; border-radius: 10px; border: 2px solid var(--rc); opacity: 0; pointer-events: none; }
+  @media (prefers-reduced-motion: no-preference) {
+    .gz-rung::after { animation: gz-rung 9s ease-in-out infinite; animation-delay: calc(var(--i) * 3s); }
+  }
+  @keyframes gz-rung { 0% { opacity: 0; } 8% { opacity: 1; } 30% { opacity: 1; } 38% { opacity: 0; } 100% { opacity: 0; } }
+
+  .gz-panel { position: relative; border: 1px solid var(--gz-line); border-radius: 14px; overflow: hidden; background: #000; --pa: #fbbf24; }
+  .gz-sky { position: absolute; inset: 0; }
+  .gz-sky i { position: absolute; inset: 0; opacity: 0; }
+  .gz-sky i.on { opacity: 1; }
+  @media (prefers-reduced-motion: no-preference) { .gz-sky i { transition: opacity 0.8s ease; } }
+  .gz-panel-in { position: relative; padding: 18px 14px; }
+  @media (min-width: 740px) { .gz-panel-in { padding: 26px 26px; } }
+  .gz-ph { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+  .gz-ph p { margin: 0; }
+  .gz-ph-state strong { font-family: var(--gz-display); font-weight: 500; font-size: 24px; margin-left: 8px; }
+  .gz-acc { color: var(--pa); }
+  @media (prefers-reduced-motion: no-preference) { .gz-acc { transition: color 0.8s ease; } }
+  .gz-ph-clock { font-size: 14px; color: var(--gz-1); }
+
+  .gz-cards { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  @media (min-width: 640px) { .gz-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (min-width: 1000px) { .gz-cards { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.15fr); } }
+  .gz-pc { background: rgba(0, 0, 0, 0.74); border: 1px solid var(--gz-line); border-radius: 12px; padding: 16px; margin: 0; min-width: 0; }
+  .gz-pc-k { margin: 0 0 10px; text-transform: uppercase; letter-spacing: 0.14em; }
+  .gz-pc--dial { display: flex; flex-direction: column; }
+  .gz-pc--dial :global(svg) { width: 100%; max-width: 230px; margin: 0 auto; }
+  .gz-pc--dial figcaption { text-align: center; margin-top: 8px; font-size: 12px; color: var(--gz-1); }
+  .gz-pc-col { display: grid; gap: 12px; align-content: start; min-width: 0; }
+  @media (min-width: 640px) and (max-width: 999px) { .gz-pc-col { grid-column: 1 / -1; grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  .gz-cw { border-color: rgba(45, 212, 191, 0.4); }
+  .gz-cw.gz-warn { border-color: rgba(212, 167, 45, 0.6); }
+  .gz-cw-main { margin: 0 0 6px; font-family: var(--gz-display); font-weight: 500; font-size: 22px; line-height: 1.2; color: var(--gz-1); }
+  .gz-cw-note { margin: 0; font-size: 12px; color: var(--gz-teal); }
+  .gz-cw.gz-warn .gz-cw-note { color: #e0b53d; }
+  .gz-pc--dial.gz-warn figcaption { color: #e0b53d; }
+
+  .gz-dew-main { margin: 0 0 12px; display: flex; align-items: baseline; gap: 4px; flex-wrap: wrap; }
+  .gz-dew-n { font-family: var(--gz-display); font-weight: 600; font-size: 34px; line-height: 1; color: var(--gz-1); font-variant-numeric: tabular-nums; }
+  .gz-dew-u { font-family: var(--gz-mono); font-size: 13px; color: var(--gz-2); }
+  .gz-dew-l { margin-left: 8px; font-family: var(--gz-mono); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gz-1); }
+  .gz-dewbar { position: relative; display: flex; height: 10px; border-radius: 5px; margin: 0 7px; }
+  .gz-dewbar i { display: block; height: 100%; }
+  .gz-dewbar i:first-of-type { border-radius: 5px 0 0 5px; }
+  .gz-dewbar i:nth-of-type(4) { border-radius: 0 5px 5px 0; }
+  .gz-dewmk { position: absolute; top: -7px; width: 4px; height: 24px; margin-left: -2px; background: var(--gz-1); border: 1px solid #000; border-radius: 2px; }
+  @media (prefers-reduced-motion: no-preference) { .gz-dewmk { transition: left 0.6s cubic-bezier(0.34, 1.3, 0.64, 1); } }
+  .gz-dewticks { position: relative; height: 16px; margin: 10px 7px 0; }
+  .gz-dewticks span { position: absolute; transform: translateX(-50%); white-space: nowrap; font-family: var(--gz-mono); font-size: 11px; color: var(--gz-2); }
+  .gz-dewticks .gz-dt-first { transform: translateX(-30%); }
+  .gz-dewticks .gz-dt-last { transform: translateX(-70%); }
+  .gz-dewkey { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 4px 14px; }
+  .gz-dewkey li { font-size: 12px; color: var(--gz-1); }
+  .gz-dewkey-w { font-family: var(--gz-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; }
+
+  .gz-tl { margin-top: 14px; background: rgba(0, 0, 0, 0.74); border: 1px solid var(--gz-line); border-radius: 12px; padding: 14px 14px 10px; }
+  .gz-tlhead { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 8px; }
+  .gz-tl svg { display: block; width: 100%; height: auto; }
+  .gz-tlrain { height: 56px; margin-top: 4px; }
+  .gz-playhead { stroke: var(--pa); stroke-width: 1.6; }
+  .gz-playdot { fill: var(--pa); stroke: #000; stroke-width: 2; }
+  @media (prefers-reduced-motion: no-preference) { .gz-playhead, .gz-playdot { transition: stroke 0.8s ease, fill 0.8s ease; } }
+  .gz-scrub { visibility: hidden; margin-top: 12px; }
+  .gz-js .gz-scrub { visibility: visible; }
+  .gz-scrublabel { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; font-size: 14px; color: var(--gz-1); margin-bottom: 4px; }
+  .gz-range { -webkit-appearance: none; appearance: none; width: 100%; height: 44px; background: transparent; margin: 0; cursor: pointer; }
+  .gz-range::-webkit-slider-runnable-track { height: 4px; background: #2a3138; border-radius: 2px; }
+  .gz-range::-moz-range-track { height: 4px; background: #2a3138; border-radius: 2px; }
+  .gz-range::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 28px; height: 28px; margin-top: -12px; border-radius: 50%; background: #000; border: 2px solid var(--gz-teal); }
+  .gz-range::-moz-range-thumb { width: 24px; height: 24px; border-radius: 50%; background: #000; border: 2px solid var(--gz-teal); }
+  .gz-range:focus-visible { outline: 2px solid var(--gz-teal); outline-offset: 2px; border-radius: 8px; }
+</style>
+
+<script>
+  const root = document.querySelector<HTMLElement>('.gz');
+  if (root) {
+    root.classList.add('gz-js');
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let still = mq.matches;
+    const btn = root.querySelector<HTMLButtonElement>('[data-gz-pause]');
+    let kick = () => {};
+    const setStill = (v: boolean) => {
+      still = v;
+      root.classList.toggle('gz-still', v);
+      if (btn) {
+        btn.setAttribute('aria-pressed', String(v));
+        btn.textContent = v ? 'Resume motion' : 'Pause motion';
+      }
+      kick();
+    };
+    btn?.addEventListener('click', () => setStill(!still));
+    mq.addEventListener('change', (e) => setStill(e.matches));
+
+    // Timelines draw in once, when they scroll into view.
+    const io = new IntersectionObserver(
+      (es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('gz-drawn'); io.unobserve(e.target); } }),
+      { threshold: 0.25 },
+    );
+    root.querySelectorAll('[data-draw]').forEach((d) => io.observe(d));
+
+    const panel = root.querySelector<HTMLElement>('[data-gz-panel]');
+    if (panel) {
+      const D = JSON.parse(panel.dataset.series || '{}');
+      const STEPS = D.s.length;
+      const slider = panel.querySelector<HTMLInputElement>('.gz-range')!;
+      const r = (k: string) => panel.querySelector<HTMLElement>(`[data-r="${k}"]`)!;
+      const layers = Array.from(panel.querySelectorAll<HTMLElement>('.gz-sky i'));
+      const agFig = r('agree');
+      const agSvg = agFig.querySelector<SVGElement>('.gz-dial')!;
+      const agFills = Array.from(agSvg.querySelectorAll<SVGElement>('.gz-fill'));
+      const agRead = agSvg.querySelector('.gz-read')!;
+      const nc = panel.querySelector<SVGElement>('.gz-nc')!;
+      const heads = Array.from(panel.querySelectorAll<SVGElement>('[data-ph]'));
+      const cwCard = r('cwcard');
+
+      const fmt = (t: number) => {
+        const m = Math.round((D.start + t) * 60) % 1440;
+        let h = Math.floor(m / 60);
+        const mi = m % 60;
+        const ap = h >= 12 ? 'PM' : 'AM';
+        h = h % 12 || 12;
+        return `${h}:${String(mi).padStart(2, '0')} ${ap}`;
+      };
+      const off = (t: number) => {
+        if (t === 0) return 'Now';
+        const h = Math.floor(t);
+        const m = Math.round((t - h) * 60);
+        return `Now +${h} h${m ? ` ${m} m` : ''}`;
+      };
+
+      const liveEl = r('live');
+      let liveTimer = 0;
+      let cur = -1;
+      const render = (i: number) => {
+        if (i === cur) return;
+        cur = i;
+        const t = i / 4;
+        const st = D.s[i];
+        const a = D.a[i];
+        const p = D.p;
+
+        layers.forEach((l, k) => l.classList.toggle('on', k === st));
+        r('state').textContent = D.st[st].n;
+        panel.style.setProperty('--pa', D.st[st].c);
+        r('clock').textContent = fmt(t);
+        r('offset').textContent = off(t);
+
+        // Agreement dial: arc, needle, grain and colour all follow the number.
+        const warn = a < 65;
+        agSvg.style.setProperty('--v', String(a));
+        agSvg.style.setProperty('--na', `${135 + (a / 100) * 270}deg`);
+        agSvg.style.setProperty('--c', warn ? '#d4a72d' : '#2dd4bf');
+        agFills.forEach((f) => {
+          if (f.classList.contains('gz-breathe')) { (f as unknown as HTMLElement).style.display = warn ? '' : 'none'; return; }
+          const g = warn ? 'url(#gz-g2)' : a < 80 ? 'url(#gz-g1)' : '';
+          if (g) f.setAttribute('filter', g); else f.removeAttribute('filter');
+        });
+        agRead.textContent = `${a}%`;
+        r('agree-note').textContent = warn ? 'Leads with the doubt' : a < 80 ? 'Holds, with some grain' : 'States it cleanly';
+        agFig.classList.toggle('gz-warn', warn);
+
+        // Nowcast Pulse: minutes until rain reaches 50 percent, looking two hours ahead.
+        let mins = -1;
+        if (p[i] >= 50) mins = 0;
+        else for (let k = i + 1; k <= Math.min(STEPS - 1, i + 8); k++) if (p[k] >= 50) { mins = (k - i) * 15; break; }
+        const num = nc.querySelector('[data-r="nc-num"]')!;
+        const cap = nc.querySelector('[data-r="nc-cap"]')!;
+        if (mins === 0) { num.textContent = 'NOW'; cap.textContent = 'RAIN OCCURRING'; nc.style.setProperty('--v', '0'); r('nc-note').textContent = 'Rain is occurring now'; }
+        else if (mins > 0) { num.textContent = String(mins); cap.textContent = 'MIN UNTIL RAIN'; nc.style.setProperty('--v', String((mins / 120) * 100)); r('nc-note').textContent = `Rain in ${mins} minutes`; }
+        else { num.textContent = '2 H+'; cap.textContent = 'NO RAIN IN 2 H'; nc.style.setProperty('--v', '100'); r('nc-note').textContent = 'No rain in the next 2 hours'; }
+
+        // Next Clean Window: the first dry run of an hour or more, within 12 hours.
+        let found: { s: number; e: number } | null = null;
+        let k = i;
+        while (k < STEPS) {
+          if (p[k] < 30) {
+            let e = k;
+            while (e < STEPS && p[e] < 30) e++;
+            if (e - k >= 4) { found = { s: k, e }; break; }
+            k = e;
+          } else k++;
+        }
+        if (!found || (found.s - i) / 4 > 12) {
+          const tail = STEPS - 1 - i < 48;
+          r('cw').textContent = tail ? 'Past the end of the range' : 'No clean window in the next 12 hours';
+          r('cwn').textContent = tail ? 'Fewer than 12 hours left' : 'Rain holds on';
+          cwCard.classList.remove('gz-warn');
+        } else {
+          let sum = 0;
+          for (let q = found.s; q < found.e; q++) sum += D.a[q];
+          const conf = Math.round(sum / (found.e - found.s));
+          const dur = (found.e - found.s) / 4;
+          r('cw').textContent = found.e >= STEPS && dur >= 18
+            ? 'Clear for 18+ hours'
+            : `${found.s === i ? 'Now' : fmt(found.s / 4)} to ${found.e >= STEPS ? 'the end of the range' : fmt(found.e / 4)}`;
+          r('cwn').textContent = conf < 65 ? `${conf}% agreement. May shift` : `${conf}% agreement`;
+          cwCard.classList.toggle('gz-warn', conf < 65);
+        }
+
+        // Dew point comfort scale, 40 to 80 F.
+        const d = D.d[i];
+        r('dew').textContent = String(Math.round(d));
+        const dr = Math.round(d);
+        r('dewlab').textContent = D.dz.find((z: { hi: number }) => dr < z.hi).w;
+        r('dewmk').style.left = `${Math.min(100, Math.max(0, ((d - 40) / 40) * 100))}%`;
+
+        // Playhead on both timelines (600 unit axis).
+        const x = (t / 48) * 600;
+        heads.forEach((h) => {
+          if (h.dataset.ph === 'dot') h.setAttribute('cx', x.toFixed(1));
+          else { h.setAttribute('x1', x.toFixed(1)); h.setAttribute('x2', x.toFixed(1)); }
+        });
+        slider.setAttribute('aria-valuetext', `${off(t)}, ${fmt(t)}, ${D.st[st].n}, forecast agreement ${a} percent`);
+        // The dials and the dew bar are role="img" drawings, so their changing values reach screen
+        // readers here instead: one polite live region, written only after the reader moves the
+        // scrubber (never during the decorative autoplay) and held back 600 ms so a drag says its last word once.
+        if (touched) {
+          const live = `${off(t)}, ${fmt(t)}. ${D.st[st].n}. Forecast agreement ${a} percent. ${r('nc-note').textContent}. Dew point ${Math.round(d)} degrees, ${r('dewlab').textContent}. Next clean window: ${r('cw').textContent}.`;
+          clearTimeout(liveTimer);
+          liveTimer = setTimeout(() => { liveEl.textContent = live; }, 600);
+        }
+      };
+
+      // A gentle autoplay until the reader takes over, paused when off screen or when motion is paused.
+      let visible = false;
+      let touched = false;
+      let raf = 0;
+      let pos = 0;
+      let hold = 0;
+      let last = 0;
+      const frame = (ts: number) => {
+        raf = 0;
+        if (!visible || still || touched) { last = 0; return; }
+        if (!last) last = ts;
+        const dt = Math.min(100, ts - last);
+        last = ts;
+        if (hold > 0) { hold -= dt; if (hold <= 0) pos = 0; }
+        else { pos += dt * (192 / 30000); if (pos >= 192) { pos = 192; hold = 2500; } }
+        const i = Math.round(pos);
+        if (i !== cur) { slider.value = String(i); render(i); }
+        raf = requestAnimationFrame(frame);
+      };
+      kick = () => { if (!raf && visible && !still && !touched) raf = requestAnimationFrame(frame); };
+
+      slider.addEventListener('input', () => { touched = true; pos = Number(slider.value); render(pos); });
+      new IntersectionObserver((es) => { visible = es[0].isIntersecting; last = 0; kick(); }, { threshold: 0.15 }).observe(panel);
+      render(0);
+    }
+
+    setStill(mq.matches);
+  }
+</script>

@@ -1,0 +1,68 @@
+---
+/**
+ * NowcastDial, an illustration of the radial precipitation countdown: the next
+ * two hours as one 270 degree arc that drains as rain gets closer, with a radar
+ * sweep turning behind the number. Geometry only; the page script writes the
+ * number and the arc length from invented data, and says so on the page.
+ *
+ * Without the script it shows its starting state. The sweep only turns when the
+ * reader allows motion, and the number carries the meaning either way.
+ */
+interface Props {
+  label: string;
+  value?: number;
+  minutes?: string;
+}
+const { label, value = 1, minutes = '2 H+' } = Astro.props;
+
+const pt = (deg: number, r: number) => {
+  const a = (deg * Math.PI) / 180;
+  return [100 + r * Math.cos(a), 100 + r * Math.sin(a)] as const;
+};
+const f = (n: number) => n.toFixed(2);
+const [x1, y1] = pt(135, 84);
+const [x2, y2] = pt(405, 84);
+const arc = `M ${f(x1)} ${f(y1)} A 84 84 0 1 1 ${f(x2)} ${f(y2)}`;
+const ticks = Array.from({ length: 13 }, (_, i) => {
+  const major = i % 6 === 0;
+  const [ax, ay] = pt(135 + i * 22.5, major ? 91 : 92);
+  const [bx, by] = pt(135 + i * 22.5, major ? 99 : 96);
+  return { ax: f(ax), ay: f(ay), bx: f(bx), by: f(by), major };
+});
+const [wx, wy] = pt(-42, 66);
+---
+
+<svg class="gz-nc" viewBox="0 0 200 200" role="img" aria-label={label} focusable="false" style={`--v:${(value * 100).toFixed(1)}`}>
+  {ticks.map((t) => (
+    <line class:list={['gz-nct', { 'gz-nct--major': t.major }]} x1={t.ax} y1={t.ay} x2={t.bx} y2={t.by} />
+  ))}
+  <path class="gz-nctrack" d={arc} pathLength="100" />
+  <path class="gz-ncfill" d={arc} pathLength="100" />
+  <g class="gz-sweep" aria-hidden="true">
+    <path class="gz-sweepwedge" d={`M 100 100 L 166 100 A 66 66 0 0 0 ${f(wx)} ${f(wy)} Z`} />
+    <line class="gz-sweepline" x1="100" y1="100" x2="166" y2="100" />
+  </g>
+  <circle class="gz-nchub" cx="100" cy="100" r="3.5" />
+  <text class="gz-ncnum" x="100" y="118" text-anchor="middle" data-r="nc-num">{minutes}</text>
+  <text class="gz-nccap" x="100" y="138" text-anchor="middle" data-r="nc-cap">UNTIL RAIN</text>
+</svg>
+
+<style>
+  .gz-nc { display: block; width: 100%; height: auto; overflow: visible; }
+  .gz-nct { stroke: #3a4651; stroke-width: 1; }
+  .gz-nct--major { stroke: #7b8aa0; stroke-width: 1.6; }
+  .gz-nctrack { fill: none; stroke: #1b2024; stroke-width: 8; stroke-linecap: round; }
+  .gz-ncfill { fill: none; stroke: #2dd4bf; stroke-width: 8; stroke-linecap: round; stroke-dasharray: var(--v) 100; }
+  .gz-sweep { transform-origin: 100px 100px; }
+  .gz-sweepwedge { fill: #2dd4bf; fill-opacity: 0.14; }
+  .gz-sweepline { stroke: #2dd4bf; stroke-opacity: 0.55; stroke-width: 1.4; }
+  .gz-nchub { fill: #2dd4bf; }
+  .gz-ncnum { font-family: var(--gz-display, 'Space Grotesk', sans-serif); font-weight: 600; font-size: 38px; fill: #e2e8f0; font-variant-numeric: tabular-nums; }
+  .gz-nccap { font-family: var(--gz-mono, 'JetBrains Mono', monospace); font-size: 8.5px; letter-spacing: 0.16em; fill: #94a3b8; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .gz-ncfill { transition: stroke-dasharray 0.5s ease; }
+    .gz-sweep { animation: gz-ncsweep 4.8s linear infinite; }
+  }
+  @keyframes gz-ncsweep { to { transform: rotate(360deg); } }
+</style>

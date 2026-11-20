@@ -1,0 +1,38 @@
+---
+/**
+ * GrainDefs, the one place uncertainty becomes texture.
+ *
+ * Gauge shows how sure a forecast is as texture, not only as a number: a
+ * confident reading is a smooth fill, an unsure one is broken up by grain. Each
+ * filter below turns a solid fill into the same fill with a noisy alpha, and the
+ * level sets how much of it survives. Level 1 is nearly smooth, level 3 is
+ * mostly air. The noise is fixed (a set seed, no animation), so reduced-motion
+ * readers see exactly what everyone else sees.
+ *
+ * Mounted once per page; any inline SVG on the page can use filter="url(#gz-g2)".
+ */
+---
+
+<svg class="gz-defs" width="0" height="0" aria-hidden="true" focusable="false">
+  <defs>
+    <filter id="gz-g1" x="-5%" y="-5%" width="110%" height="110%" color-interpolation-filters="sRGB">
+      <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" seed="11" result="n" />
+      <feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  3.4 0 0 0 -0.55" result="a" />
+      <feComposite in="SourceGraphic" in2="a" operator="in" />
+    </filter>
+    <filter id="gz-g2" x="-5%" y="-5%" width="110%" height="110%" color-interpolation-filters="sRGB">
+      <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" seed="11" result="n" />
+      <feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  5.5 0 0 0 -1.9" result="a" />
+      <feComposite in="SourceGraphic" in2="a" operator="in" />
+    </filter>
+    <filter id="gz-g3" x="-5%" y="-5%" width="110%" height="110%" color-interpolation-filters="sRGB">
+      <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" seed="11" result="n" />
+      <feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  7.5 0 0 0 -3.0" result="a" />
+      <feComposite in="SourceGraphic" in2="a" operator="in" />
+    </filter>
+  </defs>
+</svg>
+
+<style>
+  .gz-defs { position: absolute; width: 0; height: 0; overflow: hidden; pointer-events: none; }
+</style>
