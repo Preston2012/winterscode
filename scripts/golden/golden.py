@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 # VENDORED COPY. Do not edit here; change the playbook copy and re-vendor.
 # source path:   /workspaces/playbook/web/golden.py  (Preston2012/playbook, web/golden.py)
-# source commit: 463d4ca (branch claude/golden-lastmod-s436, playbook PR pending; T-798 lastmod rule)
-# source sha256: dbeb0e40e09385e9b63235d96f19ff41bd08ec56801a4cddca1e79d33138c77f
+# source commit: 171b1db (branch claude/golden-lastmod-s436, playbook PR 6; T-798 lastmod rule, asset-array sort fix)
+# source sha256: 58ba3f2af90b5d91b06f6340720336c4382dac7d5e7ee2a461be8752404ac8b3
 # The sha256 is of the source file; recompute it with this header block (lines 2 to END VENDOR HEADER) removed. CI does that before verify.
 # END VENDOR HEADER
 """Build-output goldens for a static site. Capture a baseline, verify against it.
@@ -99,7 +99,11 @@ def die(msg, code=2):
     sys.exit(code)
 
 
-PATH_ARRAY = re.compile(rb'\["/[^"\]]+"(?:,"/[^"\]]+")+\]')
+# One complete JSON string member that starts with a rooted path, escapes included, so a comma, a bracket or an
+# escaped quote inside a value can never be mistaken for a member boundary.
+PATH_MEMBER = rb'"/(?:[^"\\]|\\.)*"'
+PATH_ARRAY = re.compile(rb"\[" + PATH_MEMBER + rb"(?:," + PATH_MEMBER + rb")+\]")
+MEMBER = re.compile(PATH_MEMBER)
 
 
 def sort_path_arrays(raw):
@@ -107,13 +111,17 @@ def sort_path_arrays(raw):
 
     Sorting the members rather than dropping the file keeps the check useful: an
     asset added or removed still changes the sorted set and still shows up. Only
-    arrays whose every member is a rooted path are touched, so a real array of
+    arrays whose every member is a rooted path string are touched, so a real array of
     strings that happens to be ordered on purpose is never touched.
+
+    Each member is parsed as a whole string, quotes and escapes included, the values
+    are sorted, and the array is rebuilt with every member quoted the same way
+    (Codex P2 on winterscode PR 50: the old version cut off the brackets only, so the
+    first and last members lost their quote pairing and the sort was unstable).
     """
     def fix(m):
-        inner = m.group(0)[1:-1]
-        parts = sorted(inner.split(b'","'))
-        return b'[' + b'","'.join(parts) + b']'
+        members = MEMBER.findall(m.group(0))
+        return b"[" + b",".join(sorted(members, key=lambda t: t[1:-1])) + b"]"
     return PATH_ARRAY.sub(fix, raw)
 
 
