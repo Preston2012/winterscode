@@ -489,7 +489,8 @@ const rainBars = Array.from({ length: 49 }, (_, h) => {
             <div class="gz-axis"><span>Now</span><span>+12 h</span><span>+24 h</span><span>+36 h</span><span>+48 h</span></div>
             <div class="gz-scrub">
               <label for="gz-scrub" class="gz-scrublabel">Scrub the 48 hours <span class="gz-mini">Arrow keys move 15 minutes</span></label>
-              <input id="gz-scrub" class="gz-range" type="range" min="0" max="192" step="1" value="0" aria-valuetext="Now, 1:00 PM, Clear Sky" />
+              <input id="gz-scrub" class="gz-range" type="range" min="0" max="192" step="1" value="0" aria-valuetext="Now, 1:00 PM, Clear Sky, forecast agreement 97 percent" />
+              <p class="sr-only" data-r="live" aria-live="polite" aria-atomic="true"></p>
             </div>
           </div>
         </div>
@@ -975,6 +976,8 @@ const rainBars = Array.from({ length: 49 }, (_, h) => {
         return `Now +${h} h${m ? ` ${m} m` : ''}`;
       };
 
+      const liveEl = r('live');
+      let liveTimer = 0;
       let cur = -1;
       const render = (i: number) => {
         if (i === cur) return;
@@ -1055,7 +1058,15 @@ const rainBars = Array.from({ length: 49 }, (_, h) => {
           if (h.dataset.ph === 'dot') h.setAttribute('cx', x.toFixed(1));
           else { h.setAttribute('x1', x.toFixed(1)); h.setAttribute('x2', x.toFixed(1)); }
         });
-        slider.setAttribute('aria-valuetext', `${off(t)}, ${fmt(t)}, ${D.st[st].n}`);
+        slider.setAttribute('aria-valuetext', `${off(t)}, ${fmt(t)}, ${D.st[st].n}, forecast agreement ${a} percent`);
+        // The dials and the dew bar are role="img" drawings, so their changing values reach screen
+        // readers here instead: one polite live region, written only after the reader moves the
+        // scrubber (never during the decorative autoplay) and held back 600 ms so a drag says its last word once.
+        if (touched) {
+          const live = `${off(t)}, ${fmt(t)}. ${D.st[st].n}. Forecast agreement ${a} percent. ${r('nc-note').textContent}. Dew point ${Math.round(d)} degrees, ${r('dewlab').textContent}. Next clean window: ${r('cw').textContent}.`;
+          clearTimeout(liveTimer);
+          liveTimer = setTimeout(() => { liveEl.textContent = live; }, 600);
+        }
       };
 
       // A gentle autoplay until the reader takes over, paused when off screen or when motion is paused.
