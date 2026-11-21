@@ -52,11 +52,11 @@ const DOORS: {
     proofWho: 'Grand Management · Coos Bay',
     proof: '50 bilingual pages, rebuilt off WordPress and live in 13 business days.',
     proofHref: '/work/grand-management',
-    // S339 round 4 (Preston): the door shows the work itself, a 47 second
-    // reel cut from nine live sites, phone menus and footers included.
+    // S339 round 4 (Preston): the door shows the work itself, a 52 second
+    // reel of nine live sites, each one continuous scroll from hero to footer.
     film: {
-      file: 'sites-reel', poster: '/work/sites-reel-poster-720.webp', dur: '0:47', name: 'the reel',
-      label: 'Reel of nine live sites I built, 47 seconds, no sound: Grand Management, Bandon By The Dunes Realtee, Makai Painting, US Survey Supply, SeaBreeze, Baseline, Sogn Contracting, Professors Golf and South Coast Cuisine, with their phone menus and footers.',
+      file: 'sites-reel', poster: '/work/sites-reel-poster-720.webp', dur: '0:52', name: 'the reel',
+      label: 'Reel of nine live sites I built, 52 seconds, no sound, each scrolled from top to footer: Grand Management, Bandon By The Dunes Realtee, Makai Painting, US Survey Supply, SeaBreeze, Baseline, Sogn Contracting, Professors Golf and South Coast Cuisine, with their phone menus and footers.',
       caption: 'Nine live sites, menus to footers', href: '/work', linkLabel: 'See the work',
     },
     terms: 'From $1,750, everything in · builds starting at 3 business days',
@@ -104,9 +104,9 @@ const DOORS: {
     // LLRSX system blueprints, then the live command deck that watches the
     // loops I run, on a desktop and on a phone. Filmed off the real deck.
     film: {
-      file: 'auto-reel', poster: '/work/auto-reel-poster-720.webp', dur: '0:27', name: 'the automation reel',
-      label: 'Automation reel, 27 seconds, no sound: two system blueprints, the action kernel and the portfolio governor, then my live command deck showing 44 loops and a day of runs, on a desktop and on a phone.',
-      caption: 'My own ops deck, 44 loops at work',
+      file: 'auto-reel', poster: '/work/auto-reel-poster-720.webp', dur: '0:36', name: 'the automation reel',
+      label: 'Automation reel, 36 seconds, no sound: two system blueprints, the action kernel and the portfolio governor, then my live command deck: a day of runs across 44 loops, and the spend tracked against its daily target, on a desktop and on a phone.',
+      caption: 'My own ops deck: 44 loops, spend tracked daily',
     },
     terms: 'Scoped to one task at a time · running costs named up front',
     more: '/services/ai-automation', moreLabel: 'Automation in detail',
@@ -424,24 +424,25 @@ const DOORS: {
   /* The play key: the native bar covers a third of a 16:9 poster on a phone,
      so it waits until play. Without JavaScript the native controls stay. */
   .sp-vwrap { position: relative; }
+  /* The key sits in the bottom corner, so the poster's own title stays in view. */
   .sp-play {
-    position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
-    width: 100%; border: 0; padding: 0; cursor: pointer; border-radius: var(--wc-r);
-    background: radial-gradient(closest-side, rgba(10, 13, 12, 0.55), rgba(10, 13, 12, 0.1));
+    position: absolute; inset: 0; display: flex; flex-direction: row; align-items: flex-end; justify-content: flex-start; gap: 12px;
+    width: 100%; border: 0; padding: 14px; cursor: pointer; border-radius: var(--wc-r);
+    background: linear-gradient(0deg, rgba(10, 13, 12, 0.55), rgba(10, 13, 12, 0) 45%);
   }
   .sp-play[hidden] { display: none; }
   .sp-play-key {
-    display: grid; place-items: center; width: 64px; height: 64px; border-radius: 50%; padding-left: 3px;
+    display: grid; place-items: center; width: 52px; height: 52px; border-radius: 50%; padding-left: 3px;
     color: #0a0d0c; background: linear-gradient(180deg, #f0b07c, #c8804a);
     box-shadow: 0 0 0 5px rgba(10, 13, 12, 0.55), 0 0 0 6px rgba(240, 176, 124, 0.45), 0 14px 30px -10px rgba(0, 0, 0, 0.8);
     transition: transform .2s ease;
   }
-  .sp-play-key svg { width: 28px; height: 28px; }
+  .sp-play-key svg { width: 24px; height: 24px; }
   .sp-play:hover .sp-play-key, .sp-play:focus-visible .sp-play-key { transform: scale(1.06); }
   .sp-play:focus-visible { outline: 2px solid var(--color-wc-green); outline-offset: 3px; }
   .sp-play-chip {
     font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: #eef1ec;
-    background: rgba(10, 13, 12, 0.82); border: 1px solid rgba(200, 128, 74, 0.45); border-radius: 999px; padding: 6px 12px;
+    background: rgba(10, 13, 12, 0.82); border: 1px solid rgba(200, 128, 74, 0.45); border-radius: 999px; padding: 6px 12px; margin-bottom: 11px;
   }
   .sp-video figcaption { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0 14px; }
   /* Branding door: the graphics board itself, not a sentence about it. */
