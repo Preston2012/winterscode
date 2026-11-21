@@ -72,6 +72,7 @@ const crumbs = [
   { name: 'FAQ', path: '/faq' },
 ];
 const breadcrumbLd = breadcrumbSchema(crumbs);
+import Fold from '../components/ui/Fold.astro';
 ---
 
 <BaseLayout
@@ -98,29 +99,21 @@ const breadcrumbLd = breadcrumbSchema(crumbs);
     textPos="split"
   />
 
-  <section class="faqp-text" aria-label="Text Preston">
-    <TextCta lead="If yours is not here, just text." links={[{ href: '/pricing', label: 'See pricing' }]} />
-  </section>
-
-  <Divider label="01" />
-
+  <!-- S339 round 3: the questions are house folds, one open at a time; the
+       Text key follows them instead of standing in front of them. -->
   <section class="faqp" aria-label="Frequently asked questions">
-    <div class="faqp-list">
-      {faqs.map((item, i) => (
-        <details class="faqp-item" open={i === 0}>
-          <summary class="faqp-q">
-            <span class="faqp-q-text">{item.q}</span>
-            <span class="faqp-toggle" aria-hidden="true">+</span>
-          </summary>
-          <div class="faqp-a">{item.html ? <p set:html={item.html} /> : <p>{item.a}</p>}</div>
-        </details>
-      ))}
-    </div>
+    {faqs.map((item, i) => (
+      <Fold title={item.q} group="faq" open={i === 0}>
+        {item.html ? <p set:html={item.html} /> : <p>{item.a}</p>}
+      </Fold>
+    ))}
   </section>
 
-  <Divider label="02" />
+  <section class="faqp-text" aria-label="Text Preston">
+    <TextCta lead="If yours is not here, just text." links={[{ href: '/pricing', label: 'Pricing' }]} />
+  </section>
 
-  <Contact sectionNumber="02" centered suppressHeader />
+  <Contact />
 </BaseLayout>
 
 <style>

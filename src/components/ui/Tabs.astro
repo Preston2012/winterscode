@@ -149,7 +149,16 @@ const n = cols ?? (tabs.length >= 4 ? 4 : tabs.length);
   .wtabs-nojs-h { margin: 0 0 12px; font-family: var(--wc-display); font-weight: 500; font-size: 28px; color: inherit; }
   :global(.wtabs-ready) .wtabs-nojs-h { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
-  @media (max-width: 739px) { .wtabs-panel { padding: 20px 12px 16px; } }
+  @media (max-width: 739px) {
+    .wtabs-panel { padding: 20px 12px 16px; }
+    /* Three across on a phone: the label and its line carry it, the icon
+       steps aside so nothing wraps a word per line. */
+    .wtabs--3 .wtabs-row { gap: 8px; }
+    .wtabs--3 .wtabs-tab { min-height: 72px; padding: 12px 10px; }
+    .wtabs--3 .wtabs-tab :global(.wtabs-icon) { display: none; }
+    .wtabs--3 .wtabs-label { font-size: 15px; }
+    .wtabs--3 .wtabs-sub { font-size: 12px; }
+  }
   @media (min-width: 740px) {
     .wtabs-row { gap: 12px; }
     .wtabs--4 .wtabs-row { grid-template-columns: repeat(4, 1fr); }

@@ -5,15 +5,15 @@
  * each. The order reads from the rail, so no numbers. Stacks on a phone,
  * runs across from 740px.
  */
-interface Step { title: string; body: string }
+interface Step { title: string; body: string; meta?: string }
 interface Props { steps: Step[]; label?: string }
 const { steps, label = 'How it goes' } = Astro.props;
 ---
-<ol class="wsteps" aria-label={label}>
+<ol class:list={['wsteps', { 'wsteps--many': steps.length > 3 }]} aria-label={label}>
   {steps.map((s) => (
     <li class="wsteps-step">
       <span class="wsteps-node" aria-hidden="true"></span>
-      <span class="wsteps-t">{s.title}</span>
+      <span class="wsteps-t">{s.title}{s.meta && <span class="wsteps-m">{s.meta}</span>}</span>
       <span class="wsteps-b">{s.body}</span>
     </li>
   ))}
@@ -34,12 +34,15 @@ const { steps, label = 'How it goes' } = Astro.props;
     background: linear-gradient(180deg, rgba(216, 144, 90, 0.6), rgba(216, 144, 90, 0.2));
   }
   .wsteps-t { font-size: 17px; font-weight: 600; color: #eef1ec; line-height: 1.35; }
+  .wsteps-m { display: block; margin-top: 2px; font-size: 13.5px; font-weight: 500; color: var(--color-copper-bright); }
   .wsteps-b { font-size: 15px; line-height: 1.5; color: var(--color-ash-300); }
 
   @media (min-width: 740px) {
     .wsteps { grid-auto-flow: column; grid-auto-columns: 1fr; gap: 24px; }
     .wsteps-step { grid-template-columns: 1fr; row-gap: 6px; padding: 0; }
     .wsteps-node { grid-row: auto; justify-self: start; margin: 0 0 10px; }
+    .wsteps--many { grid-auto-flow: row; grid-template-columns: repeat(3, 1fr); row-gap: 26px; }
     .wsteps-step:not(:last-child)::before { left: 22px; right: -18px; top: 5.5px; bottom: auto; width: auto; height: 1px; background: linear-gradient(90deg, rgba(216, 144, 90, 0.6), rgba(216, 144, 90, 0.2)); }
+    .wsteps--many .wsteps-step:nth-child(3n)::before { display: none; }
   }
 </style>

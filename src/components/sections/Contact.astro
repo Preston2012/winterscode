@@ -37,11 +37,17 @@ const sms = smsHref(Astro.url.pathname);
 
 <section class="closer wc-plate wc-rv" id="contact" data-textbar-hide aria-labelledby="closer-h">
   <div class="closer-glow" aria-hidden="true"></div>
-  <p class="wc-eyebrow"><span class="wc-dot" aria-hidden="true"></span>{headerKicker}</p>
-  <h2 class="closer-h" id="closer-h">
-    {headerTitle ? headerTitle : <>Help is just a <span class="wc-cu">text away.</span></>}
-  </h2>
-  <p class="closer-sub">I'm down the road. I pick up the phone.</p>
+  {strip ? (
+    <h2 class="closer-h closer-h--sm" id="closer-h">Text or call.</h2>
+  ) : (
+    <>
+      <p class="wc-eyebrow"><span class="wc-dot" aria-hidden="true"></span>{headerKicker}</p>
+      <h2 class="closer-h" id="closer-h">
+        {headerTitle ? headerTitle : <>Help is just a <span class="wc-cu">text away.</span></>}
+      </h2>
+      <p class="closer-sub">I'm down the road. I pick up the phone.</p>
+    </>
+  )}
 
   <div class="closer-keys">
     <a class="wc-btn wc-btn--primary closer-key" href={sms}>
@@ -104,6 +110,9 @@ const sms = smsHref(Astro.url.pathname);
     color: #eef1ec; text-wrap: balance;
   }
   :global(html[data-display='sans']) .closer-h { font-weight: 600; letter-spacing: -0.045em; }
+  /* /contact: its hero already carries the tagline, so the closer just
+     names the two keys. */
+  .closer-h--sm { font-size: clamp(30px, 4.6vw, 44px); }
   .closer-sub { margin: 18px 0 0; font-size: clamp(17px, 1.8vw, 21px); line-height: 1.5; color: var(--color-ash-300); }
 
   .closer-keys { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 10px; max-width: 460px; margin-top: 28px; }

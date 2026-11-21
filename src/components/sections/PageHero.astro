@@ -59,12 +59,12 @@ const described = Boolean(showcase && bgImage && bgAlt);
 
 // S339 round 3: the H1's closing phrase takes the annealed copper, the same
 // rule the share cards use: the second sentence when there are two, else the
-// last two words (the last one on a short line).
+// last two words (the last one on a two-word line).
 const sentences = h1.match(/[^.!?]+[.!?]/g);
 const words = h1.split(' ');
 const cu = sentences && sentences.length > 1
   ? sentences[sentences.length - 1].trim()
-  : words.slice(words.length > 3 ? -2 : -1).join(' ');
+  : words.slice(words.length > 2 ? -2 : -1).join(' ');
 const cut = h1.lastIndexOf(cu);
 const h1Lead = cut > 0 ? h1.slice(0, cut) : h1;
 const h1Cu = cut > 0 ? cu : '';

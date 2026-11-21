@@ -62,7 +62,7 @@ function split(path, h1) {
   if (!cu) {
     const sentences = h1.match(/[^.!?]+[.!?]/g);
     const words = h1.split(' ');
-    cu = sentences && sentences.length > 1 ? sentences[sentences.length - 1].trim() : words.slice(words.length > 3 ? -2 : -1).join(' ');
+    cu = sentences && sentences.length > 1 ? sentences[sentences.length - 1].trim() : words.slice(words.length > 2 ? -2 : -1).join(' ');
   }
   const i = h1.lastIndexOf(cu);
   return i < 0 ? [h1, ''] : [h1.slice(0, i), h1.slice(i)];
