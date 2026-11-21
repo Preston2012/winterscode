@@ -187,6 +187,9 @@ export default defineConfig({
   // file path, so the PostCSS route is the one that breaks now.
   vite: {
     plugins: [tailwindcss({ optimize: false })],
+    // S339: a preview build sets WC_OG_ORIGIN to its own host so share cards
+    // load from the preview; production leaves it unset (BaseLayout).
+    define: { __WC_OG_ORIGIN__: JSON.stringify(process.env.WC_OG_ORIGIN || '') },
     // Raise the inline-asset threshold from the Vite default of 4096
     // bytes to 65536 bytes (64KB). Lighthouse mobile run flagged ~1,580ms of
     // render-blocking CSS from four per-component chunks at 2-9KB each

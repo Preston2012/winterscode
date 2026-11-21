@@ -67,8 +67,14 @@ const ownCard = (ogCards as string[]).includes(cleanPath || '/')
   ? `/og/${cleanPath === '/' || !cleanPath ? 'home' : cleanPath.slice(1).replace(/\//g, '-')}.jpg`
   : '/og/home.jpg';
 const ogImage = ogImageProp === undefined ? ownCard : ogImageProp;
+// The card is fetched by the messaging app from the host the link names. A
+// preview build sets WC_OG_ORIGIN to its own host, so a shared preview link
+// shows a card that exists there instead of a production 404. Production
+// builds leave it unset and use the site origin. Canonical never moves.
+declare const __WC_OG_ORIGIN__: string;
+const ogOrigin = (__WC_OG_ORIGIN__ || siteUrl).replace(/\/$/, '');
 const ogImageUrl =
-  ogImage === null ? null : ogImage.startsWith('http') ? ogImage : `${siteUrl}${ogImage}`;
+  ogImage === null ? null : ogImage.startsWith('http') ? ogImage : `${ogOrigin}${ogImage}`;
 
 // Preview-deploy guard. Cloudflare Pages sets CF_PAGES_BRANCH on every build.
 // Production builds from the default branch stay fully indexable (current
