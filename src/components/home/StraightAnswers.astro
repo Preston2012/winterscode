@@ -13,8 +13,10 @@
  * ruled rows, no Q numbers.
  */
 import Arrow from '../ui/Arrow.astro';
+import WhyWintersCode from '../ui/WhyWintersCode.astro';
 
-const QUESTIONS: { q: string; a: string[]; link?: { href: string; label: string } }[] = [
+const QUESTIONS: { q: string; a: string[]; why?: boolean; link?: { href: string; label: string } }[] = [
+  { q: 'Why Winters Code?', a: [], why: true, link: { href: '/work', label: 'See the work' } },
   {
     q: 'What does a site cost?',
     a: [
@@ -38,13 +40,6 @@ const QUESTIONS: { q: string; a: string[]; link?: { href: string; label: string 
       'The person who built it is the person who maintains it. You text a real person, not a ticket queue.',
     ],
     link: { href: '/services#care', label: 'Care plans' },
-  },
-  {
-    q: 'Why not WordPress?',
-    a: [
-      'WordPress is mass-produced software with plugins stacked on top: slow, plugin-dependent, and it breaks when something auto-updates.',
-      'Custom code loads faster, reads cleanly to Google and carries strict security headers. Every site I build scores 90 or better on Google\'s mobile test, measured live on the Wall.',
-    ],
   },
   {
     q: "What if I don't have photos or words yet?",
@@ -71,6 +66,7 @@ const QUESTIONS: { q: string; a: string[]; link?: { href: string; label: string 
             <span class="sa-toggle" aria-hidden="true"></span>
           </summary>
           <div class="sa-a">
+            {item.why && <WhyWintersCode />}
             {item.a.map((p) => <p>{p}</p>)}
             {item.link && <a class="wc-link" href={item.link.href}>{item.link.label} <Arrow size={16} /></a>}
           </div>

@@ -10,6 +10,7 @@ import Contact from '../components/sections/Contact.astro';
 import TextCta from '../components/ui/TextCta.astro';
 import Tabs from '../components/ui/Tabs.astro';
 import Fold from '../components/ui/Fold.astro';
+import Arrow from '../components/ui/Arrow.astro';
 import { breadcrumbSchema } from '../lib/schema';
 
 const crumbs = [
@@ -69,7 +70,7 @@ const breadcrumbLd = breadcrumbSchema(crumbs);
       </ul>
       <figure class="pr-quote">
         <blockquote><p>&ldquo;We are proud to endorse and recommend WintersCode.com.&rdquo;</p></blockquote>
-        <figcaption>General Manager, US Survey Supply · <a href="/work/us-survey-supply">See the build</a></figcaption>
+        <figcaption>General Manager, US Survey Supply <a class="wc-link" href="/work/us-survey-supply">See the build <Arrow size={16} /></a></figcaption>
       </figure>
       <TextCta lead="Tell me about your business in a text and I'll tell you where it lands." links={[{ href: '/services#sites', label: 'Line by line' }]} />
     </div>
@@ -135,7 +136,7 @@ const breadcrumbLd = breadcrumbSchema(crumbs);
   .pr-quote { margin: 22px 0 0; padding: 0; }
   .pr-quote blockquote { margin: 0; }
   .pr-quote p { margin: 0; font-family: var(--wc-display); font-style: italic; font-size: clamp(20px, 2.6vw, 26px); line-height: 1.3; color: #eef1ec; }
-  .pr-quote figcaption { margin-top: 6px; font-size: 14px; color: var(--color-ash-500); }
+  .pr-quote figcaption { margin-top: 6px; display: flex; flex-wrap: wrap; align-items: center; gap: 0 16px; font-size: 14px; color: var(--color-ash-500); }
   .pr-tiers { display: grid; gap: 10px; margin-top: 16px; }
   .pr-tier { padding: 18px; background: rgba(10, 13, 12, 0.55); border: 1px solid var(--wc-line); border-radius: var(--wc-r); }
   .pr-tier-h { margin: 0; font-size: 18px; font-weight: 600; color: #eef1ec; }

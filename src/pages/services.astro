@@ -7,6 +7,7 @@ import Divider from '../components/ui/Divider.astro';
 import Tabs from '../components/ui/Tabs.astro';
 import Fold from '../components/ui/Fold.astro';
 import Steps from '../components/ui/Steps.astro';
+import WhyWintersCode from '../components/ui/WhyWintersCode.astro';
 import Contact from '../components/sections/Contact.astro';
 import Breadcrumbs from '../components/ui/Breadcrumbs.astro';
 import { breadcrumbSchema, absUrl } from '../lib/schema';
@@ -110,7 +111,7 @@ const servicesLd = {
         <Fold title="Safe and yours" meta="no lock-in" group="sv-sites">
           <ul class="wc-bullets">
             <li>HTTPS, a hardened setup and spam-protected forms, built in.</li>
-            <li>No WordPress, no plugin licenses, no being tied to whoever made it.</li>
+            <li>No plugin licenses and no being tied to whoever made it.</li>
             <li>Yours to keep, free and clear, with no required monthly fee.</li>
           </ul>
         </Fold>
@@ -164,11 +165,11 @@ const servicesLd = {
   <section class="sv-faq" id="faq" aria-labelledby="sv-faq-h">
     <p class="wc-eyebrow"><span class="wc-dot" aria-hidden="true"></span>Questions</p>
     <h2 class="wc-h2 sv-faq-h" id="sv-faq-h">The ones <span class="wc-soft">everyone asks.</span></h2>
-    <Fold title="How much does this cost?" group="sv-faq" open>
-      <p>One price, everything in. Most local business sites start at $1,750, with the pages, the words, real photos, branding, a site built to load fast on a phone, and security, and it's yours to keep. The consult is free and the written quote holds for 14 days. <a href="/pricing">Pricing</a></p>
+    <Fold title="Why Winters Code?" group="sv-faq" open>
+      <WhyWintersCode />
     </Fold>
-    <Fold title="Why no WordPress?" group="sv-faq">
-      <p>WordPress is mass-produced software with plugins stacked on top: slow, plugin-dependent, and it breaks when something auto-updates. Custom code loads faster, reads cleanly to Google and carries strict security headers. Every site I build scores 90 or better on Google's mobile test, measured live on the Wall.</p>
+    <Fold title="How much does this cost?" group="sv-faq">
+      <p>One price, everything in. Most local business sites start at $1,750, with the pages, the words, real photos, branding, a site built to load fast on a phone, and security, and it's yours to keep. The consult is free and the written quote holds for 14 days. <a href="/pricing">Pricing</a></p>
     </Fold>
     <Fold title="Do you maintain it after?" group="sv-faq">
       <p>Yes, and it's optional: Basic from $75 a month, Pro from $250. You text a real person, not a ticket queue.</p>

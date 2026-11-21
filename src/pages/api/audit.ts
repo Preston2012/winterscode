@@ -713,7 +713,7 @@ function buildFindings(r: Omit<AuditResult, 'findings' | 'overall' | 'overallSou
       summary: `Mobile performance: ${mp}/100.`,
       detail:
         'Pages this slow lose more than half their mobile visitors before the page finishes loading. Most of your customers are on phones, and this is the score that matters.',
-      fix: 'Compress images (Squoosh.app is free), defer non-critical scripts, switch to a modern stack if the site is on WordPress.',
+      fix: 'Compress images (Squoosh.app is free), defer non-critical scripts, and trim plugins or third-party widgets that load on every page.',
     });
   } else if (mp != null && mp < 70) {
     out.push({
@@ -722,7 +722,7 @@ function buildFindings(r: Omit<AuditResult, 'findings' | 'overall' | 'overallSou
       summary: `Mobile performance: ${mp}/100.`,
       detail:
         'This is the score every phone visitor feels, and most of your customers are on phones. Below 70 means a real share of them give up before the page finishes loading.',
-      fix: 'Compress images (Squoosh.app is free), lazy-load below-the-fold images, defer non-critical scripts. If the site runs on WordPress, a modern stack removes most of the weight.',
+      fix: 'Compress images (Squoosh.app is free), lazy-load below-the-fold images, defer non-critical scripts. A lighter stack removes most of the weight.',
     });
   } else if (mp != null && mp < 80) {
     out.push({

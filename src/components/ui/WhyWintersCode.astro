@@ -1,0 +1,33 @@
+---
+/**
+ * WhyWintersCode. S339 round 4 (Preston 2026-11-21: the WordPress question
+ * "should be why Winters Code, and then tell them all the honest reasons to
+ * pick me, using my past work, the fleet of live websites and the brain").
+ *
+ * Every reason points at something a visitor can check: a live site, a case
+ * page, the Wall, the audit. The site count comes from portfolio.ts so it
+ * never goes stale. Preston, same day: no reason names or knocks a
+ * competitor; each one stands on what I do.
+ */
+import { sites } from '../../lib/portfolio';
+const n = sites.length;
+const words = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve'];
+const count = n < words.length ? words[n].charAt(0).toUpperCase() + words[n].slice(1) : String(n);
+---
+<ul class="wc-bullets why-list">
+  <li><span><b>The work is live.</b> {count} client sites on the coast, each on its own domain and scored on a phone where you can check it yourself, on <a href="/wall">the Wall</a>.</span></li>
+  <li><span><b>Days, not months.</b> <a href="/work/grand-management">Grand Management</a>: 50 bilingual pages in 13 business days. <a href="/work/us-survey-supply">US Survey Supply</a>: 42 pages in 8. Makai Painting: 5.</span></li>
+  <li><span><b>Fast on every phone.</b> Every site I build scores 90 or better on Google's mobile test. The Coos County business sites I <a href="/insights/coos-county-website-audit">audited</a> averaged 61.</span></li>
+  <li><span><b>Checked before it ships.</b> Every build passes the same automated check before it goes live: speed, accessibility, security headers, every screen size from a small phone to a wide monitor.</span></li>
+  <li><span><b>Hard to break, quick to fix.</b> Each client's code lives in its own private repository with offsite backups, and a bad change rolls back in seconds.</span></li>
+  <li><span><b>A memory behind every build.</b> I built my own memory engine on top of Claude. Your decisions and notes stick, and every lesson from every build carries into yours.</span></li>
+  <li><span><b>Yours to keep.</b> The domain, the code and the hosting account are in your name. Skip the care plan and nothing turns off.</span></li>
+  <li><span><b>Built by an owner.</b> I've owned small businesses and I still run the office of one: <a href="/chere">Chere'</a>, the app I built, runs SeaBreeze's bids and contracts.</span></li>
+  <li><span><b>Down the road.</b> Sixth generation Bandon. You text the person who builds it, and I answer within a few hours on business days.</span></li>
+</ul>
+
+<style>
+  .why-list { gap: 12px; color: var(--color-ash-300); }
+  .why-list b { color: #eef1ec; font-weight: 600; }
+  .why-list a { color: var(--color-wc-green); text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+</style>

@@ -33,10 +33,6 @@ const faqs: { q: string; a: string; html?: string }[] = [
     a: 'Sites in days, apps in weeks. Sites start at 3 business days, counted from the day I have what the build needs, and a bigger build gets its timeline in the quote. Apps run 2 to 4 weeks for an MVP, 4 to 8 weeks for a full build, and 8 to 16 for a custom system. No agency runaround, no "next quarter."',
   },
   {
-    q: 'Why not WordPress, Squarespace, or Wix?',
-    a: 'Those are mass-produced platforms: slower, plugin-dependent, and rented rather than owned. I audited 169 Coos County sites: the three platforms most businesses use averaged 60, 48 and 60 out of 100 on mobile speed, among the sites Google could score, and graded a D, an F and a C- on Mozilla Observatory\u2019s security-header check. Mine is custom code, which loads faster, reads cleanly to Google, ships with strict security headers and spam-protected forms, and belongs to you.',
-  },
-  {
     q: 'Do I own the site, or am I renting it?',
     a: 'You own it. The code and the content are yours, with no platform charging monthly rent to keep your own site online and no lock-in.',
   },
@@ -73,11 +69,12 @@ const crumbs = [
 ];
 const breadcrumbLd = breadcrumbSchema(crumbs);
 import Fold from '../components/ui/Fold.astro';
+import WhyWintersCode from '../components/ui/WhyWintersCode.astro';
 ---
 
 <BaseLayout
   title="FAQ · Website Cost, Timeline & Ownership · Winters Code"
-  description="What a website costs on the Oregon coast ($1,750, everything in), how long it takes, who owns it, why not WordPress, and how to start. Plain answers."
+  description="What a website costs on the Oregon coast ($1,750, everything in), how long it takes, who owns it, and how to start. Plain answers."
   canonicalPath="/faq"
 >
   <Fragment slot="head">
@@ -102,8 +99,11 @@ import Fold from '../components/ui/Fold.astro';
   <!-- S339 round 3: the questions are house folds, one open at a time; the
        Text key follows them instead of standing in front of them. -->
   <section class="faqp" aria-label="Frequently asked questions">
-    {faqs.map((item, i) => (
-      <Fold title={item.q} group="faq" open={i === 0}>
+    <Fold title="Why Winters Code?" group="faq" open>
+      <WhyWintersCode />
+    </Fold>
+    {faqs.map((item) => (
+      <Fold title={item.q} group="faq">
         {item.html ? <p set:html={item.html} /> : <p>{item.a}</p>}
       </Fold>
     ))}

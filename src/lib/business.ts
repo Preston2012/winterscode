@@ -64,7 +64,7 @@ export const services: ServiceEntry[] = [
     name: 'Web Development',
     shortLabel: 'Web Development',
     blurb:
-      'Custom front-end and back-end code. No WordPress, no page builders. Fast, secure, and yours to keep.',
+      'Custom front-end and back-end code, written for your business. Fast, secure, and yours to keep.',
     serviceType: 'Web development',
   },
   {

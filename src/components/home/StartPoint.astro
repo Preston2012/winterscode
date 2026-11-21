@@ -19,6 +19,17 @@
  * four. Without JavaScript all four panels show, stacked.
  */
 import { smsBase } from '../../lib/text-cta';
+import { v } from '../../lib/asset';
+import { brand } from '../../lib/portfolio';
+
+const boardImg = brand[0]?.image;
+
+// The demo-night video plays through /media/[file], which answers byte
+// ranges (iPhone Safari needs them), the same way ChereFeature serves it.
+const mediaUrl = (file: string) => {
+  const ver = v(`/work/${file}`).split('?')[1];
+  return `/media/${file}${ver ? `?${ver}` : ''}`;
+};
 import Arrow from '../ui/Arrow.astro';
 import Icon from '../ui/Icon.astro';
 
@@ -28,7 +39,7 @@ const ask = (topic: string) =>
 type IconName = 'web' | 'apps' | 'brand' | 'auto';
 const DOORS: {
   id: string; icon: IconName; need: string; label: string; head: string; lead: string; gets: string[];
-  proofWho: string; proof: string; proofHref: string; terms: string; more: string; moreLabel: string; topic: string; cta: string;
+  proofWho: string; proof: string; proofHref: string; video?: boolean; board?: boolean; terms: string; more: string; moreLabel: string; topic: string; cta: string;
 }[] = [
   {
     id: 'web', icon: 'web',
@@ -49,9 +60,10 @@ const DOORS: {
     head: 'Software shaped to how you work.',
     lead: 'Phone apps and internal tools for the jobs off-the-shelf software gets wrong. One build runs on iPhone and Android.',
     gets: ['iPhone and Android from one build', 'Real logins, payments and backends', 'Tools for your crew and your office', 'AI and API running costs named in the quote'],
-    proofWho: "Chere' · my contractor back office",
+    proofWho: "Chere' · runs the office at SeaBreeze",
     proof: 'It runs the office at SeaBreeze. A bid that took two of us a full day now takes about an hour.',
     proofHref: '/chere',
+    video: true,
     terms: 'An MVP in 2 to 4 weeks · full builds in 4 to 8',
     more: '/services/app-development', moreLabel: 'Apps in detail',
     topic: 'an app', cta: 'Text me about an app',
@@ -65,6 +77,7 @@ const DOORS: {
     proofWho: 'Design and build, one shop',
     proof: 'I design the brand and build the site it lives on, so nothing gets lost handing a logo to someone else.',
     proofHref: '/logo-design',
+    board: true,
     terms: 'Part of a site build when you need one · also on its own',
     more: '/logo-design', moreLabel: 'Branding in detail',
     topic: 'a logo or brand', cta: 'Text me about a brand',
@@ -128,11 +141,51 @@ const DOORS: {
             </ul>
           </div>
           <div class="sp-side">
-            <a class="sp-proof" href={d.proofHref}>
-              <span class="sp-proof-who">{d.proofWho}</span>
-              <span class="sp-proof-text">{d.proof}</span>
-              <span class="sp-proof-go">See it <Arrow size={16} /></span>
-            </a>
+            {d.board && boardImg ? (
+              <figure class="sp-board">
+                <a href="/work#branding" class="sp-board-link">
+                  <img
+                    src={boardImg.srcSmall ?? boardImg.src}
+                    srcset={`${boardImg.srcXSmall ? boardImg.srcXSmall + ' 480w, ' : ''}${boardImg.srcSmall ? boardImg.srcSmall + ' 800w, ' : ''}${boardImg.src} 1200w`}
+                    sizes="(min-width: 900px) 400px, 90vw"
+                    alt={boardImg.alt}
+                    width={boardImg.width}
+                    height={boardImg.height}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </a>
+                <figcaption>
+                  <span class="sp-proof-who">Logos and marks I've drawn</span>
+                  <a class="wc-link wc-link--ink" href="/work#branding">See the full board <Arrow size={16} /></a>
+                </figcaption>
+              </figure>
+            ) : d.video ? (
+              <figure class="sp-video">
+                <video
+                  controls
+                  playsinline
+                  preload="none"
+                  width="1280"
+                  height="720"
+                  poster={v('/work/chere-poster-720.webp')}
+                  aria-label="Chere' demo video, 1 minute 32 seconds, with music. A kitchen photo becomes three design options, a priced estimate, and a before and after the customer sees."
+                >
+                  <source src={mediaUrl('chere-demo.webm')} type="video/webm" />
+                  <source src={mediaUrl('chere-demo.mp4')} type="video/mp4" />
+                </video>
+                <figcaption>
+                  <span class="sp-proof-who">{d.proofWho}</span>
+                  <a class="wc-link wc-link--ink" href={d.proofHref}>More on Chere' <Arrow size={16} /></a>
+                </figcaption>
+              </figure>
+            ) : (
+              <a class="sp-proof" href={d.proofHref}>
+                <span class="sp-proof-who">{d.proofWho}</span>
+                <span class="sp-proof-text">{d.proof}</span>
+                <span class="sp-proof-go">See it <Arrow size={16} /></span>
+              </a>
+            )}
             <p class="sp-terms">{d.terms}</p>
             <div class="sp-actions">
               <a class="wc-btn wc-btn--ink" href={ask(d.topic)}>{d.cta} <Arrow size={16} /></a>
@@ -312,4 +365,14 @@ const DOORS: {
   @media (prefers-reduced-motion: reduce) {
     .sp-tab, .sp-proof, .sp-tab-lamp { transition: none; }
   }
+
+  /* Apps door: the Chere' demo plays right in the panel (Preston, round 4). */
+  .sp-video { margin: 0; display: grid; gap: 8px; }
+  .sp-video video { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; border-radius: var(--wc-r); background: #0e1214; border: 1px solid rgba(20, 24, 22, 0.15); }
+  .sp-video figcaption { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0 14px; }
+  /* Branding door: the graphics board itself, not a sentence about it. */
+  .sp-board { margin: 0; display: grid; gap: 8px; }
+  .sp-board-link { display: block; border-radius: var(--wc-r); overflow: hidden; border: 1px solid rgba(20, 24, 22, 0.15); background: #0e1214; }
+  .sp-board img { display: block; width: 100%; height: auto; }
+  .sp-board figcaption { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0 14px; }
 </style>
