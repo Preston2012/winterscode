@@ -1,0 +1,38 @@
+---
+/**
+ * CardArt. A work card's art with its signature motion on top, the way the
+ * Home cards had it before the consolidation. The overlays fill this box
+ * (position: absolute, inset 0) and run only while it is on screen, never
+ * under reduced motion or without JavaScript.
+ */
+import PaintPour from './PaintPour.astro';
+import CardMotion from './CardMotion.astro';
+import { CARD_MOTION } from '../../lib/card-motion';
+
+interface Img { src: string; srcSmall?: string; srcXSmall?: string; alt: string; width?: number; height?: number }
+interface Props { slug: string; image: Img; sizes?: string; eager?: boolean; decorative?: boolean }
+const { slug, image, sizes = '(min-width: 1024px) 380px, 80vw', eager = false, decorative = false } = Astro.props;
+const m = CARD_MOTION[slug] ?? {};
+const srcset = image.srcSmall
+  ? `${image.srcXSmall ? image.srcXSmall + ' 480w, ' : ''}${image.srcSmall} 720w, ${image.src} 1200w`
+  : undefined;
+---
+<span class="card-art">
+  <img
+    src={image.srcSmall ?? image.src}
+    srcset={srcset}
+    sizes={sizes}
+    alt={decorative ? '' : image.alt}
+    width={image.width ?? 1200}
+    height={image.height ?? 630}
+    loading={eager ? 'eager' : 'lazy'}
+    decoding="async"
+  />
+  {m.pour && <PaintPour />}
+  {m.motion && <CardMotion kind={m.motion} />}
+</span>
+
+<style>
+  .card-art { position: relative; display: block; aspect-ratio: 1200 / 630; overflow: hidden; background: #0e1214; }
+  .card-art img { display: block; width: 100%; height: 100%; object-fit: cover; }
+</style>

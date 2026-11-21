@@ -44,6 +44,7 @@ import Tabs from '../components/ui/Tabs.astro';
 import Fold from '../components/ui/Fold.astro';
 import Arrow from '../components/ui/Arrow.astro';
 import TextCta from '../components/ui/TextCta.astro';
+import CardArt from '../components/ui/CardArt.astro';
 import { breadcrumbSchema, absUrl } from '../lib/schema';
 
 const crumbs = [
@@ -136,7 +137,12 @@ const workLd = {
           <>
           {i === familyStart && <li class="wk-group" role="listitem">Built for family</li>}
           <li role="listitem">
-            <article class="wk-card" id={p.slug} data-chip-site={p.slug}>
+            <article class="wk-card wk-card--art" id={p.slug} data-chip-site={p.slug}>
+              {p.image && (
+                <a class="wk-art" href={p.caseStudy ?? visitOf(p)?.href} target={p.caseStudy ? undefined : '_blank'} rel={p.caseStudy ? undefined : 'noopener'} tabindex="-1" aria-hidden="true">
+                  <CardArt slug={p.slug} image={p.image} decorative sizes="(min-width: 740px) 45vw, 90vw" />
+                </a>
+              )}
               <div class="wk-top">
                 <h3 class="wk-name"><a href={p.caseStudy ?? visitOf(p)?.href} target={p.caseStudy ? undefined : '_blank'} rel={p.caseStudy ? undefined : 'noopener'}>{p.name}</a></h3>
                 <span class="wk-tag">{p.build === 'rebuild' ? 'Rebuild' : 'New build'}</span>
@@ -291,7 +297,9 @@ const workLd = {
   .wk-lamp { width: 7px; height: 7px; border-radius: 50%; background: var(--color-wc-green-bright); box-shadow: 0 0 0 3px rgba(77, 216, 168, 0.16); }
   .wk-sep { color: var(--color-ash-500); }
   .wk-go { display: flex; flex-wrap: wrap; gap: 0 18px; }
-  .wk-live { color: var(--color-ash-300); }
+  .wk-live { color: var(--color-ash-100); }
+  .wk-card--art { padding-top: 0; overflow: hidden; }
+  .wk-art { display: block; margin: 0 -16px 6px; border-bottom: 1px solid var(--wc-line); }
 
   .wk-feature { margin-bottom: 12px; }
   .wk-card--img { padding-top: 0; overflow: hidden; }

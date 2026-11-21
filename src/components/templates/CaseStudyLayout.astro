@@ -37,6 +37,8 @@ import MobileMenu from '../layout/MobileMenu.astro';
 import Breadcrumbs from '../ui/Breadcrumbs.astro';
 import PageHero from '../sections/PageHero.astro';
 import Fold from '../ui/Fold.astro';
+import CardArt from '../ui/CardArt.astro';
+import Arrow from '../ui/Arrow.astro';
 import RelatedLinks from '../sections/RelatedLinks.astro';
 import Contact from '../sections/Contact.astro';
 import TextCta from '../ui/TextCta.astro';
@@ -79,6 +81,26 @@ const details = [...item.details].sort(
   (a, b) => Number(a.label === 'Stack') - Number(b.label === 'Stack'),
 );
 const visit = item.links.find((l) => l.primary) ?? item.links[0];
+// S339 round 4 (Preston: "don't bury and hide important stuff"): the first
+// time the story names the client, the name links to their live site.
+// The story may use a shorter name ("SeaBreeze", "Baseline"), so the full
+// name is tried first, then its first four words, then its first word when
+// that word is a name and not a place.
+let named = false;
+const esc = (t: string) => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+const words = item.name.split(' ');
+const PLACES = new Set(['Bandon', 'Coos', 'Grand', 'South', 'US', 'North']);
+const names = [item.name, words.slice(0, 4).join(' '), ...(PLACES.has(words[0]) || words[0].length < 5 ? [] : [words[0]])];
+const introLinked = intro.map((para) => {
+  if (named || !visit) return para;
+  for (const n of names) {
+    const re = new RegExp(`\\b${esc(n)}\\b`);
+    if (!re.test(para)) continue;
+    named = true;
+    return para.replace(re, `<a class="cs-client" href="${visit.href}" target="_blank" rel="noopener">${n}</a>`);
+  }
+  return para;
+});
 const closing: EndLink[] = endLinks ?? [
   ...(visit ? [{ href: visit.href, label: 'Visit the live site', external: true }] : []),
   { href: '/pricing', label: 'See pricing' },
@@ -120,18 +142,22 @@ const workLd = {
        site link instead of two Text blocks. -->
   <PageHero eyebrow={eyebrow} h1={h1} sub={sub} />
 
+  {visit && (
+    <p class="cs-visit">
+      <a class="wc-btn wc-btn--ghost" href={visit.href} target="_blank" rel="noopener">Visit {visit.href.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')} <Arrow dir="up-right" size={16} /></a>
+    </p>
+  )}
+
   {item.image && (
-    <section class="cs-hero-img" aria-hidden="false">
-      <img
-        src={item.image.src}
-        srcset={item.image.srcSmall ? `${item.image.srcXSmall ?? item.image.src} 480w, ${item.image.srcSmall} 720w, ${item.image.src} 1200w` : undefined}
-        sizes="(min-width: 1024px) 960px, 100vw"
-        alt={item.image.alt}
-        width={item.image.width}
-        height={item.image.height}
-        loading="eager"
-        decoding="async"
-      />
+    <section class="cs-hero-img" aria-label={`${item.name}, live site`}>
+      {visit ? (
+        <a class="cs-hero-link" href={visit.href} target="_blank" rel="noopener">
+          <CardArt slug={slug} image={item.image} eager sizes="(min-width: 1024px) 960px, 100vw" />
+          <span class="cs-hero-chip">Open the live site <Arrow dir="up-right" size={14} /></span>
+        </a>
+      ) : (
+        <CardArt slug={slug} image={item.image} eager sizes="(min-width: 1024px) 960px, 100vw" />
+      )}
     </section>
   )}
 
@@ -147,7 +173,7 @@ const workLd = {
   )}
 
   <section class="cs-intro" aria-label="Overview">
-    {intro.map((p) => <p class="cs-lead" set:html={p} />)}
+    {introLinked.map((p) => <p class="cs-lead" set:html={p} />)}
   </section>
 
   {item.quote && (
@@ -290,4 +316,22 @@ const workLd = {
   .cs-cta { padding-top: 4px; padding-bottom: 8px; }
   .cs-folds { max-width: 720px; margin: 8px auto 0; }
   .cs-folds .cs-lead { font-size: 15.5px; }
+
+  /* S339 round 4: the live site is one tap from the top of the page. */
+  .cs-visit { margin: 4px 0 14px; }
+  .cs-visit :global(.wc-btn) { min-height: 48px; font-size: 15px; }
+  .cs-hero-link { position: relative; display: block; border-radius: var(--wc-r-lg); overflow: hidden; border: 1px solid var(--wc-line); }
+  .cs-hero-link:hover, .cs-hero-link:focus-visible { border-color: rgba(77, 216, 168, 0.5); }
+  .cs-hero-chip {
+    position: absolute; right: 12px; bottom: 12px;
+    display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 12px;
+    font-size: 13.5px; font-weight: 600; color: #06150f;
+    background: var(--color-wc-green); border-radius: 999px;
+    box-shadow: 0 6px 18px -6px rgba(0, 0, 0, 0.7);
+  }
+  .cs-lead :global(a.cs-client) {
+    color: var(--color-copper-bright); font-weight: 600;
+    text-decoration: underline; text-decoration-color: rgba(244, 168, 116, 0.5); text-underline-offset: 4px;
+  }
+  .cs-lead :global(a.cs-client)::after { content: ' \2197'; font-size: 0.85em; }
 </style>

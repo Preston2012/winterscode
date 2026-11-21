@@ -16,6 +16,13 @@
  * quote without a rule down its side.
  */
 import Arrow from '../ui/Arrow.astro';
+import CardArt from '../ui/CardArt.astro';
+import { portfolio } from '../../lib/portfolio';
+
+const liveOf = (slug: string) => {
+  const p = portfolio.find((x) => x.slug === slug);
+  return p ? (p.links.find((l) => l.primary) ?? p.links[0])?.href : undefined;
+};
 const BUILDS = [
   {
     name: 'Grand Management',
@@ -23,6 +30,7 @@ const BUILDS = [
     days: 13,
     line: '50 bilingual pages, rebuilt off WordPress, with live rental listings.',
     href: '/work/grand-management',
+    slug: 'grand-management',
     img: 'grand-card',
     alt: 'Grand Management Services, Coos Bay, Oregon: the Grand logo over the line How can we help?, beside a map of Oregon with a gold pin in every town where Grand manages a community.',
   },
@@ -32,6 +40,7 @@ const BUILDS = [
     days: 8,
     line: 'A 42-page rebuild for an equipment dealer shipping nationwide from Bandon.',
     href: '/work/us-survey-supply',
+    slug: 'us-survey-supply',
     img: 'taylor-card',
     alt: 'US Survey Supply, Bandon, Oregon: white wordmark and red-and-white survey target on navy over an American flag. Surveying equipment, rentals, and service.',
   },
@@ -41,6 +50,7 @@ const BUILDS = [
     days: 5,
     line: 'A new site with pages that paint themselves in as you scroll.',
     href: '/work#makai-painting',
+    slug: 'makai-painting',
     img: 'makai-card',
     alt: 'Makai Painting and Residential Rehab, Coos Bay, Oregon: the pink hibiscus logo over the words Interior, Exterior, Repairs and Hauling on gold, pink and white brush strokes, beside a freshly painted blue room with ladders and drop cloths.',
   },
@@ -63,27 +73,21 @@ const BUILDS = [
     <ul class="ps-row" aria-label="Recent builds">
       {BUILDS.map((b) => (
         <li class="ps-card">
-          <a class="ps-link" href={b.href}>
-            <span class="ps-img">
-              <img
-                src={`/work/${b.img}-720.webp`}
-                srcset={`/work/${b.img}-480.webp 480w, /work/${b.img}-720.webp 720w, /work/${b.img}.webp 1200w`}
-                sizes="(min-width: 1240px) 370px, (min-width: 900px) 31vw, 80vw"
-                alt={b.alt}
-                width="1200"
-                height="630"
-                loading="lazy"
-                decoding="async"
-              />
-            </span>
+          <article class="ps-link">
+            <a class="ps-main" href={b.href} aria-label={`${b.name}: see the build`}>
+              <CardArt slug={b.slug} image={{ src: `/work/${b.img}.webp`, srcSmall: `/work/${b.img}-720.webp`, srcXSmall: `/work/${b.img}-480.webp`, alt: b.alt, width: 1200, height: 630 }} sizes="(min-width: 1240px) 370px, (min-width: 900px) 31vw, 80vw" />
+            </a>
             <span class="ps-body">
               <span class="ps-days"><b>{b.days}</b> business days</span>
               <span class="ps-name">{b.name}</span>
               <span class="ps-place">{b.place}</span>
               <span class="ps-line">{b.line}</span>
-              <span class="ps-go">See the build <Arrow size={16} /></span>
+              <span class="ps-go">
+                <a class="wc-link" href={b.href}>See the build <Arrow size={16} /></a>
+                {liveOf(b.slug) && <a class="wc-link ps-live" href={liveOf(b.slug)} target="_blank" rel="noopener">Live site <Arrow dir="up-right" size={14} /></a>}
+              </span>
             </span>
-          </a>
+          </article>
         </li>
       ))}
     </ul>
@@ -143,11 +147,9 @@ const BUILDS = [
     text-decoration: none; color: inherit;
     transition: border-color .2s ease, transform .25s ease;
   }
-  .ps-link:hover, .ps-link:focus-visible { border-color: rgba(244, 168, 116, 0.45); transform: translateY(-3px); }
-  .ps-link:focus-visible { outline: 2px solid var(--color-wc-green); outline-offset: 3px; }
-  .ps-img { display: block; aspect-ratio: 1200 / 630; overflow: hidden; background: #0e1214; border-bottom: 1px solid var(--wc-line); }
-  .ps-img img { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform .5s ease; }
-  .ps-link:hover .ps-img img { transform: scale(1.03); }
+  .ps-link:hover { border-color: rgba(244, 168, 116, 0.45); transform: translateY(-3px); }
+  .ps-main { display: block; border-bottom: 1px solid var(--wc-line); }
+  .ps-main:focus-visible { outline: 2px solid var(--color-wc-green); outline-offset: -2px; }
 
   .ps-body { display: flex; flex-direction: column; gap: 6px; padding: 18px 18px 16px; flex: 1; }
   .ps-days { display: flex; align-items: baseline; gap: 8px; font-size: 14px; color: var(--color-ash-300); margin-bottom: 6px; }
@@ -160,8 +162,8 @@ const BUILDS = [
   .ps-name { font-size: 19px; font-weight: 600; color: #eef1ec; }
   .ps-place { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-ash-500); }
   .ps-line { margin-top: 6px; font-size: 15px; line-height: 1.5; color: var(--color-ash-300); }
-  .ps-go { display: inline-flex; align-items: center; gap: 8px; margin-top: auto; padding-top: 14px; font-size: 15px; font-weight: 600; color: var(--color-wc-green); }
-  .ps-link:hover .ps-go :global(.wc-arrow) { transform: translateX(3px); }
+  .ps-go { display: flex; flex-wrap: wrap; gap: 0 20px; margin-top: auto; padding-top: 8px; }
+  .ps-live { color: var(--color-ash-100); }
 
   .ps-quote { margin: clamp(30px, 5vw, 52px) 0 0; display: grid; gap: 10px; justify-items: start; }
   .ps-quote-mark {
