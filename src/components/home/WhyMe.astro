@@ -52,8 +52,10 @@ const VALUES: { icon: 'keep' | 'all' | 'lock' | 'found'; head: string; body: str
         <ul class="wm-values">
           {VALUES.map((v) => (
             <li class="wm-value">
-              <Icon name={v.icon} size={22} class="wm-vicon" />
-              <h3 class="wm-vh">{v.head}</h3>
+              <h3 class="wm-vh">
+                {v.head.split(' ').slice(0, -1).join(' ')}{' '}
+                <span class="wm-vlast">{v.head.split(' ').slice(-1)[0]}<span class="wm-seat" aria-hidden="true"><Icon name={v.icon} size={17} /></span></span>
+              </h3>
               <p class="wm-vb">{v.body}</p>
             </li>
           ))}
@@ -138,8 +140,19 @@ const VALUES: { icon: 'keep' | 'all' | 'lock' | 'found'; head: string; body: str
     border-radius: var(--home-r);
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
   }
-  .wm-value :global(.wm-vicon) { color: var(--color-copper-bright); margin-bottom: 6px; }
-  .wm-vh { margin: 0; font-size: 16.5px; font-weight: 600; color: #eef1ec; line-height: 1.25; }
+  /* The icon sits in a seat at the end of the heading, held to the last
+     word so it never wraps onto a line by itself. */
+  .wm-vh { margin: 0 0 2px; font-size: 16.5px; font-weight: 600; color: #eef1ec; line-height: 1.3; }
+  .wm-vlast { white-space: nowrap; }
+  .wm-seat {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 28px; height: 28px; margin-left: 8px; vertical-align: -8px;
+    border-radius: 50%;
+    color: var(--color-copper-bright);
+    background: radial-gradient(circle at 50% 35%, rgba(244, 168, 116, 0.12), rgba(244, 168, 116, 0.03));
+    border: 1px solid rgba(216, 144, 90, 0.36);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  }
   .wm-vb { margin: 0; font-size: 14.5px; line-height: 1.5; color: var(--color-ash-300); }
   .wm-compare { margin-top: 10px; }
 

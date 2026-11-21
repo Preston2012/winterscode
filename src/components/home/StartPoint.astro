@@ -260,12 +260,13 @@ const DOORS: {
     list-style: none; padding: 0; margin: 22px 0 0;
     display: grid; grid-template-columns: 1fr 1fr; gap: 16px 18px;
   }
+  /* The rivet sits on the first line of its item, not above it. */
   .sp-gets li {
-    display: flex; flex-direction: column; gap: 9px;
+    display: flex; align-items: flex-start; gap: 10px;
     font-size: 15px; line-height: 1.4; color: var(--home-ink);
   }
   .sp-gets li::before {
-    content: ''; width: 9px; height: 9px; border-radius: 50%;
+    content: ''; flex: none; width: 9px; height: 9px; margin-top: 6px; border-radius: 50%;
     background: radial-gradient(circle at 35% 35%, #3fa57f, #1a6e51 70%);
     box-shadow: 0 0 0 3px rgba(26, 110, 81, 0.14);
   }
@@ -300,6 +301,7 @@ const DOORS: {
     .sp-panel { grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: clamp(32px, 5vw, 72px); align-items: start; }
     .sp-gets { gap: 18px 28px; }
     .sp-gets li { font-size: 16px; }
+    .sp-gets li::before { margin-top: 7px; }
   }
 
   /* Phones: the four rivet bullets say what the lead says, so the lead

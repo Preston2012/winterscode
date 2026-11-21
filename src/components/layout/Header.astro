@@ -332,7 +332,7 @@ const navItems = [
 
   /* Mobile menu button */
   /* S339 menu button: a machined key. Rounded plate, top light, three
-     bars with a shorter copper middle that reaches full length on hover. */
+     full bars, the middle one blended copper to sage. */
   .topmark-menu-btn {
     font-family: var(--font-sans);
     font-size: 13px;
@@ -358,7 +358,7 @@ const navItems = [
   .topmark-menu-btn:focus-visible { outline: 2px solid var(--color-wc-green); outline-offset: 3px; }
   @media (hover: hover) {
     .topmark-menu-btn:hover { border-color: var(--color-copper); }
-    .topmark-menu-btn:hover .bars span:nth-child(2) { width: 18px; }
+    .topmark-menu-btn:hover .bars span:nth-child(2) { filter: brightness(1.18); }
   }
   .topmark-menu-btn .bars {
     display: flex;
@@ -371,9 +371,13 @@ const navItems = [
     height: 2px;
     border-radius: 2px;
     background: currentColor;
-    transition: width 200ms ease;
   }
-  .topmark-menu-btn .bars span:nth-child(2) { width: 11px; background: var(--color-copper-bright); }
+  /* The middle bar runs copper into sage, the two brand metals in one
+     stroke. Hover brightens it. */
+  .topmark-menu-btn .bars span:nth-child(2) {
+    background: linear-gradient(90deg, var(--color-copper-bright) 0%, var(--color-copper-bright) 22%, #b9b27f 52%, var(--color-wc-green) 80%, var(--color-wc-green-bright) 100%);
+    transition: filter 200ms ease;
+  }
   .topmark-menu-btn > span:not(.bars) { display: none; }
   @media (min-width: 740px) {
     .topmark-menu-btn > span:not(.bars) { display: inline; }
