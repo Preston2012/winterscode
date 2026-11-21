@@ -1,0 +1,178 @@
+---
+/**
+ * WhyMe. S339 home consolidation, beat 03: why $1,750 buys more than a
+ * template, and who is behind it. Replaces WhyPrice, CareLine and
+ * AboutTeaser on Home; every line is condensed from those three and from
+ * /services, nothing new is claimed.
+ *
+ * The phone-score meter is the section's one moving part: two bars, the
+ * county average and the floor every build clears, fill when the meter
+ * scrolls into view. Without JavaScript, or with reduced motion, they sit
+ * filled. The 61 is from Preston's audit of 169 Coos County business sites
+ * (the ones Google could score); the 90 is the floor every build is held to
+ * and is measured live on the Wall.
+ */
+const VALUES = [
+  {
+    head: 'Yours to keep.',
+    body: 'Custom code, not a rented template. The domain is in your name and the site runs on your own account. Skip the care plan and nothing turns off.',
+  },
+  {
+    head: 'Everything in.',
+    body: 'The pages, the words, real photos and branding. The price I quote is the price you pay.',
+  },
+  {
+    head: 'Locked down.',
+    body: 'HTTPS, strict security headers and spam-protected forms, graded live on the Wall.',
+  },
+  {
+    head: 'Set up to be found.',
+    body: 'Search Console, your sitemap and your Google Business Profile, all done. Nobody can promise a ranking.',
+  },
+];
+---
+
+<section class="wm" id="why" aria-labelledby="wm-h2">
+  <div class="wm-inner">
+    <div class="wm-top">
+      <div class="wm-lead">
+        <p class="home-eyebrow"><span class="home-num">03</span> Why it's worth it</p>
+        <h2 class="home-h2" id="wm-h2">Why $1,750 and <span class="home-soft">not a few hundred.</span></h2>
+
+        <figure class="wm-meter" data-meter>
+          <figcaption class="wm-meter-cap">Google's mobile test, out of 100</figcaption>
+          <div class="wm-bar">
+            <div class="wm-bar-label"><span>Coos County business sites, average</span><b>61</b></div>
+            <div class="wm-track"><span class="wm-fill wm-fill-county" style="--to: 61%"></span></div>
+          </div>
+          <div class="wm-bar">
+            <div class="wm-bar-label"><span>Every site I build</span><b class="wm-mine">90+</b></div>
+            <div class="wm-track"><span class="wm-fill wm-fill-mine" style="--to: 90%"></span><span class="wm-tick" aria-hidden="true"></span></div>
+          </div>
+          <p class="wm-meter-note">
+            From my audit of 169 Coos County business sites, the ones Google could score.
+            <a href="/wall">Every build of mine is scored live on the Wall <span aria-hidden="true">→</span></a>
+          </p>
+        </figure>
+      </div>
+
+      <ol class="wm-values">
+        {VALUES.map((v, i) => (
+          <li>
+            <span class="wm-vnum" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+            <div>
+              <h3 class="wm-vh">{v.head}</h3>
+              <p class="wm-vb">{v.body}</p>
+            </div>
+          </li>
+        ))}
+        <li class="wm-compare">
+          <a href="/pricing#compare">Comparing quotes? Ask these five questions <span aria-hidden="true">→</span></a>
+        </li>
+      </ol>
+    </div>
+
+    <div class="wm-who">
+      <picture class="wm-photo">
+        <img
+          src="/photo/preston-560.webp"
+          srcset="/photo/preston-560.webp 560w, /photo/preston-840.webp 840w"
+          sizes="(min-width: 900px) 220px, 96px"
+          alt="Preston Winters with his daughter at the Coquille River Lighthouse, Bandon, Oregon."
+          width="560"
+          height="530"
+          loading="lazy"
+          decoding="async"
+        />
+      </picture>
+      <p class="wm-who-name">I'm Preston Winters. <span>Sixth generation Bandon.</span></p>
+      <div class="wm-who-copy">
+        <p class="wm-who-body">
+          I've owned small businesses, so I know what it's like to drown in software you didn't choose.
+          Now I build the tools I wish I'd had. The person you text is the person who builds it, and the one
+          who keeps it running if you want that, with optional care from $75 a month.
+        </p>
+        <a class="wm-who-link" href="/about">More about me <span aria-hidden="true">→</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Fill the two bars once the meter is on screen. The bars start filled in
+  // the CSS; this only arms the empty state when it can also release it.
+  const meter = document.querySelector<HTMLElement>('[data-meter]');
+  const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (meter && !still && 'IntersectionObserver' in window) {
+    meter.classList.add('wm-armed');
+    const io = new IntersectionObserver((entries) => {
+      if (entries.some((e) => e.isIntersecting)) {
+        meter.classList.add('wm-in');
+        io.disconnect();
+      }
+    }, { threshold: 0.45 });
+    io.observe(meter);
+  }
+</script>
+
+<style>
+  .wm { padding: var(--home-pad) var(--home-gut); border-bottom: 1px solid var(--home-line); position: relative; isolation: isolate; overflow: hidden; }
+  .wm::before {
+    content: ''; position: absolute; z-index: -1; inset: auto -20% -30% auto; width: 70%; height: 80%;
+    background: radial-gradient(closest-side, rgba(77, 216, 168, 0.07), transparent);
+    pointer-events: none;
+  }
+  .wm-inner { max-width: var(--home-max); margin: 0 auto; }
+  .wm-top { display: grid; gap: clamp(36px, 5vw, 72px); }
+
+  .wm-meter { margin: clamp(26px, 4vw, 40px) 0 0; padding: 22px 20px 20px; background: var(--home-raised); border: 1px solid var(--home-line); }
+  .wm-meter-cap { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-ash-500); margin-bottom: 18px; }
+  .wm-bar + .wm-bar { margin-top: 18px; }
+  .wm-bar-label { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; font-size: 15px; color: var(--color-ash-300); margin-bottom: 8px; }
+  .wm-bar-label b { flex: none; white-space: nowrap; font-family: var(--home-display); font-weight: 500; font-size: 30px; line-height: 1; color: var(--color-ash-100); letter-spacing: -0.02em; }
+  .wm-bar-label b.wm-mine { color: var(--color-wc-green-bright); }
+  .wm-track { position: relative; height: 10px; background: rgba(221, 228, 230, 0.07); border-radius: 5px; overflow: hidden; }
+  .wm-fill { position: absolute; inset: 0 auto 0 0; width: var(--to); border-radius: 5px; transition: width 1.1s cubic-bezier(.2, .7, .2, 1); }
+  .wm-fill-county { background: linear-gradient(90deg, #4a5459, #7d888c); }
+  .wm-fill-mine { background: linear-gradient(90deg, #2f9e78, var(--color-wc-green-bright)); transition-delay: .25s; }
+  .wm-tick { position: absolute; top: -3px; bottom: -3px; left: 90%; width: 2px; background: rgba(238, 241, 236, 0.5); }
+  :global(.wm-meter.wm-armed:not(.wm-in)) .wm-fill { width: 0; }
+  .wm-meter-note { margin: 18px 0 0; font-size: 14px; line-height: 1.55; color: var(--color-ash-500); }
+  .wm-meter-note a { display: inline-flex; min-height: 44px; align-items: center; gap: 6px; color: var(--color-wc-green); font-weight: 600; text-decoration: none; }
+  .wm-meter-note a:hover, .wm-meter-note a:focus-visible { text-decoration: underline; text-underline-offset: 4px; }
+
+  .wm-values { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--home-line); }
+  .wm-values > li { display: grid; grid-template-columns: 36px 1fr; gap: 6px; padding: 16px 0; border-bottom: 1px solid var(--home-line); }
+  .wm-vnum { font-family: var(--font-mono); font-size: 12px; color: var(--color-copper-bright); padding-top: 5px; }
+  .wm-vh { margin: 0; font-size: 19px; font-weight: 600; color: #eef1ec; }
+  .wm-vb { margin: 4px 0 0; font-size: 16px; line-height: 1.55; color: var(--color-ash-300); }
+  .wm-values > li.wm-compare { display: block; padding: 8px 0 0; border-bottom: 0; }
+  .wm-compare a { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; font-size: 15px; font-weight: 600; color: var(--color-wc-green); text-decoration: none; }
+  .wm-compare a:hover, .wm-compare a:focus-visible { text-decoration: underline; text-underline-offset: 4px; }
+
+  .wm-who {
+    margin-top: clamp(40px, 6vw, 80px);
+    display: grid; grid-template-columns: 96px 1fr; gap: 18px; align-items: center;
+    padding-top: clamp(28px, 4vw, 40px);
+    border-top: 1px solid var(--home-line);
+  }
+  .wm-photo img { display: block; width: 100%; height: auto; aspect-ratio: 1; object-fit: cover; object-position: 30% 60%; border-radius: 4px; }
+  .wm-who-name { margin: 0; font-family: var(--home-display); font-weight: 500; font-size: clamp(22px, 2.6vw, 32px); line-height: 1.15; color: #eef1ec; letter-spacing: -0.01em; }
+  .wm-who-name span { color: var(--color-ash-300); }
+  .wm-who-copy { grid-column: 1 / -1; }
+  .wm-who-body { margin: 0; max-width: 40rem; font-size: 16px; line-height: 1.6; color: var(--color-ash-300); }
+  .wm-who-link { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; margin-top: 4px; font-size: 15px; font-weight: 600; color: var(--color-wc-green); text-decoration: none; }
+  .wm-who-link:hover, .wm-who-link:focus-visible { text-decoration: underline; text-underline-offset: 4px; }
+
+  @media (min-width: 900px) {
+    .wm-top { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: start; }
+    .wm-meter { padding: 26px 26px 22px; }
+    .wm-who { grid-template-columns: 220px minmax(0, 0.9fr) minmax(0, 1.1fr); gap: 36px; align-items: center; }
+    .wm-who-copy { grid-column: auto; }
+    .wm-photo img { aspect-ratio: 1; object-position: 25% 70%; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .wm-fill { transition: none; }
+  }
+</style>

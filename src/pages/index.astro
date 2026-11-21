@@ -2,70 +2,94 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/layout/Header.astro';
 import MobileMenu from '../components/layout/MobileMenu.astro';
-import Hero from '../components/sections/Hero.astro';
-import Tangle from '../components/sections/Tangle.astro';
-import SelectedWork from '../components/sections/SelectedWork.astro';
-import WhyPrice from '../components/sections/WhyPrice.astro';
-import CareLine from '../components/sections/CareLine.astro';
-import ClientWord from '../components/sections/ClientWord.astro';
-import ServicesTeaser from '../components/sections/ServicesTeaser.astro';
-import AboutTeaser from '../components/sections/AboutTeaser.astro';
-import FaqQ1 from '../components/sections/FaqQ1.astro';
-import Contact from '../components/sections/Contact.astro';
-import Divider from '../components/ui/Divider.astro';
+import HomeHero from '../components/home/HomeHero.astro';
+import StartPoint from '../components/home/StartPoint.astro';
+import ProofStrip from '../components/home/ProofStrip.astro';
+import WhyMe from '../components/home/WhyMe.astro';
+import StraightAnswers from '../components/home/StraightAnswers.astro';
+import HomeClose from '../components/home/HomeClose.astro';
 ---
 
 <BaseLayout
   title="Oregon Coast Web Design & Apps · Bandon · Winters Code"
   description="Custom websites, apps, and tools for Oregon coast businesses, built in Bandon. Sites from $1,750, starting at 3 business days. Help is just a text away."
 >
-  <Fragment slot="head">
-    <!-- Preload the hero stamp (homepage LCP element). Fetching during HTML
-         parse instead of after the picture element pulls LCP toward FCP on mobile. -->
-    <link rel="preload" as="image" href="/wc-seal-256.webp" type="image/webp" fetchpriority="high" />
-  </Fragment>
-
-  <!-- S339 HONE-SPEC (Nov 4) order: hero, why $1,750, Rod, the work, care,
-       the tangle, services, about, the first question, the closer. Each
-       section is one beat that points at its own page. "Built on the coast"
-       and the logo band are off Home; their pages are unchanged. -->
+  <!-- S339 home consolidation (Preston 2026-11-21: "bolder, more connect,
+       more explore", restrained). Five beats instead of ten sections:
+       the hero, what I build (four doors that open in place), the work
+       counted in days, why it's worth it with who builds it, straight
+       answers, and the tagline as the close. The H1 is the LCP element, so
+       nothing is preloaded. The Tangle, WhyPrice, ClientWord, SelectedWork,
+       CareLine, ServicesTeaser, AboutTeaser and FaqQ1 are off Home; their
+       content is condensed into these beats and every one of their pages
+       is unchanged. -->
   <Header homepage />
   <MobileMenu />
 
-  <Hero />
-
-  <WhyPrice />
-
-  <Divider label="WC" ariaLabel="In the client's words, return to top" />
-
-  <ClientWord />
-
-  <Divider label="WC" ariaLabel="Selected work, return to top" />
-
-  <SelectedWork />
-
-  <CareLine />
-
-  <Divider label="WC" ariaLabel="The tangle, return to top" />
-
-  <Tangle />
-
-  <Divider label="WC" ariaLabel="Services, return to top" />
-
-  <ServicesTeaser />
-
-  <Divider label="WC" ariaLabel="About, return to top" />
-
-  <AboutTeaser />
-
-  <Divider label="WC" ariaLabel="A question, return to top" />
-
-  <FaqQ1 />
-
-  <Divider label="WC" ariaLabel="Reach out, return to top" />
-
-  <Contact
-    sectionNumber=""
-    why="You're not renting a template. You own a hand-built site that loads fast on a phone and comes with the words, photos and branding, from someone in Bandon you can text."
-  />
+  <div class="home">
+    <HomeHero />
+    <StartPoint />
+    <ProofStrip />
+    <WhyMe />
+    <StraightAnswers />
+    <HomeClose />
+  </div>
 </BaseLayout>
+
+<style is:global>
+  /* Home tokens. Same palette as the rest of the site; what changes is how
+     it is used. Copper gets one gradient, "annealed": fresh bright copper
+     aging to a deep patina-brown, and only the H1 word, the closing line,
+     the day counts and the eyebrow rules wear it. Sage carries lines, the
+     open tile and the actions. Everything else stays ash. */
+  .home {
+    --home-gut: 16px;
+    --home-max: 1120px;
+    --home-pad: clamp(52px, 9vw, 128px);
+    --home-line: rgba(221, 228, 230, 0.1);
+    --home-raised: #12171a;
+    --home-raised-2: #182024;
+    --home-display: var(--font-serif);
+    --home-annealed: linear-gradient(100deg, #f7b98d 0%, #e3935a 38%, #b8703f 72%, #8f5a35 100%);
+
+    /* The open door's paper surface, and the inks that sit on it. */
+    --home-paper: #efece4;
+    --home-ink: #141816;
+    --home-ink-soft: #4a524f;
+    --home-sage-ink: #1f7a5b;
+    --home-copper-ink: #9a5a2a;
+
+    background: var(--color-bg-deep);
+    /* Home runs edge to edge; the framed column is for reading pages. */
+    width: 100vw;
+    margin-inline: calc(50% - 50vw);
+  }
+  html[data-display='sans'] .home { --home-display: var(--font-sans); }
+  /* From tablet up, the content edge lines up with the framed header and
+     footer column (.page in global.css: 92vw up to 960 with 24px inside,
+     then 1200 with 40px inside), so the logo, the H1 and every section
+     start on one line. Phones keep a 16px gutter for room. */
+  @media (min-width: 700px) { .home { --home-gut: calc(4vw + 24px); --home-max: calc(min(92vw, 960px) - 48px); } }
+  @media (min-width: 1024px) { .home { --home-gut: 40px; --home-max: 1120px; } }
+
+  .home .home-eyebrow {
+    display: flex; align-items: center; gap: 12px;
+    margin: 0 0 18px;
+    font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--color-ash-300);
+  }
+  .home .home-num {
+    display: inline-flex; align-items: center; gap: 12px;
+    color: var(--color-copper-bright);
+  }
+  .home .home-num::after { content: ''; width: 28px; height: 2px; border-radius: 1px; background: var(--home-annealed); }
+  .home .home-h2 {
+    margin: 0; max-width: 20ch;
+    font-family: var(--home-display); font-weight: 500;
+    font-size: clamp(34px, 5.2vw, 64px); line-height: 1.02; letter-spacing: -0.02em;
+    color: #eef1ec; text-wrap: balance;
+  }
+  html[data-display='sans'] .home .home-h2 { font-weight: 600; letter-spacing: -0.04em; }
+  .home .home-soft { color: var(--color-ash-500); }
+  .home .home-lead { margin: 16px 0 0; max-width: 36rem; font-size: 17px; line-height: 1.6; color: var(--color-ash-300); }
+</style>

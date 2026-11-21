@@ -1,0 +1,128 @@
+---
+/**
+ * StraightAnswers. S339 home consolidation, beat 04: the five questions
+ * everyone asks, closed until tapped. Answers are condensed from /services
+ * (Q.01 to Q.05) and the hero facts on the old Home; nothing new is claimed.
+ *
+ * Native <details>, so it works with no JavaScript, every answer is in the
+ * HTML, and the browser handles keyboard and screen reader state. No FAQPage
+ * JSON-LD here: /faq carries it for the full list, and two pages marking up
+ * the same questions would compete with each other.
+ */
+const QUESTIONS: { q: string; a: string[]; link?: { href: string; label: string } }[] = [
+  {
+    q: 'What does a site cost?',
+    a: [
+      'One price, everything in. Most local business sites start at $1,750, with the pages, the words, real photos, branding, a site built to load fast on a phone, and security all included, and it is yours to keep.',
+      'The consult is free and the written quote holds for 14 days. Bigger jobs cost more, and I tell you up front.',
+    ],
+    link: { href: '/pricing', label: 'See pricing' },
+  },
+  {
+    q: 'How fast can it be live?',
+    a: [
+      'Site builds start at 3 business days, counted from the day I have what the build needs, and a bigger site gets its timeline in the quote.',
+      'App builds run 2 to 4 weeks for an MVP, 4 to 8 weeks for a full build, and 8 to 16 for a custom system.',
+    ],
+    link: { href: '/process', label: 'How a build goes' },
+  },
+  {
+    q: 'Do you keep it running after?',
+    a: [
+      'Yes, and it is optional. Basic care starts at $75 a month: hosting and SSL, daily backups, security patches and content edits. Pro starts at $250 a month. Cancel anytime.',
+      'The person who built it is the person who maintains it. You text a real person, not a ticket queue.',
+    ],
+    link: { href: '/services#care', label: 'Care plans' },
+  },
+  {
+    q: 'Why not WordPress?',
+    a: [
+      'WordPress is mass-produced software with plugins stacked on top: slow, plugin-dependent, and it breaks when something auto-updates.',
+      'Custom code loads faster, reads cleanly to Google and carries strict security headers. Every site I build scores 90 or better on Google\'s mobile test, measured live on the Wall.',
+    ],
+  },
+  {
+    q: "What if I don't have photos or words yet?",
+    a: [
+      'I do most of the lift. I can shoot the photos and draft the words, and you edit. Start with a text about what you have and what you need.',
+    ],
+  },
+];
+---
+
+<section class="sa" id="questions" aria-labelledby="sa-h2">
+  <div class="sa-inner">
+    <div class="sa-head">
+      <p class="home-eyebrow"><span class="home-num">04</span> Straight answers</p>
+      <h2 class="home-h2" id="sa-h2">The questions <span class="home-soft">everyone asks.</span></h2>
+      <a class="sa-more" href="/faq">More questions <span aria-hidden="true">→</span></a>
+    </div>
+
+    <div class="sa-list">
+      {QUESTIONS.map((item, i) => (
+        <details class="sa-item" name="home-faq">
+          <summary class="sa-q">
+            <span class="sa-num" aria-hidden="true">Q.{String(i + 1).padStart(2, '0')}</span>
+            <span class="sa-q-text">{item.q}</span>
+            <span class="sa-toggle" aria-hidden="true"></span>
+          </summary>
+          <div class="sa-a">
+            {item.a.map((p) => <p>{p}</p>)}
+            {item.link && <a href={item.link.href}>{item.link.label} <span aria-hidden="true">→</span></a>}
+          </div>
+        </details>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .sa { padding: var(--home-pad) var(--home-gut); border-bottom: 1px solid var(--home-line); }
+  .sa-inner { max-width: var(--home-max); margin: 0 auto; display: grid; gap: clamp(26px, 4vw, 40px); }
+  .sa-head { display: flex; flex-direction: column; align-items: flex-start; }
+  .sa-more { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; margin-top: 10px; font-size: 15px; font-weight: 600; color: var(--color-wc-green); text-decoration: none; }
+  .sa-more:hover, .sa-more:focus-visible { text-decoration: underline; text-underline-offset: 4px; }
+
+  .sa-list { border-top: 1px solid var(--home-line); }
+  .sa-item { border-bottom: 1px solid var(--home-line); }
+  .sa-q {
+    display: grid; grid-template-columns: 44px 1fr 28px; align-items: center; gap: 8px;
+    min-height: 64px; padding: 14px 0;
+    cursor: pointer; list-style: none;
+    font-size: 18px; font-weight: 500; color: #eef1ec;
+    transition: color .2s ease;
+  }
+  .sa-q::-webkit-details-marker { display: none; }
+  .sa-q:hover { color: var(--color-wc-green-bright); }
+  .sa-q:focus-visible { outline: 2px solid var(--color-wc-green); outline-offset: 2px; }
+  .sa-num { font-family: var(--font-mono); font-size: 12px; color: var(--color-ash-500); }
+  .sa-item[open] .sa-num { color: var(--color-copper-bright); }
+  .sa-toggle { position: relative; width: 16px; height: 16px; justify-self: end; }
+  .sa-toggle::before, .sa-toggle::after {
+    content: ''; position: absolute; left: 0; right: 0; top: 50%; height: 2px; margin-top: -1px;
+    background: currentColor; border-radius: 1px; transition: transform .25s ease;
+  }
+  .sa-toggle::after { transform: rotate(90deg); }
+  .sa-item[open] .sa-toggle::after { transform: rotate(0deg); }
+  .sa-item[open] .sa-q { color: var(--color-wc-green-bright); }
+
+  .sa-a { padding: 0 0 22px 52px; max-width: 46rem; }
+  .sa-a p { margin: 0 0 12px; font-size: 16px; line-height: 1.6; color: var(--color-ash-300); }
+  .sa-a a { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; font-size: 15px; font-weight: 600; color: var(--color-wc-green); text-decoration: none; }
+  .sa-a a:hover, .sa-a a:focus-visible { text-decoration: underline; text-underline-offset: 4px; }
+
+  @media (min-width: 900px) {
+    .sa-inner { grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); align-items: start; gap: 72px; }
+    .sa-head { position: sticky; top: 112px; }
+    .sa-q { font-size: 20px; min-height: 72px; }
+  }
+
+  @media (max-width: 420px) {
+    .sa-q { grid-template-columns: 36px 1fr 24px; font-size: 17px; }
+    .sa-a { padding-left: 44px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sa-toggle::before, .sa-toggle::after, .sa-q { transition: none; }
+  }
+</style>

@@ -1,0 +1,333 @@
+---
+/**
+ * StartPoint: "Find your starting point". S339 home consolidation.
+ *
+ * Four doors in one section instead of four sections: websites, apps,
+ * branding, automation. A visitor taps the one that fits and it opens in
+ * place with what they get, one real proof, what it costs or takes, and a
+ * link to its full page. Nothing here is new copy about the offer: every line
+ * is lifted from or condensed out of /services, /services/web-design,
+ * /services/app-development, /logo-design and /services/ai-automation.
+ *
+ * Tabs pattern (WAI-ARIA APG): roving tabindex, arrow keys, Home and End.
+ * Every panel is in the HTML, so search engines and screen readers get all
+ * four. Without JavaScript all four panels show, stacked.
+ */
+import { smsBase } from '../../lib/text-cta';
+
+const ask = (topic: string) =>
+  smsBase + encodeURIComponent(`Hi Preston, found you at winterscode.com. I'd like help with ${topic}: `);
+
+const DOORS = [
+  {
+    id: 'web',
+    num: '01',
+    need: 'My online presence',
+    label: 'Websites',
+    head: 'Found, fast and yours to keep.',
+    lead: 'A custom site that says what you do and makes you easy to reach, with the words, the photos and the brand made for your business.',
+    gets: [
+      'Custom design and code, never a template',
+      'The words, real photos and branding, included',
+      'Set up on Google Search Console and your Business Profile',
+      'Domain and code in your name, nothing to rent',
+    ],
+    proofWho: 'Grand Management · Coos Bay',
+    proof: '50 bilingual pages, rebuilt off WordPress and live in 13 business days.',
+    proofHref: '/work/grand-management',
+    terms: 'From $1,750, everything in · builds starting at 3 business days',
+    more: '/services/web-design',
+    moreLabel: 'Websites in detail',
+    topic: 'a website',
+    cta: 'Text me about a site',
+  },
+  {
+    id: 'apps',
+    num: '02',
+    need: 'The tools I work with',
+    label: 'Apps & software',
+    head: 'Software shaped to how you work.',
+    lead: 'Phone apps and internal tools for the jobs off-the-shelf software gets wrong. One build runs on iPhone and Android.',
+    gets: [
+      'iOS and Android from one codebase',
+      'Real logins, payments and backends',
+      'Tools for your crew and your office',
+      'Any AI or API running cost named in the quote',
+    ],
+    proofWho: "Chere' · my contractor back office",
+    proof: 'It runs the office at SeaBreeze. A bid that took two of us a full day now takes about an hour.',
+    proofHref: '/chere',
+    terms: 'An MVP in 2 to 4 weeks · full builds in 4 to 8',
+    more: '/services/app-development',
+    moreLabel: 'Apps in detail',
+    topic: 'an app',
+    cta: 'Text me about an app',
+  },
+  {
+    id: 'brand',
+    num: '03',
+    need: 'How my business looks',
+    label: 'Branding & logos',
+    head: 'A mark that means business.',
+    lead: 'A logo drawn for you, with the colors and type that go with it, so the sign, the truck and the site all look like the same business.',
+    gets: [
+      'A custom logo, with the versions small sizes need',
+      'Colors and typefaces that belong together',
+      'Print-ready vector files, business card to truck wrap',
+      'You own the artwork, in the formats you use',
+    ],
+    proofWho: 'Design and build, one shop',
+    proof: 'I design the brand and build the site it lives on, so nothing gets lost handing a logo to someone else.',
+    proofHref: '/logo-design',
+    terms: 'Part of a site build when you need one · also on its own',
+    more: '/logo-design',
+    moreLabel: 'Branding in detail',
+    topic: 'a logo or brand',
+    cta: 'Text me about a brand',
+  },
+  {
+    id: 'auto',
+    num: '04',
+    need: 'The work on repeat',
+    label: 'Automation',
+    head: 'Quiet systems for the busywork.',
+    lead: 'Name the repetitive task eating your week. I automate that one thing well, prove it saves hours, then move to the next.',
+    gets: [
+      'Messy intake turned into clean records',
+      'New inquiries routed to the right place',
+      'Drafted replies in your voice, ready to send',
+      'Your tools wired so data moves once',
+    ],
+    proofWho: 'StainSlayer AI · built alone',
+    proof: 'Photograph a stain, get the removal steps. Live and approved on the App Store and Google Play for most of 2026.',
+    proofHref: '/work/stainslayer-ai',
+    terms: 'Scoped to one task at a time · running costs named up front',
+    more: '/services/ai-automation',
+    moreLabel: 'Automation in detail',
+    topic: 'automating a task',
+    cta: 'Text me a task to automate',
+  },
+];
+---
+
+<section class="sp" id="start" aria-labelledby="sp-h2">
+  <div class="sp-inner">
+    <p class="home-eyebrow"><span class="home-num">01</span> Find your starting point</p>
+    <h2 class="home-h2" id="sp-h2">What needs to <span class="home-soft">work better?</span></h2>
+    <p class="home-lead">Start with the part of your business that needs attention. Each one opens right here.</p>
+
+    <div class="sp-tabs" role="tablist" aria-label="What I build">
+      {DOORS.map((d, i) => (
+        <button
+          type="button"
+          class="sp-tab"
+          role="tab"
+          id={`sp-tab-${d.id}`}
+          aria-controls={`sp-panel-${d.id}`}
+          aria-selected={i === 0 ? 'true' : 'false'}
+          tabindex={i === 0 ? 0 : -1}
+        >
+          <span class="sp-tab-num" aria-hidden="true">{d.num}</span>
+          <span class="sp-tab-text">
+            <span class="sp-tab-need">{d.need}</span>
+            <span class="sp-tab-label">{d.label}</span>
+          </span>
+        </button>
+      ))}
+    </div>
+
+    <div class="sp-panels">
+      {DOORS.map((d, i) => (
+        <div
+          class="sp-panel"
+          role="tabpanel"
+          id={`sp-panel-${d.id}`}
+          aria-labelledby={`sp-tab-${d.id}`}
+          tabindex="0"
+          data-active={i === 0 ? 'true' : 'false'}
+        >
+          <div class="sp-main">
+            <p class="sp-kicker">{d.label}</p>
+            <h3 class="sp-h3">{d.head}</h3>
+            <p class="sp-lead">{d.lead}</p>
+            <ul class="sp-gets">
+              {d.gets.map((g) => <li>{g}</li>)}
+            </ul>
+          </div>
+          <aside class="sp-side" aria-label={`${d.label}: proof and terms`}>
+            <a class="sp-proof" href={d.proofHref}>
+              <span class="sp-proof-who">{d.proofWho}</span>
+              <span class="sp-proof-text">{d.proof}</span>
+              <span class="sp-proof-go" aria-hidden="true">→</span>
+            </a>
+            <p class="sp-terms">{d.terms}</p>
+            <div class="sp-actions">
+              <a class="sp-btn" href={ask(d.topic)}>{d.cta}</a>
+              <a class="sp-more" href={d.more}>{d.moreLabel} <span aria-hidden="true">→</span></a>
+            </div>
+          </aside>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<script>
+  // Tabs: click, arrow keys, Home and End. Runs once per page; the section
+  // works as four stacked panels until this marks it ready.
+  const root = document.querySelector<HTMLElement>('.sp');
+  if (root) {
+    const tabs = Array.from(root.querySelectorAll<HTMLButtonElement>('[role="tab"]'));
+    const panels = Array.from(root.querySelectorAll<HTMLElement>('[role="tabpanel"]'));
+    const select = (i: number, focus: boolean) => {
+      tabs.forEach((t, k) => {
+        const on = k === i;
+        t.setAttribute('aria-selected', on ? 'true' : 'false');
+        t.tabIndex = on ? 0 : -1;
+        panels[k].dataset.active = on ? 'true' : 'false';
+        panels[k].hidden = !on;
+      });
+      if (focus) tabs[i].focus();
+    };
+    tabs.forEach((t, i) => {
+      t.addEventListener('click', () => select(i, false));
+      t.addEventListener('keydown', (e) => {
+        const n = tabs.length;
+        let j = -1;
+        if (e.key === 'ArrowRight' || e.key === 'ArrowDown') j = (i + 1) % n;
+        else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') j = (i - 1 + n) % n;
+        else if (e.key === 'Home') j = 0;
+        else if (e.key === 'End') j = n - 1;
+        if (j >= 0) { e.preventDefault(); select(j, true); }
+      });
+    });
+    select(0, false);
+    root.classList.add('sp-ready');
+  }
+</script>
+
+<style>
+  .sp { padding: var(--home-pad) var(--home-gut); border-bottom: 1px solid var(--home-line); }
+  .sp-inner { max-width: var(--home-max); margin: 0 auto; }
+
+  .sp-tabs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    margin-top: clamp(28px, 4vw, 48px);
+    border: 1px solid var(--home-line);
+    border-bottom: 0;
+    background: var(--home-raised);
+  }
+  .sp-tab {
+    position: relative;
+    display: flex; gap: 12px; align-items: flex-start;
+    min-height: 112px;
+    padding: 18px 16px 20px;
+    text-align: left;
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid var(--home-line);
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+    transition: background-color .2s ease;
+  }
+  .sp-tab:nth-child(odd) { border-right: 1px solid var(--home-line); }
+  .sp-tab::after {
+    content: '';
+    position: absolute; left: 0; right: 0; bottom: -1px; height: 3px;
+    background: var(--color-wc-green);
+    transform: scaleX(0); transform-origin: left;
+    transition: transform .25s ease;
+  }
+  .sp-tab[aria-selected='true'] { background: var(--home-raised-2); }
+  .sp-tab[aria-selected='true']::after { transform: scaleX(1); }
+  .sp-tab:hover { background: var(--home-raised-2); }
+  .sp-tab:focus-visible { outline: 2px solid var(--color-wc-green); outline-offset: -2px; }
+  .sp-tab-num { flex: none; font-family: var(--font-mono); font-size: 12px; white-space: nowrap; color: var(--color-ash-500); padding-top: 4px; }
+  .sp-tab-text { display: flex; flex-direction: column; gap: 6px; }
+  .sp-tab-need { font-size: 17px; line-height: 1.25; font-weight: 500; color: #eef1ec; }
+  .sp-tab[aria-selected='true'] .sp-tab-need { color: var(--color-wc-green-bright); }
+  .sp-tab-label { font-size: 14px; color: var(--color-ash-400); }
+
+  /* The panel: the one light surface on the page, so the open door reads as
+     open. Warm paper, ink type, copper and sage used as thin lines only. */
+  .sp-panels { border: 1px solid var(--home-line); border-top: 0; }
+  .sp-panel {
+    display: grid; gap: 28px;
+    padding: clamp(26px, 4vw, 52px) clamp(20px, 4vw, 56px) clamp(28px, 4vw, 52px);
+    background: var(--home-paper);
+    color: var(--home-ink);
+  }
+  .sp-panel + .sp-panel { border-top: 1px solid rgba(20, 24, 22, 0.12); }
+  :global(.sp.sp-ready) .sp-panel[hidden] { display: none; }
+  .sp-panel:focus-visible { outline: 2px solid var(--color-copper); outline-offset: -4px; }
+
+  .sp-kicker {
+    margin: 0 0 14px;
+    font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--home-ink-soft);
+  }
+  .sp-h3 {
+    margin: 0;
+    font-family: var(--home-display);
+    font-weight: 500;
+    font-size: clamp(32px, 4.6vw, 56px);
+    line-height: 1.02;
+    letter-spacing: -0.02em;
+    color: var(--home-ink);
+    text-wrap: balance;
+  }
+  :global(html[data-display='sans']) .sp-h3 { font-weight: 600; letter-spacing: -0.035em; }
+  .sp-lead { margin: 16px 0 0; max-width: 36rem; font-size: 17px; line-height: 1.6; color: var(--home-ink-soft); }
+  .sp-gets { list-style: none; padding: 0; margin: 22px 0 0; display: grid; gap: 10px; }
+  .sp-gets li { position: relative; padding-left: 26px; font-size: 16px; line-height: 1.45; color: var(--home-ink); }
+  .sp-gets li::before {
+    content: ''; position: absolute; left: 0; top: 0.62em;
+    width: 14px; height: 2px; background: var(--home-sage-ink);
+  }
+
+  .sp-side { display: flex; flex-direction: column; gap: 18px; }
+  .sp-proof {
+    position: relative;
+    display: flex; flex-direction: column; gap: 8px;
+    padding: 18px 44px 18px 18px;
+    background: #f7f5ef;
+    border: 1px solid rgba(20, 24, 22, 0.1);
+    border-left: 3px solid var(--color-copper);
+    text-decoration: none; color: inherit;
+    transition: border-color .2s ease, transform .2s ease;
+  }
+  .sp-proof:hover, .sp-proof:focus-visible { border-color: rgba(20, 24, 22, 0.24); border-left-color: var(--home-copper-ink); }
+  .sp-proof-who { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--home-copper-ink); }
+  .sp-proof-text { font-size: 16px; line-height: 1.5; color: var(--home-ink); }
+  .sp-proof-go { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); font-size: 18px; color: var(--home-copper-ink); transition: transform .2s ease; }
+  .sp-proof:hover .sp-proof-go { transform: translate(3px, -50%); }
+  .sp-terms { margin: 0; font-size: 15px; line-height: 1.5; color: var(--home-ink-soft); }
+  .sp-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 20px; }
+  .sp-btn {
+    display: inline-flex; align-items: center; min-height: 48px; padding: 0 18px;
+    background: var(--home-ink); color: #f2f0ea;
+    font-weight: 600; font-size: 15px; text-decoration: none; border-radius: 4px;
+    transition: background-color .2s ease;
+  }
+  .sp-btn:hover, .sp-btn:focus-visible { background: #24302b; }
+  .sp-more { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; font-size: 15px; font-weight: 600; color: var(--home-sage-ink); text-decoration: none; }
+  .sp-more:hover, .sp-more:focus-visible { text-decoration: underline; text-underline-offset: 4px; }
+
+  /* Phones: the four bullets say what the lead says, so the lead steps
+     aside and the open door stays close to one screen. */
+  @media (max-width: 599px) { .sp-lead { display: none; } .sp-gets { margin-top: 18px; } }
+
+  @media (min-width: 900px) {
+    .sp-tabs { grid-template-columns: repeat(4, 1fr); }
+    .sp-tab { border-right: 1px solid var(--home-line); min-height: 132px; padding: 22px 20px 24px; }
+    .sp-tab:last-child { border-right: 0; }
+    .sp-tab-need { font-size: 19px; }
+    .sp-panel { grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: clamp(32px, 5vw, 72px); align-items: start; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sp-tab, .sp-tab::after, .sp-proof, .sp-proof-go, .sp-btn { transition: none; }
+  }
+</style>

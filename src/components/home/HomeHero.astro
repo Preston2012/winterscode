@@ -1,0 +1,167 @@
+---
+/**
+ * HomeHero. S339 home consolidation (Preston, 2026-11-21: "bolder, more
+ * connect, more explore", restrained).
+ *
+ * One beat: the locked H1, what I offer in one line, two doors (text me, or
+ * explore what I do), and three facts that each link to their proof. The H1
+ * is the LCP element, so the hero carries no image at all.
+ *
+ * The H1 returns to the locked homepage line now that the Tangle, which had
+ * carried it since July, is off Home. "software." takes the annealed copper,
+ * the one gradient on the page.
+ *
+ * Preview only: ?type=sans swaps the display face to a heavy Plex Sans so
+ * Preston can pick between the two by looking. The switch goes once he rules.
+ */
+import { smsHref } from '../../lib/text-cta';
+
+const sms = smsHref('/');
+---
+
+<section class="hh" id="hero" aria-labelledby="hh-h1">
+  <div class="hh-glow" aria-hidden="true"></div>
+  <div class="hh-inner">
+    <p class="hh-eyebrow"><span class="hh-rule" aria-hidden="true"></span>Independent studio · Bandon,&nbsp;Oregon</p>
+
+    <h1 class="hh-h1" id="hh-h1">
+      You didn't go into business to manage <span class="hh-cu">software.</span>
+    </h1>
+
+    <p class="hh-sub">
+      Websites, apps, branding and automation for Oregon coast businesses.
+      Built by one person in Bandon you can text.
+    </p>
+
+    <div class="hh-cta">
+      <a class="hh-btn hh-btn-primary" href={sms}>
+        <span>Text Preston</span><span class="hh-arrow" aria-hidden="true">→</span>
+      </a>
+      <a class="hh-btn hh-btn-ghost" href="#start">
+        <span>Explore</span><span class="hh-arrow" aria-hidden="true">↓</span>
+      </a>
+    </div>
+
+    <ul class="hh-facts" aria-label="At a glance">
+      <li><a href="/pricing"><span>Sites from <b>$1,750</b>, everything in</span></a></li>
+      <li><a href="/services#sites"><span>Builds starting at <b>3 business days</b></span></a></li>
+      <li><a href="/wall"><span><b>90+</b> on Google's phone test, every site</span></a></li>
+    </ul>
+  </div>
+</section>
+
+<script is:inline>
+  // Preview-only face switch, see the frontmatter note. Runs before paint.
+  if (new URLSearchParams(location.search).get('type') === 'sans') document.documentElement.dataset.display = 'sans';
+</script>
+
+<style>
+  .hh {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    padding: clamp(56px, 9vw, 132px) var(--home-gut) clamp(56px, 8vw, 120px);
+    border-bottom: 1px solid var(--home-line);
+  }
+  .hh-glow {
+    position: absolute;
+    inset: -20% -10% auto -10%;
+    height: 140%;
+    z-index: -1;
+    background:
+      radial-gradient(48% 42% at 12% 18%, rgba(240, 160, 110, 0.13), transparent 70%),
+      radial-gradient(40% 46% at 92% 88%, rgba(77, 216, 168, 0.08), transparent 72%);
+    pointer-events: none;
+  }
+  .hh-inner { max-width: var(--home-max); margin: 0 auto; }
+
+  .hh-eyebrow {
+    display: flex; align-items: center; gap: 14px;
+    margin: 0 0 clamp(22px, 3vw, 36px);
+    font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--color-ash-300);
+  }
+  .hh-rule { width: 44px; height: 2px; background: var(--home-annealed); border-radius: 1px; flex: none; }
+
+  .hh-h1 {
+    margin: 0;
+    max-width: 15ch;
+    font-family: var(--home-display);
+    font-weight: 500;
+    font-size: clamp(44px, 9.2vw, 118px);
+    line-height: 0.98;
+    letter-spacing: -0.025em;
+    color: #eef1ec;
+    text-wrap: balance;
+    overflow-wrap: normal;
+    hyphens: none;
+  }
+  :global(html[data-display='sans']) .hh-h1 {
+    font-weight: 600;
+    letter-spacing: -0.045em;
+    line-height: 0.96;
+  }
+  .hh-cu {
+    background: var(--home-annealed);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-style: italic;
+    padding-right: 0.06em;
+  }
+  :global(html[data-display='sans']) .hh-cu { font-style: normal; }
+
+  .hh-sub {
+    margin: clamp(22px, 3vw, 34px) 0 0;
+    max-width: 34rem;
+    font-size: clamp(17px, 1.6vw, 21px);
+    line-height: 1.55;
+    color: var(--color-ash-300);
+  }
+
+  .hh-cta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: clamp(28px, 3.6vw, 44px); }
+  .hh-btn {
+    display: inline-flex; align-items: center; justify-content: space-between; gap: 16px;
+    flex: 1 1 150px; max-width: 240px;
+    min-height: 56px; padding: 0 18px;
+    white-space: nowrap;
+    font-size: 17px; font-weight: 600; text-decoration: none;
+    border-radius: 4px;
+    transition: background-color .2s ease, border-color .2s ease, transform .2s ease;
+  }
+  .hh-btn-primary { background: var(--color-wc-green); color: #06150f; }
+  .hh-btn-primary:hover, .hh-btn-primary:focus-visible { background: var(--color-wc-green-bright); }
+  .hh-btn-ghost { color: #eef1ec; border: 1px solid rgba(221, 228, 230, 0.28); }
+  .hh-btn-ghost:hover, .hh-btn-ghost:focus-visible { border-color: var(--color-copper-bright); }
+  .hh-arrow { font-size: 18px; transition: transform .2s ease; }
+  .hh-btn:hover .hh-arrow { transform: translateX(3px); }
+  .hh-btn-ghost:hover .hh-arrow { transform: translateY(3px); }
+
+  .hh-facts {
+    list-style: none; padding: 0;
+    margin: clamp(36px, 5vw, 64px) 0 0;
+    display: grid; gap: 0;
+    border-top: 1px solid var(--home-line);
+  }
+  .hh-facts li { border-bottom: 1px solid var(--home-line); }
+  .hh-facts a {
+    display: flex; align-items: center;
+    min-height: 48px; padding: 12px 0;
+    color: var(--color-ash-300); text-decoration: none; font-size: 15px;
+  }
+  .hh-facts a::after { content: '→'; margin-left: auto; padding-left: 12px; color: var(--color-ash-500); transition: transform .2s ease, color .2s ease; }
+  .hh-facts a:hover::after, .hh-facts a:focus-visible::after { transform: translateX(3px); color: var(--color-copper-bright); }
+  .hh-facts b { font-weight: 600; color: var(--color-copper-bright); }
+  .hh-facts a:hover, .hh-facts a:focus-visible { color: #eef1ec; }
+
+  @media (min-width: 900px) {
+    .hh-facts { grid-template-columns: repeat(3, 1fr); border-top: 0; }
+    .hh-facts li { border-bottom: 0; border-top: 1px solid var(--home-line); }
+    .hh-facts li + li { border-left: 1px solid var(--home-line); padding-left: 22px; }
+    .hh-facts a { padding: 16px 18px 4px 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hh-btn, .hh-arrow { transition: none; }
+  }
+</style>
