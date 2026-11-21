@@ -19,8 +19,8 @@
  * four. Without JavaScript all four panels show, stacked.
  */
 import { smsBase } from '../../lib/text-cta';
-import Arrow from './Arrow.astro';
-import Icon from './Icon.astro';
+import Arrow from '../ui/Arrow.astro';
+import Icon from '../ui/Icon.astro';
 
 const ask = (topic: string) =>
   smsBase + encodeURIComponent(`Hi Preston, found you at winterscode.com. I'd like help with ${topic}: `);
@@ -87,9 +87,9 @@ const DOORS: {
 
 <section class="sp" id="start" aria-labelledby="sp-h2">
   <div class="sp-inner">
-    <p class="home-eyebrow"><span class="home-dot" aria-hidden="true"></span>Find your starting point</p>
-    <h2 class="home-h2" id="sp-h2">What needs to <span class="home-soft">work better?</span></h2>
-    <p class="home-lead">Start with the part of your business that needs attention. Each one opens right here.</p>
+    <p class="wc-eyebrow"><span class="wc-dot" aria-hidden="true"></span>Find your starting point</p>
+    <h2 class="wc-h2" id="sp-h2">What needs to <span class="wc-soft">work better?</span></h2>
+    <p class="wc-lead">Start with the part of your business that needs attention. Each one opens right here.</p>
 
     <div class="sp-tabs" role="tablist" aria-label="What I build">
       {DOORS.map((d, i) => (
@@ -113,7 +113,7 @@ const DOORS: {
     <div class="sp-panels">
       {DOORS.map((d, i) => (
         <div
-          class="sp-panel rv-ink"
+          class="sp-panel wc-rv-ink"
           role="tabpanel"
           id={`sp-panel-${d.id}`}
           aria-labelledby={`sp-tab-${d.id}`}
@@ -135,8 +135,8 @@ const DOORS: {
             </a>
             <p class="sp-terms">{d.terms}</p>
             <div class="sp-actions">
-              <a class="home-btn home-btn--ink" href={ask(d.topic)}>{d.cta} <Arrow size={16} /></a>
-              <a class="home-link home-link--ink" href={d.more}>{d.moreLabel} <Arrow size={16} /></a>
+              <a class="wc-btn wc-btn--ink" href={ask(d.topic)}>{d.cta} <Arrow size={16} /></a>
+              <a class="wc-link wc-link--ink" href={d.more}>{d.moreLabel} <Arrow size={16} /></a>
             </div>
           </div>
         </div>
@@ -194,10 +194,10 @@ const DOORS: {
     min-height: 124px;
     padding: 16px 16px 16px;
     text-align: left;
-    background-color: var(--home-raised);
+    background-color: var(--wc-raised);
     background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.025), rgba(255, 255, 255, 0) 60%);
-    border: 1px solid var(--home-line);
-    border-radius: var(--home-r);
+    border: 1px solid var(--wc-line);
+    border-radius: var(--wc-r);
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
     color: inherit; font: inherit; cursor: pointer;
     transition: border-color .2s ease, background-color .2s ease, transform .2s ease;
@@ -228,9 +228,9 @@ const DOORS: {
   .sp-panel {
     display: grid; gap: 24px;
     padding: clamp(26px, 4vw, 52px) clamp(20px, 4vw, 56px) clamp(26px, 4vw, 48px);
-    background-color: var(--home-paper);
-    color: var(--home-ink);
-    border-radius: var(--home-r-lg);
+    background-color: var(--wc-paper);
+    color: var(--wc-ink);
+    border-radius: var(--wc-r-lg);
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7), 0 24px 60px -30px rgba(0, 0, 0, 0.8);
   }
   :global(.sp.sp-ready) .sp-panel[hidden] { display: none; }
@@ -240,20 +240,20 @@ const DOORS: {
     display: flex; align-items: center; gap: 8px;
     margin: 0 0 12px;
     font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase;
-    color: var(--home-ink-soft);
+    color: var(--wc-ink-soft);
   }
   .sp-h3 {
     margin: 0;
-    font-family: var(--home-display);
+    font-family: var(--wc-display);
     font-weight: 500;
     font-size: clamp(32px, 4.6vw, 56px);
     line-height: 1.02;
     letter-spacing: -0.02em;
-    color: var(--home-ink);
+    color: var(--wc-ink);
     text-wrap: balance;
   }
   :global(html[data-display='sans']) .sp-h3 { font-weight: 600; letter-spacing: -0.035em; }
-  .sp-lead { margin: 16px 0 0; max-width: 36rem; font-size: 17px; line-height: 1.6; color: var(--home-ink-soft); }
+  .sp-lead { margin: 16px 0 0; max-width: 36rem; font-size: 17px; line-height: 1.6; color: var(--wc-ink-soft); }
 
   /* What you get: a 2 by 2 of rivet bullets. */
   .sp-gets {
@@ -263,7 +263,7 @@ const DOORS: {
   /* The rivet sits on the first line of its item, not above it. */
   .sp-gets li {
     display: flex; align-items: flex-start; gap: 10px;
-    font-size: 15px; line-height: 1.4; color: var(--home-ink);
+    font-size: 15px; line-height: 1.4; color: var(--wc-ink);
   }
   .sp-gets li::before {
     content: ''; flex: none; width: 9px; height: 9px; margin-top: 6px; border-radius: 50%;
@@ -277,7 +277,7 @@ const DOORS: {
     padding: 18px 18px 14px;
     background: #f8f6f0;
     border: 1px solid rgba(20, 24, 22, 0.1);
-    border-radius: var(--home-r-sm);
+    border-radius: var(--wc-r-sm);
     box-shadow: 0 1px 0 rgba(20, 24, 22, 0.04);
     text-decoration: none; color: inherit;
     transition: border-color .2s ease, transform .2s ease;
@@ -285,13 +285,13 @@ const DOORS: {
   .sp-proof:hover, .sp-proof:focus-visible { border-color: rgba(138, 79, 34, 0.4); transform: translateY(-2px); }
   .sp-proof-who {
     display: flex; align-items: center; gap: 8px;
-    font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--home-copper-ink);
+    font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--wc-copper-ink);
   }
   .sp-proof-who::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #c98a58, #8a4f22 70%); flex: none; }
-  .sp-proof-text { font-size: 16px; line-height: 1.5; color: var(--home-ink); }
-  .sp-proof-go { display: inline-flex; align-items: center; gap: 8px; align-self: flex-end; min-height: 32px; font-size: 14px; font-weight: 600; color: var(--home-copper-ink); }
+  .sp-proof-text { font-size: 16px; line-height: 1.5; color: var(--wc-ink); }
+  .sp-proof-go { display: inline-flex; align-items: center; gap: 8px; align-self: flex-end; min-height: 32px; font-size: 14px; font-weight: 600; color: var(--wc-copper-ink); }
   .sp-proof:hover :global(.wc-arrow) { transform: translateX(3px); }
-  .sp-terms { margin: 0; font-size: 15px; line-height: 1.5; color: var(--home-ink-soft); }
+  .sp-terms { margin: 0; font-size: 15px; line-height: 1.5; color: var(--wc-ink-soft); }
   .sp-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 22px; }
 
   @media (min-width: 900px) {

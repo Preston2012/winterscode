@@ -12,7 +12,7 @@
  * Round 2 (Preston's phone markup): rounded plates with a gap instead of
  * ruled rows, no Q numbers.
  */
-import Arrow from './Arrow.astro';
+import Arrow from '../ui/Arrow.astro';
 
 const QUESTIONS: { q: string; a: string[]; link?: { href: string; label: string } }[] = [
   {
@@ -58,9 +58,9 @@ const QUESTIONS: { q: string; a: string[]; link?: { href: string; label: string 
 <section class="sa" id="questions" aria-labelledby="sa-h2">
   <div class="sa-inner">
     <div class="sa-head">
-      <p class="home-eyebrow"><span class="home-dot" aria-hidden="true"></span>Straight answers</p>
-      <h2 class="home-h2" id="sa-h2">The questions <span class="home-soft">everyone asks.</span></h2>
-      <a class="home-link sa-more" href="/faq">More questions <Arrow size={16} /></a>
+      <p class="wc-eyebrow"><span class="wc-dot" aria-hidden="true"></span>Straight answers</p>
+      <h2 class="wc-h2" id="sa-h2">The questions <span class="wc-soft">everyone asks.</span></h2>
+      <a class="wc-link sa-more" href="/faq">More questions <Arrow size={16} /></a>
     </div>
 
     <div class="sa-list">
@@ -72,7 +72,7 @@ const QUESTIONS: { q: string; a: string[]; link?: { href: string; label: string 
           </summary>
           <div class="sa-a">
             {item.a.map((p) => <p>{p}</p>)}
-            {item.link && <a class="home-link" href={item.link.href}>{item.link.label} <Arrow size={16} /></a>}
+            {item.link && <a class="wc-link" href={item.link.href}>{item.link.label} <Arrow size={16} /></a>}
           </div>
         </details>
       ))}
@@ -88,9 +88,9 @@ const QUESTIONS: { q: string; a: string[]; link?: { href: string; label: string 
 
   .sa-list { display: grid; gap: 8px; }
   .sa-item {
-    background-color: var(--home-raised);
-    border: 1px solid var(--home-line);
-    border-radius: var(--home-r);
+    background-color: var(--wc-raised);
+    border: 1px solid var(--wc-line);
+    border-radius: var(--wc-r);
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
     transition: border-color .2s ease;
   }
@@ -100,7 +100,7 @@ const QUESTIONS: { q: string; a: string[]; link?: { href: string; label: string 
     min-height: 60px; padding: 12px 14px 12px 18px;
     cursor: pointer; list-style: none;
     font-size: 17px; font-weight: 500; color: #eef1ec;
-    border-radius: var(--home-r);
+    border-radius: var(--wc-r);
   }
   .sa-q::-webkit-details-marker { display: none; }
   .sa-q:hover .sa-toggle { border-color: rgba(77, 216, 168, 0.6); }

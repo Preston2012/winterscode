@@ -2,7 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/layout/Header.astro';
 import MobileMenu from '../components/layout/MobileMenu.astro';
-import Divider from '../components/ui/Divider.astro';
+import Seam from '../components/ui/Seam.astro';
 import HomeHero from '../components/home/HomeHero.astro';
 import StartPoint from '../components/home/StartPoint.astro';
 import ProofStrip from '../components/home/ProofStrip.astro';
@@ -35,146 +35,36 @@ import HomeClose from '../components/home/HomeClose.astro';
 
   <div class="home">
     <HomeHero />
-    <div class="home-div"><Divider label="01" ariaLabel="Section 01, return to top" /></div>
+    <Seam />
     <StartPoint />
-    <div class="home-div"><Divider label="02" ariaLabel="Section 02, return to top" /></div>
+    <Seam />
     <ProofStrip />
-    <div class="home-div"><Divider label="03" ariaLabel="Section 03, return to top" /></div>
+    <Seam />
     <WhyMe />
-    <div class="home-div"><Divider label="04" ariaLabel="Section 04, return to top" /></div>
+    <Seam />
     <StraightAnswers />
-    <div class="home-div"><Divider label="05" ariaLabel="Section 05, return to top" /></div>
+    <Seam />
     <HomeClose />
   </div>
 </BaseLayout>
 
 <style is:global>
-  /* Home tokens. Same palette as the rest of the site; what changes is how
-     it is used. Copper gets one gradient, "annealed": fresh bright copper
-     aging to a deep patina-brown, and only the H1 word, the closing line,
-     the big numbers and the rivets wear it. Sage carries the open door, the
-     lamps and the actions. Everything else stays ash. */
+  /* Home layout. The plates, rivets, buttons and type come from the shop
+     system in global.css; Home only sets its own page measure. */
   .home {
     --home-gut: 16px;
     --home-max: 1120px;
-    --home-pad: clamp(32px, 5.5vw, 76px);
-    --home-line: rgba(221, 228, 230, 0.1);
-    --home-raised: #12171a;
-    --home-display: var(--font-serif);
-    --home-annealed: linear-gradient(100deg, #f7b98d 0%, #e3935a 38%, #b8703f 72%, #8f5a35 100%);
-    --home-r-sm: 10px;
-    --home-r: 14px;
-    --home-r-lg: 18px;
-
-    /* The open door's paper surface, and the inks that sit on it. Both inks
-       clear 4.5:1 on the paper (sage 5.24, copper 5.52; axe, S339). */
-    --home-paper: #efece4;
-    --home-ink: #141816;
-    --home-ink-soft: #4a524f;
-    --home-sage-ink: #1a6e51;
-    --home-copper-ink: #8a4f22;
-
-    /* A rivet: bright copper head, deep copper rim. Drawn as a background so
-       a plate can carry four of them without extra markup. */
-    --home-rivet: radial-gradient(circle, #f6c39c 0 1px, #c47b45 1.4px 2.1px, rgba(138, 84, 48, 0.55) 2.5px, transparent 3px);
-    --home-rivet-ink: radial-gradient(circle, #c9976c 0 1px, #7a4a26 1.4px 2.2px, rgba(122, 74, 38, 0.3) 2.6px, transparent 3.1px);
-
+    --home-pad: clamp(40px, 6vw, 84px);
     background: var(--color-bg-deep);
     hyphens: manual;
     /* Home runs edge to edge; the framed column is for reading pages. */
     width: 100vw;
     margin-inline: calc(50% - 50vw);
   }
-  html[data-display='sans'] .home { --home-display: var(--font-sans); }
   /* From tablet up, the content edge lines up with the framed header and
      footer column (.page in global.css: 92vw up to 960 with 24px inside,
      then 1200 with 40px inside), so the logo, the H1 and every section
      start on one line. Phones keep a 16px gutter for room. */
   @media (min-width: 700px) { .home { --home-gut: calc(4vw + 24px); --home-max: calc(min(92vw, 960px) - 48px); } }
   @media (min-width: 1024px) { .home { --home-gut: 40px; --home-max: 1120px; } }
-
-  /* Plates */
-  .home .home-plate {
-    background-color: var(--home-raised);
-    border: 1px solid var(--home-line);
-    border-radius: var(--home-r-lg);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.045), 0 20px 50px -34px rgba(0, 0, 0, 0.9);
-  }
-  .home .rv, .home .rv-ink {
-    background-repeat: no-repeat;
-    background-size: 26px 26px;
-    background-position: left top, right top, left bottom, right bottom;
-  }
-  .home .rv { background-image: var(--home-rivet), var(--home-rivet), var(--home-rivet), var(--home-rivet); }
-  .home .rv-ink { background-image: var(--home-rivet-ink), var(--home-rivet-ink), var(--home-rivet-ink), var(--home-rivet-ink); }
-
-  .home .home-div { padding: 0 var(--home-gut); }
-  .home .home-div > * { max-width: var(--home-max); margin-inline: auto; }
-
-  /* Type */
-  .home .home-eyebrow {
-    display: flex; align-items: center; gap: 12px;
-    margin: 0 0 16px;
-    font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase;
-    color: var(--color-ash-300);
-  }
-  .home .home-dot {
-    flex: none; width: 8px; height: 8px; border-radius: 50%;
-    background: radial-gradient(circle at 35% 35%, #f6c39c, #c47b45 55%, #8a5430);
-    box-shadow: 0 0 0 3px rgba(211, 130, 60, 0.14);
-  }
-  .home .home-h2 {
-    margin: 0; max-width: 20ch;
-    font-family: var(--home-display); font-weight: 500;
-    font-size: clamp(34px, 5.2vw, 64px); line-height: 1.02; letter-spacing: -0.02em;
-    color: #eef1ec; text-wrap: balance;
-  }
-  html[data-display='sans'] .home .home-h2 { font-weight: 600; letter-spacing: -0.04em; }
-  .home .home-soft { color: var(--color-ash-500); }
-  .home .home-lead { margin: 14px 0 0; max-width: 36rem; font-size: 17px; line-height: 1.6; color: var(--color-ash-300); }
-
-  /* Buttons: label and arrow centered together, rounded, a 1px top light
-     so they read as pressed metal rather than flat paint. */
-  .home .home-btn {
-    display: inline-flex; align-items: center; justify-content: center; gap: 12px;
-    min-height: 56px; padding: 0 20px;
-    font-size: 17px; font-weight: 600; text-decoration: none; white-space: nowrap;
-    border-radius: 12px;
-    transition: background-color .2s ease, border-color .2s ease, transform .15s ease;
-  }
-  .home .home-btn:active { transform: scale(0.98); }
-  .home .home-btn--primary {
-    background: var(--color-wc-green); color: #06150f;
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), 0 10px 24px -12px rgba(77, 216, 168, 0.55);
-  }
-  .home .home-btn--primary:hover, .home .home-btn--primary:focus-visible { background: var(--color-wc-green-bright); }
-  .home .home-btn--ghost {
-    color: #eef1ec; background: rgba(18, 23, 26, 0.6);
-    border: 1px solid rgba(221, 228, 230, 0.22);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
-  }
-  .home .home-btn--ghost:hover, .home .home-btn--ghost:focus-visible { border-color: var(--color-copper-bright); }
-  .home .home-btn--ink {
-    min-height: 48px; padding: 0 18px; font-size: 15px;
-    background: var(--home-ink); color: #f2f0ea;
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
-  }
-  .home .home-btn--ink:hover, .home .home-btn--ink:focus-visible { background: #24302b; }
-  .home .home-btn:focus-visible { outline: 2px solid var(--color-wc-green); outline-offset: 3px; }
-
-  .home .home-link {
-    display: inline-flex; align-items: center; gap: 8px; min-height: 44px;
-    font-size: 15px; font-weight: 600; color: var(--color-wc-green); text-decoration: none;
-  }
-  .home .home-link--ink { color: var(--home-sage-ink); }
-  .home .home-link:hover, .home .home-link:focus-visible { text-decoration: underline; text-underline-offset: 5px; text-decoration-thickness: 1px; }
-
-  /* The house arrow nudges the way it points. */
-  .home .wc-arrow { flex: none; transition: transform .2s ease; }
-  .home a:hover > .wc-arrow--right, .home a:focus-visible > .wc-arrow--right { transform: translateX(3px); }
-  .home a:hover > .wc-arrow--down, .home a:focus-visible > .wc-arrow--down { transform: translateY(3px); }
-
-  @media (prefers-reduced-motion: reduce) {
-    .home .home-btn, .home .wc-arrow { transition: none; }
-  }
 </style>

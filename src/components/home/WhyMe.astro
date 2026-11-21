@@ -6,7 +6,7 @@
  * /services, nothing new is claimed.
  *
  * Round 2 (Preston's phone markup): the four values are a 2 by 2 of plates,
- * each with a drawn icon, no numbers. The meter plate carries rivets.
+ * each with a drawn icon in a fixed corner seat, no numbers. The meter plate carries rivets.
  *
  * The phone-score meter is the section's one moving part: two bars, the
  * county average and the floor every build clears, fill when the meter
@@ -15,8 +15,8 @@
  * (the ones Google could score); the 90 is the floor every build is held to
  * and is measured live on the Wall.
  */
-import Arrow from './Arrow.astro';
-import Icon from './Icon.astro';
+import Arrow from '../ui/Arrow.astro';
+import Icon from '../ui/Icon.astro';
 
 const VALUES: { icon: 'keep' | 'all' | 'lock' | 'found'; head: string; body: string }[] = [
   { icon: 'keep', head: 'Yours to keep.', body: 'Custom code, your domain, your account. Skip the care plan and nothing turns off.' },
@@ -30,10 +30,10 @@ const VALUES: { icon: 'keep' | 'all' | 'lock' | 'found'; head: string; body: str
   <div class="wm-inner">
     <div class="wm-top">
       <div class="wm-lead">
-        <p class="home-eyebrow"><span class="home-dot" aria-hidden="true"></span>Why it's worth it</p>
-        <h2 class="home-h2" id="wm-h2">Why $1,750 and <span class="home-soft">not a few hundred.</span></h2>
+        <p class="wc-eyebrow"><span class="wc-dot" aria-hidden="true"></span>Why it's worth it</p>
+        <h2 class="wc-h2" id="wm-h2">Why $1,750 and <span class="wc-soft">not a few hundred.</span></h2>
 
-        <figure class="wm-meter home-plate rv" data-meter>
+        <figure class="wm-meter wc-plate wc-rv" data-meter>
           <figcaption class="wm-meter-cap">Google's mobile test, out of 100</figcaption>
           <div class="wm-bar">
             <div class="wm-bar-label"><span>Coos County business sites, average</span><b>61</b></div>
@@ -44,7 +44,7 @@ const VALUES: { icon: 'keep' | 'all' | 'lock' | 'found'; head: string; body: str
             <div class="wm-track"><span class="wm-fill wm-fill-mine"></span><span class="wm-tick" aria-hidden="true"></span></div>
           </div>
           <p class="wm-meter-note">From my audit of 169 Coos County business sites, the ones Google could score.</p>
-          <a class="home-link" href="/wall">Every build of mine, scored live on the Wall <Arrow size={16} /></a>
+          <a class="wc-link" href="/wall">Every build of mine, scored live on the Wall <Arrow size={16} /></a>
         </figure>
       </div>
 
@@ -52,19 +52,17 @@ const VALUES: { icon: 'keep' | 'all' | 'lock' | 'found'; head: string; body: str
         <ul class="wm-values">
           {VALUES.map((v) => (
             <li class="wm-value">
-              <h3 class="wm-vh">
-                {v.head.split(' ').slice(0, -1).join(' ')}{' '}
-                <span class="wm-vlast">{v.head.split(' ').slice(-1)[0]}<span class="wm-seat" aria-hidden="true"><Icon name={v.icon} size={17} /></span></span>
-              </h3>
+              <span class="wm-seat" aria-hidden="true"><Icon name={v.icon} size={18} /></span>
+              <h3 class="wm-vh">{v.head}</h3>
               <p class="wm-vb">{v.body}</p>
             </li>
           ))}
         </ul>
-        <a class="home-link wm-compare" href="/pricing#compare">Comparing quotes? Ask these five questions <Arrow size={16} /></a>
+        <a class="wc-link wm-compare" href="/pricing#compare">Comparing quotes? Ask these five questions <Arrow size={16} /></a>
       </div>
     </div>
 
-    <div class="wm-who home-plate">
+    <div class="wm-who wc-plate">
       <img
         class="wm-photo"
         src="/photo/preston-560.webp"
@@ -83,7 +81,7 @@ const VALUES: { icon: 'keep' | 'all' | 'lock' | 'found'; head: string; body: str
           Now I build the tools I wish I'd had. The person you text is the person who builds it, and the one
           who keeps it running if you want that, with optional care from $75 a month.
         </p>
-        <a class="home-link" href="/about">More about me <Arrow size={16} /></a>
+        <a class="wc-link" href="/about">More about me <Arrow size={16} /></a>
       </div>
     </div>
   </div>
@@ -120,7 +118,7 @@ const VALUES: { icon: 'keep' | 'all' | 'lock' | 'found'; head: string; body: str
   .wm-meter-cap { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-ash-500); margin-bottom: 18px; }
   .wm-bar + .wm-bar { margin-top: 18px; }
   .wm-bar-label { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; font-size: 15px; color: var(--color-ash-300); margin-bottom: 8px; }
-  .wm-bar-label b { flex: none; white-space: nowrap; font-family: var(--home-display); font-weight: 500; font-size: 30px; line-height: 1; color: var(--color-ash-100); letter-spacing: -0.02em; }
+  .wm-bar-label b { flex: none; white-space: nowrap; font-family: var(--wc-display); font-weight: 500; font-size: 30px; line-height: 1; color: var(--color-ash-100); letter-spacing: -0.02em; }
   .wm-bar-label b.wm-mine { color: var(--color-wc-green-bright); }
   .wm-track { position: relative; height: 10px; background: rgba(221, 228, 230, 0.07); border-radius: 5px; overflow: hidden; box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.5); }
   .wm-fill { position: absolute; inset: 0 auto 0 0; border-radius: 5px; transition: width 1.1s cubic-bezier(.2, .7, .2, 1); }
@@ -134,24 +132,25 @@ const VALUES: { icon: 'keep' | 'all' | 'lock' | 'found'; head: string; body: str
   .wm-value {
     display: flex; flex-direction: column; gap: 6px;
     padding: 16px 14px 16px;
-    background-color: var(--home-raised);
+    background-color: var(--wc-raised);
     background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.025), rgba(255, 255, 255, 0) 60%);
-    border: 1px solid var(--home-line);
-    border-radius: var(--home-r);
+    border: 1px solid var(--wc-line);
+    border-radius: var(--wc-r);
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
   }
-  /* The icon sits in a seat at the end of the heading, held to the last
-     word so it never wraps onto a line by itself. */
-  .wm-vh { margin: 0 0 2px; font-size: 16.5px; font-weight: 600; color: #eef1ec; line-height: 1.3; }
-  .wm-vlast { white-space: nowrap; }
+  /* Each icon has a fixed seat in the plate's top corner, the same place
+     on all four, so the set reads as a row of fittings rather than icons
+     wandering with the length of each heading. */
+  .wm-value { position: relative; }
+  .wm-vh { margin: 0 0 2px; padding-right: 40px; font-size: 16.5px; font-weight: 600; color: #eef1ec; line-height: 1.3; min-height: 32px; display: flex; align-items: center; }
   .wm-seat {
-    display: inline-flex; align-items: center; justify-content: center;
-    width: 28px; height: 28px; margin-left: 8px; vertical-align: -8px;
-    border-radius: 50%;
+    position: absolute; top: 12px; right: 12px;
+    display: flex; align-items: center; justify-content: center;
+    width: 34px; height: 34px; border-radius: 10px;
     color: var(--color-copper-bright);
-    background: radial-gradient(circle at 50% 35%, rgba(244, 168, 116, 0.12), rgba(244, 168, 116, 0.03));
-    border: 1px solid rgba(216, 144, 90, 0.36);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    background: linear-gradient(180deg, rgba(244, 168, 116, 0.14), rgba(244, 168, 116, 0.04));
+    border: 1px solid rgba(216, 144, 90, 0.38);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
   }
   .wm-vb { margin: 0; font-size: 14.5px; line-height: 1.5; color: var(--color-ash-300); }
   .wm-compare { margin-top: 10px; }
@@ -161,8 +160,8 @@ const VALUES: { icon: 'keep' | 'all' | 'lock' | 'found'; head: string; body: str
     display: grid; grid-template-columns: 104px 1fr; gap: 16px 18px; align-items: center;
     padding: 18px;
   }
-  .wm-photo { display: block; width: 100%; height: auto; aspect-ratio: 1; object-fit: cover; object-position: 25% 70%; border-radius: var(--home-r-sm); }
-  .wm-who-name { margin: 0; font-family: var(--home-display); font-weight: 500; font-size: clamp(22px, 2.6vw, 32px); line-height: 1.15; color: #eef1ec; letter-spacing: -0.01em; }
+  .wm-photo { display: block; width: 100%; height: auto; aspect-ratio: 1; object-fit: cover; object-position: 25% 70%; border-radius: var(--wc-r-sm); }
+  .wm-who-name { margin: 0; font-family: var(--wc-display); font-weight: 500; font-size: clamp(22px, 2.6vw, 32px); line-height: 1.15; color: #eef1ec; letter-spacing: -0.01em; }
   .wm-who-name span { color: var(--color-ash-300); }
   .wm-who-copy { grid-column: 1 / -1; }
   .wm-who-body { margin: 0 0 4px; max-width: 40rem; font-size: 16px; line-height: 1.6; color: var(--color-ash-300); }
@@ -177,7 +176,15 @@ const VALUES: { icon: 'keep' | 'all' | 'lock' | 'found'; head: string; body: str
     .wm-who { grid-template-columns: 200px minmax(0, 0.9fr) minmax(0, 1.1fr); gap: 36px; padding: 22px; }
     .wm-who-copy { grid-column: auto; }
   }
-  @media (max-width: 359px) { .wm-values { grid-template-columns: 1fr; } }
+  /* Phones: one column of rows, the seat on the left of each row, so the
+     headings get the full width and the four rows stay short. */
+  @media (max-width: 599px) {
+    .wm-values { grid-template-columns: 1fr; gap: 8px; }
+    .wm-value { display: grid; grid-template-columns: 34px 1fr; column-gap: 14px; row-gap: 4px; padding: 14px 16px; align-items: start; }
+    .wm-seat { position: static; grid-row: 1 / span 2; }
+    .wm-vh { padding-right: 0; min-height: 34px; }
+    .wm-vb { grid-column: 2; }
+  }
 
   @media (prefers-reduced-motion: reduce) { .wm-fill { transition: none; } }
 </style>

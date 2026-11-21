@@ -11,7 +11,7 @@
  * links to #contact still land and the phone thumb bar steps aside here.
  */
 import { smsHref, telHref, phoneDisplay } from '../../lib/text-cta';
-import Arrow from './Arrow.astro';
+import Arrow from '../ui/Arrow.astro';
 
 const sms = smsHref('/');
 ---
@@ -19,19 +19,19 @@ const sms = smsHref('/');
 <section class="hc" id="contact" data-textbar-hide aria-labelledby="hc-h2">
   <div class="hc-glow" aria-hidden="true"></div>
   <div class="hc-inner">
-    <p class="home-eyebrow"><span class="home-dot" aria-hidden="true"></span>Reach out</p>
+    <p class="wc-eyebrow"><span class="wc-dot" aria-hidden="true"></span>Reach out</p>
     <h2 class="hc-h2" id="hc-h2">Help is just a <span class="hc-cu">text away.</span></h2>
     <p class="hc-sub">I'm down the road. I pick up the phone.</p>
 
     <div class="hc-actions">
-      <a class="home-btn home-btn--primary hc-btn" href={sms}>
+      <a class="wc-btn wc-btn--primary hc-btn" href={sms}>
         <span class="hc-btn-stack">
           <span class="hc-btn-label">Text Preston</span>
           <span class="hc-btn-num">{phoneDisplay}</span>
         </span>
         <Arrow size={22} />
       </a>
-      <a class="home-btn home-btn--ghost hc-call" href={telHref}>
+      <a class="wc-btn wc-btn--ghost hc-call" href={telHref}>
         <span class="hc-btn-stack">
           <span class="hc-btn-label">Call</span>
           <span class="hc-btn-num">{phoneDisplay}</span>
@@ -57,13 +57,13 @@ const sms = smsHref('/');
   .hc-inner { max-width: var(--home-max); margin: 0 auto; }
   .hc-h2 {
     margin: 0; max-width: 14ch;
-    font-family: var(--home-display); font-weight: 500;
+    font-family: var(--wc-display); font-weight: 500;
     font-size: clamp(44px, 8.6vw, 112px); line-height: 0.98; letter-spacing: -0.025em;
     color: #eef1ec; text-wrap: balance;
   }
   :global(html[data-display='sans']) .hc-h2 { font-weight: 600; letter-spacing: -0.045em; line-height: 0.96; }
   .hc-cu {
-    background: var(--home-annealed); -webkit-background-clip: text; background-clip: text; color: transparent;
+    background: var(--wc-annealed); -webkit-background-clip: text; background-clip: text; color: transparent;
     font-style: italic; padding-right: 0.06em;
   }
   :global(html[data-display='sans']) .hc-cu { font-style: normal; }

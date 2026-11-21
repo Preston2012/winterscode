@@ -1,0 +1,26 @@
+---
+/**
+ * Seam. S339, Preston 2026-11-21: "04 into 01, 02 and 03, into 05... none of
+ * that makes sense." The quiet break between two sections: a copper hairline
+ * that fades at both ends with one rivet at the center. No number, no button.
+ * It sits inside the page's measure, so it never runs wider than the text.
+ */
+---
+<div class="seam" aria-hidden="true"><span></span></div>
+
+<style>
+  .seam {
+    position: relative;
+    max-width: var(--home-max, 1120px);
+    height: 1px;
+    margin: 0 auto;
+    padding: 0;
+    background: linear-gradient(90deg, transparent, rgba(216, 144, 90, 0.32) 20%, rgba(216, 144, 90, 0.5) 50%, rgba(216, 144, 90, 0.32) 80%, transparent);
+  }
+  .seam span {
+    position: absolute; left: 50%; top: 50%;
+    width: 7px; height: 7px; margin: -3.5px 0 0 -3.5px; border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #f6c39c, #c47b45 55%, #8a5430);
+    box-shadow: 0 0 0 4px var(--color-bg-deep);
+  }
+</style>

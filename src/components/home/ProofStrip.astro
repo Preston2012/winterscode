@@ -15,7 +15,7 @@
  * Round 2 (Preston's phone markup): rounded plates, the house Arrow, the
  * quote without a rule down its side.
  */
-import Arrow from './Arrow.astro';
+import Arrow from '../ui/Arrow.astro';
 const BUILDS = [
   {
     name: 'Grand Management',
@@ -51,8 +51,8 @@ const BUILDS = [
   <div class="ps-inner">
     <div class="ps-head">
       <div>
-        <p class="home-eyebrow"><span class="home-dot" aria-hidden="true"></span>The work</p>
-        <h2 class="home-h2" id="ps-h2">Real coast businesses. <span class="home-soft">Counted in days.</span></h2>
+        <p class="wc-eyebrow"><span class="wc-dot" aria-hidden="true"></span>The work</p>
+        <h2 class="wc-h2" id="ps-h2">Real coast businesses. <span class="wc-soft">Counted in days.</span></h2>
       </div>
       <a class="ps-wall" href="/wall">
         <span class="ps-wall-lamp" aria-hidden="true"></span>
@@ -95,11 +95,11 @@ const BUILDS = [
       </blockquote>
       <figcaption>
         <span class="ps-quote-who">General Manager, US Survey Supply</span>
-        <a class="home-link" href="/work/us-survey-supply">Read the whole review <Arrow size={16} /></a>
+        <a class="wc-link" href="/work/us-survey-supply">Read the whole review <Arrow size={16} /></a>
       </figcaption>
     </figure>
 
-    <p class="ps-all"><a class="home-link" href="/work">All the work, sites and apps <Arrow size={16} /></a></p>
+    <p class="ps-all"><a class="wc-link" href="/work">All the work, sites and apps <Arrow size={16} /></a></p>
   </div>
 </section>
 
@@ -135,9 +135,9 @@ const BUILDS = [
 
   .ps-link {
     display: flex; flex-direction: column; height: 100%;
-    background-color: var(--home-raised);
-    border: 1px solid var(--home-line);
-    border-radius: var(--home-r-lg);
+    background-color: var(--wc-raised);
+    border: 1px solid var(--wc-line);
+    border-radius: var(--wc-r-lg);
     overflow: hidden;
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
     text-decoration: none; color: inherit;
@@ -145,16 +145,16 @@ const BUILDS = [
   }
   .ps-link:hover, .ps-link:focus-visible { border-color: rgba(244, 168, 116, 0.45); transform: translateY(-3px); }
   .ps-link:focus-visible { outline: 2px solid var(--color-wc-green); outline-offset: 3px; }
-  .ps-img { display: block; aspect-ratio: 1200 / 630; overflow: hidden; background: #0e1214; border-bottom: 1px solid var(--home-line); }
+  .ps-img { display: block; aspect-ratio: 1200 / 630; overflow: hidden; background: #0e1214; border-bottom: 1px solid var(--wc-line); }
   .ps-img img { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform .5s ease; }
   .ps-link:hover .ps-img img { transform: scale(1.03); }
 
   .ps-body { display: flex; flex-direction: column; gap: 6px; padding: 18px 18px 16px; flex: 1; }
   .ps-days { display: flex; align-items: baseline; gap: 8px; font-size: 14px; color: var(--color-ash-300); margin-bottom: 6px; }
   .ps-days b {
-    font-family: var(--home-display); font-weight: 500;
+    font-family: var(--wc-display); font-weight: 500;
     font-size: 44px; line-height: 1; letter-spacing: -0.02em;
-    background: var(--home-annealed); -webkit-background-clip: text; background-clip: text; color: transparent;
+    background: var(--wc-annealed); -webkit-background-clip: text; background-clip: text; color: transparent;
     padding-right: 0.04em;
   }
   .ps-name { font-size: 19px; font-weight: 600; color: #eef1ec; }
@@ -167,12 +167,12 @@ const BUILDS = [
   .ps-quote-mark {
     display: block; margin-bottom: -18px;
     font-family: var(--font-serif); font-weight: 600; font-size: 76px; line-height: 1;
-    background: var(--home-annealed); -webkit-background-clip: text; background-clip: text; color: transparent;
+    background: var(--wc-annealed); -webkit-background-clip: text; background-clip: text; color: transparent;
   }
   .ps-quote blockquote { margin: 0; }
   .ps-quote p {
     margin: 0; max-width: 26ch;
-    font-family: var(--home-display); font-style: italic; font-weight: 400;
+    font-family: var(--wc-display); font-style: italic; font-weight: 400;
     font-size: clamp(26px, 3.4vw, 40px); line-height: 1.18; letter-spacing: -0.01em;
     color: #eef1ec; text-wrap: balance;
   }
