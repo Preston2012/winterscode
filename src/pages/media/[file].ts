@@ -27,6 +27,9 @@ const MEDIA: Record<string, { path: string; type: string }> = {
   // S384: the Chere' master video (2026-11-10 cut, 720p web encode), on /chere/join.
   'chere-master.mp4': { path: '/work/chere-master.mp4', type: 'video/mp4' },
   'chere-master.webm': { path: '/work/chere-master.webm', type: 'video/webm' },
+  // S339: the live-sites reel in the Home Websites door.
+  'sites-reel.mp4': { path: '/work/sites-reel.mp4', type: 'video/mp4' },
+  'sites-reel.webm': { path: '/work/sites-reel.webm', type: 'video/webm' },
 };
 
 function headers(type: string, size: number, etag: string | null): Record<string, string> {

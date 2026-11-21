@@ -39,7 +39,7 @@ const ask = (topic: string) =>
 type IconName = 'web' | 'apps' | 'brand' | 'auto';
 const DOORS: {
   id: string; icon: IconName; need: string; label: string; head: string; lead: string; gets: string[];
-  proofWho: string; proof: string; proofHref: string; video?: boolean; board?: boolean; terms: string; more: string; moreLabel: string; topic: string; cta: string;
+  proofWho: string; proof: string; proofHref: string; video?: boolean; board?: boolean; reel?: boolean; terms: string; more: string; moreLabel: string; topic: string; cta: string;
 }[] = [
   {
     id: 'web', icon: 'web',
@@ -50,6 +50,9 @@ const DOORS: {
     proofWho: 'Grand Management · Coos Bay',
     proof: '50 bilingual pages, rebuilt off WordPress and live in 13 business days.',
     proofHref: '/work/grand-management',
+    // S339 round 4 (Preston): the door shows the work itself, a 47 second
+    // reel cut from nine live sites, phone menus and footers included.
+    reel: true,
     terms: 'From $1,750, everything in · builds starting at 3 business days',
     more: '/services/web-design', moreLabel: 'Websites in detail',
     topic: 'a website', cta: 'Text me about a site',
@@ -160,20 +163,46 @@ const DOORS: {
                   <a class="wc-link wc-link--ink" href="/work#branding">See the full board <Arrow size={16} /></a>
                 </figcaption>
               </figure>
+            ) : d.reel ? (
+              <figure class="sp-video">
+                <div class="sp-vwrap">
+                  <video
+                    controls
+                    muted
+                    playsinline
+                    preload="none"
+                    width="1280"
+                    height="720"
+                    poster={v('/work/sites-reel-poster-720.webp')}
+                    aria-label="Reel of nine live sites I built, 47 seconds, no sound: Grand Management, Bandon By The Dunes Realtee, Makai Painting, US Survey Supply, SeaBreeze, Baseline, Sogn Contracting, Professors Golf and South Coast Cuisine, with their phone menus and footers."
+                  >
+                    <source src={mediaUrl('sites-reel.webm')} type="video/webm" />
+                    <source src={mediaUrl('sites-reel.mp4')} type="video/mp4" />
+                  </video>
+                  <button type="button" class="sp-play" hidden aria-label="Play the reel, 0:47"><span class="sp-play-key" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor"/></svg></span><span class="sp-play-chip">Play · 0:47</span></button>
+                </div>
+                <figcaption>
+                  <span class="sp-proof-who">Nine live sites, menus to footers</span>
+                  <a class="wc-link wc-link--ink" href="/work">See the work <Arrow size={16} /></a>
+                </figcaption>
+              </figure>
             ) : d.video ? (
               <figure class="sp-video">
-                <video
-                  controls
-                  playsinline
-                  preload="none"
-                  width="1280"
-                  height="720"
-                  poster={v('/work/chere-poster-720.webp')}
-                  aria-label="Chere' demo video, 1 minute 32 seconds, with music. A kitchen photo becomes three design options, a priced estimate, and a before and after the customer sees."
-                >
-                  <source src={mediaUrl('chere-demo.webm')} type="video/webm" />
-                  <source src={mediaUrl('chere-demo.mp4')} type="video/mp4" />
-                </video>
+                <div class="sp-vwrap">
+                  <video
+                    controls
+                    playsinline
+                    preload="none"
+                    width="1280"
+                    height="720"
+                    poster={v('/work/chere-poster-720.webp')}
+                    aria-label="Chere' demo video, 1 minute 32 seconds, with music. A kitchen photo becomes three design options, a priced estimate, and a before and after the customer sees."
+                  >
+                    <source src={mediaUrl('chere-demo.webm')} type="video/webm" />
+                    <source src={mediaUrl('chere-demo.mp4')} type="video/mp4" />
+                  </video>
+                  <button type="button" class="sp-play" hidden aria-label="Play the demo, 1:32"><span class="sp-play-key" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor"/></svg></span><span class="sp-play-chip">Play · 1:32</span></button>
+                </div>
                 <figcaption>
                   <span class="sp-proof-who">{d.proofWho}</span>
                   <a class="wc-link wc-link--ink" href={d.proofHref}>More on Chere' <Arrow size={16} /></a>
@@ -225,6 +254,16 @@ const DOORS: {
         else if (e.key === 'End') j = n - 1;
         if (j >= 0) { e.preventDefault(); select(j, true); }
       });
+    });
+    // Play keys: hide the native bar until the first play, then hand over.
+    // Starting one video pauses any other in the section.
+    const vids = Array.from(root.querySelectorAll<HTMLVideoElement>('.sp-vwrap video'));
+    root.querySelectorAll<HTMLElement>('.sp-vwrap').forEach((w) => {
+      const vid = w.querySelector('video'); const key = w.querySelector<HTMLButtonElement>('.sp-play');
+      if (!vid || !key) return;
+      vid.controls = false; key.hidden = false;
+      key.addEventListener('click', () => { key.hidden = true; vid.controls = true; vid.play().catch(() => {}); });
+      vid.addEventListener('play', () => { key.hidden = true; vid.controls = true; vids.forEach((o) => { if (o !== vid) o.pause(); }); });
     });
     select(0, false);
     root.classList.add('sp-ready');
@@ -369,6 +408,28 @@ const DOORS: {
   /* Apps door: the Chere' demo plays right in the panel (Preston, round 4). */
   .sp-video { margin: 0; display: grid; gap: 8px; }
   .sp-video video { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; border-radius: var(--wc-r); background: #0e1214; border: 1px solid rgba(20, 24, 22, 0.15); }
+  /* The play key: the native bar covers a third of a 16:9 poster on a phone,
+     so it waits until play. Without JavaScript the native controls stay. */
+  .sp-vwrap { position: relative; }
+  .sp-play {
+    position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
+    width: 100%; border: 0; padding: 0; cursor: pointer; border-radius: var(--wc-r);
+    background: radial-gradient(closest-side, rgba(10, 13, 12, 0.55), rgba(10, 13, 12, 0.1));
+  }
+  .sp-play[hidden] { display: none; }
+  .sp-play-key {
+    display: grid; place-items: center; width: 64px; height: 64px; border-radius: 50%; padding-left: 3px;
+    color: #0a0d0c; background: linear-gradient(180deg, #f0b07c, #c8804a);
+    box-shadow: 0 0 0 5px rgba(10, 13, 12, 0.55), 0 0 0 6px rgba(240, 176, 124, 0.45), 0 14px 30px -10px rgba(0, 0, 0, 0.8);
+    transition: transform .2s ease;
+  }
+  .sp-play-key svg { width: 28px; height: 28px; }
+  .sp-play:hover .sp-play-key, .sp-play:focus-visible .sp-play-key { transform: scale(1.06); }
+  .sp-play:focus-visible { outline: 2px solid var(--color-wc-green); outline-offset: 3px; }
+  .sp-play-chip {
+    font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: #eef1ec;
+    background: rgba(10, 13, 12, 0.82); border: 1px solid rgba(200, 128, 74, 0.45); border-radius: 999px; padding: 6px 12px;
+  }
   .sp-video figcaption { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0 14px; }
   /* Branding door: the graphics board itself, not a sentence about it. */
   .sp-board { margin: 0; display: grid; gap: 8px; }
