@@ -37,9 +37,11 @@ const ask = (topic: string) =>
   smsBase + encodeURIComponent(`Hi Preston, found you at winterscode.com. I'd like help with ${topic}: `);
 
 type IconName = 'web' | 'apps' | 'brand' | 'auto';
+// A silent reel cut from real screens, served through /media for byte ranges.
+type Film = { file: string; poster: string; dur: string; name: string; label: string; caption: string; href?: string; linkLabel?: string };
 const DOORS: {
   id: string; icon: IconName; need: string; label: string; head: string; lead: string; gets: string[];
-  proofWho: string; proof: string; proofHref: string; video?: boolean; board?: boolean; reel?: boolean; terms: string; more: string; moreLabel: string; topic: string; cta: string;
+  proofWho: string; proof: string; proofHref: string; video?: boolean; board?: boolean; film?: Film; terms: string; more: string; moreLabel: string; topic: string; cta: string;
 }[] = [
   {
     id: 'web', icon: 'web',
@@ -52,7 +54,11 @@ const DOORS: {
     proofHref: '/work/grand-management',
     // S339 round 4 (Preston): the door shows the work itself, a 47 second
     // reel cut from nine live sites, phone menus and footers included.
-    reel: true,
+    film: {
+      file: 'sites-reel', poster: '/work/sites-reel-poster-720.webp', dur: '0:47', name: 'the reel',
+      label: 'Reel of nine live sites I built, 47 seconds, no sound: Grand Management, Bandon By The Dunes Realtee, Makai Painting, US Survey Supply, SeaBreeze, Baseline, Sogn Contracting, Professors Golf and South Coast Cuisine, with their phone menus and footers.',
+      caption: 'Nine live sites, menus to footers', href: '/work', linkLabel: 'See the work',
+    },
     terms: 'From $1,750, everything in · builds starting at 3 business days',
     more: '/services/web-design', moreLabel: 'Websites in detail',
     topic: 'a website', cta: 'Text me about a site',
@@ -94,6 +100,14 @@ const DOORS: {
     proofWho: 'StainSlayer AI · built alone',
     proof: 'Photograph a stain, get the removal steps. Live and approved on the App Store and Google Play for most of 2026.',
     proofHref: '/work/stainslayer-ai',
+    // S339 round 4 (Preston): automation shown, not described. Two of the
+    // LLRSX system blueprints, then the live command deck that watches the
+    // loops I run, on a desktop and on a phone. Filmed off the real deck.
+    film: {
+      file: 'auto-reel', poster: '/work/auto-reel-poster-720.webp', dur: '0:27', name: 'the automation reel',
+      label: 'Automation reel, 27 seconds, no sound: two system blueprints, the action kernel and the portfolio governor, then my live command deck showing 44 loops and a day of runs, on a desktop and on a phone.',
+      caption: 'My own ops deck, 44 loops at work',
+    },
     terms: 'Scoped to one task at a time · running costs named up front',
     more: '/services/ai-automation', moreLabel: 'Automation in detail',
     topic: 'automating a task', cta: 'Text me a task to automate',
@@ -163,7 +177,7 @@ const DOORS: {
                   <a class="wc-link wc-link--ink" href="/work#branding">See the full board <Arrow size={16} /></a>
                 </figcaption>
               </figure>
-            ) : d.reel ? (
+            ) : d.film ? (
               <figure class="sp-video">
                 <div class="sp-vwrap">
                   <video
@@ -173,17 +187,17 @@ const DOORS: {
                     preload="none"
                     width="1280"
                     height="720"
-                    poster={v('/work/sites-reel-poster-720.webp')}
-                    aria-label="Reel of nine live sites I built, 47 seconds, no sound: Grand Management, Bandon By The Dunes Realtee, Makai Painting, US Survey Supply, SeaBreeze, Baseline, Sogn Contracting, Professors Golf and South Coast Cuisine, with their phone menus and footers."
+                    poster={v(d.film.poster)}
+                    aria-label={d.film.label}
                   >
-                    <source src={mediaUrl('sites-reel.webm')} type="video/webm" />
-                    <source src={mediaUrl('sites-reel.mp4')} type="video/mp4" />
+                    <source src={mediaUrl(`${d.film.file}.webm`)} type="video/webm" />
+                    <source src={mediaUrl(`${d.film.file}.mp4`)} type="video/mp4" />
                   </video>
-                  <button type="button" class="sp-play" hidden aria-label="Play the reel, 0:47"><span class="sp-play-key" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor"/></svg></span><span class="sp-play-chip">Play · 0:47</span></button>
+                  <button type="button" class="sp-play" hidden aria-label={`Play ${d.film.name}, ${d.film.dur}`}><span class="sp-play-key" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor"/></svg></span><span class="sp-play-chip">Play · {d.film.dur}</span></button>
                 </div>
                 <figcaption>
-                  <span class="sp-proof-who">Nine live sites, menus to footers</span>
-                  <a class="wc-link wc-link--ink" href="/work">See the work <Arrow size={16} /></a>
+                  <span class="sp-proof-who">{d.film.caption}</span>
+                  {d.film.href && <a class="wc-link wc-link--ink" href={d.film.href}>{d.film.linkLabel} <Arrow size={16} /></a>}
                 </figcaption>
               </figure>
             ) : d.video ? (

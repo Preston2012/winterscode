@@ -30,6 +30,9 @@ const MEDIA: Record<string, { path: string; type: string }> = {
   // S339: the live-sites reel in the Home Websites door.
   'sites-reel.mp4': { path: '/work/sites-reel.mp4', type: 'video/mp4' },
   'sites-reel.webm': { path: '/work/sites-reel.webm', type: 'video/webm' },
+  // S339: the automation reel in the Home Automation door.
+  'auto-reel.mp4': { path: '/work/auto-reel.mp4', type: 'video/mp4' },
+  'auto-reel.webm': { path: '/work/auto-reel.webm', type: 'video/webm' },
 };
 
 function headers(type: string, size: number, etag: string | null): Record<string, string> {
