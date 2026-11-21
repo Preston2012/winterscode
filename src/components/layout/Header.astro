@@ -115,6 +115,12 @@ const navItems = [
     background: rgba(10, 13, 12, 0.94);
     backdrop-filter: blur(12px);
     gap: 16px;
+    /* S339: the bar's backing runs the full viewport width, not just the
+       framed column, so a full-bleed page (Home) never shows through beside
+       it. The clip stops the backing 8px under the bar, which keeps the
+       seam and its registration dot on solid ground. */
+    box-shadow: 0 0 0 100vmax rgba(10, 13, 12, 0.94);
+    clip-path: inset(0 -100vmax -8px);
   }
   /* Double-hairline seam + centered teal registration dot (business-card motif). */
   .topmark::after {
@@ -325,38 +331,49 @@ const navItems = [
   }
 
   /* Mobile menu button */
+  /* S339 menu button: a machined key. Rounded plate, top light, three
+     bars with a shorter copper middle that reaches full length on hover. */
   .topmark-menu-btn {
     font-family: var(--font-sans);
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--color-ash-400);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: var(--color-ash-100);
     cursor: pointer;
-    background: none;
+    min-width: 48px;
+    height: 48px;
+    padding: 0 14px;
     border: 1px solid var(--copper-hairline);
-    padding: 8px 12px;
-    border-radius: 6px;
-    transition: all 200ms;
+    border-radius: 12px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0) 70%), #12171a;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 6px 16px -10px rgba(0, 0, 0, 0.9);
+    transition: border-color 200ms, transform 150ms;
     display: flex;
     align-items: center;
-    gap: 6px;
+    justify-content: center;
+    gap: 10px;
     flex-shrink: 0;
   }
+  .topmark-menu-btn:active { transform: scale(0.96); }
+  .topmark-menu-btn:focus-visible { outline: 2px solid var(--color-wc-green); outline-offset: 3px; }
   @media (hover: hover) {
-
-    .topmark-menu-btn:hover {
-    border-color: var(--color-copper);
-    color: var(--color-copper-bright);
-  }}
+    .topmark-menu-btn:hover { border-color: var(--color-copper); }
+    .topmark-menu-btn:hover .bars span:nth-child(2) { width: 18px; }
+  }
   .topmark-menu-btn .bars {
     display: flex;
     flex-direction: column;
-    gap: 3px;
+    align-items: flex-end;
+    gap: 4px;
   }
   .topmark-menu-btn .bars span {
-    width: 12px;
-    height: 1.5px;
+    width: 18px;
+    height: 2px;
+    border-radius: 2px;
     background: currentColor;
+    transition: width 200ms ease;
   }
+  .topmark-menu-btn .bars span:nth-child(2) { width: 11px; background: var(--color-copper-bright); }
   .topmark-menu-btn > span:not(.bars) { display: none; }
   @media (min-width: 740px) {
     .topmark-menu-btn > span:not(.bars) { display: inline; }

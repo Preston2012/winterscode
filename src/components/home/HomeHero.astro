@@ -4,25 +4,36 @@
  * connect, more explore", restrained).
  *
  * One beat: the locked H1, what I offer in one line, two doors (text me, or
- * explore what I do), and three facts that each link to their proof. The H1
- * is the LCP element, so the hero carries no image at all.
+ * explore what I do), and a three-up plate of the numbers a business owner
+ * weighs first, each linked to its proof. The H1 is the LCP element, so the
+ * hero carries no image at all.
  *
  * The H1 returns to the locked homepage line now that the Tangle, which had
  * carried it since July, is off Home. "software." takes the annealed copper,
  * the one gradient on the page.
  *
+ * Round 2 (Preston's phone markup, same day): the three facts sit side by side
+ * at every width on one riveted plate, the arrows are the house Arrow, and the
+ * buttons center their label and arrow together.
+ *
  * Preview only: ?type=sans swaps the display face to a heavy Plex Sans so
  * Preston can pick between the two by looking. The switch goes once he rules.
  */
 import { smsHref } from '../../lib/text-cta';
+import Arrow from './Arrow.astro';
 
 const sms = smsHref('/');
+const FACTS = [
+  { href: '/pricing', top: 'Sites from', big: '$1,750', bot: 'everything in' },
+  { href: '/services#sites', top: 'Builds starting at', big: '3', bot: 'business days' },
+  { href: '/wall', top: "Google's phone test", big: '90+', bot: 'on every site' },
+];
 ---
 
 <section class="hh" id="hero" aria-labelledby="hh-h1">
   <div class="hh-glow" aria-hidden="true"></div>
   <div class="hh-inner">
-    <p class="hh-eyebrow"><span class="hh-rule" aria-hidden="true"></span>Independent studio · Bandon,&nbsp;Oregon</p>
+    <p class="home-eyebrow"><span class="home-dot" aria-hidden="true"></span>Independent studio · Bandon,&nbsp;Oregon</p>
 
     <h1 class="hh-h1" id="hh-h1">
       You didn't go into business to manage <span class="hh-cu">software.</span>
@@ -34,18 +45,21 @@ const sms = smsHref('/');
     </p>
 
     <div class="hh-cta">
-      <a class="hh-btn hh-btn-primary" href={sms}>
-        <span>Text Preston</span><span class="hh-arrow" aria-hidden="true">→</span>
-      </a>
-      <a class="hh-btn hh-btn-ghost" href="#start">
-        <span>Explore</span><span class="hh-arrow" aria-hidden="true">↓</span>
-      </a>
+      <a class="home-btn home-btn--primary" href={sms}>Text Preston <Arrow /></a>
+      <a class="home-btn home-btn--ghost" href="#start">Explore <Arrow dir="down" /></a>
     </div>
 
-    <ul class="hh-facts" aria-label="At a glance">
-      <li><a href="/pricing"><span>Sites from <b>$1,750</b>, everything in</span></a></li>
-      <li><a href="/services#sites"><span>Builds starting at <b>3 business days</b></span></a></li>
-      <li><a href="/wall"><span><b>90+</b> on Google's phone test, every site</span></a></li>
+    <ul class="hh-facts home-plate rv" aria-label="At a glance">
+      {FACTS.map((f) => (
+        <li>
+          <a href={f.href}>
+            <span class="hf-top">{f.top}</span>
+            <b class="hf-big">{f.big}</b>
+            <span class="hf-bot">{f.bot}</span>
+            <Arrow dir="up-right" size={14} class="hf-go" />
+          </a>
+        </li>
+      ))}
     </ul>
   </div>
 </section>
@@ -60,8 +74,7 @@ const sms = smsHref('/');
     position: relative;
     overflow: hidden;
     isolation: isolate;
-    padding: clamp(56px, 9vw, 132px) var(--home-gut) clamp(56px, 8vw, 120px);
-    border-bottom: 1px solid var(--home-line);
+    padding: clamp(48px, 8vw, 120px) var(--home-gut) clamp(44px, 7vw, 104px);
   }
   .hh-glow {
     position: absolute;
@@ -74,14 +87,7 @@ const sms = smsHref('/');
     pointer-events: none;
   }
   .hh-inner { max-width: var(--home-max); margin: 0 auto; }
-
-  .hh-eyebrow {
-    display: flex; align-items: center; gap: 14px;
-    margin: 0 0 clamp(22px, 3vw, 36px);
-    font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase;
-    color: var(--color-ash-300);
-  }
-  .hh-rule { width: 44px; height: 2px; background: var(--home-annealed); border-radius: 1px; flex: none; }
+  .hh .home-eyebrow { margin-bottom: clamp(20px, 3vw, 34px); }
 
   .hh-h1 {
     margin: 0;
@@ -96,11 +102,7 @@ const sms = smsHref('/');
     overflow-wrap: normal;
     hyphens: none;
   }
-  :global(html[data-display='sans']) .hh-h1 {
-    font-weight: 600;
-    letter-spacing: -0.045em;
-    line-height: 0.96;
-  }
+  :global(html[data-display='sans']) .hh-h1 { font-weight: 600; letter-spacing: -0.045em; line-height: 0.96; }
   .hh-cu {
     background: var(--home-annealed);
     -webkit-background-clip: text;
@@ -112,56 +114,56 @@ const sms = smsHref('/');
   :global(html[data-display='sans']) .hh-cu { font-style: normal; }
 
   .hh-sub {
-    margin: clamp(22px, 3vw, 34px) 0 0;
+    margin: clamp(20px, 3vw, 32px) 0 0;
     max-width: 34rem;
     font-size: clamp(17px, 1.6vw, 21px);
     line-height: 1.55;
     color: var(--color-ash-300);
   }
 
-  .hh-cta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: clamp(28px, 3.6vw, 44px); }
-  .hh-btn {
-    display: inline-flex; align-items: center; justify-content: space-between; gap: 16px;
-    flex: 1 1 150px; max-width: 240px;
-    min-height: 56px; padding: 0 18px;
-    white-space: nowrap;
-    font-size: 17px; font-weight: 600; text-decoration: none;
-    border-radius: 4px;
-    transition: background-color .2s ease, border-color .2s ease, transform .2s ease;
-  }
-  .hh-btn-primary { background: var(--color-wc-green); color: #06150f; }
-  .hh-btn-primary:hover, .hh-btn-primary:focus-visible { background: var(--color-wc-green-bright); }
-  .hh-btn-ghost { color: #eef1ec; border: 1px solid rgba(221, 228, 230, 0.28); }
-  .hh-btn-ghost:hover, .hh-btn-ghost:focus-visible { border-color: var(--color-copper-bright); }
-  .hh-arrow { font-size: 18px; transition: transform .2s ease; }
-  .hh-btn:hover .hh-arrow { transform: translateX(3px); }
-  .hh-btn-ghost:hover .hh-arrow { transform: translateY(3px); }
+  .hh-cta { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; max-width: 460px; margin-top: clamp(26px, 3.4vw, 40px); }
 
   .hh-facts {
     list-style: none; padding: 0;
-    margin: clamp(36px, 5vw, 64px) 0 0;
-    display: grid; gap: 0;
-    border-top: 1px solid var(--home-line);
+    margin: clamp(24px, 3.4vw, 40px) 0 0;
+    display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
+    max-width: 760px;
   }
-  .hh-facts li { border-bottom: 1px solid var(--home-line); }
+  .hh-facts li + li { border-left: 1px solid var(--home-line); }
   .hh-facts a {
-    display: flex; align-items: center;
-    min-height: 48px; padding: 12px 0;
-    color: var(--color-ash-300); text-decoration: none; font-size: 15px;
+    position: relative;
+    /* Three rows, the number always on the middle one, so the three numbers
+       sit on one line however the labels wrap. */
+    display: grid; grid-template-rows: 1fr auto 1fr; justify-items: center;
+    row-gap: 4px; height: 100%;
+    min-height: 116px; padding: 20px 8px 18px;
+    text-align: center; text-decoration: none; color: inherit;
+    border-radius: var(--home-r);
+    transition: background-color .2s ease;
   }
-  .hh-facts a::after { content: '→'; margin-left: auto; padding-left: 12px; color: var(--color-ash-500); transition: transform .2s ease, color .2s ease; }
-  .hh-facts a:hover::after, .hh-facts a:focus-visible::after { transform: translateX(3px); color: var(--color-copper-bright); }
-  .hh-facts b { font-weight: 600; color: var(--color-copper-bright); }
-  .hh-facts a:hover, .hh-facts a:focus-visible { color: #eef1ec; }
-
-  @media (min-width: 900px) {
-    .hh-facts { grid-template-columns: repeat(3, 1fr); border-top: 0; }
-    .hh-facts li { border-bottom: 0; border-top: 1px solid var(--home-line); }
-    .hh-facts li + li { border-left: 1px solid var(--home-line); padding-left: 22px; }
-    .hh-facts a { padding: 16px 18px 4px 0; }
+  .hh-facts a:hover, .hh-facts a:focus-visible { background-color: rgba(244, 168, 116, 0.05); }
+  .hh-facts a:focus-visible { outline: 2px solid var(--color-wc-green); outline-offset: -4px; }
+  .hf-top { align-self: end; }
+  .hf-bot { align-self: start; }
+  .hf-top, .hf-bot { font-size: 12.5px; line-height: 1.3; color: var(--color-ash-300); text-wrap: balance; }
+  .hf-big {
+    font-family: var(--home-display); font-weight: 500;
+    font-size: clamp(28px, 4.2vw, 44px); line-height: 1.05; letter-spacing: -0.02em;
+    background: var(--home-annealed); -webkit-background-clip: text; background-clip: text; color: transparent;
+    padding: 0 0.04em;
   }
+  :global(html[data-display='sans']) .hf-big { font-weight: 600; letter-spacing: -0.04em; }
+  .hh-facts :global(.hf-go) { position: absolute; top: 10px; right: 10px; color: var(--color-ash-500); transition: color .2s ease, transform .2s ease; }
+  /* Clear the corner rivet on the last cell. */
+  .hh-facts li:last-child :global(.hf-go) { right: 26px; }
+  .hh-facts a:hover :global(.hf-go), .hh-facts a:focus-visible :global(.hf-go) { color: var(--color-copper-bright); transform: translate(2px, -2px); }
 
-  @media (prefers-reduced-motion: reduce) {
-    .hh-btn, .hh-arrow { transition: none; }
+  @media (min-width: 700px) {
+    .hf-top, .hf-bot { font-size: 14px; }
+    .hh-facts a { min-height: 136px; }
+  }
+  @media (max-width: 359px) {
+    .hh-cta { grid-template-columns: 1fr; }
+    .hf-top, .hf-bot { font-size: 11.5px; }
   }
 </style>
