@@ -112,14 +112,16 @@ const navItems = [
     position: sticky;
     top: 0;
     z-index: 50;
-    background: rgba(10, 13, 12, 0.94);
-    backdrop-filter: blur(12px);
+    /* S339 (Preston 2026-11-21): a solid bar. The old 94% backing let page
+       text ghost through, worst in the gutters beside the framed column
+       where the backdrop blur never reached. Opaque page colour, no blur. */
+    background: var(--color-bg-deep);
     gap: 16px;
-    /* S339: the bar's backing runs the full viewport width, not just the
-       framed column, so a full-bleed page (Home) never shows through beside
-       it. The clip stops the backing 8px under the bar, which keeps the
-       seam and its registration dot on solid ground. */
-    box-shadow: 0 0 0 100vmax rgba(10, 13, 12, 0.94);
+    /* The backing runs the full viewport width, not just the framed column,
+       so a full-bleed page (Home) never shows through beside it. The clip
+       stops it 8px under the bar, keeping the seam and its dot on solid
+       ground. */
+    box-shadow: 0 0 0 100vmax var(--color-bg-deep);
     clip-path: inset(0 -100vmax -8px);
   }
   /* Double-hairline seam + centered teal registration dot (business-card motif). */

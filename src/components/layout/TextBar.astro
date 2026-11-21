@@ -60,7 +60,7 @@ const sms = smsHref(Astro.url.pathname);
       display: flex;
       gap: 8px;
       padding: 10px 16px calc(10px + env(safe-area-inset-bottom, 0px));
-      background: rgba(10, 13, 12, 0.96);
+      background: var(--color-bg-deep); /* solid: nothing shows through */
       border-top: 1px solid var(--copper-hairline);
       transition: transform 240ms ease, opacity 240ms ease;
     }
