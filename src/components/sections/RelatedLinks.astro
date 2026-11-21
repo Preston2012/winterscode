@@ -22,6 +22,7 @@ interface Props {
 }
 const { title, intro, links, id = 'related' } = Astro.props;
 const headingId = `${id}-h`;
+import Arrow from '../ui/Arrow.astro';
 ---
 
 <section class="rl" aria-labelledby={headingId}>
@@ -36,7 +37,7 @@ const headingId = `${id}-h`;
         <a href={l.href} class="rl-link">
           <span class="rl-label">{l.label}</span>
           {l.sub && <span class="rl-meta">{l.sub}</span>}
-          <span class="rl-arrow" aria-hidden="true">→</span>
+          <span class="rl-arrow" aria-hidden="true"><Arrow size={18} /></span>
         </a>
       </li>
     ))}
@@ -149,4 +150,19 @@ const headingId = `${id}-h`;
     transform: translateX(3px);
     color: var(--color-wc-green);
   }}
+
+  /* S339 round 3: house plates and the drawn arrow. */
+  .rl-link { border-radius: var(--wc-r) !important; background-color: var(--wc-raised) !important; border-color: var(--wc-line) !important; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04); }
+  .rl-link:hover, .rl-link:focus-visible { border-color: rgba(77, 216, 168, 0.45) !important; }
+  .rl-meta { font-family: var(--font-sans) !important; letter-spacing: 0 !important; font-size: 13.5px !important; color: var(--color-ash-300) !important; }
+  .rl-arrow { color: var(--color-wc-green) !important; display: inline-flex; }
+  .rl-h { font-family: var(--wc-display) !important; font-weight: 500 !important; }
+  /* Phones: two across, so a list of towns or services is half as tall. */
+  @media (max-width: 739px) {
+    .rl-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+    .rl-link { padding: 12px 12px !important; min-height: 64px; }
+    .rl-label { font-size: 15px !important; }
+    .rl-meta { font-size: 12.5px !important; }
+    .rl-arrow { display: none !important; }
+  }
 </style>

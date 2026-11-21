@@ -16,6 +16,18 @@ const { title, meta, open = false, group, id, tone = 'dark' } = Astro.props;
   <div class="wfold-a"><slot /></div>
 </details>
 
+<script>
+  // An anchor that names a fold, or anything inside one, opens it.
+  const openFromHash = () => {
+    const id = decodeURIComponent(location.hash.slice(1));
+    const el = id ? document.getElementById(id) : null;
+    const fold = el?.closest('details.wfold') as HTMLDetailsElement | null;
+    if (fold && !fold.open) { fold.open = true; requestAnimationFrame(() => el!.scrollIntoView({ block: 'start' })); }
+  };
+  openFromHash();
+  window.addEventListener('hashchange', openFromHash);
+</script>
+
 <style>
   .wfold {
     background-color: var(--wc-raised);
