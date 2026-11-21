@@ -105,7 +105,9 @@ const legalLinks: L[] = [
 
     <span class="wc-foot-rule" aria-hidden="true"></span>
 
-    <div class="wc-foot-chrome">
+    <!-- The phone text bar steps aside for the last rows, so the page needs
+         no bottom padding under it (TextBar). -->
+    <div class="wc-foot-chrome" data-textbar-hide>
       <nav class="wc-foot-legal" aria-label="Legal">
         {legalLinks.map((l) => <a href={l.href}>{l.label}</a>)}
       </nav>

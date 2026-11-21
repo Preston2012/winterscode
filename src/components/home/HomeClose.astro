@@ -7,8 +7,9 @@
  * reply line. The Tangle's locked close ("I'm down the road. I pick up the
  * phone.") lands here now that the Tangle is off Home.
  *
- * Keeps id="contact" and data-textbar-hide from the shared closer, so header
- * links to #contact still land and the phone thumb bar steps aside here.
+ * Keeps id="contact" from the shared closer, so header links to #contact
+ * still land; data-textbar-hide sits on the keys row, so the phone thumb bar
+ * steps aside only while these keys are on screen.
  */
 import { smsHref, telHref, phoneDisplay } from '../../lib/text-cta';
 import Arrow from '../ui/Arrow.astro';
@@ -16,14 +17,14 @@ import Arrow from '../ui/Arrow.astro';
 const sms = smsHref('/');
 ---
 
-<section class="hc" id="contact" data-textbar-hide aria-labelledby="hc-h2">
+<section class="hc" id="contact" aria-labelledby="hc-h2">
   <div class="hc-glow" aria-hidden="true"></div>
   <div class="hc-inner">
     <p class="wc-eyebrow"><span class="wc-dot" aria-hidden="true"></span>Reach out</p>
     <h2 class="hc-h2" id="hc-h2">Help is just a <span class="hc-cu">text away.</span></h2>
     <p class="hc-sub">I'm down the road. I pick up the phone.</p>
 
-    <div class="hc-actions">
+    <div class="hc-actions" data-textbar-hide>
       <a class="wc-btn wc-btn--primary hc-btn" href={sms}>
         <span class="hc-btn-stack">
           <span class="hc-btn-label">Text Preston</span>

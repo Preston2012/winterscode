@@ -11,7 +11,8 @@
  *
  * Kept: /contact's strip (reply hours, consult geography, the 50/50 terms,
  * then Book and Email), /pricing's collapsed consult policy, id="contact" and
- * data-textbar-hide so header links land and the phone thumb bar steps aside.
+ * so header links land; data-textbar-hide sits on the keys row, so the phone
+ * thumb bar steps aside only while these keys are on screen.
  *
  * Old props (sectionNumber, centered, suppressHeader, headerKicker, why) are
  * still accepted so every call site builds. headerTitle still replaces the
@@ -35,7 +36,7 @@ const { headerKicker = 'Reach out', headerTitle, strip = false, policy = false }
 const sms = smsHref(Astro.url.pathname);
 ---
 
-<section class="closer wc-plate wc-rv" id="contact" data-textbar-hide aria-labelledby="closer-h">
+<section class="closer wc-plate wc-rv" id="contact" aria-labelledby="closer-h">
   <div class="closer-glow" aria-hidden="true"></div>
   {strip ? (
     <h2 class="closer-h closer-h--sm" id="closer-h">Text or call.</h2>
@@ -49,7 +50,7 @@ const sms = smsHref(Astro.url.pathname);
     </>
   )}
 
-  <div class="closer-keys">
+  <div class="closer-keys" data-textbar-hide>
     <a class="wc-btn wc-btn--primary closer-key" href={sms}>
       <span class="closer-stack"><span class="closer-label">Text Preston</span><span class="closer-num">{phoneDisplay}</span></span>
       <Arrow size={22} />

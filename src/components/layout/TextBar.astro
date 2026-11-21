@@ -6,11 +6,14 @@
  * control, Text Preston, with Call as the quiet second choice. Tablets and
  * desktops get the same pair in the header, so nothing shows at 768px and up.
  *
- * It steps aside while a section marked data-textbar-hide is on screen (the
- * hero buttons, the closing contact block), because Text is already right
- * there. It starts hidden and the script reveals it, so a page that opens on
- * the hero never flashes a second Text button. The page gets bottom padding
- * the height of the bar, so the bar never covers the last of the content.
+ * It steps aside while an element marked data-textbar-hide is on screen,
+ * because Text is already right there: the hero buttons, the closing
+ * contact keys and the footer's legal rows. Only the button rows carry the
+ * marker, not whole sections, so the bar is back between them. Because it
+ * also steps aside for the footer's last lines, the page needs no bottom
+ * padding: the page ends where the footer ends, with no empty band (Preston,
+ * S339, on Android). It starts hidden and the script reveals it, so a page
+ * that opens on the hero never flashes a second Text button.
  */
 import { smsHref, telHref } from '../../lib/text-cta';
 
@@ -59,7 +62,11 @@ const sms = smsHref(Astro.url.pathname);
       z-index: 90;
       display: flex;
       gap: 8px;
-      padding: 10px 16px calc(10px + env(safe-area-inset-bottom, 0px));
+      /* S339 (Preston, Android): no safe-area inset. The site never sets
+         viewport-fit=cover, so iOS reports 0 anyway, while Android browsers
+         reported the nav bar height and changed it as the toolbar moved:
+         a bar 50px too tall that snapped between sizes. */
+      padding: 10px 16px;
       background: var(--color-bg-deep); /* solid: nothing shows through */
       border-top: 1px solid var(--copper-hairline);
       transition: transform 240ms ease, opacity 240ms ease;
@@ -104,8 +111,3 @@ const sms = smsHref(Astro.url.pathname);
   }
 </style>
 
-<style is:global>
-  @media (max-width: 767.98px) {
-    html body { padding-bottom: calc(68px + env(safe-area-inset-bottom, 0px)); }
-  }
-</style>
