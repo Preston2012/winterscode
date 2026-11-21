@@ -518,7 +518,6 @@ main.page {
   --wc-rivet: radial-gradient(circle, #f6c39c 0 1px, #c47b45 1.4px 2.1px, rgba(138, 84, 48, 0.55) 2.5px, transparent 3px);
   --wc-rivet-ink: radial-gradient(circle, #c9976c 0 1px, #7a4a26 1.4px 2.2px, rgba(122, 74, 38, 0.3) 2.6px, transparent 3.1px);
 }
-html[data-display='sans'] { --wc-display: var(--font-sans); }
 
 .wc-plate {
   background-color: var(--wc-raised);
@@ -551,14 +550,12 @@ html[data-display='sans'] { --wc-display: var(--font-sans); }
   font-size: clamp(34px, 5.2vw, 64px); line-height: 1.02; letter-spacing: -0.02em;
   color: #eef1ec; text-wrap: balance;
 }
-html[data-display='sans'] .wc-h2 { font-weight: 600; letter-spacing: -0.04em; }
 .wc-soft { color: var(--color-ash-500); }
 .wc-lead { margin: 14px 0 0; max-width: 36rem; font-size: 17px; line-height: 1.6; color: var(--color-ash-300); }
 .wc-cu {
   background: var(--wc-annealed); -webkit-background-clip: text; background-clip: text; color: transparent;
   font-style: italic; padding-right: 0.06em;
 }
-html[data-display='sans'] .wc-cu { font-style: normal; }
 
 /* Buttons: label and arrow centered together, rounded, a 1px top light so
    they read as pressed metal rather than flat paint. */

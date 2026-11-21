@@ -16,8 +16,8 @@
  * at every width on one riveted plate, the arrows are the house Arrow, and the
  * buttons center their label and arrow together.
  *
- * Preview only: ?type=sans swaps the display face to a heavy Plex Sans so
- * Preston can pick between the two by looking. The switch goes once he rules.
+ * Display face: the serif, ruled by Preston 2026-11-21 (the Plex Sans
+ * preview switch is gone).
  */
 import { smsHref } from '../../lib/text-cta';
 import Arrow from '../ui/Arrow.astro';
@@ -64,11 +64,6 @@ const FACTS = [
   </div>
 </section>
 
-<script is:inline>
-  // Preview-only face switch, see the frontmatter note. Runs before paint.
-  if (new URLSearchParams(location.search).get('type') === 'sans') document.documentElement.dataset.display = 'sans';
-</script>
-
 <style>
   .hh {
     position: relative;
@@ -102,7 +97,6 @@ const FACTS = [
     overflow-wrap: normal;
     hyphens: none;
   }
-  :global(html[data-display='sans']) .hh-h1 { font-weight: 600; letter-spacing: -0.045em; line-height: 0.96; }
   .hh-cu {
     background: var(--wc-annealed);
     -webkit-background-clip: text;
@@ -111,7 +105,6 @@ const FACTS = [
     font-style: italic;
     padding-right: 0.06em;
   }
-  :global(html[data-display='sans']) .hh-cu { font-style: normal; }
 
   .hh-sub {
     margin: clamp(20px, 3vw, 32px) 0 0;
@@ -152,7 +145,6 @@ const FACTS = [
     background: var(--wc-annealed); -webkit-background-clip: text; background-clip: text; color: transparent;
     padding: 0 0.04em;
   }
-  :global(html[data-display='sans']) .hf-big { font-weight: 600; letter-spacing: -0.04em; }
   .hh-facts :global(.hf-go) { position: absolute; top: 10px; right: 10px; color: var(--color-ash-500); transition: color .2s ease, transform .2s ease; }
   /* Clear the corner rivet on the last cell. */
   .hh-facts li:last-child :global(.hf-go) { right: 26px; }
