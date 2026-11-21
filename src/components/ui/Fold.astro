@@ -1,0 +1,63 @@
+---
+/**
+ * Fold. S339 round 3 ("sections should fold"). A rounded plate that opens
+ * in place: native <details>, so it works with no JavaScript and the browser
+ * handles keyboard and screen readers. Pass `group` to let only one fold in
+ * a set stay open.
+ */
+interface Props { title: string; meta?: string; open?: boolean; group?: string; id?: string; tone?: 'dark' | 'paper' }
+const { title, meta, open = false, group, id, tone = 'dark' } = Astro.props;
+---
+<details class:list={['wfold', `wfold--${tone}`]} open={open} name={group} id={id}>
+  <summary class="wfold-q">
+    <span class="wfold-t">{title}{meta && <span class="wfold-meta">{meta}</span>}</span>
+    <span class="wfold-x" aria-hidden="true"></span>
+  </summary>
+  <div class="wfold-a"><slot /></div>
+</details>
+
+<style>
+  .wfold {
+    background-color: var(--wc-raised);
+    border: 1px solid var(--wc-line);
+    border-radius: var(--wc-r);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    transition: border-color .2s ease;
+  }
+  .wfold + .wfold { margin-top: 8px; }
+  .wfold[open] { border-color: rgba(77, 216, 168, 0.4); }
+  .wfold--paper { background-color: #f8f6f0; border-color: rgba(20, 24, 22, 0.1); box-shadow: none; }
+  .wfold--paper[open] { border-color: rgba(26, 110, 81, 0.45); }
+  .wfold-q {
+    display: grid; grid-template-columns: 1fr 30px; align-items: center; gap: 12px;
+    min-height: 56px; padding: 10px 12px 10px 16px;
+    cursor: pointer; list-style: none;
+    font-size: 16.5px; font-weight: 600; line-height: 1.3; color: #eef1ec;
+    border-radius: var(--wc-r);
+  }
+  .wfold--paper .wfold-q { color: var(--wc-ink); }
+  .wfold-q::-webkit-details-marker { display: none; }
+  .wfold-q:focus-visible { outline: 2px solid var(--color-wc-green); outline-offset: 2px; }
+  .wfold-t { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; }
+  .wfold-meta { font-size: 13.5px; font-weight: 400; color: var(--color-ash-300); }
+  .wfold--paper .wfold-meta { color: var(--wc-ink-soft); }
+  .wfold-x {
+    position: relative; width: 30px; height: 30px; border-radius: 50%;
+    border: 1px solid rgba(221, 228, 230, 0.18); background: #0e1316;
+    transition: border-color .2s ease, background-color .2s ease;
+  }
+  .wfold--paper .wfold-x { border-color: rgba(20, 24, 22, 0.2); background: #fff; color: var(--wc-ink); }
+  .wfold-x::before, .wfold-x::after {
+    content: ''; position: absolute; left: 50%; top: 50%; width: 11px; height: 2px; margin: -1px 0 0 -5.5px;
+    background: currentColor; border-radius: 1px; transition: transform .25s ease;
+  }
+  .wfold-x::after { transform: rotate(90deg); }
+  .wfold[open] .wfold-x { background: rgba(77, 216, 168, 0.14); border-color: rgba(77, 216, 168, 0.6); }
+  .wfold[open] .wfold-x::after { transform: rotate(0deg); }
+  .wfold-a { padding: 0 16px 16px; font-size: 15.5px; line-height: 1.6; color: var(--color-ash-300); }
+  .wfold--paper .wfold-a { color: var(--wc-ink-soft); }
+  .wfold-a :global(p) { margin: 0 0 10px; }
+  .wfold-a :global(p:last-child) { margin-bottom: 0; }
+  @media (min-width: 740px) { .wfold-q { min-height: 62px; padding-left: 20px; font-size: 17.5px; } .wfold-a { padding: 0 20px 18px; } }
+  @media (prefers-reduced-motion: reduce) { .wfold, .wfold-x, .wfold-x::before, .wfold-x::after { transition: none; } }
+</style>

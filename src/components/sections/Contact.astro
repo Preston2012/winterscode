@@ -106,8 +106,9 @@ const sms = smsHref(Astro.url.pathname);
   :global(html[data-display='sans']) .closer-h { font-weight: 600; letter-spacing: -0.045em; }
   .closer-sub { margin: 18px 0 0; font-size: clamp(17px, 1.8vw, 21px); line-height: 1.5; color: var(--color-ash-300); }
 
-  .closer-keys { display: grid; grid-template-columns: 1.5fr 1fr; gap: 10px; max-width: 460px; margin-top: 28px; }
-  .closer-key { min-height: 70px; }
+  .closer-keys { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 10px; max-width: 460px; margin-top: 28px; }
+  .closer-key { min-height: 70px; padding: 0 14px; gap: 10px; }
+  @media (min-width: 740px) { .closer-key { padding: 0 20px; } }
   .closer-stack { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; text-align: left; }
   .closer-label { font-size: 18px; font-weight: 600; }
   .closer-num { font-family: var(--font-mono); font-size: 12.5px; font-weight: 400; opacity: 0.78; }

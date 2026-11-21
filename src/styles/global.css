@@ -604,3 +604,15 @@ a:hover > .wc-arrow--down, a:focus-visible > .wc-arrow--down { transform: transl
 @media (prefers-reduced-motion: reduce) {
   .wc-btn, .wc-arrow { transition: none; }
 }
+
+/* Rivet bullets: the list marker for every list a page shows. */
+.wc-bullets { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.wc-bullets > li { display: flex; align-items: flex-start; gap: 10px; font-size: 15.5px; line-height: 1.5; }
+.wc-bullets > li::before {
+  content: ''; flex: none; width: 8px; height: 8px; margin-top: 8px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #7ff0c8, #2f9e78 70%);
+  box-shadow: 0 0 0 3px rgba(77, 216, 168, 0.14);
+}
+.wc-bullets--copper > li::before { background: radial-gradient(circle at 35% 35%, #f6c39c, #c47b45 55%, #8a5430); box-shadow: 0 0 0 3px rgba(211, 130, 60, 0.14); }
+.wc-bullets--2 { grid-template-columns: 1fr; }
+@media (min-width: 600px) { .wc-bullets--2 { grid-template-columns: 1fr 1fr; gap: 12px 24px; } }

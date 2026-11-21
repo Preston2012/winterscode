@@ -1,0 +1,160 @@
+---
+/**
+ * Tabs. S339 round 3 (Preston 2026-11-21: "every page needs this collapse,
+ * tabbed, expandable"). The Home doors, made general: a row of plates that
+ * each open their panel in place, so a page that used to stack four long
+ * sections shows one at a time.
+ *
+ * Usage: pass the tabs, then one named slot per tab, `panel-<id>`:
+ *   <Tabs label="What's on the menu" tabs={[{ id: 'sites', label: 'Sites', sub: 'From $1,750' }]}>
+ *     <div slot="panel-sites">...</div>
+ *   </Tabs>
+ * The panel's id is the tab's id, so an old anchor like /services#care
+ * still lands: the script opens the tab the hash names.
+ *
+ * WAI-ARIA tabs: roving tabindex, arrow keys, Home and End. Every panel is in
+ * the HTML for search engines and screen readers; without JavaScript all of
+ * them show, stacked, each under its own heading.
+ */
+import Icon from './Icon.astro';
+
+type IconName = 'web' | 'apps' | 'brand' | 'auto' | 'keep' | 'all' | 'lock' | 'found';
+interface Tab { id: string; label: string; sub?: string; icon?: IconName }
+interface Props { tabs: Tab[]; label: string; paper?: boolean; cols?: 2 | 3 | 4 }
+const { tabs, label, paper = false, cols } = Astro.props;
+const panels = await Promise.all(tabs.map((t) => Astro.slots.render(`panel-${t.id}`)));
+const n = cols ?? (tabs.length >= 4 ? 4 : tabs.length);
+---
+
+<div class:list={['wtabs', `wtabs--${n}`, { 'wtabs--paper': paper }]} data-wtabs>
+  <div class="wtabs-row" role="tablist" aria-label={label}>
+    {tabs.map((t, i) => (
+      <button
+        type="button"
+        class="wtabs-tab"
+        role="tab"
+        id={`tab-${t.id}`}
+        aria-controls={t.id}
+        aria-selected={i === 0 ? 'true' : 'false'}
+        tabindex={i === 0 ? 0 : -1}
+      >
+        {t.icon && <Icon name={t.icon} size={22} class="wtabs-icon" />}
+        <span class="wtabs-label">{t.label}</span>
+        {t.sub && <span class="wtabs-sub">{t.sub}</span>}
+        <span class="wtabs-lamp" aria-hidden="true"></span>
+      </button>
+    ))}
+  </div>
+  {tabs.map((t, i) => (
+    <section class:list={['wtabs-panel', paper ? 'wc-rv-ink' : 'wc-rv']} role="tabpanel" id={t.id} aria-labelledby={`tab-${t.id}`} tabindex="0">
+      <h2 class="wtabs-nojs-h">{t.label}</h2>
+      <Fragment set:html={panels[i]} />
+    </section>
+  ))}
+</div>
+
+<script>
+  // One script for every tab set on the page.
+  document.querySelectorAll<HTMLElement>('[data-wtabs]').forEach((root) => {
+    const tabs = Array.from(root.querySelectorAll<HTMLButtonElement>(':scope > .wtabs-row > [role="tab"]'));
+    const panels = Array.from(root.querySelectorAll<HTMLElement>(':scope > [role="tabpanel"]'));
+    const select = (i: number, focus: boolean) => {
+      tabs.forEach((t, k) => {
+        const on = k === i;
+        t.setAttribute('aria-selected', on ? 'true' : 'false');
+        t.tabIndex = on ? 0 : -1;
+        panels[k].hidden = !on;
+      });
+      if (focus) tabs[i].focus();
+    };
+    tabs.forEach((t, i) => {
+      t.addEventListener('click', () => select(i, false));
+      t.addEventListener('keydown', (e) => {
+        const n = tabs.length;
+        let j = -1;
+        if (e.key === 'ArrowRight' || e.key === 'ArrowDown') j = (i + 1) % n;
+        else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') j = (i - 1 + n) % n;
+        else if (e.key === 'Home') j = 0;
+        else if (e.key === 'End') j = n - 1;
+        if (j >= 0) { e.preventDefault(); select(j, true); }
+      });
+    });
+    // An anchor that names a panel, or anything inside one, opens that tab.
+    const fromHash = () => {
+      const id = decodeURIComponent(location.hash.slice(1));
+      if (!id) return false;
+      const target = document.getElementById(id);
+      const k = panels.findIndex((p) => p === target || (target && p.contains(target)));
+      if (k < 0) return false;
+      select(k, false);
+      requestAnimationFrame(() => (target ?? panels[k]).scrollIntoView({ block: 'start' }));
+      return true;
+    };
+    if (!fromHash()) select(0, false);
+    window.addEventListener('hashchange', fromHash);
+    root.classList.add('wtabs-ready');
+  });
+</script>
+
+<style>
+  .wtabs { margin-top: 24px; }
+  .wtabs-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .wtabs--3 .wtabs-row { grid-template-columns: repeat(3, 1fr); }
+  .wtabs-tab {
+    position: relative;
+    display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end; gap: 3px;
+    min-height: 84px; padding: 14px 14px 14px;
+    text-align: left; color: inherit; font: inherit; cursor: pointer;
+    background-color: var(--wc-raised);
+    background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.025), rgba(255, 255, 255, 0) 60%);
+    border: 1px solid var(--wc-line);
+    border-radius: var(--wc-r);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    transition: border-color .2s ease, background-color .2s ease, transform .15s ease;
+  }
+  .wtabs-tab:hover { border-color: rgba(221, 228, 230, 0.2); }
+  .wtabs-tab:active { transform: scale(0.985); }
+  .wtabs-tab:focus-visible { outline: 2px solid var(--color-wc-green); outline-offset: 3px; }
+  .wtabs-tab[aria-selected='true'] {
+    border-color: rgba(77, 216, 168, 0.55);
+    background-color: #142420;
+    background-image: linear-gradient(180deg, rgba(77, 216, 168, 0.09), rgba(77, 216, 168, 0) 70%);
+  }
+  .wtabs-tab :global(.wtabs-icon) { color: var(--color-ash-300); margin-bottom: auto; flex: none; }
+  .wtabs-tab :global(.wtabs-icon) + .wtabs-label { margin-top: 10px; }
+  .wtabs-tab[aria-selected='true'] :global(.wtabs-icon) { color: var(--color-wc-green-bright); }
+  .wtabs-label { font-size: 17px; font-weight: 600; line-height: 1.2; color: #eef1ec; }
+  .wtabs-tab[aria-selected='true'] .wtabs-label { color: var(--color-wc-green-bright); }
+  .wtabs-sub { font-size: 13px; line-height: 1.3; color: var(--color-ash-300); }
+  .wtabs-lamp {
+    position: absolute; top: 12px; right: 12px;
+    width: 7px; height: 7px; border-radius: 50%;
+    background: #2a3337; box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.6);
+  }
+  .wtabs-tab[aria-selected='true'] .wtabs-lamp { background: var(--color-wc-green-bright); box-shadow: 0 0 0 3px rgba(77, 216, 168, 0.18), 0 0 10px rgba(95, 232, 181, 0.6); }
+
+  .wtabs-panel {
+    margin-top: 12px;
+    padding: 28px 20px 24px;
+    background-color: var(--wc-raised);
+    border: 1px solid var(--wc-line);
+    border-radius: var(--wc-r-lg);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.045), 0 20px 50px -34px rgba(0, 0, 0, 0.9);
+  }
+  .wtabs--paper .wtabs-panel { background-color: var(--wc-paper); color: var(--wc-ink); border-color: transparent; }
+  .wtabs-panel:focus-visible { outline: 2px solid var(--color-copper); outline-offset: 3px; }
+  :global(.wtabs-ready) > .wtabs-panel[hidden] { display: none; }
+  /* The panel heading is for the no-JavaScript stack; with tabs live, the
+     tab names the panel. */
+  .wtabs-nojs-h { margin: 0 0 12px; font-family: var(--wc-display); font-weight: 500; font-size: 28px; color: inherit; }
+  :global(.wtabs-ready) .wtabs-nojs-h { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+  @media (max-width: 739px) { .wtabs-panel { padding: 20px 12px 16px; } }
+  @media (min-width: 740px) {
+    .wtabs-row { gap: 12px; }
+    .wtabs--4 .wtabs-row { grid-template-columns: repeat(4, 1fr); }
+    .wtabs-tab { min-height: 100px; padding: 16px 18px; }
+    .wtabs-panel { padding: 36px 36px 32px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .wtabs-tab { transition: none; } }
+</style>

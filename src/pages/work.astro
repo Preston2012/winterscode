@@ -40,6 +40,10 @@ import Explainer from '../components/ui/Explainer.astro';
 import Instrument from '../components/sections/Instrument.astro';
 import ChereFeature from '../components/sections/ChereFeature.astro';
 import Breadcrumbs from '../components/ui/Breadcrumbs.astro';
+import Tabs from '../components/ui/Tabs.astro';
+import Fold from '../components/ui/Fold.astro';
+import Arrow from '../components/ui/Arrow.astro';
+import TextCta from '../components/ui/TextCta.astro';
 import { breadcrumbSchema, absUrl } from '../lib/schema';
 
 const crumbs = [
@@ -62,6 +66,9 @@ const lastSentence = (t: string) => {
   const x = t.trim(); const cut = x.slice(0, -1).lastIndexOf('. ');
   return cut > 0 ? x.slice(cut + 2) : x;
 };
+const familyStart = sites.findIndex((p) => p.family);
+const moreApps = apps.filter((p) => p.slug !== 'chere' && p.slug !== 'stainslayer-ai');
+const stain = apps.filter((p) => p.slug === 'stainslayer-ai');
 const visitOf = (p: { links: { label: string; href: string; primary?: boolean }[] }) =>
   p.links.find((l) => l.primary) ?? p.links[0];
 
@@ -103,1524 +110,204 @@ const workLd = {
   <MobileMenu />
   <Breadcrumbs items={crumbs} />
 
+  <!-- S339 round 3 (Preston 2026-11-21: fold, dedupe, cut numbers and
+       labels). The on-page index, the numbered section heads and the process
+       steps (Services and /process carry them) are gone. Sites, Apps and
+       Branding are one tab set; every card is one riveted plate with the
+       live phone score and security grade on its face, and one way in. -->
   <PageHero
-    eyebrow="WORK · SITES, THEN APPS"
+    eyebrow="Work"
     h1="Sites and apps I've built."
     sub="Live sites for working coast businesses. Every score is read live, so you can check it yourself."
-    sub2="I design and I build, end to end."
   />
 
-  <nav class="wk-index" aria-label="On this page">
-    <p class="wk-index-k">On this page</p>
-    <ol>
-      <li><a href="#wk-sites-h"><span class="wk-ix-num">01</span><span class="wk-ix-name">Sites</span><span class="wk-ix-meta">scored live</span></a></li>
-      <li><a href="#wk-apps-h"><span class="wk-ix-num">02</span><span class="wk-ix-name">Apps</span><span class="wk-ix-meta">iOS &amp; Android</span></a></li>
-      <li><a href="#wk-brand-h"><span class="wk-ix-num">03</span><span class="wk-ix-name">Branding</span><span class="wk-ix-meta">logos and marks</span></a></li>
-      <li><a href="#wk-process-h"><span class="wk-ix-num">04</span><span class="wk-ix-name">How I work</span><span class="wk-ix-meta">text, quote, build</span></a></li>
-    </ol>
-  </nav>
-
-  <!-- SITES GRID with live Lighthouse -->
-  <section class="wk-section" aria-labelledby="wk-sites-h">
-    <header class="wk-head">
-      <div class="wk-eyebrow">
-        <span class="line" aria-hidden="true"></span>
-        <h2 class="wk-h" id="wk-sites-h">01 · SITES</h2>
-        <span class="wk-meta">
-          Scores are Google's phone test and Mozilla's security-header grade, checked live.
-          <Explainer label="?">
-            Each card shows two measurements, read fresh from the client's live site within a moment of opening (the last known numbers show first). Lighthouse is Google's own test, 0 to 100 each for speed, accessibility, search readiness and best practices, on mobile, the harder test. Mozilla Observatory grades a site's security headers, A+ at the top; it is a header check, not a full security test. If a score drops on a client site I built, you'll see it here.
-          </Explainer>
-        </span>
-      </div>
-    </header>
-
-    <ul class="wk-grid wk-grid-sites" role="list">
-      {sites.map((p, i) => (
-        <>
-        {p.family && !sites[i - 1]?.family && (
-          <li class="wk-group-label" role="listitem"><span class="line" aria-hidden="true"></span>Built for family</li>
-        )}
-        <li class="wk-card-wrap" role="listitem">
-          <article
-            id={p.slug}
-            class:list={['wk-card', 'wk-card-site', { 'wk-card-lead': i === 0 }]}
-            data-slug={p.slug}
-            data-status={p.status}
-          >
-            <div class="wk-body">
-              <div class="wk-title-row">
-                <h3 class="wk-title">{p.caseStudy ? <a class="wk-title-link" href={p.caseStudy}>{p.name}</a> : <a class="wk-title-link" href={visitOf(p)?.href} target="_blank" rel="noopener">{p.name}</a>}</h3>
-                <span class={`wk-status wk-status-${p.status}`}>
-                  {p.status.toUpperCase()}
-                </span>
-                <span class={`wk-status wk-build-${p.build}`}>
-                  {p.build === 'rebuild' ? 'REBUILD' : 'NEW BUILD'}
-                </span>
-                {p.family && <span class="wk-status wk-family" title="Built for family">FAMILY</span>}
+  <Tabs
+    label="The work"
+    cols={3}
+    tabs={[
+      { id: 'sites', label: 'Sites', sub: `${sites.length} live, scored`, icon: 'web' },
+      { id: 'apps', label: 'Apps', sub: 'iPhone and Android', icon: 'apps' },
+      { id: 'branding', label: 'Branding', sub: 'Logos and marks', icon: 'brand' },
+    ]}
+  >
+    <div slot="panel-sites">
+      <ul class="wk-list" role="list">
+        {sites.map((p, i) => (
+          <>
+          {i === familyStart && <li class="wk-group" role="listitem">Built for family</li>}
+          <li role="listitem">
+            <article class="wk-card" id={p.slug} data-chip-site={p.slug}>
+              <div class="wk-top">
+                <h3 class="wk-name"><a href={p.caseStudy ?? visitOf(p)?.href} target={p.caseStudy ? undefined : '_blank'} rel={p.caseStudy ? undefined : 'noopener'}>{p.name}</a></h3>
+                <span class="wk-tag">{p.build === 'rebuild' ? 'Rebuild' : 'New build'}</span>
               </div>
               <p class="wk-face">{p.face ?? p.meta}</p>
-
-              {p.quote && (
-                <p class="wk-quote-short">
-                  &ldquo;{lastSentence(p.quote.text)}&rdquo;
-                  <span class="wk-quote-by">{p.quote.shortAttr ?? p.quote.attr}</span>
+              {p.quote && <p class="wk-quote">&ldquo;{lastSentence(p.quote.text)}&rdquo; <span>{p.quote.shortAttr ?? p.quote.attr}</span></p>}
+              <div class="wk-foot">
+                <p class="wk-score" title="Google's phone test and Mozilla's security-header grade, read live">
+                  <span class="wk-lamp" aria-hidden="true"></span>
+                  <b data-chip-perf>{measuredSite(p.slug)?.lhFallback?.[0] ?? '·'}</b> on a phone
+                  <span class="wk-sep" aria-hidden="true">·</span>
+                  <b data-chip-grade>{measuredSite(p.slug)?.secFallback?.grade ?? '·'}</b>
                 </p>
-              )}
-
-              <p class="wk-chip" data-chip-site={p.slug}>
-                <span data-chip-perf>{measuredSite(p.slug)?.lhFallback?.[0] ?? '·'}</span> on a phone
-                <span aria-hidden="true">&middot;</span>
-                <span data-chip-grade>{measuredSite(p.slug)?.secFallback?.grade ?? '·'}</span>
-              </p>
-
-              <div class="wk-cta-row">
-                <a class="wk-text" href={smsAboutHref(Astro.url.pathname, p.name)}>Text me about a build like this</a>
-              </div>
-              <div class="wk-quiet-row">
-                {p.caseStudy && <a class="wk-quiet" href={p.caseStudy}>Read the case study</a>}
-                {visitOf(p) && <a class="wk-quiet" href={visitOf(p).href} target="_blank" rel="noopener">Visit the live site &#8599;</a>}
-              </div>
-              <button
-                type="button"
-                class="wk-expand-btn"
-                data-toggle-target={p.slug}
-                aria-expanded="false"
-                aria-controls={`${p.slug}-detail`}
-              >
-                <span data-toggle-label>more details</span>
-                <span class="wk-expand-icon" aria-hidden="true">+</span>
-              </button>
-
-              <div class="wk-detail" id={`${p.slug}-detail`} hidden>
-                <p class="wk-meta-line">{p.meta}</p>
-                <div class="wk-tags" role="list">
-                  {p.tags.map((t) => (
-                    <span class="wk-tag" role="listitem">{t}</span>
-                  ))}
-                </div>
-
-                <div
-                  class="wk-lighthouse"
-                  data-lh-site={p.slug}
-                  aria-live="polite"
-                >
-                  <span class="wk-lh-label">LIGHTHOUSE</span>
-                  <span class="wk-lh-scores" data-lh-scores>
-                    {measuredSite(p.slug)?.lhFallback
-                      ? measuredSite(p.slug)!.lhFallback!.map((n, i) => (
-                          <span class={`wk-lh-pill wk-lh-pill-${lhTier(n)}`}>{LH_LABELS[i]} {n}</span>
-                        ))
-                      : <span class="wk-lh-pending">not measured yet</span>}
-                  </span>
-                  <span class="wk-lh-measured" data-lh-measured>{measuredSite(p.slug)?.lhFallback ? 'last known read' : ''}</span>
-                </div>
-                <div class="wk-security" data-sec-site={p.slug} aria-live="polite">
-                  <span class="wk-sec-label">MOZILLA</span>
-                  <span class="wk-sec-grade" data-sec-grade>
-                    {measuredSite(p.slug)?.secFallback
-                      ? <span class={`wk-sec-pill wk-sec-pill-${secTier(measuredSite(p.slug)!.secFallback!.grade)}`}>{fmtGrade(measuredSite(p.slug)!.secFallback)}</span>
-                      : <span class="wk-sec-pending">not checked yet</span>}
-                  </span>
-                </div>
-
-                <dl class="wk-detail-rows">
-                  {p.details.map((d) => (
-                    <div class="wk-detail-row">
-                      <dt>{d.label}</dt>
-                      <dd>{d.value}</dd>
-                    </div>
-                  ))}
-                </dl>
-              </div>
-            </div>
-          </article>
-        </li>
-        </>
-      ))}
-    </ul>
-    <p class="wk-body-link"><a href="/web-design-coos-bay">Web design in Coos Bay →</a></p>
-  </section>
-
-  <Divider label="02" />
-
-  <!-- APPS GRID -->
-  <section class="wk-section" aria-labelledby="wk-apps-h">
-    <header class="wk-head">
-      <div class="wk-eyebrow">
-        <span class="line" aria-hidden="true"></span>
-        <h2 class="wk-h" id="wk-apps-h">02 · APPS</h2>
-        <span class="wk-meta">{apps.length} built, iOS and Android</span>
-      </div>
-    </header>
-
-    <!-- S339, Preston: Chere' sits above every other app, with its video. -->
-    <div class="wk-feature"><ChereFeature variant="work" /></div>
-
-    <ul class="wk-grid wk-grid-apps" role="list">
-      {apps.filter((p) => p.slug === 'stainslayer-ai').map((p) => (
-        <li class="wk-card-wrap" role="listitem">
-          <article
-            id={p.slug}
-            class="wk-card"
-            data-slug={p.slug}
-            data-status={p.status}
-            data-widget={p.slug === 'demiurge-mykonos' ? 'true' : undefined}
-          >
-            {p.slug === 'demiurge-mykonos' && (
-              <div class="mk-primer">
-                <div class="mk-row">
-                  <span class="mk-name">MyKonos</span>
-                  <span class="mk-beta">Beta</span>
-                </div>
-                <p class="mk-desc">An AI companion app I built. Open the demo below and it runs on its real engine, right here in your browser. <b>It remembers between chats.</b> Tell it something, reset, ask again, <span class='hl-green'>it still knows.</span></p>
-              </div>
-            )}
-            <div class="wk-preview" aria-hidden={p.slug === 'demiurge-mykonos' ? undefined : (p.image ? undefined : 'true')}>
-              {p.slug === 'demiurge-mykonos' ? (
-                <details class="mk-demo">
-                  <summary class="mk-demo-toggle">
-                    <span class="d" aria-hidden="true"></span>
-                    Try the live demo
-                    <span class="mk-demo-icon" aria-hidden="true">+</span>
-                  </summary>
-                  <Instrument />
-                </details>
-              ) : p.image ? (
-                <a class="wk-preview-link" href={p.caseStudy ?? (p.links.find((l) => l.primary) ?? p.links[0])?.href} target={p.caseStudy ? undefined : "_blank"} rel={p.caseStudy ? undefined : "noopener"} aria-label={p.caseStudy ? `${p.name} case study` : `Visit ${p.name}`}>
-                <picture>
-                  {p.image.srcSmall && (
-                    <source
-                      type="image/webp"
-                      srcset={`${p.image.srcXSmall ? p.image.srcXSmall + " 480w, " : ""}${p.image.srcSmall} 720w, ${p.image.src} 1280w`}
-                      sizes="(min-width: 1024px) 50vw, 100vw"
-                    />
-                  )}
-                  <img
-                    src={p.image.src}
-                    alt={p.image.alt}
-                    width={p.image.width}
-                    height={p.image.height}
-                    loading="lazy"
-                    decoding="async"
-                    class="wk-img"
-                  />
-                </picture>
-                </a>
-              ) : (
-                <span class="wk-mark" aria-hidden="true">{p.numeral}</span>
-              )}
-            </div>
-
-            <div class="wk-body">
-              <div class="wk-title-row">
-                <h3 class="wk-title">{p.slug === 'demiurge-mykonos' ? p.name : p.caseStudy ? <a class="wk-title-link" href={p.caseStudy}>{p.name}</a> : <a class="wk-title-link" href={(p.links.find((l) => l.primary) ?? p.links[0])?.href} target="_blank" rel="noopener">{p.name}</a>}</h3>
-                {p.slug !== 'demiurge-mykonos' && (
-                  <span class={`wk-status wk-status-${p.status}`}>
-                    {p.status.toUpperCase()}
-                  </span>
-                  <span class={`wk-status wk-build-${p.build}`}>
-                    {p.build === 'rebuild' ? 'REBUILD' : 'NEW BUILD'}
-                  </span>
-                )}
-              </div>
-              <p class="wk-meta-line">{p.meta}</p>
-
-              <div class="wk-tags" role="list">
-                {p.tags.map((t) => (
-                  <span class="wk-tag" role="listitem">{t}</span>
-                ))}
-              </div>
-
-              {(p.links.find((l) => l.primary) ?? p.links[0]) && (
-                <a class="wk-visit" href={(p.links.find((l) => l.primary) ?? p.links[0]).href} target="_blank" rel="noopener">
-                  {(p.links.find((l) => l.primary) ?? p.links[0]).label}
-                </a>
-              )}
-              {p.caseStudy && (
-                <a class="wk-visit" href={p.caseStudy}>Read the case study</a>
-              )}
-              {p.relatedCase && (
-                <a class="wk-quiet wk-related" id={p.relatedCase.href.split('/').pop()} href={p.relatedCase.href}>{p.relatedCase.label}</a>
-              )}
-              <button
-                type="button"
-                class="wk-expand-btn"
-                data-toggle-target={p.slug}
-                aria-expanded="false"
-                aria-controls={`${p.slug}-detail`}
-              >
-                <span data-toggle-label>more details</span>
-                <span class="wk-expand-icon" aria-hidden="true">+</span>
-              </button>
-
-              <div
-                class="wk-detail"
-                id={`${p.slug}-detail`}
-                hidden
-              >
-                <dl class="wk-detail-rows">
-                  {p.details.map((d) => (
-                    <div class="wk-detail-row">
-                      <dt>{d.label}</dt>
-                      <dd>{d.value}</dd>
-                    </div>
-                  ))}
-                </dl>
-
-                {p.quote && (
-                  <blockquote class="wk-quote">
-                    <p>{p.quote.text}</p>
-                    <cite>{p.quote.attr}</cite>
-                  </blockquote>
-                )}
-
-                {p.links.length > 0 && (
-                  <div class="wk-links">
-                    {p.links.map((link) => (
-                      <a
-                        href={link.href}
-                        class={link.primary ? 'wk-link wk-link-primary' : 'wk-link'}
-                        target="_blank"
-                        rel="noopener"
-                      >
-                        {link.label}
-                      </a>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
-          </article>
-        </li>
-      ))}
-    </ul>
-
-    <!-- S339 HONE-SPEC: Chere' and StainSlayer stay open; the rest of the
-         shop's own apps sit behind one fold. -->
-    <details class="wk-more">
-      <summary class="wk-more-sum">More from the shop <span class="wk-more-icon" aria-hidden="true">+</span></summary>
-      <ul class="wk-grid wk-grid-apps" role="list">
-        {apps.filter((p) => p.slug !== 'chere' && p.slug !== 'stainslayer-ai').map((p) => (
-          <li class="wk-card-wrap" role="listitem">
-            <article
-              id={p.slug}
-              class="wk-card"
-              data-slug={p.slug}
-              data-status={p.status}
-              data-widget={p.slug === 'demiurge-mykonos' ? 'true' : undefined}
-            >
-              {p.slug === 'demiurge-mykonos' && (
-                <div class="mk-primer">
-                  <div class="mk-row">
-                    <span class="mk-name">MyKonos</span>
-                    <span class="mk-beta">Beta</span>
-                  </div>
-                  <p class="mk-desc">An AI companion app I built. Open the demo below and it runs on its real engine, right here in your browser. <b>It remembers between chats.</b> Tell it something, reset, ask again, <span class='hl-green'>it still knows.</span></p>
-                </div>
-              )}
-              <div class="wk-preview" aria-hidden={p.slug === 'demiurge-mykonos' ? undefined : (p.image ? undefined : 'true')}>
-                {p.slug === 'demiurge-mykonos' ? (
-                  <details class="mk-demo">
-                    <summary class="mk-demo-toggle">
-                      <span class="d" aria-hidden="true"></span>
-                      Try the live demo
-                      <span class="mk-demo-icon" aria-hidden="true">+</span>
-                    </summary>
-                    <Instrument />
-                  </details>
-                ) : p.image ? (
-                  <a class="wk-preview-link" href={(p.links.find((l) => l.primary) ?? p.links[0])?.href} target="_blank" rel="noopener" aria-label={`Visit ${p.name}`}>
-                  <picture>
-                    {p.image.srcSmall && (
-                      <source
-                        type="image/webp"
-                        srcset={`${p.image.srcXSmall ? p.image.srcXSmall + " 480w, " : ""}${p.image.srcSmall} 720w, ${p.image.src} 1280w`}
-                        sizes="(min-width: 1024px) 50vw, 100vw"
-                      />
-                    )}
-                    <img
-                      src={p.image.src}
-                      alt={p.image.alt}
-                      width={p.image.width}
-                      height={p.image.height}
-                      loading="lazy"
-                      decoding="async"
-                      class="wk-img"
-                    />
-                  </picture>
-                  </a>
-                ) : (
-                  <span class="wk-mark" aria-hidden="true">{p.numeral}</span>
-                )}
-              </div>
-
-              <div class="wk-body">
-                <div class="wk-title-row">
-                  <h3 class="wk-title">{p.slug === 'demiurge-mykonos' ? p.name : <a class="wk-title-link" href={(p.links.find((l) => l.primary) ?? p.links[0])?.href} target="_blank" rel="noopener">{p.name}</a>}</h3>
-                  {p.slug !== 'demiurge-mykonos' && (
-                    <span class={`wk-status wk-status-${p.status}`}>
-                      {p.status.toUpperCase()}
-                    </span>
-                    <span class={`wk-status wk-build-${p.build}`}>
-                      {p.build === 'rebuild' ? 'REBUILD' : 'NEW BUILD'}
-                    </span>
-                  )}
-                </div>
-                <p class="wk-meta-line">{p.meta}</p>
-
-                <div class="wk-tags" role="list">
-                  {p.tags.map((t) => (
-                    <span class="wk-tag" role="listitem">{t}</span>
-                  ))}
-                </div>
-
-                {(p.links.find((l) => l.primary) ?? p.links[0]) && (
-                  <a class="wk-visit" href={(p.links.find((l) => l.primary) ?? p.links[0]).href} target="_blank" rel="noopener">
-                    {(p.links.find((l) => l.primary) ?? p.links[0]).label}
-                  </a>
-                )}
-                {p.relatedCase && (
-                  <a class="wk-quiet wk-related" id={p.relatedCase.href.split('/').pop()} href={p.relatedCase.href}>{p.relatedCase.label}</a>
-                )}
-                <button
-                  type="button"
-                  class="wk-expand-btn"
-                  data-toggle-target={p.slug}
-                  aria-expanded="false"
-                  aria-controls={`${p.slug}-detail`}
-                >
-                  <span data-toggle-label>more details</span>
-                  <span class="wk-expand-icon" aria-hidden="true">+</span>
-                </button>
-
-                <div
-                  class="wk-detail"
-                  id={`${p.slug}-detail`}
-                  hidden
-                >
-                  <dl class="wk-detail-rows">
-                    {p.details.map((d) => (
-                      <div class="wk-detail-row">
-                        <dt>{d.label}</dt>
-                        <dd>{d.value}</dd>
-                      </div>
-                    ))}
-                  </dl>
-
-                  {p.quote && (
-                    <blockquote class="wk-quote">
-                      <p>{p.quote.text}</p>
-                      <cite>{p.quote.attr}</cite>
-                    </blockquote>
-                  )}
-
-                  {p.links.length > 0 && (
-                    <div class="wk-links">
-                      {p.links.map((link) => (
-                        <a
-                          href={link.href}
-                          class={link.primary ? 'wk-link wk-link-primary' : 'wk-link'}
-                          target="_blank"
-                          rel="noopener"
-                        >
-                          {link.label}
-                        </a>
-                      ))}
-                    </div>
-                  )}
+                <div class="wk-go">
+                  {p.caseStudy && <a class="wc-link" href={p.caseStudy}>Case study <Arrow size={16} /></a>}
+                  {visitOf(p) && <a class="wc-link wk-live" href={visitOf(p).href} target="_blank" rel="noopener">Live site <Arrow dir="up-right" size={14} /></a>}
                 </div>
               </div>
             </article>
           </li>
+          </>
         ))}
       </ul>
-    </details>
-  </section>
+      <Fold title="How the scores are read">
+        <p>Each card shows two live measurements from the client's own site. The first is Google's Lighthouse phone test, 0 to 100, the harder of its two tests. The second is Mozilla Observatory's grade for security headers, A+ at the top. That is a header check, not a full security test. If a score drops on a site I built, you'll see it here and on <a href="/wall">the Wall</a>.</p>
+      </Fold>
+      <TextCta label="Text me about a site like these" links={[{ href: '/web-design-coos-bay', label: 'Web design in Coos Bay' }]} />
+    </div>
 
-  <Divider label="03" />
-
-  <!-- BRANDING. Added S230. No Lighthouse panel here on purpose: a logo has no
-       performance score, and a card built around one would be an empty frame. -->
-  <section class="wk-section" aria-labelledby="wk-brand-h">
-    <header class="wk-head">
-      <div class="wk-eyebrow">
-        <span class="line" aria-hidden="true"></span>
-        <h2 class="wk-h" id="wk-brand-h">03 · BRANDING</h2>
-        <span class="wk-meta">the identity side of the shop</span>
-      </div>
-    </header>
-
-    <ul class="wk-grid wk-grid-apps" role="list">
-      {brand.map((p) => (
-        <li class="wk-card-wrap" role="listitem">
-          <article id={p.slug} class="wk-card" data-slug={p.slug} data-status={p.status} data-fit="whole">
-            <div class="wk-preview">
-              {p.image && (
-                <a class="wk-preview-link" href={(p.links.find((l) => l.primary) ?? p.links[0])?.href} aria-label="Logo and brand design">
-                  <picture>
-                    {p.image.srcSmall && (
-                      <source
-                        type="image/webp"
-                        srcset={`${p.image.srcXSmall ? p.image.srcXSmall + " 480w, " : ""}${p.image.srcSmall} 800w, ${p.image.src} 1200w`}
-                        sizes="(min-width: 1024px) 50vw, 100vw"
-                      />
-                    )}
-                    <img
-                      src={p.image.src}
-                      alt={p.image.alt}
-                      width={p.image.width}
-                      height={p.image.height}
-                      loading="lazy"
-                      decoding="async"
-                      class="wk-img"
-                    />
-                  </picture>
-                </a>
-              )}
-            </div>
-
-            <div class="wk-body">
-              <div class="wk-title-row">
-                <h3 class="wk-title"><a class="wk-title-link" href={(p.links.find((l) => l.primary) ?? p.links[0])?.href}>{p.name}</a></h3>
+    <div slot="panel-apps">
+      <div class="wk-feature"><ChereFeature variant="work" /></div>
+      <ul class="wk-list" role="list">
+        {stain.map((p) => (
+          <li role="listitem">
+            <article class="wk-card wk-card--img" id={p.slug}>
+              {p.image && <a class="wk-img" href={p.caseStudy ?? visitOf(p)?.href} tabindex="-1" aria-hidden="true"><img src={p.image.srcSmall ?? p.image.src} alt="" width={p.image.width} height={p.image.height} loading="lazy" decoding="async" /></a>}
+              <div class="wk-top">
+                <h3 class="wk-name"><a href={p.caseStudy ?? visitOf(p)?.href}>{p.name}</a></h3>
+                <span class="wk-tag">{p.status === 'retired' ? 'Retired' : p.status}</span>
               </div>
-              <p class="wk-meta-line">{p.meta}</p>
-
-              <div class="wk-tags" role="list">
-                {p.tags.map((t) => (
-                  <span class="wk-tag" role="listitem">{t}</span>
-                ))}
-              </div>
-
-              <div class="wk-detail-rows">
-                {p.details.map((d) => (
-                  <div class="wk-detail-row">
-                    <span class="wk-detail">{d.label}</span>
-                    <p class="wk-step-p">{d.value}</p>
+              <p class="wk-face">{p.meta}</p>
+              <div class="wk-go">{p.caseStudy && <a class="wc-link" href={p.caseStudy}>Case study <Arrow size={16} /></a>}</div>
+            </article>
+          </li>
+        ))}
+      </ul>
+      {moreApps.length > 0 && (
+        <Fold title="More from the shop" meta={`${moreApps.length} more`}>
+          <ul class="wk-list wk-list--tight" role="list">
+            {moreApps.map((p) => (
+              <li role="listitem">
+                <article class="wk-card" id={p.slug}>
+                  <div class="wk-top">
+                    <h3 class="wk-name">{p.slug === 'demiurge-mykonos' ? p.name : <a href={visitOf(p)?.href} target="_blank" rel="noopener">{p.name}</a>}</h3>
                   </div>
-                ))}
-              </div>
+                  <p class="wk-face">{p.meta}</p>
+                  {p.slug === 'demiurge-mykonos' && (
+                    <details class="wk-demo">
+                      <summary>Try the live demo</summary>
+                      <Instrument />
+                    </details>
+                  )}
+                  <div class="wk-go">
+                    {p.slug !== 'demiurge-mykonos' && visitOf(p) && <a class="wc-link" href={visitOf(p).href} target="_blank" rel="noopener">{visitOf(p).label} <Arrow dir="up-right" size={14} /></a>}
+                    {p.relatedCase && <a class="wc-link" id={p.relatedCase.href.split('/').pop()} href={p.relatedCase.href}>{p.relatedCase.label} <Arrow size={16} /></a>}
+                  </div>
+                </article>
+              </li>
+            ))}
+          </ul>
+        </Fold>
+      )}
+    </div>
 
-              <div class="wk-links">
-                {p.links.map((l) => (
-                  <a class={l.primary ? 'wk-link wk-link-primary' : 'wk-link'} href={l.href}>{l.label}</a>
-                ))}
-              </div>
-            </div>
-          </article>
-        </li>
+    <div slot="panel-branding">
+      {brand.map((p) => (
+        <article class="wk-brand" id={p.slug}>
+          {p.image && (
+            <a class="wk-brand-img" href={visitOf(p)?.href}>
+              <picture>
+                {p.image.srcSmall && <source type="image/webp" srcset={`${p.image.srcXSmall ? p.image.srcXSmall + ' 480w, ' : ''}${p.image.srcSmall} 800w, ${p.image.src} 1200w`} sizes="(min-width: 1024px) 50vw, 100vw" />}
+                <img src={p.image.src} alt={p.image.alt} width={p.image.width} height={p.image.height} loading="lazy" decoding="async" />
+              </picture>
+            </a>
+          )}
+          <div>
+            <h3 class="wk-name">{p.name}</h3>
+            <p class="wk-face">{p.meta}</p>
+            <div class="wk-go">{p.links.map((l) => <a class="wc-link" href={l.href}>{l.label} <Arrow size={16} /></a>)}</div>
+          </div>
+        </article>
       ))}
-    </ul>
-  </section>
+    </div>
+  </Tabs>
 
-  <Divider label="04" />
-
-  <!-- PROCESS -->
-  <section class="wk-section wk-process" aria-labelledby="wk-process-h">
-    <header class="wk-head">
-      <div class="wk-eyebrow">
-        <span class="line" aria-hidden="true"></span>
-        <h2 class="wk-h" id="wk-process-h">04 · PROCESS</h2>
-        <span class="wk-meta">how a build actually runs</span>
-      </div>
-    </header>
-
-    <ol class="wk-steps" role="list">
-      <li class="wk-step">
-        <span class="wk-step-num" aria-hidden="true">01</span>
-        <div class="wk-step-body">
-          <h3 class="wk-step-h">A text, then a consult</h3>
-          <p class="wk-step-p">
-            Text me what you need. A free consult scopes it. The two-page
-            questionnaire is there if you would rather write it all out,
-            never a gate before we talk.
-          </p>
-          <p class="wk-step-time">No cost. No pitch deck.</p>
-        </div>
-      </li>
-      <li class="wk-step">
-        <span class="wk-step-num" aria-hidden="true">02</span>
-        <div class="wk-step-body">
-          <h3 class="wk-step-h">SOW + 50%</h3>
-          <p class="wk-step-p">
-            Statement of work locks scope and the start date. Work
-            begins once the 50% deposit clears.
-          </p>
-          <p class="wk-step-time">Fixed price. Standard contract.</p>
-        </div>
-      </li>
-      <li class="wk-step">
-        <span class="wk-step-num" aria-hidden="true">03</span>
-        <div class="wk-step-body">
-          <h3 class="wk-step-h">Live in days</h3>
-          <p class="wk-step-p">
-            Build, review, polish, launch. Final 50% on launch. Hosting
-            and maintenance optional, never required.
-          </p>
-          <p class="wk-step-time">Starting at 3 business days.</p>
-        </div>
-      </li>
-    </ol>
-  </section>
-
-  <Divider label="05" />
-
-  <Contact sectionNumber="05" why="Every site here is live, yours to keep, and scored on a phone where you can check it yourself." />
+  <Contact />
 </BaseLayout>
 
-<script is:inline>
-  (function () {
-    // ----- expand / collapse cards
-    const buttons = document.querySelectorAll('[data-toggle-target]');
-    for (const btn of buttons) {
-      btn.addEventListener('click', () => {
-        const slug = btn.getAttribute('data-toggle-target');
-        const detail = document.getElementById(slug + '-detail');
-        if (!detail) return;
-        const isOpen = btn.getAttribute('aria-expanded') === 'true';
-        if (isOpen) {
-          detail.hidden = true;
-          btn.setAttribute('aria-expanded', 'false');
-          const lbl = btn.querySelector('[data-toggle-label]');
-          if (lbl) lbl.textContent = 'more details';
-          const icon = btn.querySelector('.wk-expand-icon');
-          if (icon) icon.textContent = '+';
-        } else {
-          detail.hidden = false;
-          btn.setAttribute('aria-expanded', 'true');
-          const lbl = btn.querySelector('[data-toggle-label]');
-          if (lbl) lbl.textContent = 'less';
-          const icon = btn.querySelector('.wk-expand-icon');
-          if (icon) icon.textContent = '\u2212';
-        }
-      });
-    }
-
-    // If URL has a hash matching a card slug, auto-expand it.
-    if (location.hash && location.hash.length > 1) {
-      const slug = location.hash.slice(1);
-      const btn = document.querySelector(
-        '[data-toggle-target="' + slug + '"]',
-      );
-      if (btn && btn.getAttribute('aria-expanded') === 'false') btn.click();
-    }
-
-    // ----- live Lighthouse from /api/workshop
-    async function loadLighthouse() {
-      try {
-        const res = await fetch('/api/workshop', {
-          headers: { accept: 'application/json' },
-        });
-        if (!res.ok) return;
-        const data = await res.json();
-        const lh = data.lighthouse;
-        if (!lh) return;
-        // Pills made here need the page's scope attribute, or the scoped
-        // .wk-lh-pill / .wk-sec-pill rules never match them and the live
-        // numbers paint as bare text (they did, until S326).
-        function scopeOf(el) {
-          for (const a of el.attributes) if (a.name.indexOf('data-astro-cid-') === 0) return a.name;
-          return null;
-        }
-        function fill(slug, scores) {
-          const root = document.querySelector('[data-lh-site="' + slug + '"]');
-          if (!root) return;
-          const target = root.querySelector('[data-lh-scores]');
-          const measured = root.querySelector('[data-lh-measured]');
-          if (!Array.isArray(scores) || scores.length !== 4) return;
-          const cid = scopeOf(target);
-          target.textContent = '';
-          // ORDER MATCHES THE API TUPLE, and it did not. workshop.ts builds
-          // [performance, accessibility, seo, best-practices] and this labelled
-          // position 3 best and position 4 seo, so every card on the wall showed
-          // those two numbers under each other's names. Sogn read seo 92 while a
-          // direct Lighthouse run gave it seo 100 and best-practices 92, which
-          // is how it was caught: a client's real score was on public display
-          // under the wrong name for as long as this wall has been up.
-          const labels = ['perf', 'a11y', 'seo', 'best'];
-          scores.forEach((n, i) => {
-            const pill = document.createElement('span');
-            pill.className = 'wk-lh-pill';
-            const grade =
-              n >= 90 ? 'good' : n >= 50 ? 'ok' : 'low';
-            pill.classList.add('wk-lh-pill-' + grade);
-            if (cid) pill.setAttribute(cid, '');
-            pill.textContent = labels[i] + ' ' + n;
-            target.appendChild(pill);
-          });
-          // The card face's one chip carries the phone score (S339).
-          const chipPerf = document.querySelector('[data-chip-site="' + slug + '"] [data-chip-perf]');
-          if (chipPerf) chipPerf.textContent = String(scores[0]);
-          if (measured) {
-            measured.textContent = lh.measured ? 'measured ' + lh.measured : 'measured live';
-          }
-        }
-        // Each /work card gets its real site's PSI scores.
-        // Previously baseline-marketing card showed winterscode scores by mistake.
-        if (lh.bbtd) fill('bandon-by-the-dunes', lh.bbtd);
-        if (lh.baseline) fill('baseline-marketing', lh.baseline);
-        if (lh.sogn) fill('sogn-contracting', lh.sogn);
-        if (lh.seabreeze) fill('seabreeze', lh.seabreeze);
-        if (lh.taylor) fill('us-survey-supply', lh.taylor);
-        if (lh.makai) fill('makai-painting', lh.makai);
-        if (lh.jen) fill('south-coast-cuisine', lh.jen);
-        if (lh.grand) fill('grand-management', lh.grand);
-        if (lh.golf) fill('professors-golf', lh.golf);
-
-        // ----- per-site security grade (Mozilla Observatory)
-        const sec = data.security && data.security.sites;
-        if (sec) {
-          const SEC_MAP = {
-            'bandon-by-the-dunes': 'bbtd',
-            'baseline-marketing': 'baseline',
-            'sogn-contracting': 'sogn',
-            'seabreeze': 'seabreeze',
-            'us-survey-supply': 'taylor',
-            'makai-painting': 'makai',
-            'south-coast-cuisine': 'jen',
-            'grand-management': 'grand',
-            'professors-golf': 'golf',
-          };
-          for (const slug in SEC_MAP) {
-            const info = sec[SEC_MAP[slug]];
-            if (!info || !info.grade) continue;
-            const root = document.querySelector('[data-sec-site="' + slug + '"]');
-            if (!root) continue;
-            const target = root.querySelector('[data-sec-grade]');
-            if (!target) continue;
-            const cid = scopeOf(target);
-            target.textContent = '';
-            const pill = document.createElement('span');
-            if (cid) pill.setAttribute(cid, '');
-            const g = String(info.grade);
-            const tier = g.charAt(0) === 'A' ? 'good' : (g.charAt(0) === 'B' || g.charAt(0) === 'C') ? 'ok' : 'low';
-            pill.className = 'wk-sec-pill wk-sec-pill-' + tier;
-            pill.textContent = typeof info.score === 'number' ? (g + ' (' + info.score + ')') : g;
-            target.appendChild(pill);
-            const chipGrade = document.querySelector('[data-chip-site="' + slug + '"] [data-chip-grade]');
-            if (chipGrade) chipGrade.textContent = g;
-          }
-        }
-      } catch (e) {
-        // Silent fail. Lighthouse panel falls back to "measuring..." text.
+<script>
+  // Live scores: each site card's phone score and security grade, read from
+  // the same /api/workshop feed the Wall uses. The dated last reads print
+  // first, so a failed fetch leaves true numbers, never "measuring".
+  const MAP: Record<string, string> = {
+    'bandon-by-the-dunes': 'bbtd', 'baseline-marketing': 'baseline', 'sogn-contracting': 'sogn',
+    seabreeze: 'seabreeze', 'us-survey-supply': 'taylor', 'makai-painting': 'makai',
+    'south-coast-cuisine': 'jen', 'grand-management': 'grand', 'professors-golf': 'golf',
+  };
+  fetch('/api/workshop', { headers: { accept: 'application/json' } })
+    .then((r) => (r.ok ? r.json() : null))
+    .then((data) => {
+      if (!data) return;
+      for (const slug in MAP) {
+        const card = document.querySelector(`[data-chip-site="${slug}"]`);
+        if (!card) continue;
+        const lh = data.lighthouse?.[MAP[slug]];
+        const sec = data.security?.sites?.[MAP[slug]];
+        const perf = card.querySelector('[data-chip-perf]');
+        const grade = card.querySelector('[data-chip-grade]');
+        if (perf && Array.isArray(lh) && typeof lh[0] === 'number') perf.textContent = String(lh[0]);
+        if (grade && sec?.grade) grade.textContent = String(sec.grade);
       }
-    }
-    loadLighthouse();
-  })();
+    })
+    .catch(() => {});
 </script>
 
 <style>
-  /* NEW: orientation contents (/work top rework) */
-  .wk-index { padding: 0 4px; margin: 28px 0 8px; border-top: 1px solid var(--copper-hairline); }
-  .wk-index-k { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--color-copper); font-weight: 600; margin: 14px 0 6px; }
-  /* S339: two columns on phones so the first project shows sooner, four on
-     desktop so the last item never wraps to a row of its own. Each item is a
-     real link to its section, 44px or taller. */
-  .wk-index ol { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 0 14px; }
-  .wk-index li { border-bottom: 1px solid rgba(255,255,255,0.05); }
-  .wk-index a { display: grid; grid-template-columns: 26px 1fr; align-items: baseline; column-gap: 8px; min-height: 44px; padding: 9px 0; text-decoration: none; color: inherit; }
-  .wk-index a .wk-ix-meta { grid-column: 2; text-align: left; }
-  .wk-index a:focus-visible { outline: 2px solid var(--color-wc-green); outline-offset: 2px; }
-  @media (hover: hover) { .wk-index a:hover .wk-ix-name { color: var(--color-wc-green); } }
-  .wk-ix-num { font-family: var(--font-mono); font-size: 12px; font-weight: 600; color: var(--color-copper-bright); letter-spacing: 0.04em; }
-  .wk-ix-name { font-family: var(--font-serif); font-size: 18px; font-weight: 500; color: var(--color-ash-100); line-height: 1.15; }
-  .wk-ix-meta { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.04em; color: var(--color-ash-500); text-align: right; white-space: nowrap; }
-  @media (min-width: 740px) { .wk-ix-name { font-size: 20px; } }
-  @media (min-width: 1024px) {
-    .wk-index ol { grid-template-columns: repeat(4, 1fr); gap: 0 28px; }
-    .wk-index li { border-bottom: 0; border-left: 1px solid rgba(255,255,255,0.07); padding: 4px 0 4px 16px; }
-    .wk-index li:first-child { border-left: 0; padding-left: 0; }
-    .wk-index a { display: block; }
-    .wk-ix-num { display: block; margin-bottom: 6px; }
-    .wk-ix-name { display: block; font-size: 21px; }
-    .wk-ix-meta { display: block; text-align: left; margin-top: 4px; }
-  }
+  .wk-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+  .wk-list + :global(.wfold) { margin-top: 14px; }
+  .wk-group { margin: 14px 0 0; font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-ash-300); display: flex; align-items: center; gap: 10px; }
+  .wk-group::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #f6c39c, #c47b45 55%, #8a5430); }
 
-  /* NEW: MyKonos primer (top of the demiurge-mykonos card) */
-  .mk-primer { padding: 16px 16px 14px; }
-  @media (min-width: 1024px) { .mk-primer { padding: 18px 18px 16px; } }
-  .mk-row { display: flex; align-items: center; gap: 10px; margin: 0 0 8px; }
-  .mk-name { font-family: var(--font-serif); font-size: 21px; font-weight: 600; color: var(--color-ash-100); line-height: 1; letter-spacing: -0.01em; }
-  @media (min-width: 1024px) { .mk-name { font-size: 24px; } }
-  .mk-beta { font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.14em; color: var(--color-wc-green); border: 1px solid rgba(77,216,168,0.4); border-radius: 4px; padding: 2px 7px; text-transform: uppercase; }
-  .mk-desc { font-family: var(--font-sans); font-size: 14px; line-height: 1.6; color: var(--color-ash-300); margin: 0; max-width: 56ch; }
-  .mk-desc b { color: var(--color-ash-100); font-weight: 600; }
-  /* The demo opens on tap (S326 DNA: no mid-page demo block on first paint).
-     Instrument lazy-inits on intersect, so a closed details never fetches. */
-  .mk-demo { width: 100%; }
-  .mk-demo-toggle {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    min-height: 48px;
-    padding: 0 16px;
-    font-family: var(--font-sans);
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--color-wc-green);
-    cursor: pointer;
-    list-style: none;
-  }
-  .mk-demo-toggle::-webkit-details-marker { display: none; }
-  .mk-demo-toggle .d { width: 6px; height: 6px; border-radius: 50%; background: var(--color-wc-green); box-shadow: 0 0 6px rgba(77,216,168,0.6); }
-  .mk-demo-icon { margin-left: auto; font-family: var(--font-mono); font-size: 16px; color: var(--color-ash-500); transition: transform 160ms; }
-  .mk-demo[open] .mk-demo-icon { transform: rotate(45deg); }
-  .mk-demo-toggle:focus-visible { outline: 2px solid var(--color-wc-green); outline-offset: -2px; }
-  @media (min-width: 1024px) { .mk-demo-toggle { padding: 0 18px; } }
-  @media (prefers-reduced-motion: no-preference) { .mk-demo-toggle .d { animation: mkpulse 2.4s ease-in-out infinite; } }
-  @keyframes mkpulse { 0%,100%{opacity:1} 50%{opacity:.45} }
-
-  .wk-section {
-    padding: 32px 4px 40px;
-    max-width: 720px;
-    margin: 0 auto;
-  }
-  @media (min-width: 740px) {
-    .wk-section { padding: 48px 4px 56px; max-width: 860px; }
-  }
-  @media (min-width: 1024px) {
-    .wk-section { padding: 64px 0 72px; max-width: 1080px; }
-  }
-
-  .wk-head {
-    margin-bottom: 20px;
-    padding-bottom: 12px;
-    border-bottom: 1px solid var(--copper-hairline);
-  }
-  .wk-eyebrow {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    flex-wrap: wrap;
-  }
-  .wk-eyebrow .line {
-    width: 28px;
-    height: 1px;
-    background: var(--color-copper);
-  }
-  @media (min-width: 1024px) { .wk-eyebrow .line { width: 40px; } }
-  .wk-h {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.22em;
-    color: var(--color-copper);
-    text-transform: uppercase;
-    margin: 0;
-  }
-  @media (min-width: 1024px) { .wk-h { font-size: 13px; } }
-  .wk-meta {
-    font-family: var(--font-sans);
-    font-size: 11px;
-    color: var(--color-ash-500);
-    font-style: italic;
-  }
-
-  /* Grid */
-  .wk-grid {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: grid;
-    gap: 16px;
-  }
-  /* Apps grid: single-column at all breakpoints. Each widget gets
-     the full container width so dense interactive demos can breathe
-     vertically without the 2-col squeeze. Container caps at 960px. */
-  .wk-grid-apps {
-    grid-template-columns: 1fr;
-    gap: 24px;
-    max-width: 960px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-  @media (min-width: 740px) { .wk-grid-apps { gap: 28px; } }
-  @media (min-width: 1024px) { .wk-grid-apps { gap: 32px; } }
-  .wk-feature { max-width: 960px; margin: 0 auto 24px; }
-  @media (min-width: 740px) { .wk-feature { margin-bottom: 28px; } }
-  @media (min-width: 1024px) { .wk-feature { margin-bottom: 32px; } }
-
-  /* Sites grid: 2-col at 768+ as before. */
-  /* Sites are 1-col on tablet so widget cards (Sogn) get full width to
-     breathe. 2-col only at desktop where there's actual horizontal room. */
-  @media (min-width: 740px) {
-    .wk-grid-sites { gap: 24px; }
-  }
-  @media (min-width: 1024px) {
-    .wk-grid-sites { grid-template-columns: 1fr 1fr; gap: 24px; }
-  }
-
-  /* display: contents leaves the li with no box, so a #slug link could not
-     scroll to it; the id lives on the article (S339). */
-  .wk-card-wrap { display: contents; }
-  .wk-card { scroll-margin-top: 96px; }
-
-  /* Card */
   .wk-card {
-    background: var(--color-bg-card);
-    border: 1px solid var(--copper-hairline);
-    border-radius: var(--radius-card);
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    transition: border-color 200ms;
+    display: flex; flex-direction: column; gap: 8px; height: 100%;
+    padding: 16px 16px 10px;
+    background: rgba(10, 13, 12, 0.55);
+    border: 1px solid var(--wc-line);
+    border-radius: var(--wc-r);
+    transition: border-color .2s ease;
   }
-  @media (hover: hover) {
+  .wk-card:hover { border-color: rgba(244, 168, 116, 0.35); }
+  .wk-top { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+  .wk-name { margin: 0; font-family: var(--wc-display); font-weight: 500; font-size: 21px; line-height: 1.2; letter-spacing: -0.01em; }
+  .wk-name a { color: #eef1ec; text-decoration: none; }
+  .wk-name a:hover, .wk-name a:focus-visible { color: var(--color-copper-bright); }
+  .wk-tag { flex: none; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-ash-300); padding: 3px 8px; border: 1px solid var(--wc-line); border-radius: 999px; }
+  .wk-face { margin: 0; font-size: 15px; line-height: 1.5; color: var(--color-ash-300); }
+  .wk-quote { margin: 2px 0 0; font-family: var(--wc-display); font-style: italic; font-size: 16px; line-height: 1.4; color: #eef1ec; }
+  .wk-quote span { display: block; margin-top: 2px; font-family: var(--font-sans); font-style: normal; font-size: 13px; color: var(--color-ash-500); }
+  .wk-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 4px 16px; margin-top: auto; padding-top: 6px; border-top: 1px solid var(--wc-line); }
+  .wk-score { display: flex; align-items: center; gap: 6px; margin: 0; min-height: 44px; font-size: 14px; color: var(--color-ash-300); }
+  .wk-score b { font-family: var(--font-mono); font-weight: 500; color: var(--color-wc-green-bright); }
+  .wk-lamp { width: 7px; height: 7px; border-radius: 50%; background: var(--color-wc-green-bright); box-shadow: 0 0 0 3px rgba(77, 216, 168, 0.16); }
+  .wk-sep { color: var(--color-ash-500); }
+  .wk-go { display: flex; flex-wrap: wrap; gap: 0 18px; }
+  .wk-live { color: var(--color-ash-300); }
 
-    .wk-card:hover { border-color: var(--color-wc-green); }}
+  .wk-feature { margin-bottom: 12px; }
+  .wk-card--img { padding-top: 0; overflow: hidden; }
+  .wk-img { display: block; margin: 0 -16px 6px; aspect-ratio: 1200 / 630; overflow: hidden; }
+  .wk-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .wk-demo { margin-top: 4px; }
+  .wk-demo summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; font-weight: 600; color: var(--color-wc-green); }
 
-  .wk-preview {
-    background:
-      radial-gradient(circle at 30% 40%, rgba(216, 144, 90, 0.15), transparent 60%),
-      linear-gradient(135deg, var(--color-bg-raised), var(--color-bg-card));
-    aspect-ratio: 16 / 8;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-bottom: 1px solid var(--copper-hairline);
-    overflow: hidden;
-  }
-  .wk-preview > picture,
-  .wk-img {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center;
-  }
+  .wk-brand { display: grid; gap: 16px; }
+  .wk-brand-img { display: block; border-radius: var(--wc-r); overflow: hidden; border: 1px solid var(--wc-line); }
+  .wk-brand-img img { display: block; width: 100%; height: auto; }
 
-  /* Widget cards: when the preview slot holds a live widget (not an
-     image), the 16/8 aspect-ratio and gradient bg fight the widget's
-     own framing. Strip them so the widget sets its own height and
-     visual treatment. */
-  /* The site cards crop to a 2:1 frame because a 1200x630 share card is that
-     shape. The graphic board is neither 2:1 nor any other fixed shape: it is
-     one board whose whole point is that every mark is visible, so cropping it
-     proves nothing and letterboxing it inside a landscape box shrinks it to
-     the gutters. This card carries no ratio of its own. The img carries width
-     and height, so the browser reserves the board's real box, and the next
-     board of any shape drops in without touching this rule. */
-  .wk-card[data-fit="whole"] .wk-preview {
-    aspect-ratio: auto;
-    background: var(--color-bg-card);
-    padding: 0;
-  }
-  .wk-card[data-fit="whole"] .wk-preview > picture,
-  .wk-card[data-fit="whole"] .wk-img {
-    height: auto;
-    object-fit: contain;
-    object-position: center;
-  }
-
-  .wk-card[data-widget="true"] .wk-preview {
-    aspect-ratio: auto;
-    background: var(--color-bg-card);
-    border-bottom: 1px solid var(--copper-hairline);
-    align-items: stretch;
-    justify-content: stretch;
-    overflow: visible;
-    padding: 0;
-  }
-  .wk-card[data-widget="true"] .wk-preview > * {
-    width: 100%;
-  }
-
-  .wk-preview > picture { line-height: 0; }
-
-  .wk-mark {
-    font-family: var(--font-serif);
-    font-size: 56px;
-    font-style: italic;
-    color: var(--color-copper);
-    opacity: 0.7;
-    line-height: 1;
-  }
-
-  .wk-body {
-    padding: 14px 16px 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-  @media (min-width: 1024px) { .wk-body { padding: 16px 18px 18px; } }
-
-  .wk-card-site .wk-body {
-    /* No image, so card needs more presence */
-    padding-top: 20px;
-  }
-
-  .wk-title-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
-  }
-  /* S339, Preston 2026-10-28: the same pill layout as the homepage. The name
-     takes the free width so the pills sit together; on a phone they drop
-     under the name, left-aligned, whether there are two or three. */
-  .wk-title { flex: 1 1 auto; min-width: 0; }
-  @media (max-width: 739px) {
-    .wk-title-row { flex-wrap: wrap; justify-content: flex-start; gap: 6px; }
-    .wk-title { flex-basis: 100%; }
-  }
-  .wk-title {
-    font-family: var(--font-serif);
-    font-size: 18px;
-    font-weight: 600;
-    color: var(--color-ash-100);
-    letter-spacing: -0.01em;
-    margin: 0;
-  }
-  @media (min-width: 1024px) { .wk-title { font-size: 20px; } }
-
-  .wk-status {
-    font-family: var(--font-mono);
-    font-size: 9px;
-    letter-spacing: 0.1em;
-    padding: 2px 6px;
-    border-radius: 3px;
-    text-transform: uppercase;
-    font-weight: 600;
-    white-space: nowrap;
-  }
-  .wk-status-live {
-    background: rgba(77, 216, 168, 0.15);
-    color: var(--color-wc-green);
-    border: 1px solid rgba(77, 216, 168, 0.3);
-  }
-  .wk-status-beta {
-    background: rgba(240, 184, 120, 0.15);
-    color: var(--color-amber);
-    border: 1px solid rgba(240, 184, 120, 0.3);
-  }
-  .wk-status-retired {
-    background: transparent;
-    color: var(--color-ash-300);
-    border: 1px solid var(--copper-hairline);
-  }
-  .wk-status-planned {
-    background: rgba(200, 128, 74, 0.10);
-    color: var(--color-copper);
-    border: 1px solid var(--copper-hairline);
-  }
-  /* Rebuild vs new build. Three client sites replaced one the business already
-     had; the pill says so, because a rebuild is a different job from a first site. */
-  /* S339: family builds say so, quietly: outline only, no fill. */
-  .wk-family {
-    background: transparent;
-    color: var(--color-ash-300);
-    border: 1px dashed rgba(221, 228, 230, 0.4);
-  }
-  .wk-build-rebuild {
-    background: rgba(216, 144, 90, 0.15);
-    color: var(--color-copper-bright);
-    border: 1px solid var(--copper-hairline);
-  }
-  /* S339, Preston 2026-10-28: NEW BUILD is filled like REBUILD, in cream,
-     so a build from scratch never reads as worth less than a rebuild. */
-  .wk-build-new {
-    background: linear-gradient(180deg, rgba(244, 239, 230, 0.22), rgba(244, 239, 230, 0.09));
-    color: #f7f2ea;
-    border: 1px solid rgba(244, 239, 230, 0.45);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14);
-  }
-
-  .wk-meta-line {
-    margin: 0;
-    font-family: var(--font-sans);
-    font-size: 13px;
-    color: var(--color-ash-400);
-    line-height: 1.4;
-  }
-
-  .wk-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin-top: 2px;
-  }
-  .wk-tag {
-    font-family: var(--font-mono);
-    font-size: 9px;
-    letter-spacing: 0.1em;
-    color: var(--color-ash-500);
-    background: var(--color-bg-deep);
-    border: 1px solid var(--copper-hairline);
-    padding: 3px 7px;
-    border-radius: 3px;
-  }
-
-  /* Lighthouse pills (sites only) */
-  .wk-lighthouse {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    padding: 10px 0 4px;
-    border-top: 1px dashed var(--copper-hairline);
-    margin-top: 4px;
-  }
-  .wk-lh-label {
-    font-family: var(--font-mono);
-    font-size: 9px;
-    letter-spacing: 0.18em;
-    color: var(--color-copper);
-    text-transform: uppercase;
-  }
-  .wk-lh-scores {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 4px;
-    align-items: center;
-  }
-  .wk-lh-pending {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    color: var(--color-ash-500);
-    font-style: italic;
-  }
-  .wk-lh-pill {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    letter-spacing: 0.04em;
-    padding: 3px 7px;
-    border-radius: 3px;
-    font-weight: 600;
-  }
-  .wk-lh-pill-good {
-    background: rgba(77, 216, 168, 0.12);
-    color: var(--color-wc-green);
-    border: 1px solid rgba(77, 216, 168, 0.3);
-  }
-  .wk-lh-pill-ok {
-    background: rgba(240, 184, 120, 0.12);
-    color: var(--color-amber);
-    border: 1px solid rgba(240, 184, 120, 0.3);
-  }
-  .wk-lh-pill-low {
-    background: rgba(217, 107, 94, 0.12);
-    color: #d96b5e;
-    border: 1px solid rgba(217, 107, 94, 0.3);
-  }
-  .wk-lh-measured {
-    font-family: var(--font-mono);
-    font-size: 9px;
-    color: var(--color-ash-500);
-    letter-spacing: 0.04em;
-  }
-
-  /* CTA row: the card's Text button + live Mozilla grade in the same line.
-     S326 DNA: Text is the card primary; case study and live site are quiet. */
-  /* S339 HONE-SPEC (Look): a mint text link, not a filled button. The only
-     filled Text buttons on /work are in the header and the closer. */
-  .wk-text {
-    display: inline-flex;
-    align-items: center;
-    min-height: 44px;
-    color: var(--color-wc-green);
-    font-family: var(--font-sans);
-    font-size: 14px;
-    font-weight: 600;
-    text-decoration: underline;
-    text-decoration-color: rgba(77, 216, 168, 0.35);
-    text-underline-offset: 4px;
-    touch-action: manipulation;
-  }
-  .wk-text:focus-visible { outline: 2px solid var(--color-wc-green-bright); outline-offset: 2px; }
-  @media (hover: hover) { .wk-text:hover { text-decoration-color: var(--color-wc-green); } }
-
-  .wk-face { margin: 0; font-size: 15px; line-height: 1.5; color: var(--color-ash-200, var(--color-ash-100)); }
-  .wk-quote-short {
-    margin: 2px 0 0;
-    padding-left: 12px;
-    border-left: 2px solid var(--color-copper);
-    font-family: var(--font-serif);
-    font-style: italic;
-    font-size: 15px;
-    line-height: 1.45;
-    color: var(--color-ash-100);
-  }
-  .wk-quote-by { display: block; margin-top: 4px; font-family: var(--font-mono); font-style: normal; font-size: 11px; letter-spacing: 0.06em; color: var(--color-copper-bright); }
-  .wk-chip {
-    align-self: flex-start;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    margin: 2px 0 0;
-    padding: 5px 10px;
-    border: 1px solid rgba(77, 216, 168, 0.35);
-    border-radius: 999px;
-    font-family: var(--font-mono);
-    font-size: 12px;
-    letter-spacing: 0.03em;
-    color: var(--color-wc-green);
-    width: fit-content;
-  }
-  .wk-detail .wk-meta-line { margin-bottom: 8px; }
-  .wk-detail .wk-security { margin: 8px 0 10px; }
-  @media (min-width: 1024px) { .wk-card-lead { grid-column: 1 / -1; } }
-  .wk-group-label {
-    grid-column: 1 / -1;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin: 18px 0 -4px;
-    font-family: var(--font-mono);
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    color: var(--color-copper);
-  }
-  .wk-group-label .line { width: 28px; height: 1px; background: var(--color-copper); }
-  .wk-body-link { margin: 18px 0 0; }
-  .wk-body-link a, .wk-more-sum {
-    display: inline-flex;
-    align-items: center;
-    min-height: 44px;
-    font-size: 14px;
-    color: var(--color-ash-300);
-    text-decoration: underline;
-    text-decoration-color: var(--copper-hairline);
-    text-underline-offset: 4px;
-  }
-  @media (hover: hover) { .wk-body-link a:hover, .wk-more-sum:hover { color: var(--color-copper-bright); } }
-  .wk-more { margin-top: 24px; }
-  .wk-more-sum { cursor: pointer; list-style: none; gap: 8px; font-family: var(--font-serif); font-size: 18px; text-decoration: none; color: var(--color-ash-100); }
-  .wk-more-sum::-webkit-details-marker { display: none; }
-  .wk-more-icon { font-family: var(--font-mono); color: var(--color-copper); }
-  .wk-more[open] .wk-more-icon { transform: rotate(45deg); }
-  .wk-more > .wk-grid { margin-top: 16px; }
-  .wk-quiet-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0 18px;
-    margin-top: 2px;
-  }
-  .wk-quiet {
-    display: inline-flex;
-    align-items: center;
-    min-height: 44px;
-    font-family: var(--font-sans);
-    font-size: 13px;
-    color: var(--color-ash-300);
-    text-decoration: underline;
-    text-decoration-color: var(--copper-hairline);
-    text-underline-offset: 4px;
-  }
-  .wk-related { align-self: flex-start; }
-  @media (hover: hover) {
-    .wk-quiet:hover { color: var(--color-copper-bright); }
-  }
-
-  .wk-cta-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 10px 16px;
-    margin-top: 6px;
-  }
-  .wk-cta-row .wk-visit { align-self: center; margin-top: 0; }
-  .wk-security {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    margin-left: auto;
-  }
-  .wk-sec-label {
-    font-family: var(--font-mono);
-    font-size: 9px;
-    letter-spacing: 0.18em;
-    color: var(--color-copper);
-    text-transform: uppercase;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-  }
-  .wk-sec-grade { display: flex; align-items: center; }
-  .wk-sec-pending {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    color: var(--color-ash-500);
-    font-style: italic;
-  }
-  .wk-sec-pill {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    letter-spacing: 0.04em;
-    padding: 3px 9px;
-    border-radius: 3px;
-    font-weight: 600;
-  }
-  .wk-sec-pill-good {
-    background: rgba(77, 216, 168, 0.12);
-    color: var(--color-wc-green);
-    border: 1px solid rgba(77, 216, 168, 0.3);
-  }
-  .wk-sec-pill-ok {
-    background: rgba(240, 184, 120, 0.12);
-    color: var(--color-amber);
-    border: 1px solid rgba(240, 184, 120, 0.3);
-  }
-  .wk-sec-pill-low {
-    background: rgba(217, 107, 94, 0.12);
-    color: #d96b5e;
-    border: 1px solid rgba(217, 107, 94, 0.3);
-  }
-
-  /* Expand button */
-  .wk-preview-link {
-    display: block;
-    width: 100%;
-    height: 100%;
-    line-height: 0;
-  }
-  .wk-title-link {
-    color: inherit;
-    text-decoration: none;
-    transition: color 200ms;
-    /* S339: a 44px tap target without moving the card layout. */
-    display: inline-block;
-    padding: 11px 0;
-    margin: -11px 0;
-  }
-  .wk-title-link:focus-visible {
-    color: var(--color-wc-green);
-    outline: none;
-  }
-
-  @media (hover: hover) {
-
-    .wk-title-link:hover {
-    color: var(--color-wc-green);
-    outline: none;
-  }}
-  .wk-visit {
-    min-height: 44px;
-    display: inline-flex;
-    align-items: center;
-    align-self: flex-start;
-    gap: 6px;
-    font-family: var(--font-sans);
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--color-wc-green);
-    border: 1px solid rgba(77, 216, 168, 0.4);
-    border-radius: 6px;
-    padding: 7px 14px;
-    margin-top: 6px;
-    text-decoration: none;
-    transition: background 160ms, border-color 160ms;
-  }
-  .wk-visit:focus-visible {
-    background: rgba(77, 216, 168, 0.12);
-    border-color: var(--color-wc-green);
-    outline: none;
-  }
-
-  @media (hover: hover) {
-
-    .wk-visit:hover {
-    background: rgba(77, 216, 168, 0.12);
-    border-color: var(--color-wc-green);
-    outline: none;
-  }}
-  .wk-expand-btn {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    background: transparent;
-    border: 1px solid var(--copper-hairline);
-    border-radius: var(--radius-btn);
-    padding: 8px 12px;
-    color: var(--color-ash-300);
-    font-family: var(--font-mono);
-    font-size: 10px;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    cursor: pointer;
-    margin-top: 8px;
-    transition: border-color 200ms, color 200ms;
-    /* 44px touch minimum (G-027). Was 38px, measured on production at S245. */
-    min-height: 44px;
-  }
-  @media (hover: hover) {
-
-    .wk-expand-btn:hover {
-    border-color: var(--color-wc-green);
-    color: var(--color-wc-green);
-  }}
-  .wk-expand-icon {
-    font-family: var(--font-mono);
-    font-weight: 600;
-    color: var(--color-copper);
-    margin-left: 8px;
-  }
-  .wk-expand-btn[aria-expanded="true"] .wk-expand-icon {
-    color: var(--color-wc-green);
-  }
-
-  /* Detail panel */
-  .wk-detail {
-    padding-top: 12px;
-    margin-top: 4px;
-    border-top: 1px dashed var(--copper-hairline);
-    animation: wk-fade-in 200ms ease-out;
-  }
-  @keyframes wk-fade-in {
-    0% { opacity: 0; transform: translateY(-2px); }
-    100% { opacity: 1; transform: translateY(0); }
-  }
-  .wk-detail[hidden] { display: none; }
-
-  .wk-detail-rows {
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  .wk-detail-row {
-    display: grid;
-    gap: 4px;
-  }
   @media (min-width: 740px) {
-    .wk-detail-row { grid-template-columns: 90px 1fr; gap: 12px; }
-  }
-  .wk-detail-row dt {
-    font-family: var(--font-mono);
-    font-size: 9px;
-    letter-spacing: 0.16em;
-    color: var(--color-copper);
-    text-transform: uppercase;
-    margin: 0;
-  }
-  .wk-detail-row dd {
-    font-family: var(--font-sans);
-    font-size: 13px;
-    color: var(--color-ash-300);
-    line-height: 1.55;
-    margin: 0;
-    overflow-wrap: anywhere;
-  }
-
-  .wk-quote {
-    margin: 12px 0 0;
-    padding: 10px 12px;
-    border-left: 2px solid var(--color-copper);
-    background: rgba(200, 128, 74, 0.06);
-    border-radius: 0 var(--radius-btn) var(--radius-btn) 0;
-  }
-  .wk-quote p {
-    margin: 0 0 4px;
-    font-family: var(--font-serif);
-    font-size: 13px;
-    font-style: italic;
-    color: var(--color-ash-100);
-    line-height: 1.4;
-  }
-  .wk-quote cite {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    color: var(--color-ash-500);
-    font-style: normal;
-    letter-spacing: 0.06em;
-  }
-
-  .wk-links {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 12px;
-  }
-  .wk-link {
-    /* 44px touch minimum (G-027), S245 site-wide sweep. Negative margin holds
-       the original layout so the measured box is the tappable box. */
-    display: inline-flex;
-    align-items: center;
-    min-height: 44px;
-    margin: -12px 0;
-    font-family: var(--font-mono);
-    font-size: 11px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--color-ash-300);
-    text-decoration: none;
-    padding: 8px 12px;
-    border-radius: var(--radius-btn);
-    border: 1px solid var(--copper-hairline);
-    transition: border-color 200ms, color 200ms;
-  }
-  @media (hover: hover) {
-
-    .wk-link:hover {
-    border-color: var(--color-wc-green);
-    color: var(--color-wc-green);
-  }}
-  .wk-link-primary {
-    background: var(--color-wc-green);
-    border-color: var(--color-wc-green);
-    color: var(--color-bg-deep);
-    font-weight: 600;
-  }
-  @media (hover: hover) {
-
-    .wk-link-primary:hover {
-    background: var(--color-wc-green);
-    color: var(--color-bg-deep);
-  }}
-
-  /* Process steps */
-  .wk-steps {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: grid;
-    gap: 16px;
-  }
-  @media (min-width: 740px) {
-    .wk-steps { grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
-  }
-  .wk-step {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    padding: 16px;
-    background: var(--color-bg-card);
-    border: 1px solid var(--copper-hairline);
-    border-radius: var(--radius-card);
-  }
-  .wk-step-num {
-    font-family: var(--font-serif);
-    font-style: italic;
-    font-size: 44px;
-    line-height: 1;
-    color: var(--color-copper);
-    opacity: 0.85;
-  }
-  .wk-step-h {
-    margin: 0;
-    font-family: var(--font-serif);
-    font-size: 18px;
-    font-weight: 600;
-    color: var(--color-ash-100);
-  }
-  .wk-step-p {
-    margin: 0;
-    font-family: var(--font-sans);
-    font-size: 13px;
-    color: var(--color-ash-300);
-    line-height: 1.55;
-  }
-  .wk-step-time {
-    margin: 0;
-    font-family: var(--font-mono);
-    font-size: 10px;
-    color: var(--color-ash-500);
-    letter-spacing: 0.06em;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .wk-detail { animation: none; }
+    .wk-list { grid-template-columns: 1fr 1fr; gap: 12px; }
+    .wk-list--tight { grid-template-columns: 1fr; }
+    .wk-group { grid-column: 1 / -1; }
+    .wk-brand { grid-template-columns: 1.2fr 1fr; align-items: center; gap: 28px; }
   }
 </style>
