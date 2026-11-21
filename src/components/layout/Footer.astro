@@ -75,15 +75,33 @@ const legalLinks: L[] = [
     <span class="wc-foot-rule" aria-hidden="true"></span>
 
     <div class="wc-foot-lines">
-      {lines.map((ln) => (
+      {lines.filter((ln) => !ln.title).map((ln) => (
         <nav class="wc-foot-line" aria-label={ln.aria}>
-          {ln.title && <h2 class="wc-foot-line-h">{ln.title}</h2>}
           <ul>
             {ln.links.map((l) => <li><a href={l.href}>{l.label}</a></li>)}
           </ul>
         </nav>
       ))}
+      <!-- S339 round 3: the client and town lists fold on a phone (about a
+           screen of links before), and open by themselves on wider screens. -->
+      <div class="wc-foot-folds">
+        {lines.filter((ln) => ln.title).map((ln) => (
+          <details class="wc-foot-fold" data-foot-fold>
+            <summary><span>{ln.title}</span><span class="wc-foot-count">{ln.links.length}</span></summary>
+            <nav class="wc-foot-line" aria-label={ln.aria}>
+              <ul>
+                {ln.links.map((l) => <li><a href={l.href}>{l.label}</a></li>)}
+              </ul>
+            </nav>
+          </details>
+        ))}
+      </div>
     </div>
+    <script>
+      if (window.matchMedia('(min-width: 740px)').matches) {
+        document.querySelectorAll<HTMLDetailsElement>('[data-foot-fold]').forEach((d) => (d.open = true));
+      }
+    </script>
 
     <span class="wc-foot-rule" aria-hidden="true"></span>
 
@@ -248,4 +266,23 @@ const legalLinks: L[] = [
   .wc-foot-wash { position: absolute; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
   .wc-foot-wash img { width: 100%; height: 100%; object-fit: cover; object-position: center 62%; opacity: 0.42; display: block; -webkit-mask-image: linear-gradient(to top, #000 16%, transparent 90%); mask-image: linear-gradient(to top, #000 16%, transparent 90%); }
   .wc-foot-wash::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgba(10,13,12,0.18), rgba(10,13,12,0.5) 58%, var(--color-bg-deep)); }
+
+  /* S339 round 3: folding client and town lists */
+  .wc-foot-folds { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 14px; width: 100%; }
+  .wc-foot-fold { border: 1px solid var(--wc-line); border-radius: var(--wc-r-sm); background: rgba(10, 13, 12, 0.6); }
+  .wc-foot-fold[open] { grid-column: 1 / -1; }
+  .wc-foot-fold summary {
+    display: flex; align-items: center; justify-content: space-between; gap: 8px;
+    min-height: 44px; padding: 0 14px; cursor: pointer; list-style: none;
+    font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-copper-bright);
+  }
+  .wc-foot-fold summary::-webkit-details-marker { display: none; }
+  .wc-foot-count { font-size: 11px; color: var(--color-ash-500); letter-spacing: 0.04em; }
+  .wc-foot-fold .wc-foot-line { padding: 0 10px 10px; }
+  @media (min-width: 740px) {
+    .wc-foot-folds { grid-template-columns: 1fr; gap: 0; }
+    .wc-foot-fold { border: 0; background: none; }
+    .wc-foot-fold summary { justify-content: center; pointer-events: none; min-height: 32px; }
+    .wc-foot-count { display: none; }
+  }
 </style>
