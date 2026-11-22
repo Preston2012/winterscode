@@ -26,7 +26,7 @@ const COPPER = {
   '/': 'software.',
   '/about': 'Preston Winters.',
   '/chere': 'back office.',
-  '/chere/join': 'on your phone.',
+  '/chere/join': 'your phone.',
   '/chere/privacy': 'in plain English.',
   '/chere/support': 'a text away.',
   '/chere/onboard': 'your business.',
