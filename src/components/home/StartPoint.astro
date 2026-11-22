@@ -201,7 +201,7 @@ const DOORS: {
                     <source src={mediaUrl(`${d.film.file}.webm`)} type="video/webm" />
                     <source src={mediaUrl(`${d.film.file}.mp4`)} type="video/mp4" />
                   </video>
-                  <button type="button" class="sp-play" hidden aria-label={`Play ${d.film.name}, ${d.film.dur}`}><span class="sp-play-key" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor"/></svg></span><span class="sp-play-chip">Play · {d.film.dur}</span></button>
+                  <button type="button" class="sp-play" hidden aria-label={`Play · ${d.film.dur}, ${d.film.name}`}><span class="sp-play-key" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor"/></svg></span><span class="sp-play-chip">Play · {d.film.dur}</span></button>
                 </div>
                 <figcaption>
                   <span class="sp-proof-who">{d.film.caption}</span>
@@ -223,7 +223,7 @@ const DOORS: {
                     <source src={mediaUrl('chere-master.webm')} type="video/webm" />
                     <source src={mediaUrl('chere-master.mp4')} type="video/mp4" />
                   </video>
-                  <button type="button" class="sp-play" hidden aria-label="Play the demo, 1:32"><span class="sp-play-key" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor"/></svg></span><span class="sp-play-chip">Play · 1:32</span></button>
+                  <button type="button" class="sp-play" hidden aria-label="Play · 1:32, the demo"><span class="sp-play-key" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor"/></svg></span><span class="sp-play-chip">Play · 1:32</span></button>
                 </div>
                 <figcaption>
                   <span class="sp-proof-who">{d.proofWho}</span>
