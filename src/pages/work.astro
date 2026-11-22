@@ -157,7 +157,7 @@ const workLd = {
                 <summary>more details</summary>
                 <p class="wk-meta-line">{p.meta}</p>
                 <p class="wk-tags">{p.tags.join(' · ')}</p>
-                {measuredSite(p.slug)?.lhFallback && <p class="wk-tags" data-lh-row>Lighthouse <span data-lh-nums>{measuredSite(p.slug)!.lhFallback!.map((n, k) => `${LH_LABELS[k]} ${n}`).join(' · ')}</span>, measured <span data-lh-at>{asOf(LH_FALLBACK_AT)}</span></p>}
+                {measuredSite(p.slug)?.lhFallback && <p class="wk-tags" data-lh-row data-lh-stored={LH_FALLBACK_AT}>Lighthouse <span data-lh-nums>{measuredSite(p.slug)!.lhFallback!.map((n, k) => `${LH_LABELS[k]} ${n}`).join(' · ')}</span>, measured <span data-lh-at>{asOf(LH_FALLBACK_AT)}</span></p>}
                 <dl class="wk-rows">{p.details.map((d) => <div><dt>{d.label}</dt><dd>{d.value}</dd></div>)}</dl>
               </details>
               <div class="wk-foot">
@@ -283,10 +283,17 @@ const workLd = {
     .then((r) => (r.ok ? r.json() : null))
     .then((data) => {
       if (!data) return;
+      // Lighthouse numbers count only when the feed says when they were measured
+      // and that read is no older than the one this page was built with. The
+      // feed's own fallback carries no time, and older numbers under a newer
+      // date would be a false label (Codex P2 on #61).
+      const storedAt = Date.parse(document.querySelector<HTMLElement>('[data-lh-row]')?.dataset.lhStored ?? '');
+      const liveAt = Date.parse(data.lighthouse?.measured_at ?? '');
+      const lhFresh = !Number.isNaN(liveAt) && (Number.isNaN(storedAt) || liveAt >= storedAt);
       for (const slug in MAP) {
         const card = document.querySelector(`[data-chip-site="${slug}"]`);
         if (!card) continue;
-        const lh = data.lighthouse?.[MAP[slug]];
+        const lh = lhFresh ? data.lighthouse?.[MAP[slug]] : null;
         const sec = data.security?.sites?.[MAP[slug]];
         const perf = card.querySelector('[data-chip-perf]');
         const grade = card.querySelector('[data-chip-grade]');
@@ -297,7 +304,7 @@ const workLd = {
         const at = card.querySelector('[data-lh-at]');
         if (nums && Array.isArray(lh) && lh.length === 4 && lh.every((n) => typeof n === 'number')) {
           nums.textContent = lh.map((n: number, k: number) => `${LABELS[k]} ${n}`).join(' · ');
-          if (at && data.lighthouse?.measured_at) at.textContent = asOf(data.lighthouse.measured_at);
+          if (at) at.textContent = asOf(data.lighthouse.measured_at);
         }
         if (grade && sec?.grade) grade.textContent = String(sec.grade);
       }
