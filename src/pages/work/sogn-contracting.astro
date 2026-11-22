@@ -1,6 +1,6 @@
 ---
 import CaseStudyLayout from '../../components/templates/CaseStudyLayout.astro';
-import { bizDaysWord, daysWord } from '../../lib/counts';
+import { bizDaysWord, daysWord, builtDays } from '../../lib/counts';
 ---
 <CaseStudyLayout
   slug="sogn-contracting"
@@ -15,7 +15,7 @@ import { bizDaysWord, daysWord } from '../../lib/counts';
     "It kept growing. The site is <span class='hl-green'>23 pages now</span>, added over six months as we worked out which searches were worth owning. That is not a three-day site that stopped. It is a three-day site that started.",
   ]}
   stats={[
-    { value: '3', label: 'business days, kickoff to live' },
+    { value: String(builtDays('sogn')), label: builtDays('sogn') === 1 ? 'business day, kickoff to live' : 'business days, kickoff to live' },
     { value: '23', label: 'pages today, from 6 months of work' },
     { value: '14', label: 'service and service-area pages' },
     { value: 'A+', label: 'Mozilla Observatory, HSTS preloaded' },

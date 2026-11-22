@@ -138,7 +138,7 @@ export const portfolio: PortfolioItem[] = [
       {
         label: 'Result',
         value:
-          'Live on its own domain since 2026-10-27, on the client\u2019s own Cloudflare account. Mozilla Observatory A+ (the old site measured D-), and Lighthouse and the security grade measured live on the wall.',
+          'Live on its own domain since 2026-10-27, on the client\u2019s own Cloudflare account. Mozilla Observatory A+ (the old site measured D-), and Lighthouse and the security grade measured live on the Wall.',
       },
       {
         label: 'Stack',
@@ -166,7 +166,7 @@ export const portfolio: PortfolioItem[] = [
     name: 'US Survey Supply',
     category: 'site',
     meta: 'ussurveysupply.com · surveying equipment dealer · 42 pages',
-    face: `A Bandon surveying-equipment dealer · 42 pages on a 32-page contract · ${bizDays('taylor')}`,
+    face: `A Bandon surveying-equipment dealer · 42 pages · ${bizDays('taylor')}`,
     tags: ['ASTRO', 'TAILWIND', 'CLOUDFLARE'],
     status: 'live',
     build: 'rebuild',
@@ -195,12 +195,12 @@ export const portfolio: PortfolioItem[] = [
       {
         label: 'Scope',
         value:
-          'Full site for a Bandon surveying-equipment dealer shipping nationwide. New and used GNSS, total stations, data collectors and Carlson software, plus a rental fleet, brochure library, repair and training pages, and a quote request form. 42 pages against a 32-page contract.',
+          'Full site for a Bandon surveying-equipment dealer shipping nationwide. New and used GNSS, total stations, data collectors and Carlson software, plus a rental fleet, brochure library, repair and training pages, and a quote request form.',
       },
       {
         label: 'Result',
         value:
-          'Live and mobile-first. Mozilla Observatory A+, re-verified against the live domain on 2026-09-11, with the grade and Lighthouse both measured live on the wall.',
+          'Live and mobile-first. Mozilla Observatory A+, re-verified against the live domain on 2026-09-11, with the grade and Lighthouse both measured live on the Wall.',
       },
     ],
     links: [
@@ -238,7 +238,7 @@ export const portfolio: PortfolioItem[] = [
       {
         label: 'Result',
         value:
-          'Live on its own domain since 2026-10-19, on the client\u2019s own Cloudflare account. The home and services pages paint themselves in as you scroll and show the finished page at once with reduced motion. Lighthouse and the security grade are measured live on the wall.',
+          'Live on its own domain since 2026-10-19, on the client\u2019s own Cloudflare account. The home and services pages paint themselves in as you scroll and show the finished page at once with reduced motion. Lighthouse and the security grade are measured live on the Wall.',
       },
       {
         label: 'Stack',
@@ -283,7 +283,7 @@ export const portfolio: PortfolioItem[] = [
       },
       {
         label: 'Result',
-        value: 'Live with real RMLS listings, mobile-first, with Lighthouse and the security grade measured live on the wall.',
+        value: 'Live with real RMLS listings, mobile-first, with Lighthouse and the security grade measured live on the Wall.',
       },
     ],
     links: [
@@ -323,7 +323,7 @@ export const portfolio: PortfolioItem[] = [
       },
       {
         label: 'Result',
-        value: 'Live and mobile-first, with Lighthouse and an A+ security grade both measured live on the wall.',
+        value: 'Live and mobile-first, with Lighthouse and an A+ security grade both measured live on the Wall.',
       },
       {
         // S339, Preston 2026-11-05: Search Console screenshots, dated.
@@ -367,7 +367,7 @@ export const portfolio: PortfolioItem[] = [
       },
       {
         label: 'Result',
-        value: 'Live and mobile-first, with the Mozilla Observatory grade and Lighthouse both measured live on the wall.',
+        value: 'Live and mobile-first, with the Mozilla Observatory grade and Lighthouse both measured live on the Wall.',
       },
     ],
     links: [
@@ -407,7 +407,7 @@ export const portfolio: PortfolioItem[] = [
       },
       {
         label: 'Result',
-        value: 'Live and indexed, with its Lighthouse scores measured live on the wall.',
+        value: 'Live and indexed, with its Lighthouse scores measured live on the Wall.',
       },
       {
         // S339, Preston 2026-11-05: Search Console screenshots, dated.
@@ -445,7 +445,7 @@ export const portfolio: PortfolioItem[] = [
       },
       {
         label: 'Result',
-        value: 'Live on her own domain since 2026-09-22, on her own Cloudflare account. Lighthouse and the security grade are measured live on the wall.',
+        value: 'Live on her own domain since 2026-09-22, on her own Cloudflare account. Lighthouse and the security grade are measured live on the Wall.',
       },
       {
         label: 'Stack',
@@ -665,7 +665,7 @@ export const portfolio: PortfolioItem[] = [
     details: [
       {
         label: 'Stack',
-        value: 'Demiurge memory engine (custom, live count on the wall) · Flutter app · BYOK Anthropic',
+        value: 'Demiurge memory engine (custom, live count on the Wall) · Flutter app · BYOK Anthropic',
       },
       {
         label: 'Scope',

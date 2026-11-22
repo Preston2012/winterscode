@@ -1,6 +1,6 @@
 ---
 import CaseStudyLayout from '../../components/templates/CaseStudyLayout.astro';
-import { bizDaysWord, daysWord } from '../../lib/counts';
+import { bizDaysWord, daysWord, builtDays } from '../../lib/counts';
 ---
 <CaseStudyLayout
   slug="seabreeze"
@@ -15,7 +15,7 @@ import { bizDaysWord, daysWord } from '../../lib/counts';
     `The rebuild took <span class='hl-green'>${bizDaysWord('seabreeze')}</span> from kickoff to live and produced fourteen pages, six of which each own a single service and nothing else.`,
   ]}
   stats={[
-    { value: '7', label: 'business days, kickoff to live' },
+    { value: String(builtDays('seabreeze')), label: builtDays('seabreeze') === 1 ? 'business day, kickoff to live' : 'business days, kickoff to live' },
     { value: '6', label: 'service pages, one per trade' },
     { value: '46', label: 'real job photos, no stock' },
     { value: '2', label: 'outside scripts, both Cloudflare' },
@@ -40,7 +40,7 @@ import { bizDaysWord, daysWord } from '../../lib/counts';
       body: [
         "Across all fourteen pages the site loads <span class='stat'>no</span> framework or plugin JavaScript. The only outside scripts are Cloudflare's own: the Turnstile spam check where there is an estimate form, and the page-view counter. Everything else the site does, it does with the HTML and CSS it already sent.",
         "That is not a stunt, it is what a custom build buys you. No plugin stack, no jQuery, no page builder loading its own runtime to every visitor. Photos load as WebP at the size the screen actually needs. The result is <span class='hl-green'>a contractor site built to open fast on a phone with two bars in the Coquille valley</span>, which is where most of these visitors are.",
-        "The security grade is A+ on Mozilla Observatory and the Lighthouse numbers are measured live, not quoted from a screenshot. Both are on <a href='/wall'>the wall</a>.",
+        "The security grade is A+ on Mozilla Observatory and the Lighthouse numbers are measured live, not quoted from a screenshot. Both are on <a href='/wall'>the Wall</a>.",
       ],
     },
   ]}

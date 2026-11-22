@@ -15,7 +15,7 @@ import { bizDays, builtDays } from '../../lib/counts';
     "This site does not have one. The RMLS feed comes straight into <span class='hl-copper'>the brokerage's own database</span> and renders as ordinary pages on their own domain, with their own design, their own URLs, and <span class='hl-green'>their own search built on top of it</span>.",
   ]}
   stats={[
-    { value: '18', label: 'business days, kickoff to live' },
+    { value: String(builtDays('bbtd')), label: builtDays('bbtd') === 1 ? 'business day, kickoff to live' : 'business days, kickoff to live' },
     { value: '0', label: 'third-party IDX widgets' },
     { value: 'A+', label: 'Mozilla Observatory, measured live' },
   ]}
