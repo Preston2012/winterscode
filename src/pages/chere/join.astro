@@ -10,9 +10,10 @@
  * Under it, the Chere' master video (2026-11-10 cut, 720p web encode), Preston 2026-11-16:
  * "Below text me your key should be the latest Chere' video".
  *
- * Links: TestFlight's public link for Chere' (Apple approved build 2501 for outside testers),
- * and on Android the testers Google Group, Play's opt-in page and the Play listing. The Android
- * lane's buttons open a coming-soon note until Google approves the Closed testing release (ANDROID_LIVE).
+ * Links: TestFlight's public link for Chere' (Apple approved build 2601 for outside testers),
+ * and on Android the testers Google Group, Play's opt-in page and the Play listing. ANDROID_LIVE
+ * turns the Android lane's coming-soon note into real links; it is on since Google approved the
+ * Closed testing release (Preston, 2026-11-21).
  */
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Header from '../../components/layout/Header.astro';
@@ -31,10 +32,10 @@ const crumbs = [
 const sms = smsBase + encodeURIComponent("Hi Preston, I installed Chere'. My phone's key is: ");
 
 const PKG = 'com.winterscode.chere.demo';
-// Android goes live when Google approves the Closed testing release. Until then each Android button
-// opens the coming-soon note (Preston, 2026-11-17: "put a coming soon pop-up on the play button for
-// now until the link is live"). Set true and rebuild to make them real links.
-const ANDROID_LIVE = false;
+// Android went live when Google approved the Closed testing release (Preston, 2026-11-21: "play and
+// apple is approved? Needs to be updated so the Chere' page can work now"). Before that each Android
+// button opened the coming-soon note (Preston, 2026-11-17). Set false to bring the note back.
+const ANDROID_LIVE = true;
 const smsAndroid = smsBase + encodeURIComponent("Hi Preston, I'd like Chere' on my Android phone. ");
 // Official store badges (the same files baseline.marketing uses). Apple's badge may only link to an App
 // Store page, so it sits on Get TestFlight (TestFlight's own App Store page), never on the beta link.
@@ -253,7 +254,7 @@ const QR_D = 'M0 0h1v1h-1zM1 0h1v1h-1zM2 0h1v1h-1zM3 0h1v1h-1zM4 0h1v1h-1zM5 0h1
 
   <div id="jn-apple" popover class="jn-soon" role="dialog" aria-label="Join on iPhone or iPad">
     <p class="jn-soon-eyebrow mono">IPHONE AND IPAD</p>
-    <p class="jn-soon-p">Chere' for iPhone and iPad installs through TestFlight. Open this page on your iPhone or iPad to join.</p>
+    <p class="jn-soon-p">Chere' for iPhone and iPad installs through TestFlight. Open winterscode.com/chere/join on your iPhone or iPad to join.</p>
     <button type="button" class="jn-soon-close" data-apple-close>Close</button>
   </div>
   <script is:inline>
