@@ -40,7 +40,7 @@ const breadcrumbLd = breadcrumbSchema(crumbs);
   <PageHero
     eyebrow="Pricing"
     h1="One price. Everything in."
-    sub="Local business sites start at $1,750, with everything below included. Bigger jobs cost more and I tell you up front. Care plans optional, from $75 a month."
+    sub="Local business sites start at $1,750, with everything included. Bigger jobs cost more and I tell you up front. Care plans optional, from $75 a month."
     bgImage="/photo/local/scenes/seastacks-gorse"
     showcase
     bgPosition="center 50%"
@@ -58,20 +58,7 @@ const breadcrumbLd = breadcrumbSchema(crumbs);
     <div slot="panel-new-site">
       <p class="pr-price"><span class="wc-cu">$1,750</span> for most local business sites</p>
       <p class="pr-p">A real, finished website, not a demo you keep buying pieces of.</p>
-      <p class="pr-p">Everything below is included. No per-page fees, no surprise add-ons, no monthly anything you didn't ask for. The price I quote is the price you pay.</p>
-      <ul class="wc-bullets wc-bullets--2 pr-list">
-        <li>A custom site made for your business, not a template with your name dropped in</li>
-        <li>The core pages you need, with all the words written for you</li>
-        <li>Real photos of your business, shot here on the coast, no stock</li>
-        <li>A logo and brand if you don't have one, with real vector files for signs, shirts, and print</li>
-        <li>Built to load fast on a phone and scored live on Google's own test. The local sites I audited averaged 61 out of 100 on a phone (the 96 Google could score)</li>
-        <li>Readable by Google and AI assistants, with clean structure they can understand. Scrapers and junk bots shut out</li>
-        <li>Set up to be found on Google: Search Console, your sitemap submitted, and your Business Profile filled in</li>
-        <li>Your website, Google listing, and socials all lined up and pointing the same way</li>
-        <li>Real security baked in: HTTPS, a hardened setup, and spam-protected forms</li>
-        <li>Email on your own domain, a contact form that reaches you, and privacy and terms pages</li>
-        <li>A written SOW for the build, then no lock-in and no required monthly fee. When it's done, it's yours to keep</li>
-      </ul>
+      <p class="pr-p">One price, everything in: the pages, the words, real photos, branding, a site built to load fast on a phone, and security, and it's yours to keep. No per-page fees, no surprise add-ons, no monthly anything you didn't ask for. The price I quote is the price you pay.</p>
       <figure class="pr-quote">
         <blockquote><p>&ldquo;We are proud to endorse and recommend WintersCode.com.&rdquo;</p></blockquote>
         <figcaption>General Manager, US Survey Supply <a class="wc-link" href="/work/us-survey-supply">See the US Survey Supply build <Arrow size={16} /></a></figcaption>
@@ -126,7 +113,15 @@ const breadcrumbLd = breadcrumbSchema(crumbs);
       </ul>
     </Fold>
     <Fold title="When it costs more">
-      <p>The floor covers a complete core site. These add to it, and I quote them clearly: bigger sites with a lot more pages, SEO expansion for more reach and local search, online booking, payments, or a store, and listing feeds like MLS or RMLS for real estate. Cross-platform apps and custom systems are quoted per project too. Tell me what you need and I'll price it straight.</p>
+      <p>The floor covers a complete core site. These add to it, and I quote them clearly.</p>
+      <ul class="wc-bullets">
+        <li><span><b>Bigger sites.</b> A lot more pages, or sections well beyond a core site.</span></li>
+        <li><span><b>Booking, payments, or a store.</b> Online scheduling, taking payments, or selling products.</span></li>
+        <li><span><b>Listing feeds.</b> MLS or RMLS feeds for real estate.</span></li>
+        <li><span><b>Integrations.</b> Stripe, QuickBooks, or whatever you already use, wired together.</span></li>
+        <li><span><b>AI workflow design.</b> Automating intake, replies, and lead routing. Practical AI, not the buzzword kind. If it uses an AI model or a paid API, I name that running cost in the quote, so the monthly bill is never a surprise.</span></li>
+      </ul>
+      <p>Cross-platform apps and custom systems are quoted per project too. Tell me what you need and I'll price it straight.</p>
       <p>Anything on this list is priced in writing before you sign.</p>
     </Fold>
   </div>
@@ -140,7 +135,6 @@ const breadcrumbLd = breadcrumbSchema(crumbs);
   .pr-p { margin: 12px 0 0; max-width: 42rem; font-size: 16px; line-height: 1.6; color: var(--color-ash-300); }
   .pr-p--lead { margin-top: 0; color: #eef1ec; font-size: 17px; }
   .pr-p a, .pr-quote a { color: var(--color-wc-green); }
-  .pr-list { margin-top: 18px; color: var(--color-ash-300); }
   .pr-quote { margin: 22px 0 0; padding: 0; }
   .pr-quote blockquote { margin: 0; }
   .pr-quote p { margin: 0; font-family: var(--wc-display); font-style: italic; font-size: clamp(20px, 2.6vw, 26px); line-height: 1.3; color: #eef1ec; }

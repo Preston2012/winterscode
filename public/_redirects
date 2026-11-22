@@ -13,3 +13,7 @@
 
 # S339, 2026-11-22: tools and people ask for /sitemap.xml; the sitemap is the index.
 /sitemap.xml /sitemap-index.xml 301
+
+# S339, 2026-11-22: Professors Golf folds into its /work card (Preston).
+/work/professors-golf /work#professors-golf 301
+/work/professors-golf.html /work#professors-golf 301

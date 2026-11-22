@@ -40,7 +40,7 @@ const servicesLd = {
 
 <BaseLayout
   title="Services · Websites, Apps & Care Plans · Winters Code"
-  description={`Websites, apps, custom software, AI automation, SEO and branding for Oregon coast businesses. ${numberWord(services.length, true)} services, one builder, one price with everything in.`}
+  description={`Websites, apps, custom software, AI automation, site speed and branding for Oregon coast businesses. ${numberWord(services.length, true)} services, one builder, one price with everything in.`}
 >
   <Fragment slot="head">
     <script type="application/ld+json" set:html={JSON.stringify(breadcrumbLd)} />
@@ -84,13 +84,13 @@ const servicesLd = {
       { id: 'sites', label: 'Sites', sub: 'From $1,750', icon: 'web' },
       { id: 'apps', label: 'Apps', sub: 'MVP in 2-4 weeks', icon: 'apps' },
       { id: 'care', label: 'Care', sub: 'From $75 a month', icon: 'keep' },
-      { id: 'addons', label: 'Extras', sub: 'When it costs more', icon: 'all' },
+      { id: 'addons', label: 'Left out', sub: 'On purpose', icon: 'all' },
     ]}
   >
     <div slot="panel-sites">
       <p class="sv-price"><span>Most local business sites start at</span> <span class="wc-cu">$1,750</span></p>
       <p class="sv-p">Custom code, custom design, mobile-first. Built for your business, not stamped from a template.</p>
-      <p class="sv-p">One number, everything below included. No per-page fees, no surprise add-ons, no monthly anything you didn't ask for. The price I quote is the price you pay. Bigger jobs cost more and I tell you that up front, but the floor is a real, finished website, not a demo you keep buying pieces of.</p>
+      <p class="sv-p">One number, everything below included. Bigger jobs cost more and I tell you that up front, but the floor is a real, finished website, not a demo you keep buying pieces of. Prices and terms are on <a href="/pricing">pricing</a>.</p>
       <div class="sv-folds">
         <Fold title="Your website" group="sv-sites">
           <ul class="wc-bullets">
@@ -142,29 +142,15 @@ const servicesLd = {
     </div>
     <div slot="panel-care">
       <p class="sv-p sv-p--lead">Optional. Monthly plans, cancel anytime. The person who built it is the person who maintains it.</p>
-      <div class="sv-tiers sv-tiers--2">
-        <div class="sv-tier"><p class="sv-tier-h">Basic</p><p class="sv-tier-t">starting at <span class="wc-cu">$75</span>/mo</p><ul class="wc-bullets"><li>Hosting and SSL, managed on your account</li><li>Daily backups</li><li>Security patches</li><li>10 content edits / month</li><li>Uptime monitoring</li></ul></div>
-        <div class="sv-tier"><p class="sv-tier-h">Pro</p><p class="sv-tier-t">starting at <span class="wc-cu">$250</span>/mo</p><ul class="wc-bullets"><li>Everything in Basic</li><li>Unlimited reasonable edits</li><li>Edits scheduled directly with me</li><li>Quarterly performance + SEO pass, fixes made</li><li>Improvements rolled in as you grow</li></ul></div>
-      </div>
       <div class="sv-folds">
         <Fold title="Do I have to be a build client to get a plan?" group="sv-care"><p>Not necessarily. If your site is on a stack I can support, I can often take over maintenance. If it is a tangle of plugins on an old platform, a rebuild may be the better path, and the <a href="/audit">audit</a> will tell us.</p></Fold>
         <Fold title="What counts as a content edit?" group="sv-care"><p>Updating hours or prices, swapping a photo, adding a page, fixing a typo, posting an event. Basic includes ten a month; Pro is unlimited within reason. Bigger feature work is quoted separately.</p></Fold>
         <Fold title="What happens if my site goes down?" group="sv-care"><p>A static site rarely does, but if hosting hiccups, uptime monitoring usually catches it before you notice and daily backups make recovery quick.</p></Fold>
         <Fold title="Can I cancel?" group="sv-care"><p>Yes, anytime. The plans are month to month. No lock-in, because the work should keep earning the relationship.</p></Fold>
       </div>
-      <TextCta label="Text me about a care plan" links={[{ href: '/pricing', label: 'See pricing' }]} />
+      <TextCta label="Text me about a care plan" links={[{ href: '/pricing#care', label: 'Care plan prices' }]} />
     </div>
     <div slot="panel-addons">
-      <p class="sv-sub-h">When it costs more</p>
-      <p class="sv-p">The floor covers a complete core site. These add to it, and I quote them clearly.</p>
-      <ul class="wc-bullets wc-bullets--2 sv-extras">
-        <li><span><b>Bigger sites.</b> A lot more pages, or sections well beyond a core site.</span></li>
-        <li><span><b>SEO expansion.</b> More reach and stronger local search, beyond the strong baseline that comes with every site.</span></li>
-        <li><span><b>Booking, payments, or a store.</b> Online scheduling, taking payments, or selling products.</span></li>
-        <li><span><b>Listing feeds.</b> MLS or RMLS feeds for real estate.</span></li>
-        <li><span><b>Integrations.</b> Stripe, QuickBooks, or whatever you already use, wired together.</span></li>
-        <li><span><b>AI workflow design.</b> Automating intake, replies, and lead routing. Practical AI, not the buzzword kind. If it uses an AI model or a paid API, I name that running cost in the quote, so the monthly bill is never a surprise.</span></li>
-      </ul>
       <p class="sv-p"><strong>What I leave out, on purpose.</strong> Banner sliders and filler nobody reads. Newsletters you'll never send. A pile of throwaway email accounts. Stock photos. Fake "verified" badges (my proof is your live Google score, not a sticker).</p>
       <p class="sv-sub-h">What I don't do</p>
       <p class="sv-p">Honest about scope. Saves us both time.</p>
@@ -175,7 +161,7 @@ const servicesLd = {
         <li>Videography</li>
         <li>Social media management</li>
       </ul>
-      <p class="sv-p">For these I'll point you to someone good. The one exception: I won't post to social by hand, but I can build the automation that does it. That's part of AI workflow design above.</p>
+      <p class="sv-p">For these I'll point you to someone good. The one exception: I won't post to social by hand, but I can build the automation that does it. That's part of AI workflow design, on the <a href="/pricing">pricing</a> page.</p>
     </div>
   </Tabs>
 
@@ -216,8 +202,6 @@ const servicesLd = {
   .sv-note a, .sv-faq a, .sv-folds a { color: var(--color-wc-green); text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
   .sv-sub-h { margin: 22px 0 0; font-size: 18px; font-weight: 600; color: #eef1ec; }
   .sv-sub-h:first-child { margin-top: 0; }
-  .sv-extras { margin-top: 14px; color: var(--color-ash-300); }
-  .sv-extras b { color: #eef1ec; font-weight: 600; }
 
   .sv-tiers { display: grid; gap: 10px; margin-top: 16px; }
   .sv-tier { padding: 18px 18px; background: rgba(10, 13, 12, 0.55); border: 1px solid var(--wc-line); border-radius: var(--wc-r); }

@@ -94,11 +94,11 @@ export const services: ServiceEntry[] = [
   },
   {
     slug: 'seo-performance',
-    name: 'SEO & Performance',
-    shortLabel: 'SEO & Performance',
+    name: 'Speed & Performance',
+    shortLabel: 'Speed & Performance',
     blurb:
-      'Core Web Vitals, Lighthouse, and on-page SEO done right. The speed and security most Coos County sites are missing.',
-    serviceType: 'SEO and website performance optimization',
+      'Core Web Vitals, Lighthouse, and the on-page basics done right. The speed and security most Coos County sites are missing.',
+    serviceType: 'Website speed and performance optimization',
   },
 ];
 
