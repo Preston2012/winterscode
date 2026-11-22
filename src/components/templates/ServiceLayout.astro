@@ -137,8 +137,8 @@ const faqLd = faq.length ? faqSchema(faq) : null;
 // as a lone line of links floating between sections.
 const ctaLinks = [
   ...(textLinks ?? []),
-  ...(whyLink ? [{ href: '/services/web-design#why', label: 'Why custom code' }] : []),
-  ...(processLink ? [{ href: '/process', label: 'How a build goes' }] : []),
+  ...(whyLink ? [{ href: '/services/web-design#why', label: 'Here is the full reasoning, with the numbers' }] : []),
+  ...(processLink ? [{ href: '/process', label: 'See exactly how it goes' }] : []),
 ];
 // S339 (Nov 4 site audit): divider numbers run in document order. The
 // fixed 04/05/06 after the counted sections printed 04 twice on any page
@@ -218,8 +218,7 @@ const ctaLinks = [
 
   {(faq.length > 0 || sections.length > 0 || (why.length > 0 && !whyLink)) && (
     <section class="svc-faq" aria-labelledby="svc-faq-h">
-      <p class="wc-eyebrow"><span class="wc-dot" aria-hidden="true"></span>Questions</p>
-      <h2 class="svc-faq-h" id="svc-faq-h">Straight answers</h2>
+      <h2 class="svc-faq-h" id="svc-faq-h">Questions</h2>
       {/* S339 page pass: the named sections and the why join the answers,
           instead of a lone fold standing between the Text key and them. */}
       {sections.map((sec) => (

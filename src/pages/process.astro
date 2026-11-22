@@ -25,13 +25,13 @@ const breadcrumbLd = breadcrumbSchema(crumbs);
 const steps = [
   {
     num: '01',
-    name: 'A text and a consult',
+    name: 'A text + a consult',
     meta: 'no cost, no pitch deck',
     body: 'Start with a text about your business and what you need. Then we talk: in person in Bandon, or by video across Coos and Curry. There is a short questionnaire if you would rather write it all out, but it is optional and never a gate before the first meeting.',
   },
   {
     num: '02',
-    name: 'A quote, a scope and 50%',
+    name: 'Quote + SOW + 50%',
     meta: 'locks scope and the start date',
     body: 'I send a custom quote and a plain-English scope of work. Quotes hold for 14 days. A 50 percent deposit locks the scope and the start date the quote sets, and the build begins once I have what it needs. No waiting for next quarter.',
   },
@@ -73,7 +73,7 @@ import Steps from '../components/ui/Steps.astro';
   <PageHero
     eyebrow="The Process"
     h1="From first conversation to a live site you own."
-    sub="Five steps, in plain words."
+    sub="A clear, honest path in five steps. No agency runaround."
     bgImage="/photo/local/scenes/beach-bigsky"
     showcase
     bgPosition="center 62%"
@@ -85,7 +85,7 @@ import Steps from '../components/ui/Steps.astro';
   <section class="proc wc-plate" aria-label="The five steps">
     <Steps label="The five steps" steps={steps.map((x) => ({ title: x.name, meta: x.meta, body: x.body }))} />
   </section>
-  <TextCta lead="Step one is a text." links={[{ href: '/pricing', label: 'Pricing' }, { href: '/about', label: 'How I work' }]} />
+  <TextCta lead="Step one is a text." links={[{ href: '/pricing', label: 'See pricing' }, { href: '/about', label: 'How I work' }]} />
 
   <Contact />
 </BaseLayout>
