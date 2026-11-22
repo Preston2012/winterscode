@@ -77,11 +77,11 @@ const mediaUrl = (file: string) => {
         <source src={mediaUrl('chere-master.webm')} type="video/webm" />
         <source src={mediaUrl('chere-master.mp4')} type="video/mp4" />
       </video>
-      <button type="button" class="chf-play" hidden>
+      <button type="button" class="chf-play" hidden aria-label="Watch the Chere' demo, 1 minute 32 seconds, sound on">
         <span class="chf-play-disc" aria-hidden="true">
           <svg viewBox="0 0 24 24" width="26" height="26"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor" /></svg>
         </span>
-        <span class="chf-play-label">Watch the demo <span class="chf-dot" aria-hidden="true">·</span> 1:32 <span class="chf-dot" aria-hidden="true">·</span> sound on<span class="sr-only">, the Chere' video</span></span>
+        <span class="chf-play-label"><span class="chf-play-what">Watch the demo <span class="chf-dot" aria-hidden="true">·</span> </span>1:32 <span class="chf-dot" aria-hidden="true">·</span> sound on<span class="sr-only">, the Chere' video</span></span>
       </button>
     </div>
   </div>
@@ -100,7 +100,8 @@ const mediaUrl = (file: string) => {
         : <h3 class="chf-name" id={headingId}>{p.name}</h3>}
     <p class="chf-tagline">A back office for one-truck contractors.</p>
 
-    {variant === 'work' || variant === 'page' ? (
+    {/* S339: on /chere the six steps right below say all of this, so the page variant skips it. */}
+    {variant === 'page' ? null : variant === 'work' ? (
       <p class="chf-copy">
         Snap the room and say what's changing. Chere' draws three options from the
         photo and prices the job from the one your customer picks. Every measurement
@@ -127,7 +128,8 @@ const mediaUrl = (file: string) => {
       </div>
     )}
 
-    <div class="chf-cta" data-textbar-hide>
+    {/* S339: /chere ends on the same Text button and links, so the page variant leaves them there. */}
+    {variant !== 'page' && <div class="chf-cta" data-textbar-hide>
       <!-- S339 HONE-SPEC: outline, so the screen keeps one filled Text. -->
       <a class="btn btn-secondary chf-btn" href={sms}>
         <span>In beta. Text me for access</span>
@@ -145,7 +147,7 @@ const mediaUrl = (file: string) => {
               <a class="chf-link" href="/chere/privacy">Privacy</a>
             </>
           : <a class="chf-link" href="/chere">More on Chere' →</a>}
-    </div>
+    </div>}
 
     {(variant === 'work' || variant === 'page') && (
       <p class="chf-name-note">Named for Chere' Brazel Winters (Gigi), who kept our family's books.</p>
@@ -229,14 +231,16 @@ const mediaUrl = (file: string) => {
     position: absolute;
     inset: 0;
     z-index: 2;
+    /* S339: the key sits bottom left, like the Home doors, so it never covers
+       the title on the poster frame. */
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: flex-start;
+    gap: 10px;
     width: 100%;
     border: 0;
-    padding: 0;
+    padding: 0 0 14px 14px;
     margin: 0;
     cursor: pointer;
     color: var(--color-bg-deep);
@@ -269,6 +273,8 @@ const mediaUrl = (file: string) => {
     100% { transform: scale(1.35); opacity: 0; }
   }
   .chf-play-label {
+    white-space: nowrap;
+    margin-bottom: 4px;
     font-family: var(--font-mono);
     font-size: 11px;
     font-weight: 600;
@@ -284,10 +290,11 @@ const mediaUrl = (file: string) => {
   /* Narrow phones: the player is about 140px tall, so the disc and the label
      come down a size to leave the burned-in caption readable. */
   @media (max-width: 400px) {
-    .chf-play { gap: 8px; }
-    .chf-play-disc { width: 54px; height: 54px; }
+    .chf-play { gap: 8px; padding: 0 0 10px 10px; }
+    .chf-play-disc { width: 46px; height: 46px; }
     .chf-play-disc svg { width: 22px; height: 22px; }
     .chf-play-label { font-size: 9.5px; padding: 4px 9px; letter-spacing: 0.1em; }
+    .chf-play-what { display: none; }
   }
   @media (hover: hover) {
     .chf-play:hover .chf-play-disc { transform: scale(1.06); background: var(--color-wc-green-bright); }
