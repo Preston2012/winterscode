@@ -1,16 +1,17 @@
 ---
 import CaseStudyLayout from '../../components/templates/CaseStudyLayout.astro';
+import { bizDaysWord, daysWord } from '../../lib/counts';
 ---
 <CaseStudyLayout
   slug="sogn-contracting"
   title="Sogn Contracting Case Study · Winters Code"
-  description="A 30-year Bandon contractor live in three business days, now 23 pages: eight services, six service areas, a before-and-after gallery and a cost page."
+  description={`A 30-year Bandon contractor live in ${bizDaysWord('sogn')}, now 23 pages: eight services, six service areas, a before-and-after gallery and a cost page.`}
   eyebrow="Work · Case Study"
-  h1="Live in three days. Still growing."
-  sub="A licensed Oregon general contractor building since 1995, online in three business days and expanded ever since. Eight service pages, six service areas, and a page that publishes what things cost."
+  h1={`Live in ${daysWord('sogn')}. Still growing.`}
+  sub={`A licensed Oregon general contractor building since 1995, online in ${bizDaysWord('sogn')} and expanded ever since. Eight service pages, six service areas, and a page that publishes what things cost.`}
   intro={[
     "Sogn Contracting has been building in Oregon since 1995. It started as one carpenter with a truck and is now a licensed, bonded and insured general contractor doing custom homes, additions, remodels, roofing, decks, concrete and commercial work out of Bandon. Faith, integrity and craftsmanship is how they describe the way they take a job, and it is on the site in their words, not smoothed into marketing language.",
-    "The first version went live in <span class='hl-copper'>three business days</span>. That was the core: home, services, gallery, contact, enough to be findable and callable. What happened after is the part worth showing.",
+    `The first version went live in <span class='hl-copper'>${bizDaysWord('sogn')}</span>. That was the core: home, services, gallery, contact, enough to be findable and callable. What happened after is the part worth showing.`,
     "It kept growing. The site is <span class='hl-green'>23 pages now</span>, added over six months as we worked out which searches were worth owning. That is not a three-day site that stopped. It is a three-day site that started.",
   ]}
   stats={[

@@ -120,6 +120,7 @@ const workLd = {
     eyebrow="Work"
     h1="Sites and apps I've built."
     sub="Live sites for working coast businesses. Every score is read live, so you can check it yourself."
+    sub2="I design and I build, end to end."
   />
 
   <Tabs
@@ -127,8 +128,8 @@ const workLd = {
     cols={3}
     tabs={[
       { id: 'sites', label: 'Sites', sub: `${sites.length} live, scored`, icon: 'web' },
-      { id: 'apps', label: 'Apps', sub: 'iPhone and Android', icon: 'apps' },
-      { id: 'branding', label: 'Branding', sub: 'Logos and marks', icon: 'brand' },
+      { id: 'apps', label: 'Apps', sub: `${apps.length} built, iOS and Android`, icon: 'apps' },
+      { id: 'branding', label: 'Branding', sub: 'The identity side of the shop', icon: 'brand' },
     ]}
   >
     <div slot="panel-sites">
@@ -149,6 +150,13 @@ const workLd = {
               </div>
               <p class="wk-face">{p.face ?? p.meta}</p>
               {p.quote && <p class="wk-quote">&ldquo;{lastSentence(p.quote.text)}&rdquo; <span>{p.quote.shortAttr ?? p.quote.attr}</span></p>}
+              <details class="wk-more">
+                <summary>more details</summary>
+                <p class="wk-meta-line">{p.meta}</p>
+                <p class="wk-tags">{p.tags.join(' · ')}</p>
+                {measuredSite(p.slug)?.lhFallback && <p class="wk-tags">Lighthouse {measuredSite(p.slug)!.lhFallback!.map((n, k) => `${LH_LABELS[k]} ${n}`).join(' · ')}, last known read</p>}
+                <dl class="wk-rows">{p.details.map((d) => <div><dt>{d.label}</dt><dd>{d.value}</dd></div>)}</dl>
+              </details>
               <div class="wk-foot">
                 <p class="wk-score" title="Google's phone test and Mozilla's security-header grade, read live">
                   <span class="wk-lamp" aria-hidden="true"></span>
@@ -157,8 +165,8 @@ const workLd = {
                   <b data-chip-grade>{measuredSite(p.slug)?.secFallback?.grade ?? '·'}</b>
                 </p>
                 <div class="wk-go">
-                  {p.caseStudy && <a class="wc-link" href={p.caseStudy}>Case study <Arrow size={16} /></a>}
-                  {visitOf(p) && <a class="wc-link wk-live" href={visitOf(p).href} target="_blank" rel="noopener">Live site <Arrow dir="up-right" size={14} /></a>}
+                  {p.caseStudy && <a class="wc-link" href={p.caseStudy}>Read the case study <Arrow size={16} /></a>}
+                  {visitOf(p) && <a class="wc-link wk-live" href={visitOf(p).href} target="_blank" rel="noopener">Visit the live site <Arrow dir="up-right" size={14} /></a>}
                 </div>
               </div>
             </article>
@@ -166,10 +174,11 @@ const workLd = {
           </>
         ))}
       </ul>
+      <p class="wk-explain">Scores are Google's phone test and Mozilla's security-header grade, checked live.</p>
       <Fold title="How the scores are read">
-        <p>Each card shows two live measurements from the client's own site. The first is Google's Lighthouse phone test, 0 to 100, the harder of its two tests. The second is Mozilla Observatory's grade for security headers, A+ at the top. That is a header check, not a full security test. If a score drops on a site I built, you'll see it here and on <a href="/wall">the Wall</a>.</p>
+        <p>Each card shows two measurements, read fresh from the client's live site within a moment of opening (the last known numbers show first). Lighthouse is Google's own test, 0 to 100 each for speed, accessibility, search readiness and best practices, on mobile, the harder test. Mozilla Observatory grades a site's security headers, A+ at the top; it is a header check, not a full security test. If a score drops on a client site I built, you'll see it here.</p>
       </Fold>
-      <TextCta label="Text me about a site like these" links={[{ href: '/web-design-coos-bay', label: 'Web design in Coos Bay' }]} />
+      <TextCta links={[{ href: '/web-design-coos-bay', label: 'Web design in Coos Bay' }]} />
     </div>
 
     <div slot="panel-apps">
@@ -184,7 +193,12 @@ const workLd = {
                 <span class="wk-tag">{p.status === 'retired' ? 'Retired' : p.status}</span>
               </div>
               <p class="wk-face">{p.meta}</p>
-              <div class="wk-go">{p.caseStudy && <a class="wc-link" href={p.caseStudy}>Case study <Arrow size={16} /></a>}</div>
+              <details class="wk-more">
+                <summary>more details</summary>
+                <p class="wk-tags">{p.tags.join(' · ')}</p>
+                <dl class="wk-rows">{p.details.map((d) => <div><dt>{d.label}</dt><dd>{d.value}</dd></div>)}</dl>
+              </details>
+              <div class="wk-go">{p.caseStudy && <a class="wc-link" href={p.caseStudy}>Read the case study <Arrow size={16} /></a>}</div>
             </article>
           </li>
         ))}
@@ -199,6 +213,12 @@ const workLd = {
                     <h3 class="wk-name">{p.slug === 'demiurge-mykonos' ? p.name : <a href={visitOf(p)?.href} target="_blank" rel="noopener">{p.name}</a>}</h3>
                   </div>
                   <p class="wk-face">{p.meta}</p>
+                  {p.slug === 'demiurge-mykonos' && <p class="wk-face">An AI companion app I built. Open the demo below and it runs on its real engine, right here in your browser. <b>It remembers between chats.</b> Tell it something, reset, ask again, it still knows.</p>}
+                  <details class="wk-more">
+                    <summary>more details</summary>
+                    <p class="wk-tags">{p.tags.join(' · ')}</p>
+                    <dl class="wk-rows">{p.details.map((d) => <div><dt>{d.label}</dt><dd>{d.value}</dd></div>)}</dl>
+                  </details>
                   {p.slug === 'demiurge-mykonos' && (
                     <details class="wk-demo">
                       <summary>Try the live demo</summary>
@@ -231,6 +251,8 @@ const workLd = {
           <div>
             <h3 class="wk-name">{p.name}</h3>
             <p class="wk-face">{p.meta}</p>
+            <p class="wk-tags">{p.tags.join(' · ')}</p>
+            {p.details.map((d) => <p class="wk-face"><b>{d.label}.</b> {d.value}</p>)}
             <div class="wk-go">{p.links.map((l) => <a class="wc-link" href={l.href}>{l.label} <Arrow size={16} /></a>)}</div>
           </div>
         </article>
@@ -289,6 +311,16 @@ const workLd = {
   .wk-name a:hover, .wk-name a:focus-visible { color: var(--color-copper-bright); }
   .wk-tag { flex: none; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-ash-300); padding: 3px 8px; border: 1px solid var(--wc-line); border-radius: 999px; }
   .wk-face { margin: 0; font-size: 15px; line-height: 1.5; color: var(--color-ash-300); }
+  .wk-explain { margin: 18px 0 10px; font-size: 15px; color: var(--color-ash-300); }
+  .wk-more { margin: 10px 0 0; font-size: 14.5px; color: var(--color-ash-300); }
+  .wk-more summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; color: var(--color-wc-green); font-weight: 600; }
+  .wk-more summary:focus-visible { outline: 2px solid var(--color-wc-green); outline-offset: 2px; }
+  .wk-meta-line, .wk-tags { margin: 0 0 6px; font-size: 13.5px; letter-spacing: .02em; color: var(--color-ash-300); }
+  .wk-rows { margin: 8px 0 0; display: grid; gap: 8px; }
+  .wk-rows div { display: grid; gap: 2px; }
+  .wk-rows dt { font-size: 12.5px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--color-copper-bright); }
+  .wk-rows dd { margin: 0; line-height: 1.55; }
+  @media (min-width: 740px) { .wk-rows div { grid-template-columns: 9rem 1fr; gap: 12px; } }
   .wk-quote { margin: 2px 0 0; font-family: var(--wc-display); font-style: italic; font-size: 16px; line-height: 1.4; color: #eef1ec; }
   .wk-quote span { display: block; margin-top: 2px; font-family: var(--font-sans); font-style: normal; font-size: 13px; color: var(--color-ash-500); }
   .wk-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 4px 16px; margin-top: auto; padding-top: 6px; border-top: 1px solid var(--wc-line); }

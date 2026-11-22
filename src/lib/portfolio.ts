@@ -1,4 +1,5 @@
 import { v } from './asset';
+import { bizDays, bizDaysWord, builtDays } from './counts';
 /**
  * Portfolio data, single source of truth for Apps + Sites sections.
  * Update here; both homepage grids and any future case-study routes
@@ -115,7 +116,7 @@ export const portfolio: PortfolioItem[] = [
     name: 'Grand Management Services',
     category: 'site',
     meta: 'grandmgmt.com · property management · 50 bilingual pages',
-    face: 'A Coos Bay property manager, rebuilt off WordPress · 50 bilingual pages · security grade D- → A+ · 13 business days',
+    face: `A Coos Bay property manager, rebuilt off WordPress · 50 bilingual pages · security grade D- → A+ · ${bizDays('grand')}`,
     tags: ['ASTRO', 'APPFOLIO', 'CLOUDFLARE'],
     status: 'live',
     build: 'rebuild',
@@ -132,7 +133,7 @@ export const portfolio: PortfolioItem[] = [
       {
         label: 'Scope',
         value:
-          'Rebuild of a Coos Bay property manager off WordPress: 50 bilingual pages, English and Spanish. Rentals live from AppFolio with town, bedroom and rent filters; 16 subsidized communities in 14 towns, each with its own page and a short form to request its application; all eight of the old forms rebuilt; and all 80 old addresses redirected to their new pages. Built in 13 business days.',
+          `Rebuild of a Coos Bay property manager off WordPress: 50 bilingual pages, English and Spanish. Rentals live from AppFolio with town, bedroom and rent filters; 16 subsidized communities in 14 towns, each with its own page and a short form to request its application; all eight of the old forms rebuilt; and all 80 old addresses redirected to their new pages. Built in ${bizDays('grand')}.`,
       },
       {
         label: 'Result',
@@ -165,7 +166,7 @@ export const portfolio: PortfolioItem[] = [
     name: 'US Survey Supply',
     category: 'site',
     meta: 'ussurveysupply.com · surveying equipment dealer · 42 pages',
-    face: 'A Bandon surveying-equipment dealer · 42 pages on a 32-page contract · 8 business days',
+    face: `A Bandon surveying-equipment dealer · 42 pages on a 32-page contract · ${bizDays('taylor')}`,
     tags: ['ASTRO', 'TAILWIND', 'CLOUDFLARE'],
     status: 'live',
     build: 'rebuild',
@@ -214,8 +215,8 @@ export const portfolio: PortfolioItem[] = [
     numeral: 'vi.',
     name: 'Makai Painting',
     category: 'site',
-    meta: 'makaipainting.com · painting + residential rehab · 5-day build',
-    face: 'A Coos Bay painting and residential-rehab company · 20 pages, 12 of them services · estimate form to the office inbox · 5 business days',
+    meta: `makaipainting.com · painting + residential rehab · ${builtDays('makai')}-day build`,
+    face: `A Coos Bay painting and residential-rehab company · 20 pages, 12 of them services · estimate form to the office inbox · ${bizDays('makai')}`,
     tags: ['ASTRO', 'CLOUDFLARE', 'TURNSTILE'],
     status: 'live',
     build: 'new',
@@ -296,8 +297,8 @@ export const portfolio: PortfolioItem[] = [
     numeral: 'iii.',
     name: 'SeaBreeze Landscape Care and Home Repair',
     category: 'site',
-    meta: 'seabreeze.llc · landscape care + home repair · 7-day build',
-    face: 'A Bandon landscape care and home-repair company · 7 business days',
+    meta: `seabreeze.llc · landscape care + home repair · ${builtDays('seabreeze')}-day build`,
+    face: `A Bandon landscape care and home-repair company · ${bizDays('seabreeze')}`,
     tags: ['ASTRO', 'TAILWIND', 'CLOUDFLARE'],
     status: 'live',
     build: 'rebuild',
@@ -318,7 +319,7 @@ export const portfolio: PortfolioItem[] = [
       {
         label: 'Scope',
         value:
-          'Full site for a Bandon landscape-care and home-repair business. Services, project photos, a service-area map, and a spam-guarded contact form. Built in 7 business days from kickoff to live.',
+          `Full site for a Bandon landscape-care and home-repair business. Services, project photos, a service-area map, and a spam-guarded contact form. Built in ${bizDays('seabreeze')} from kickoff to live.`,
       },
       {
         label: 'Result',
@@ -340,8 +341,8 @@ export const portfolio: PortfolioItem[] = [
     numeral: 'iv.',
     name: 'Professors Golf',
     category: 'site',
-    meta: 'professorsgolf.com · golf service · 1-day build',
-    face: 'A Bandon golf service · first version in one business day (homepage + events page)',
+    meta: `professorsgolf.com · golf service · ${builtDays('golf')}-day build`,
+    face: `A Bandon golf service · first version in ${bizDaysWord('golf')} (homepage + events page)`,
     tags: ['ASTRO', 'CLOUDFLARE'],
     status: 'live',
     build: 'new',
@@ -362,7 +363,7 @@ export const portfolio: PortfolioItem[] = [
       {
         label: 'Scope',
         value:
-          'Site for a Bandon golf service, first version built in one business day: a homepage plus an events page. Club fitting, PGA-certified instruction, caddy referrals, local tee times and all-inclusive golf trips, with a click-to-call header and a sharecard built for the group text.',
+          `Site for a Bandon golf service, first version built in ${bizDaysWord('golf')}: a homepage plus an events page. Club fitting, PGA-certified instruction, caddy referrals, local tee times and all-inclusive golf trips, with a click-to-call header and a sharecard built for the group text.`,
       },
       {
         label: 'Result',
@@ -380,8 +381,8 @@ export const portfolio: PortfolioItem[] = [
     numeral: 'iv.',
     name: 'Sogn Contracting',
     category: 'site',
-    meta: 'sogncontracting.com · contractor · 3-day build',
-    face: 'A 30-year Bandon contractor · 3 business days',
+    meta: `sogncontracting.com · contractor · ${builtDays('sogn')}-day build`,
+    face: `A 30-year Bandon contractor · ${bizDays('sogn')}`,
     tags: ['NEXT.JS', 'VERCEL', 'TYPESCRIPT'],
     status: 'live',
     build: 'new',
@@ -402,7 +403,7 @@ export const portfolio: PortfolioItem[] = [
       {
         label: 'Scope',
         value:
-          'Full marketing site for a 30-year contractor business. Before/after gallery, services pages, lead form. Built in 3 business days from kickoff to live.',
+          `Full marketing site for a 30-year contractor business. Before/after gallery, services pages, lead form. Built in ${bizDays('sogn')} from kickoff to live.`,
       },
       {
         label: 'Result',
@@ -430,8 +431,8 @@ export const portfolio: PortfolioItem[] = [
     numeral: 'vii.',
     name: 'South Coast Cuisine',
     category: 'site',
-    meta: 'southcoastcuisine.net · private chef · 3-day build',
-    face: 'A Bandon private chef · single page with menus, pricing and a seasonal event package she switches on herself · 3 business days',
+    meta: `southcoastcuisine.net · private chef · ${builtDays('jen')}-day build`,
+    face: `A Bandon private chef · single page with menus, pricing and a seasonal event package she switches on herself · ${bizDays('jen')}`,
     tags: ['ASTRO', 'CLOUDFLARE', 'CLIENT EDITOR'],
     status: 'live',
     build: 'new',

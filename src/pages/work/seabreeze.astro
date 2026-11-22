@@ -1,17 +1,18 @@
 ---
 import CaseStudyLayout from '../../components/templates/CaseStudyLayout.astro';
+import { bizDaysWord, daysWord } from '../../lib/counts';
 ---
 <CaseStudyLayout
   slug="seabreeze"
   title="SeaBreeze Landscape & Home Repair · Case Study · Winters Code"
-  description="A Bandon contractor off WordPress in seven business days: six service pages instead of one, 46 real job photos, and no JavaScript framework on any page."
+  description={`A Bandon contractor off WordPress in ${bizDaysWord('seabreeze')}: six service pages instead of one, 46 real job photos, and no JavaScript framework on any page.`}
   eyebrow="Work · Case Study"
-  h1="Off WordPress in seven days."
+  h1={`Off WordPress in ${daysWord('seabreeze')}.`}
   sub="A licensed Bandon landscape-care and home-repair contractor, rebuilt from the ground up. Six service pages instead of one, and no framework or plugin JavaScript on any page."
   intro={[
     "SeaBreeze is a licensed general contractor, landscape contractor and pesticide operator working Bandon and the South Coast. Stacy Winters founded the LLC in 2023 on the back of thirty-plus years of building, landscaping and repair, and the crew does everything from monthly lawn care to full remodels. Stacy is my dad.",
     "The old site was WordPress, and it had the problem almost every contractor site has: <span class='hl-copper'>one page called Services</span> with everything on it. Landscaping, decks, drainage, remodels, gutters, hauling, all in one list. A page like that can only ever rank for one thing, and it is usually the wrong thing.",
-    "The rebuild took <span class='hl-green'>seven business days</span> from kickoff to live and produced fourteen pages, six of which each own a single service and nothing else.",
+    `The rebuild took <span class='hl-green'>${bizDaysWord('seabreeze')}</span> from kickoff to live and produced fourteen pages, six of which each own a single service and nothing else.`,
   ]}
   stats={[
     { value: '7', label: 'business days, kickoff to live' },
@@ -38,14 +39,14 @@ import CaseStudyLayout from '../../components/templates/CaseStudyLayout.astro';
       h: 'What the pages do not load',
       body: [
         "Across all fourteen pages the site loads <span class='stat'>no</span> framework or plugin JavaScript. The only outside scripts are Cloudflare's own: the Turnstile spam check where there is an estimate form, and the page-view counter. Everything else the site does, it does with the HTML and CSS it already sent.",
-        "That is what a lean custom build buys you. No plugin stack, no jQuery, no page builder loading its own runtime to every visitor. Photos load as WebP at the size the screen actually needs. The result is <span class='hl-green'>a contractor site built to open fast on a phone with two bars in the Coquille valley</span>, which is where most of these visitors are.",
+        "That is not a stunt, it is what a custom build buys you. No plugin stack, no jQuery, no page builder loading its own runtime to every visitor. Photos load as WebP at the size the screen actually needs. The result is <span class='hl-green'>a contractor site built to open fast on a phone with two bars in the Coquille valley</span>, which is where most of these visitors are.",
         "The security grade is A+ on Mozilla Observatory and the Lighthouse numbers are measured live, not quoted from a screenshot. Both are on <a href='/wall'>the wall</a>.",
       ],
     },
   ]}
   relatedLinks={[
     { href: '/web-design-for-contractors', label: 'Web Design for Contractors', sub: 'The same work, offered' },
-    { href: '/website-redesign', label: 'Website Redesign', sub: 'Rebuilding what you have' },
+    { href: '/website-redesign', label: 'Website Redesign', sub: 'See what a rebuild covers' },
     { href: '/web-design-bandon', label: 'Web Design in Bandon', sub: 'Local work' },
     { href: '/work', label: 'All work', sub: 'More projects' },
   ]}

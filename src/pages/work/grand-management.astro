@@ -25,18 +25,19 @@
  *   - Signed 2026-10-13, live 2026-10-27 on Grand's own Cloudflare account.
  */
 import CaseStudyLayout from '../../components/templates/CaseStudyLayout.astro';
+import { bizDays, bizDaysWord } from '../../lib/counts';
 ---
 <CaseStudyLayout
   slug="grand-management"
   title="Grand Management Services Case Study · Winters Code"
   description="A Coos Bay property manager rebuilt off WordPress: 50 bilingual pages, live AppFolio rentals, and a page for each of 16 subsidized communities."
   eyebrow="Work · Case Study"
-  h1="Fifty bilingual pages, off WordPress in 13 business days."
+  h1={`Fifty bilingual pages, off WordPress in ${bizDays('grand')}.`}
   sub="A Coos Bay property manager's site, rebuilt from WordPress: every page in English and Spanish, rentals live from AppFolio, and a page for each of 16 subsidized communities where an applicant asks for the right application."
   intro={[
     "Grand Management Services runs rentals, subsidized apartment communities and owner services from an office on Park Avenue in Coos Bay. Their website serves three people who want three different things: somebody looking for a home, a tenant who needs to pay rent or ask for a repair, and an owner deciding who should manage their property.",
     "The old site was WordPress on a page-builder theme. Mozilla Observatory graded it <span class='hl-copper'>D-</span> when I measured it on October 10, and a May audit put its mobile performance at 69. The rebuild went live on October 27 on Grand's own Cloudflare account, graded <span class='hl-green'>A+</span>, with a mobile performance score of 98.",
-    "It is the largest site I have built for a client: <span class='hl-green'>50 bilingual pages</span>, a live rental feed, and a page for each of its 16 subsidized communities. Thirteen business days from the first build to launch.",
+    `It is the largest site I have built for a client: <span class='hl-green'>50 bilingual pages</span>, a live rental feed, and a page for each of its 16 subsidized communities. ${bizDaysWord('grand', true)} from the first build to launch.`,
   ]}
   stats={[
     { value: '50', label: 'bilingual pages, English and Spanish' },
@@ -76,7 +77,7 @@ import CaseStudyLayout from '../../components/templates/CaseStudyLayout.astro';
     },
   ]}
   relatedLinks={[
-    { href: '/website-redesign', label: 'Website Redesign', sub: 'Rebuilding what you have' },
+    { href: '/website-redesign', label: 'Website Redesign', sub: 'See what a rebuild covers' },
     { href: '/services/web-development', label: 'Web Development', sub: 'Custom code, not a plugin stack' },
     { href: '/web-design-coos-bay', label: 'Web Design in Coos Bay', sub: 'Local work' },
     { href: '/work', label: 'All work', sub: 'More projects' },

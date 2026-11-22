@@ -12,6 +12,7 @@ import Contact from '../components/sections/Contact.astro';
 import Breadcrumbs from '../components/ui/Breadcrumbs.astro';
 import { breadcrumbSchema, absUrl } from '../lib/schema';
 import { services } from '../lib/business';
+import { numberWord } from '../lib/counts';
 import TextCta from '../components/ui/TextCta.astro';
 
 const crumbs = [
@@ -39,7 +40,7 @@ const servicesLd = {
 
 <BaseLayout
   title="Services · Websites, Apps & Care Plans · Winters Code"
-  description="Websites, apps, custom software, AI automation, SEO and branding for Oregon coast businesses. Six services, one builder, one price with everything in."
+  description={`Websites, apps, custom software, AI automation, SEO and branding for Oregon coast businesses. ${numberWord(services.length, true)} services, one builder, one price with everything in.`}
 >
   <Fragment slot="head">
     <script type="application/ld+json" set:html={JSON.stringify(breadcrumbLd)} />
@@ -57,119 +58,142 @@ const servicesLd = {
        runaround" line are cut; the anchors #sites, #apps, #care and #addons
        still land, each opening its tab. -->
   <PageHero
-    eyebrow="Services"
+    eyebrow="Services · The Menu"
     h1="What I'm hired for."
-    sub="Websites, apps, branding and automation, built and kept running from one desk in Bandon."
+    sub="Custom sites that start at $1,750 with everything in, custom apps, integrations between systems you already use, and optional maintenance from $75 a month."
+    sub2="Custom code. Built by the person you call."
     bgImage="/photo/local/services-coast-wash"
     bgOpacity={0.4}
   />
 
   <section class="sv-how wc-plate" aria-labelledby="sv-how-h">
+    <p class="sv-p sv-p--lead">Every build starts with a question. <b>What story does this site need to tell?</b></p>
+    <p class="sv-p">For a charter captain, that might be "here's the boat, here's the dock, book a trip." For an agency, it's a full narrative arc. I figure out which one fits your business, then build to it. Top to bottom, every section earns its place.</p>
     <h2 class="sv-how-h" id="sv-how-h">How it goes</h2>
     <Steps steps={[
-      { title: 'A text and a consult', body: 'No cost, no pitch deck.' },
-      { title: 'A written scope and 50%', body: 'Locks the scope and the start date.' },
-      { title: 'Live in days', body: 'Starting at 3 business days. The final 50% on launch.' },
+      { title: 'A text + a consult', body: 'No cost, no pitch deck.' },
+      { title: 'SOW + 50%', body: 'Locks scope and the start date.' },
+      { title: 'Live in days', body: 'Starting at 3 business days, final 50% on launch.' },
     ]} />
+    <p class="sv-p">No agency runaround. No "we'll get back to you next quarter."</p>
   </section>
 
   <Tabs
     label="What's on the menu"
     tabs={[
       { id: 'sites', label: 'Sites', sub: 'From $1,750', icon: 'web' },
-      { id: 'apps', label: 'Apps', sub: 'MVP in 2 to 4 weeks', icon: 'apps' },
+      { id: 'apps', label: 'Apps', sub: 'MVP in 2-4 weeks', icon: 'apps' },
       { id: 'care', label: 'Care', sub: 'From $75 a month', icon: 'keep' },
-      { id: 'addons', label: 'Extras', sub: 'And what I skip', icon: 'all' },
+      { id: 'addons', label: 'Extras', sub: 'When it costs more', icon: 'all' },
     ]}
   >
     <div slot="panel-sites">
-      <p class="sv-price"><span class="wc-cu">$1,750</span> <span>for most local business sites, everything in</span></p>
-      <p class="sv-p">One number. No per-page fees, no surprise add-ons, no monthly anything you didn't ask for. Bigger jobs cost more and I say so up front.</p>
+      <p class="sv-price"><span>Most local business sites start at</span> <span class="wc-cu">$1,750</span></p>
+      <p class="sv-p">Custom code, custom design, mobile-first. Built for your business, not stamped from a template.</p>
+      <p class="sv-p">One number, everything below included. No per-page fees, no surprise add-ons, no monthly anything you didn't ask for. The price I quote is the price you pay. Bigger jobs cost more and I tell you that up front, but the floor is a real, finished website, not a demo you keep buying pieces of.</p>
       <div class="sv-folds">
-        <Fold title="Your website" meta="custom, written for you" group="sv-sites">
+        <Fold title="Your website" group="sv-sites">
           <ul class="wc-bullets">
-            <li>Custom design and code, not a template with your name dropped in.</li>
-            <li>The pages you need: home, about, your services or work, contact.</li>
-            <li>Real photos shot here on the coast, and the words written for you.</li>
-            <li>Galleries, a contact form that reaches you, privacy and terms pages.</li>
-            <li>An email on your own domain if you want one.</li>
-            <li>Right on every phone, tablet and computer.</li>
+            <li>A custom site made for your business, not a template with your name dropped in.</li>
+            <li>The pages you actually need: home, about, your services or work, and contact.</li>
+            <li>Real photos of your business, shot here on the coast. No stock photos of a storefront that isn't yours.</li>
+            <li>The words written for you. I write the headlines, your story, and your service descriptions, so you don't have to.</li>
+            <li>Photo galleries to show your work.</li>
+            <li>A contact form that reaches you.</li>
+            <li>An email on your own domain if you want one (you@yourbusiness.com).</li>
+            <li>Privacy and terms pages, standard and ready to go.</li>
+            <li>Looks right on every phone, tablet, and computer. I keep tuning it until you're happy with it.</li>
           </ul>
         </Fold>
-        <Fold title="Your brand" meta="logo and vector files" group="sv-sites">
-          <p>A logo and brand identity if you don't have one yet, made as part of the project, with real vector files for signs, shirts, cards and print.</p>
+        <Fold title="Your brand" group="sv-sites">
+          <p>A logo and brand identity if you don't have one yet. I create it as part of the project, because I can't do the site right without it. You get real vector files you can put on signs, shirts, business cards, and print, not just the website. I do the whole thing, start to finish.</p>
         </Fold>
-        <Fold title="Getting found" meta="fast, listed, readable" group="sv-sites">
+        <Fold title="Getting found" group="sv-sites">
           <ul class="wc-bullets">
-            <li>Built to load fast on a phone and scored live on Google's own test. In my audit, the local sites Google could score averaged 61 out of 100. Every one I build is on <a href="/wall">the Wall</a>.</li>
-            <li>Search Console set up and your sitemap submitted.</li>
-            <li>Google Business Profile filled in: hours, photos, services.</li>
-            <li>Clean structure Google and AI assistants can read. Junk bots shut out.</li>
-            <li>Site, listing and socials all saying the same thing.</li>
+            <li>Built to load fast on a phone and scored live on Google's own test. In my audit, the local sites Google could score averaged 61 out of 100 on a phone. Every one I build is on <a href="/wall">the Wall</a>.</li>
+            <li>Set up in Google Search Console, with your sitemap submitted.</li>
+            <li>Readable by Google and AI assistants, with clean structure they can understand. Scrapers and junk bots get shut out.</li>
+            <li>Your whole presence lined up: your website, your Google listing, and your socials all saying the same thing and pointing the same way.</li>
+            <li>Google Business Profile setup, with your hours, photos and services filled in.</li>
+            <li>Your socials wired right into the site.</li>
           </ul>
         </Fold>
-        <Fold title="Safe and yours" meta="no lock-in" group="sv-sites">
+        <Fold title="Safe and yours" group="sv-sites">
           <ul class="wc-bullets">
-            <li>HTTPS, a hardened setup and spam-protected forms, built in.</li>
-            <li>No plugin licenses and no being tied to whoever made it.</li>
-            <li>Yours to keep, free and clear, with no required monthly fee.</li>
+            <li>Real security baked in from the start: HTTPS, a hardened setup, and spam-protected forms. Not bolt-on plugins you have to babysit.</li>
+            <li>No monthly plugin licenses, no being tied to whoever made it.</li>
+            <li>When it's done, it's yours to keep, free and clear. No lock-in and no required monthly fee.</li>
+            <li>If you ever want me to keep it updated, make changes, or just be on call, I do that starting at $75 a month. Pro plans start at $250.</li>
           </ul>
         </Fold>
       </div>
-      <p class="sv-note">Already have a site? That is a rebuild, and most land between $2,500 and $3,500. <a href="/website-redesign">What a rebuild covers</a></p>
-      <TextCta label="Text me about a site" links={[{ href: '/pricing', label: 'Pricing' }]} />
+      <p class="sv-note"><strong>Already have a site?</strong> That is a rebuild, not a new build, and most land between $2,500 and $3,500 depending on what has to move. <a href="/website-redesign">See what a rebuild covers</a>.</p>
+      <TextCta links={[{ href: '/pricing', label: 'See pricing' }]} />
     </div>
-
     <div slot="panel-apps">
-      <p class="sv-p sv-p--lead">Flutter, so one codebase runs on iPhone and Android.</p>
+      <p class="sv-p sv-p--lead">Flutter. Cross-platform iOS + Android. One codebase, two stores.</p>
       <div class="sv-tiers">
-        <div class="sv-tier"><p class="sv-tier-h">MVP</p><p class="sv-tier-t">2 to 4 weeks</p><ul class="wc-bullets"><li>5 to 10 screens</li><li>iPhone and Android</li><li>Logins and a basic backend</li></ul></div>
-        <div class="sv-tier"><p class="sv-tier-h">Full build</p><p class="sv-tier-t">4 to 8 weeks</p><ul class="wc-bullets"><li>Payments and real-time data</li><li>AI features</li><li>App Store and Google Play</li></ul></div>
-        <div class="sv-tier"><p class="sv-tier-h">Custom system</p><p class="sv-tier-t">8 to 16 weeks</p><ul class="wc-bullets"><li>Separate staff and customer access</li><li>Subscriptions and integrations</li><li>50+ screens, complex workflows</li></ul></div>
+        <div class="sv-tier"><p class="sv-tier-h">MVP</p><p class="sv-tier-t">2-4 weeks</p><ul class="wc-bullets"><li>5-10 screens</li><li>Cross-platform iOS + Android</li><li>Auth + basic backend</li></ul></div>
+        <div class="sv-tier"><p class="sv-tier-h">Full build</p><p class="sv-tier-t">4-8 weeks</p><ul class="wc-bullets"><li>Payments</li><li>Real-time</li><li>AI features</li><li>Complex backend</li><li>App Store + Play Store</li></ul></div>
+        <div class="sv-tier"><p class="sv-tier-h">Custom system</p><p class="sv-tier-t">8-16 weeks</p><ul class="wc-bullets"><li>Separate access for staff and customers</li><li>Payment processing + subscription tiers</li><li>Enterprise integrations</li><li>50+ screens / complex workflows</li></ul></div>
       </div>
-      <p class="sv-note">If a build uses an AI model or a paid API, I name that running cost in the quote.</p>
-      <TextCta label="Text me about an app" links={[{ href: '/services/app-development', label: 'How app builds work' }]} />
+      <p class="sv-note">If a build uses an AI model or a paid API, I name that running cost in the quote, so the monthly bill is never a surprise.</p>
+      <TextCta label="Text me about your app" links={[{ href: '/services/app-development', label: 'How app builds work' }]} />
     </div>
-
     <div slot="panel-care">
-      <p class="sv-p sv-p--lead">Optional, month to month. The person who built it maintains it.</p>
+      <p class="sv-p sv-p--lead">Optional. Monthly plans, cancel anytime. The person who built it is the person who maintains it.</p>
       <div class="sv-tiers sv-tiers--2">
-        <div class="sv-tier"><p class="sv-tier-h">Basic</p><p class="sv-tier-t"><span class="wc-cu">$75</span> a month and up</p><ul class="wc-bullets"><li>Hosting and SSL on your account</li><li>Daily backups and security patches</li><li>10 content edits a month</li><li>Uptime monitoring</li></ul></div>
-        <div class="sv-tier"><p class="sv-tier-h">Pro</p><p class="sv-tier-t"><span class="wc-cu">$250</span> a month and up</p><ul class="wc-bullets"><li>Everything in Basic</li><li>Unlimited reasonable edits, scheduled with me</li><li>A quarterly speed and search pass, fixes made</li><li>Improvements as you grow</li></ul></div>
+        <div class="sv-tier"><p class="sv-tier-h">Basic</p><p class="sv-tier-t">starting at <span class="wc-cu">$75</span>/mo</p><ul class="wc-bullets"><li>Hosting and SSL, managed on your account</li><li>Daily backups</li><li>Security patches</li><li>10 content edits / month</li><li>Uptime monitoring</li></ul></div>
+        <div class="sv-tier"><p class="sv-tier-h">Pro</p><p class="sv-tier-t">starting at <span class="wc-cu">$250</span>/mo</p><ul class="wc-bullets"><li>Everything in Basic</li><li>Unlimited reasonable edits</li><li>Edits scheduled directly with me</li><li>Quarterly performance + SEO pass, fixes made</li><li>Improvements rolled in as you grow</li></ul></div>
       </div>
       <div class="sv-folds">
-        <Fold title="Do I have to be a build client?" group="sv-care"><p>Not necessarily. If your site is on a stack I can support, I can often take over maintenance. If it is a tangle of plugins, a rebuild may be the better path, and the <a href="/audit">audit</a> will tell us.</p></Fold>
-        <Fold title="What counts as a content edit?" group="sv-care"><p>Updating hours or prices, swapping a photo, adding a page, fixing a typo, posting an event. Bigger feature work is quoted separately.</p></Fold>
-        <Fold title="What if my site goes down?" group="sv-care"><p>A static site rarely does. If hosting hiccups, uptime monitoring usually catches it before you notice, and daily backups make recovery quick.</p></Fold>
-        <Fold title="Can I cancel?" group="sv-care"><p>Yes, anytime. No lock-in: the work should keep earning the relationship.</p></Fold>
+        <Fold title="Do I have to be a build client to get a plan?" group="sv-care"><p>Not necessarily. If your site is on a stack I can support, I can often take over maintenance. If it is a tangle of plugins on an old platform, a rebuild may be the better path, and the <a href="/audit">audit</a> will tell us.</p></Fold>
+        <Fold title="What counts as a content edit?" group="sv-care"><p>Updating hours or prices, swapping a photo, adding a page, fixing a typo, posting an event. Basic includes ten a month; Pro is unlimited within reason. Bigger feature work is quoted separately.</p></Fold>
+        <Fold title="What happens if my site goes down?" group="sv-care"><p>A static site rarely does, but if hosting hiccups, uptime monitoring usually catches it before you notice and daily backups make recovery quick.</p></Fold>
+        <Fold title="Can I cancel?" group="sv-care"><p>Yes, anytime. The plans are month to month. No lock-in, because the work should keep earning the relationship.</p></Fold>
       </div>
-      <TextCta label="Text me about a care plan" links={[{ href: '/pricing', label: 'Pricing' }]} />
+      <TextCta label="Text me about a care plan" links={[{ href: '/pricing', label: 'See pricing' }]} />
     </div>
-
     <div slot="panel-addons">
       <p class="sv-sub-h">When it costs more</p>
-      <p class="sv-p">The floor covers a complete core site. These add to it, quoted clearly.</p>
+      <p class="sv-p">The floor covers a complete core site. These add to it, and I quote them clearly.</p>
       <ul class="wc-bullets wc-bullets--2 sv-extras">
-        <li><span><b>Bigger sites.</b> Many more pages, or sections well beyond a core site.</span></li>
-        <li><span><b>More search reach.</b> Stronger local search past the baseline every site gets.</span></li>
-        <li><span><b>Booking, payments or a store.</b> Scheduling, taking payments, selling products.</span></li>
-        <li><span><b>Listing feeds.</b> MLS or RMLS for real estate.</span></li>
-        <li><span><b>Integrations.</b> Stripe, QuickBooks or what you already use, wired together.</span></li>
-        <li><span><b>AI workflows.</b> Intake, replies and lead routing, running costs named up front.</span></li>
+        <li><span><b>Bigger sites.</b> A lot more pages, or sections well beyond a core site.</span></li>
+        <li><span><b>SEO expansion.</b> More reach and stronger local search, beyond the strong baseline that comes with every site.</span></li>
+        <li><span><b>Booking, payments, or a store.</b> Online scheduling, taking payments, or selling products.</span></li>
+        <li><span><b>Listing feeds.</b> MLS or RMLS feeds for real estate.</span></li>
+        <li><span><b>Integrations.</b> Stripe, QuickBooks, or whatever you already use, wired together.</span></li>
+        <li><span><b>AI workflow design.</b> Automating intake, replies, and lead routing. Practical AI, not the buzzword kind. If it uses an AI model or a paid API, I name that running cost in the quote, so the monthly bill is never a surprise.</span></li>
       </ul>
-      <p class="sv-sub-h">What I skip</p>
-      <p class="sv-p">Banner sliders, filler nobody reads, newsletters you'll never send, stock photos and fake "verified" badges. And I don't run paid ads, write blogs, shoot video or manage social. For those I'll point you to someone good; for social, I can build the automation that posts for you.</p>
+      <p class="sv-p"><strong>What I leave out, on purpose.</strong> Banner sliders and filler nobody reads. Newsletters you'll never send. A pile of throwaway email accounts. Stock photos. Fake "verified" badges (my proof is your live Google score, not a sticker).</p>
+      <p class="sv-sub-h">What I don't do</p>
+      <p class="sv-p">Honest about scope. Saves us both time.</p>
+      <ul class="wc-bullets wc-bullets--2">
+        <li>Paid ads (Google / Meta / etc.)</li>
+        <li>Long-term SEO content strategy</li>
+        <li>Blog writing</li>
+        <li>Videography</li>
+        <li>Social media management</li>
+      </ul>
+      <p class="sv-p">For these I'll point you to someone good. The one exception: I won't post to social by hand, but I can build the automation that does it. That's part of AI workflow design above.</p>
     </div>
   </Tabs>
 
   <section class="sv-faq" id="faq" aria-labelledby="sv-faq-h">
     <p class="wc-eyebrow"><span class="wc-dot" aria-hidden="true"></span>Questions</p>
     <h2 class="wc-h2 sv-faq-h" id="sv-faq-h">The ones <span class="wc-soft">everyone asks.</span></h2>
-    <Fold title="Why Winters Code?" group="sv-faq" open>
+    <Fold title="How much does this cost?" group="sv-faq" open>
+      <p>One price, everything in. Most local business sites start at <strong>$1,750</strong>, with the pages, the words, real photos, branding, a site built to load fast on a phone, and security all included, and it's yours to keep.</p>
+      <p><em>Free consult and a written quote that holds for 14 days. Bigger jobs cost more, and I tell you up front.</em> The full picture is on <a href="/pricing">pricing</a>.</p>
+    </Fold>
+    <Fold title="Why Winters Code?" group="sv-faq">
       <WhyWintersCode />
     </Fold>
+    <Fold title="Do you maintain it after?" group="sv-faq">
+      <p>Yes, and it's optional. Monthly plans <strong>starting at $75/mo</strong>. Pro plans start at $250. Hosting, SSL, daily backups, security patches, content edits. The site stays alive, the phone number stays the same, the person who built it is the person who maintains it. <em>You text a real person, not a ticket queue.</em></p>
+    </Fold>
     <Fold title="What if I don't have content yet?" group="sv-faq">
-      <p>I do most of the lift. Start with a text about what you have. I can shoot the photos and draft the words, and you edit. If you'd rather write it all out, there's a <a href="/questionnaire.pdf">2-page questionnaire</a>, never a gate before we talk.</p>
+      <p>I do most of the lift. Usually <strong>80/20 your way</strong>. Start with a text about what you have and what you need. If you would rather write it all out, there is a 2-page questionnaire (<a href="/questionnaire.pdf">one-tap download</a>), but it is optional and never a gate before we talk. No photos or copy yet? I can shoot the photos and draft the copy, you edit.</p>
     </Fold>
   </section>
 
@@ -183,7 +207,7 @@ const servicesLd = {
 
   .sv-price { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 12px; margin: 0; }
   .sv-price .wc-cu { font-family: var(--wc-display); font-style: normal; font-weight: 500; font-size: clamp(44px, 7vw, 64px); line-height: 1; letter-spacing: -0.02em; }
-  .sv-price span:last-child { font-size: 16px; color: var(--color-ash-300); }
+  .sv-price span:not(.wc-cu) { font-size: 16px; color: var(--color-ash-300); }
   .sv-p { margin: 12px 0 0; max-width: 40rem; font-size: 16px; line-height: 1.6; color: var(--color-ash-300); }
   .sv-p--lead { margin-top: 0; font-size: 17px; color: #eef1ec; }
   .sv-folds { margin-top: 18px; }

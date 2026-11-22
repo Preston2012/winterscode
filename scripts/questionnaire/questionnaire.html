@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Winters Code · Project Questionnaire</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500;1,9..144,600&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  @page {
+    size: letter;
+    margin: 0.45in 0.5in 0.5in 0.5in;
+    @bottom-center {
+      content: "Page " counter(page) " of " counter(pages) "   ·   DOC-WC-Q-001   ·   winterscode.com";
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 8.5pt;
+      color: #666;
+      letter-spacing: 0.12em;
+    }
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    font-family: 'IBM Plex Sans', sans-serif;
+    color: #1a1a1a;
+    background: #fff;
+    font-size: 11.5pt;
+    line-height: 1.5;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  :root {
+    --ink: #1a1a1a;
+    --ink-soft: #555;
+    --ink-muted: #888;
+    --copper: #b06d35;
+    --wc-green: #2ba87a;
+    --wc-green-soft: #4dd8a8;
+    --hairline: #c8c8c8;
+    --hairline-strong: #888;
+  }
+
+  .mono { font-family: 'JetBrains Mono', monospace; font-feature-settings: "tnum"; }
+  .italic-serif { font-family: 'Fraunces', Georgia, serif; font-style: italic; }
+  .g { color: var(--wc-green); font-weight: 600; }
+  .g-underline {
+    color: var(--wc-green);
+    font-weight: 600;
+    text-decoration: underline;
+    text-decoration-color: rgba(43, 168, 122, 0.4);
+    text-decoration-thickness: 1.5px;
+    text-underline-offset: 3px;
+  }
+
+  /* ─── MASTHEAD ─── */
+  .masthead {
+    position: relative;
+    padding-bottom: 12px;
+    margin-bottom: 14px;
+    border-bottom: 2px solid var(--ink);
+  }
+  .masthead::after {
+    content: "";
+    position: absolute;
+    left: 0; right: 0; bottom: -5px;
+    height: 1.5px;
+    background: var(--copper);
+    opacity: 0.5;
+  }
+  .masthead-grid {
+    display: grid;
+    grid-template-columns: 78px 1fr auto;
+    gap: 16px;
+    align-items: center;
+  }
+  .seal { width: 74px; height: 74px; color: var(--ink); }
+  .seal svg { width: 100%; height: 100%; display: block; }
+  .masthead-center { padding-top: 2px; }
+  .masthead-title {
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: 27pt;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    line-height: 1;
+  }
+  .masthead-rule {
+    height: 1.5px;
+    background: var(--ink);
+    opacity: 0.45;
+    margin: 6px 0 5px;
+    position: relative;
+  }
+  .masthead-rule::after {
+    content: "";
+    position: absolute;
+    left: 50%; top: -2px;
+    width: 1.5px; height: 6px;
+    background: var(--copper);
+    transform: translateX(-50%);
+  }
+  .masthead-kicker {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8pt;
+    letter-spacing: 0.2em;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+  .masthead-right {
+    text-align: right;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8pt;
+    color: var(--ink-soft);
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    line-height: 1.55;
+  }
+  .masthead-right .doc { color: var(--copper); font-weight: 500; font-size: 8.5pt; }
+
+  /* ─── DOC TITLE BLOCK ─── */
+  .doc-title-block {
+    margin-bottom: 12px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    gap: 14px;
+    padding-bottom: 9px;
+    border-bottom: 1.5px solid var(--hairline);
+  }
+  .doc-title {
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: 18pt;
+    font-weight: 600;
+    line-height: 1.1;
+  }
+  .doc-subtitle {
+    font-family: 'Fraunces', Georgia, serif;
+    font-style: italic;
+    font-size: 11pt;
+    color: var(--ink-soft);
+    margin-top: 3px;
+    font-weight: 500;
+  }
+  .doc-meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8pt;
+    color: var(--ink-soft);
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    text-align: right;
+    line-height: 1.65;
+  }
+  .doc-meta .val { color: var(--wc-green); font-weight: 600; }
+
+  /* ─── INTRO VOICE BLOCK ─── */
+  .intro {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 11pt;
+    line-height: 1.55;
+    padding: 12px 16px;
+    border-left: 3px solid var(--copper);
+    background: rgba(176, 109, 53, 0.04);
+    margin-bottom: 14px;
+  }
+  .intro strong { font-weight: 600; }
+  .intro .pull {
+    font-family: 'Fraunces', Georgia, serif;
+    font-style: italic;
+    font-weight: 500;
+  }
+
+  /* ─── SECTIONS ─── */
+  section { margin-bottom: 12px; }
+
+  .section-head {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: baseline;
+    gap: 13px;
+    margin-bottom: 7px;
+    padding-bottom: 4px;
+    border-bottom: 2px solid var(--ink);
+    position: relative;
+  }
+  .section-head::after {
+    content: "";
+    position: absolute;
+    left: 0; bottom: -4px;
+    width: 38px; height: 1.5px;
+    background: var(--copper);
+  }
+  .section-num {
+    font-family: 'Fraunces', Georgia, serif;
+    font-style: italic;
+    font-size: 19pt;
+    font-weight: 600;
+    color: var(--copper);
+    line-height: 1;
+  }
+  .section-title {
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: 14pt;
+    font-weight: 600;
+    line-height: 1.15;
+  }
+  .section-title .sub {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8pt;
+    letter-spacing: 0.13em;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    font-weight: 500;
+    margin-left: 8px;
+  }
+
+  /* ─── FIELDS ─── */
+  .field { margin-bottom: 8px; page-break-inside: avoid; }
+  .field-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8pt;
+    letter-spacing: 0.13em;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    margin-bottom: 5px;
+    font-weight: 500;
+  }
+  .field-label .req {
+    color: var(--copper);
+    font-weight: 600;
+    margin-left: 2px;
+  }
+  .field-line {
+    border-bottom: 1.5px solid var(--ink-soft);
+    height: 22px;
+    width: 100%;
+  }
+  .field-box {
+    border: 2px solid var(--hairline-strong);
+    border-radius: 2px;
+    min-height: 60px;
+    background: #fafafa;
+  }
+  .field-box.tall { min-height: 110px; }
+  .field-box.short { min-height: 48px; }
+  .field-box.mid { min-height: 90px; }
+  .field-box.xl { min-height: 105px; }
+  .field-box.xxl { min-height: 170px; }
+
+  .field-row {
+    display: grid;
+    gap: 14px;
+    margin-bottom: 8px;
+  }
+  .field-row.cols-2 { grid-template-columns: 1fr 1fr; }
+  .field-row.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+  .field-row.cols-2-1 { grid-template-columns: 2fr 1fr; }
+
+  /* ─── CHECKBOXES ─── */
+  .checks {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 7px 16px;
+    margin-top: 4px;
+  }
+  .checks.three { grid-template-columns: repeat(3, 1fr); }
+  .check {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 10.5pt;
+    page-break-inside: avoid;
+  }
+  .check::before {
+    content: "";
+    width: 13px; height: 13px;
+    border: 1.5px solid var(--ink);
+    border-radius: 1.5px;
+    flex-shrink: 0;
+    background: #fff;
+    box-sizing: border-box;
+    display: inline-block;
+  }
+
+  /* ─── HELP TEXT ─── */
+  .help {
+    font-family: 'Fraunces', Georgia, serif;
+    font-style: italic;
+    font-size: 10pt;
+    color: var(--ink-soft);
+    margin-top: 4px;
+    margin-bottom: 6px;
+    line-height: 1.35;
+  }
+
+  /* ─── SIGNATURE ─── */
+  .sig-block {
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 2px solid var(--ink);
+    position: relative;
+    page-break-inside: avoid;
+  }
+  .sig-block::before {
+    content: "";
+    position: absolute;
+    left: 0; right: 0; top: 5px;
+    height: 1.5px;
+    background: var(--copper);
+    opacity: 0.5;
+  }
+  .sig-head {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 12px;
+    align-items: baseline;
+    margin-bottom: 3px;
+  }
+  .sig-head .num {
+    font-family: 'Fraunces', Georgia, serif;
+    font-style: italic;
+    font-size: 17pt;
+    font-weight: 600;
+    color: var(--copper);
+    line-height: 1;
+  }
+  .sig-head .title {
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: 14pt;
+    font-weight: 600;
+  }
+  .sig-help {
+    font-family: 'Fraunces', Georgia, serif;
+    font-style: italic;
+    font-size: 10pt;
+    color: var(--ink-soft);
+    margin: 3px 0 11px;
+    padding-left: 28px;
+  }
+  .sig-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 24px;
+  }
+  .sig-line {
+    border-bottom: 1.5px solid var(--ink);
+    height: 30px;
+    margin-bottom: 4px;
+  }
+  .sig-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8pt;
+    letter-spacing: 0.15em;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  /* ─── RETURN BLOCK ─── */
+  .return-block {
+    margin-top: 14px;
+    padding: 14px 16px;
+    border: 2px solid var(--ink);
+    background: #fafafa;
+    position: relative;
+    page-break-inside: avoid;
+  }
+  .return-block::before {
+    content: "";
+    position: absolute;
+    top: -1px; left: -1px;
+    width: 14px; height: 14px;
+    border-top: 3px solid var(--copper);
+    border-left: 3px solid var(--copper);
+  }
+  .return-block::after {
+    content: "";
+    position: absolute;
+    bottom: -1px; right: -1px;
+    width: 14px; height: 14px;
+    border-bottom: 3px solid var(--copper);
+    border-right: 3px solid var(--copper);
+  }
+  .return-title {
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: 13pt;
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: var(--wc-green);
+  }
+  .return-body {
+    font-size: 10.5pt;
+    line-height: 1.5;
+  }
+  .return-body strong { font-weight: 600; }
+  .return-contact {
+    margin-top: 9px;
+    padding-top: 9px;
+    border-top: 1.5px dashed var(--hairline);
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9pt;
+    line-height: 1.45;
+  }
+  .return-contact .lbl {
+    font-size: 7.5pt;
+    letter-spacing: 0.16em;
+    color: var(--ink-muted);
+    text-transform: uppercase;
+    margin-bottom: 3px;
+  }
+  .return-contact .lbl .ic { color: var(--copper); font-weight: 600; }
+  .return-contact .sub { color: var(--ink-muted); font-size: 8.5pt; }
+
+  /* ─── MUST-HAVES / NICE-TO-HAVES ─── two-column letter lines */
+  .musts-block {
+    margin-top: 12px;
+    page-break-inside: avoid;
+  }
+  .musts-head {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: baseline;
+    gap: 13px;
+    margin-bottom: 9px;
+    padding-bottom: 5px;
+    border-bottom: 2px solid var(--ink);
+    position: relative;
+  }
+  .musts-head::after {
+    content: "";
+    position: absolute;
+    left: 0; bottom: -4px;
+    width: 38px; height: 1.5px;
+    background: var(--copper);
+  }
+  .musts-glyph {
+    font-family: 'Fraunces', Georgia, serif;
+    font-style: italic;
+    font-size: 19pt;
+    font-weight: 600;
+    color: var(--copper);
+    line-height: 1;
+  }
+  .musts-title {
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: 14pt;
+    font-weight: 600;
+    line-height: 1.15;
+  }
+  .musts-title .sub {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8pt;
+    letter-spacing: 0.13em;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    font-weight: 500;
+    margin-left: 8px;
+  }
+  .musts-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+  }
+  .musts-col {
+    page-break-inside: avoid;
+  }
+  .musts-col-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8pt;
+    letter-spacing: 0.13em;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    font-weight: 500;
+  }
+  .musts-col.musts-keep .musts-col-label {
+    color: var(--wc-green);
+  }
+  .musts-col.musts-flex .musts-col-label {
+    color: var(--wc-green);
+  }
+  .musts-lines {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .musts-line {
+    border-bottom: 1.5px solid var(--ink-soft);
+    height: 22px;
+  }
+  .musts-help {
+    font-family: 'Fraunces', Georgia, serif;
+    font-style: italic;
+    font-size: 10pt;
+    color: var(--ink-soft);
+    margin-top: 6px;
+    line-height: 1.35;
+  }
+
+  /* ─── WATERMARK ─── */
+  .watermark-bottom {
+    margin-top: 8px;
+    text-align: center;
+    font-family: 'Fraunces', Georgia, serif;
+    font-style: italic;
+    font-size: 10pt;
+    color: var(--ink-muted);
+    font-weight: 500;
+  }
+  .watermark-bottom .sep { color: var(--copper); margin: 0 5px; }
+
+  /* ─── PAGE 2/3 SLIM CONTINUATION HEAD ─── */
+  .page-2-head {
+    border-bottom: 1.5px solid var(--ink);
+    padding-bottom: 7px;
+    margin-bottom: 13px;
+    display: grid;
+    grid-template-columns: 30px 1fr auto;
+    gap: 12px;
+    align-items: center;
+    position: relative;
+  }
+  .page-2-head::after {
+    content: "";
+    position: absolute;
+    left: 0; right: 0; bottom: -4px;
+    height: 1px;
+    background: var(--copper);
+    opacity: 0.4;
+  }
+  .page-2-head .mini-seal {
+    width: 28px; height: 28px;
+    color: var(--ink);
+    align-self: center;
+  }
+  .page-2-head .mini-seal svg { width: 100%; height: 100%; display: block; }
+  .page-2-head .name {
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 600;
+    font-size: 13pt;
+  }
+  .page-2-head .doc {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8pt;
+    letter-spacing: 0.15em;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+  }
+  .page-2-head .doc .copper { color: var(--copper); }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════
+     PAGE 1
+     ═══════════════════════════════════════════════════════ -->
+
+<div class="masthead">
+  <div class="masthead-grid">
+    <div class="seal">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+        <defs>
+          <path id="ringTop" d="M 100,100 m -78,0 a 78,78 0 1,1 156,0" fill="none" />
+          <path id="ringBottom" d="M 100,100 m -72,0 a 72,72 0 1,0 144,0" fill="none" />
+        </defs>
+        <circle cx="100" cy="100" r="92" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.9" />
+        <circle cx="100" cy="100" r="88" fill="none" stroke="currentColor" stroke-width="0.5" opacity="0.5" />
+        <circle cx="100" cy="100" r="62" fill="none" stroke="currentColor" stroke-width="0.75" opacity="0.55" />
+        <text font-family="'JetBrains Mono', monospace" font-size="9.5" letter-spacing="3.2" fill="currentColor" opacity="0.9" font-weight="500">
+          <textPath href="#ringTop" startOffset="50%" text-anchor="middle">· WINTERS CODE · BANDON ·</textPath>
+        </text>
+        <text font-family="'JetBrains Mono', monospace" font-size="8" letter-spacing="3.5" fill="currentColor" opacity="0.75" font-weight="500">
+          <textPath href="#ringBottom" startOffset="50%" text-anchor="middle">EST · MMXXVI · OREGON</textPath>
+        </text>
+        <circle cx="22" cy="100" r="2" fill="currentColor" opacity="0.7" />
+        <circle cx="178" cy="100" r="2" fill="currentColor" opacity="0.7" />
+        <text x="100" y="125" font-family="'Fraunces', Georgia, serif" font-size="86" font-weight="600" font-style="italic" text-anchor="middle" fill="currentColor" letter-spacing="-0.02em">W</text>
+        <line x1="78" y1="138" x2="122" y2="138" stroke="currentColor" stroke-width="0.75" opacity="0.55" />
+        <line x1="98" y1="142" x2="98" y2="146" stroke="currentColor" stroke-width="0.6" opacity="0.45" />
+        <line x1="102" y1="142" x2="102" y2="146" stroke="currentColor" stroke-width="0.6" opacity="0.45" />
+      </svg>
+    </div>
+    <div class="masthead-center">
+      <div class="masthead-title">Winters Code</div>
+      <div class="masthead-rule"></div>
+      <div class="masthead-kicker">EST. MMXXVI · <span class="g">6TH GEN BANDON</span> · OREGON</div>
+    </div>
+    <div class="masthead-right">
+      <div class="doc">DOC-WC-Q-001</div>
+      <div>VOL. I · v1.1</div>
+      <div>Project Intake</div>
+    </div>
+  </div>
+</div>
+
+<div class="doc-title-block">
+  <div>
+    <div class="doc-title">Project Questionnaire</div>
+    <div class="doc-subtitle">A short intake so we hit the ground running.</div>
+  </div>
+  <div class="doc-meta">
+    <div>Time to fill <span class="val">~15 min</span></div>
+    <div>Pages <span class="val">3</span></div>
+  </div>
+</div>
+
+<div class="intro">
+  <span class="pull">Welcome.</span> It is optional and never a gate to the consult. Fill it out, send it back, and the first meeting moves your project forward instead of starting at zero. <strong>You do not need every answer.</strong> Write what you know, leave the rest blank. <span class="pull">I do most of the lift, usually <span class="g">80/20 your way</span>.</span> No photos or copy yet? Note it. I draft, you edit.
+</div>
+
+<!-- ─── 01 ABOUT YOU ─── -->
+<section>
+  <div class="section-head">
+    <div class="section-num">01</div>
+    <div class="section-title">About you <span class="sub">who I send the contract to</span></div>
+  </div>
+  <div class="field-row cols-2">
+    <div class="field">
+      <div class="field-label">Your full name <span class="req">*</span></div>
+      <div class="field-line"></div>
+    </div>
+    <div class="field">
+      <div class="field-label">Role at the business <span class="req">*</span></div>
+      <div class="field-line"></div>
+    </div>
+  </div>
+  <div class="field-row cols-2">
+    <div class="field">
+      <div class="field-label">Best phone <span class="req">*</span></div>
+      <div class="field-line"></div>
+    </div>
+    <div class="field">
+      <div class="field-label">Best email <span class="req">*</span></div>
+      <div class="field-line"></div>
+    </div>
+  </div>
+  <div class="field-row cols-2-1">
+    <div class="field">
+      <div class="field-label">Business name <span class="req">*</span></div>
+      <div class="field-line"></div>
+    </div>
+    <div class="field">
+      <div class="field-label">Referred by</div>
+      <div class="field-line"></div>
+      <div class="help">If someone sent you, write the name. They get credit.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── 02 THE BUSINESS ─── -->
+<section>
+  <div class="section-head">
+    <div class="section-num">02</div>
+    <div class="section-title">The business <span class="sub">what you actually do</span></div>
+  </div>
+  <div class="field">
+    <div class="field-label">In a couple sentences, what does your business do? <span class="req">*</span></div>
+    <div class="field-box xl"></div>
+    <div class="help">If a stranger asked at the coffee shop, <span class="g">what would you say?</span></div>
+  </div>
+  <div class="field-row cols-2">
+    <div class="field">
+      <div class="field-label">Ideal customer</div>
+      <div class="field-line"></div>
+    </div>
+    <div class="field">
+      <div class="field-label">Service area</div>
+      <div class="field-line"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── 03 THE PROJECT ─── -->
+<section>
+  <div class="section-head">
+    <div class="section-num">03</div>
+    <div class="section-title">The project <span class="sub">what we are building</span></div>
+  </div>
+  <div class="field">
+    <div class="field-label">What do you need? <span class="req">*</span> (check all that apply)</div>
+    <div class="checks three">
+      <div class="check">New website</div>
+      <div class="check">Rebuild existing site</div>
+      <div class="check">Mobile app (iOS + Android)</div>
+      <div class="check">Custom software / dashboard</div>
+      <div class="check">Booking or scheduling</div>
+      <div class="check">Online store / payments</div>
+      <div class="check">Client or member portal</div>
+      <div class="check">Hosting + maintenance only</div>
+      <div class="check">Not sure yet, let's talk</div>
+    </div>
+  </div>
+  <div class="field">
+    <div class="field-label">What problem is this solving? <span class="req">*</span></div>
+    <div class="field-box xl"></div>
+    <div class="help">Lost leads, no online presence, broken old site, manual scheduling burning hours, can't take card payments. Whatever it is.</div>
+  </div>
+  <div class="field-row cols-2">
+    <div class="field">
+      <div class="field-label">Current site (if any)</div>
+      <div class="field-line"></div>
+    </div>
+    <div class="field">
+      <div class="field-label">Domain (if owned)</div>
+      <div class="field-line"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── 04 TIMELINE + BUDGET ─── -->
+<section>
+  <div class="section-head">
+    <div class="section-num">04</div>
+    <div class="section-title">Timeline + budget <span class="sub">straight talk</span></div>
+  </div>
+  <div class="field-row cols-2">
+    <div class="field">
+      <div class="field-label">When do you want it live?</div>
+      <div class="checks">
+        <div class="check">ASAP, this week</div>
+        <div class="check">Within 2 weeks</div>
+        <div class="check">Within a month</div>
+        <div class="check">No rush, 1-3 months</div>
+      </div>
+    </div>
+    <div class="field">
+      <div class="field-label" style="color: var(--wc-green); font-weight: 600;">Realistic budget range</div>
+      <div class="checks">
+        <div class="check">Under $2,500</div>
+        <div class="check">$2,500 to $5,000</div>
+        <div class="check">$5,000 to $15,000</div>
+        <div class="check">$15,000+</div>
+      </div>
+      <div class="help">Sites start at $1,750, and every price is on winterscode.com/pricing. Your range helps me scope the rest.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── 05 CONTENT ─── -->
+<section>
+  <div class="section-head">
+    <div class="section-num">05</div>
+    <div class="section-title">Content you have <span class="sub">save me from inventing it</span></div>
+  </div>
+  <div class="field">
+    <div class="field-label">What's ready? (check all that apply)</div>
+    <div class="checks three">
+      <div class="check">Logo (high-res)</div>
+      <div class="check">Brand colors / fonts</div>
+      <div class="check">Business photos</div>
+      <div class="check">Customer reviews</div>
+      <div class="check">Existing copy</div>
+      <div class="check">Services list</div>
+      <div class="check">Pricing / packages</div>
+      <div class="check">Google Business claimed</div>
+      <div class="check">Nothing yet, starting fresh</div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── 06 REFERENCES + ANYTHING ELSE ─── -->
+<section>
+  <div class="section-head">
+    <div class="section-num">06</div>
+    <div class="section-title">Show me what you like <span class="sub">references + the rest</span></div>
+  </div>
+  <div class="field">
+    <div class="field-label">Sites or apps you like (URLs or names)</div>
+    <div class="field-box mid"></div>
+    <div class="help">Three is plenty. "Like X but cleaner" is fine. So is "hate pop-ups, no stock photos."</div>
+  </div>
+  <div class="field">
+    <div class="field-label">Anything else I should know?</div>
+    <div class="field-box xl"></div>
+    <div class="help">Pending sale or rebrand, sensitive timing, existing tools you want to keep, partners involved. Anything that affects how we build.</div>
+  </div>
+</section>
+
+<!-- ─── 07 MUST-HAVES / NICE-TO-HAVES ─── -->
+<div class="musts-block">
+  <div class="musts-head">
+    <div class="musts-glyph">07</div>
+    <div class="musts-title">Must-haves &amp; nice-to-haves <span class="sub" style="color: var(--wc-green);">draw the line</span></div>
+  </div>
+  <div class="musts-grid">
+    <div class="musts-col musts-keep">
+      <div class="musts-col-label">Won't budge on</div>
+      <div class="musts-lines">
+        <div class="musts-line"></div>
+        <div class="musts-line"></div>
+        <div class="musts-line"></div>
+      </div>
+    </div>
+    <div class="musts-col musts-flex">
+      <div class="musts-col-label">Flexible on</div>
+      <div class="musts-lines">
+        <div class="musts-line"></div>
+        <div class="musts-line"></div>
+        <div class="musts-line"></div>
+      </div>
+    </div>
+  </div>
+  <div class="musts-help">Knowing what's non-negotiable upfront saves rounds later. Example "won't budge": online booking, mobile-first, our brand colors. Example "flexible": exact layout, copy tone, launch date.</div>
+</div>
+
+<!-- ─── SIGNATURE ─── -->
+<div class="sig-block">
+  <div class="sig-head">
+    <div class="num">+</div>
+    <div class="title">Sign and send</div>
+  </div>
+  <div class="sig-help">Confirms the info above is your best honest read. Doesn't bind you to anything. <span class="g">Consult is still free.</span></div>
+  <div class="sig-grid">
+    <div>
+      <div class="sig-line"></div>
+      <div class="sig-label">Signature</div>
+    </div>
+    <div>
+      <div class="sig-line"></div>
+      <div class="sig-label">Date</div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── RETURN ─── -->
+<div class="return-block">
+  <div class="return-title">Send it back, then we book the consult.</div>
+  <div class="return-body">
+    <strong>Three ways to return this.</strong> Pick whatever's easiest. Consult booked within 24 hours of receipt.
+  </div>
+  <div class="return-contact">
+    <div>
+      <div class="lbl"><span class="ic">·</span> Email</div>
+      <span class="g">preston@winterscode.com</span><br>
+      <span class="sub">scan or photo is fine</span>
+    </div>
+    <div>
+      <div class="lbl"><span class="ic">·</span> Text or call</div>
+      <span class="g">541-551-0731</span><br>
+      <span class="sub">photo of the form works</span>
+    </div>
+    <div>
+      <div class="lbl"><span class="ic">·</span> In person</div>
+      <span class="g">Bandon area</span><br>
+      <span class="sub">drop it off, call first</span>
+    </div>
+  </div>
+</div>
+
+<div class="watermark-bottom">
+  Winters Code<span class="sep">·</span><span class="italic-serif">made with code, not templates</span><span class="sep">·</span><span class="g">winterscode.com</span>
+</div>
+
+</body>
+</html>

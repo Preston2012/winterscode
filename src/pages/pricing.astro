@@ -40,7 +40,7 @@ const breadcrumbLd = breadcrumbSchema(crumbs);
   <PageHero
     eyebrow="Pricing"
     h1="One price. Everything in."
-    sub="Local business sites start at $1,750 with everything included. Bigger jobs cost more and I say so up front."
+    sub="Local business sites start at $1,750, with everything below included. Bigger jobs cost more and I tell you up front. Care plans optional, from $75 a month."
     bgImage="/photo/local/scenes/seastacks-gorse"
     showcase
     bgPosition="center 50%"
@@ -50,50 +50,56 @@ const breadcrumbLd = breadcrumbSchema(crumbs);
     label="Rate card"
     cols={3}
     tabs={[
-      { id: 'new-site', label: 'New site', sub: '$1,750, all in', icon: 'web' },
+      { id: 'new-site', label: 'New site', sub: '$1,750', icon: 'web' },
       { id: 'rebuild', label: 'Rebuild', sub: '$2,500 to $3,500', icon: 'auto' },
       { id: 'care', label: 'Care', sub: 'From $75 a month', icon: 'keep' },
     ]}
   >
     <div slot="panel-new-site">
       <p class="pr-price"><span class="wc-cu">$1,750</span> for most local business sites</p>
-      <p class="pr-p">A real, finished website, not a demo you keep buying pieces of. No per-page fees and no monthly anything you didn't ask for.</p>
+      <p class="pr-p">A real, finished website, not a demo you keep buying pieces of.</p>
+      <p class="pr-p">The low-priced sites you see advertised, the few-hundred-dollar ones, are real. But that is the starting point, not the finish line. I price it the other way: one number, all-in, nothing buried.</p>
+      <p class="pr-p">Everything below is included. No per-page fees, no surprise add-ons, no monthly anything you didn't ask for. The price I quote is the price you pay.</p>
       <ul class="wc-bullets wc-bullets--2 pr-list">
-        <li>Custom design and code, never a template</li>
-        <li>The core pages, with the words written for you</li>
-        <li>Real photos shot here on the coast</li>
-        <li>A logo and brand if you need one, with vector files</li>
-        <li>Fast on a phone, scored live on Google's own test</li>
-        <li>Search Console, sitemap and Business Profile set up</li>
-        <li>HTTPS, a hardened setup and spam-protected forms</li>
-        <li>Email on your domain and a form that reaches you</li>
+        <li>A custom site made for your business, not a template with your name dropped in</li>
+        <li>The core pages you need, with all the words written for you</li>
+        <li>Real photos of your business, shot here on the coast, no stock</li>
+        <li>A logo and brand if you don't have one, with real vector files for signs, shirts, and print</li>
+        <li>Built to load fast on a phone and scored live on Google's own test. The local sites I audited averaged 61 out of 100 on a phone (the 96 Google could score)</li>
+        <li>Readable by Google and AI assistants, with clean structure they can understand. Scrapers and junk bots shut out</li>
+        <li>Set up to be found on Google: Search Console, your sitemap submitted, and your Business Profile filled in</li>
+        <li>Your website, Google listing, and socials all lined up and pointing the same way</li>
+        <li>Real security baked in: HTTPS, a hardened setup, and spam-protected forms</li>
+        <li>Email on your own domain, a contact form that reaches you, and privacy and terms pages</li>
+        <li>A written SOW for the build, then no lock-in and no required monthly fee. When it's done, it's yours to keep</li>
       </ul>
       <figure class="pr-quote">
         <blockquote><p>&ldquo;We are proud to endorse and recommend WintersCode.com.&rdquo;</p></blockquote>
-        <figcaption>General Manager, US Survey Supply <a class="wc-link" href="/work/us-survey-supply">See the build <Arrow size={16} /></a></figcaption>
+        <figcaption>General Manager, US Survey Supply <a class="wc-link" href="/work/us-survey-supply">See the US Survey Supply build <Arrow size={16} /></a></figcaption>
       </figure>
-      <TextCta lead="Tell me about your business in a text and I'll tell you where it lands." links={[{ href: '/services#sites', label: 'Line by line' }]} />
+      <TextCta lead="Tell me about your business in a text and I'll tell you where it lands." links={[{ href: '/audit', label: 'Free audit of your current site' }]} />
+      <p class="pr-p">Want it line by line? See the full breakdown on <a href="/services#sites">services</a>.</p>
     </div>
-
     <div slot="panel-rebuild">
       <p class="pr-price"><span class="wc-cu">$2,500</span> to $3,500 for most rebuilds</p>
-      <p class="pr-p">Most businesses here already have a site with years of photos, words and search history on a foundation that stopped keeping up. A rebuild keeps what is worth keeping and replaces what holds it back.</p>
-      <p class="pr-p">It costs more than a new site because the content inventory, the redirect map and the search value you already paid for all have to survive the move. Skipping that is how a redesign quietly costs a business its rankings.</p>
-      <p class="pr-p">Some sites need an afternoon of fixes instead. I'll tell you which before either of us talks about money.</p>
-      <TextCta label="Text me about a rebuild" links={[{ href: '/website-redesign', label: 'What a rebuild covers' }, { href: '/audit', label: 'Free site audit' }]} />
+      <p class="pr-p">Most businesses around here are not starting from nothing. They have a site with years of photos, words, and search history in it, sitting on a foundation that has stopped keeping up. That is a rebuild, not a new build, and it is a different job.</p>
+      <p class="pr-p">A rebuild keeps what is worth keeping and replaces what is holding it back. Most land between $2,500 and $3,500, depending on how many pages have to move and whether there is a catalog or a booking system to repair.</p>
+      <p class="pr-p">It costs more than a new site for a plain reason. A new site starts from nothing, which is simple. A rebuild starts from something that has to survive the move: the content inventory, the redirect map, the years of search value you already paid for. Skipping that work is how a redesign quietly costs a business its rankings.</p>
+      <p class="pr-p">Not every site needs one. Some need an afternoon of fixes. I will tell you which one you are before either of us talks about money.</p>
+      <TextCta links={[{ href: '/website-redesign', label: 'See what a rebuild covers' }]} />
     </div>
-
     <div slot="panel-care">
-      <p class="pr-p pr-p--lead">Optional and public. Cancel anytime. The site is yours either way.</p>
+      <p class="pr-p pr-p--lead">Optional. Fixed monthly pricing, public. Cancel anytime.</p>
       <div class="pr-tiers">
-        <div class="pr-tier"><p class="pr-tier-h">Basic</p><p class="pr-tier-t"><span class="wc-cu">$75</span> a month and up</p><ul class="wc-bullets"><li>Hosting and SSL on your account</li><li>Daily backups and security patches</li><li>10 content edits a month</li><li>Uptime monitoring</li></ul></div>
-        <div class="pr-tier"><p class="pr-tier-h">Pro</p><p class="pr-tier-t"><span class="wc-cu">$250</span> a month and up</p><ul class="wc-bullets"><li>Everything in Basic</li><li>Unlimited reasonable edits</li><li>A quarterly speed and search pass</li><li>Improvements as you grow</li></ul></div>
+        <div class="pr-tier"><p class="pr-tier-h">Basic</p><p class="pr-tier-t">starting at <span class="wc-cu">$75</span>/mo</p><ul class="wc-bullets"><li>Hosting and SSL, managed on your account</li><li>Daily backups</li><li>Security patches</li><li>10 content edits / month</li><li>Uptime monitoring</li></ul></div>
+        <div class="pr-tier"><p class="pr-tier-h">Pro</p><p class="pr-tier-t">starting at <span class="wc-cu">$250</span>/mo</p><ul class="wc-bullets"><li>Everything in Basic</li><li>Unlimited reasonable edits</li><li>Edits scheduled directly with me</li><li>Quarterly performance + SEO pass, fixes made</li><li>Improvements rolled in as you grow</li></ul></div>
       </div>
-      <TextCta label="Text me about a care plan" links={[{ href: '/services#care', label: 'Care plan questions' }]} />
+      <p class="pr-p">Not required, ever. The site is yours either way. See <a href="/services#care">care plan details</a> or <a href="/services">all services</a>.</p>
+      <TextCta />
     </div>
   </Tabs>
 
-  <p class="pr-terms"><span class="wc-dot" aria-hidden="true"></span>Free consult. A written quote that holds for 14 days. 50% locks scope and schedule; the rest is due at launch.</p>
+  <p class="pr-terms"><span class="wc-dot" aria-hidden="true"></span>Every project starts with a free consult and a written quote that holds for 14 days. A 50 percent deposit locks scope and schedule, and the rest is due at launch.</p>
 
   <section class="pr-compare wc-plate wc-rv" id="compare" aria-labelledby="pr-compare-h">
     <h2 class="pr-compare-h" id="pr-compare-h">Comparing quotes? <span class="wc-soft">Ask these five.</span></h2>
@@ -104,21 +110,25 @@ const breadcrumbLd = breadcrumbSchema(crumbs);
       <li>Is there a required monthly fee?</li>
       <li>Who answers when it breaks?</li>
     </ul>
-    <p class="pr-p">If the cheaper quote answers all five the same way, take it. Every site I build is scored live on <a href="/wall">the Wall</a>.</p>
+    <p class="pr-p">If the cheaper quote answers all five the same way, take it.</p>
+    <p class="pr-p">Every site I build is scored live on a phone. <a href="/wall">Check any of them on the Wall</a>.</p>
   </section>
 
   <div class="pr-folds">
-    <Fold title={'What "yours to keep" means'} meta="plainly">
+    <Fold title={'What "yours to keep" actually means'}>
+      <p>Most website deals never say this part out loud. Here it is plainly.</p>
       <ul class="wc-bullets">
-        <li>The domain is registered in your name. I never hold it.</li>
-        <li>The site runs on your own Cloudflare account, free at this size.</li>
-        <li>My access is a token you can revoke in two clicks, without asking me.</li>
-        <li>The code is yours and moves to your own GitHub whenever you want.</li>
-        <li>Skip the care plan and nothing turns off.</li>
+        <li>The domain is registered in your name. I never hold it. If you and I never speak again, you still own the address</li>
+        <li>The site runs on your own Cloudflare account. At this size that tier costs nothing</li>
+        <li>I hold an access token you can revoke in two clicks, any day, without asking me</li>
+        <li>The code is yours, and it moves to your own GitHub whenever you want it</li>
+        <li>Skip the care plan and nothing turns off. The site keeps running exactly as it is</li>
+        <li>The care plan buys changes, monitoring, and somebody local to call. It does not buy access to your own website. You already have that</li>
       </ul>
     </Fold>
-    <Fold title="When it costs more" meta="priced in writing first">
-      <p>The floor covers a complete core site. Bigger sites, more search reach, online booking, payments or a store, and MLS or RMLS listing feeds add to it. Apps and custom systems are quoted per project. Anything on the list is priced in writing before you sign.</p>
+    <Fold title="When it costs more">
+      <p>The floor covers a complete core site. These add to it, and I quote them clearly: bigger sites with a lot more pages, SEO expansion for more reach and local search, online booking, payments, or a store, and listing feeds like MLS or RMLS for real estate. Cross-platform apps and custom systems are quoted per project too. Tell me what you need and I'll price it straight.</p>
+      <p>Anything on this list is priced in writing before you sign.</p>
     </Fold>
   </div>
 

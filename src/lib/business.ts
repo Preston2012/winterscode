@@ -1,3 +1,4 @@
+import { bizDaysWord } from './counts';
 /**
  * Business identity, single source of truth.
  *
@@ -64,7 +65,7 @@ export const services: ServiceEntry[] = [
     name: 'Web Development',
     shortLabel: 'Web Development',
     blurb:
-      'Custom front-end and back-end code, written for your business. Fast, secure, and yours to keep.',
+      'Custom front-end and back-end code. Fast, secure, and yours to keep.',
     serviceType: 'Web development',
   },
   {
@@ -205,7 +206,7 @@ export const towns: TownEntry[] = [
     context: '',
     localAngle: {
       heading: 'Why website design matters in Coos Bay',
-      body: 'A clinic, shop, or contractor here shares every search with other businesses doing the same work, and many of them run slow template websites. That is the opening: speed, clean structure, and security are a low bar in this market, and clearing it sets you apart from competitors who never did the work.',
+      body: 'A clinic, shop, or contractor here shares every search with other businesses doing the same work, and many of them run slow template websites. That is the opening: speed, clean structure, and security are a low bar in this market, and clearing it sets you apart.',
     },
     localScene: {
       heading: 'The business scene in Coos Bay',
@@ -365,7 +366,7 @@ export const towns: TownEntry[] = [
         'Most of the commercial energy is in Old Town, the ten-block grid down by the harbor: Second Street Gallery and Art by the Sea on the gallery side, Bandon Coffee, Cranberry Sweets, Foley\u2019s, Tony\u2019s Crab Shack and the Bandon Fish Market on the food side, plus the shops along Baltimore and First. Out on Round Lake Road, Bandon Dunes is its own economy of pro shops, lodging, and dining. Then there is Highway 101 frontage and Face Rock Creamery on the way in. Three distinct commercial zones, three different kinds of customer, and almost none of those businesses have a site that loads fast on a phone. That is the gap a custom build steps into.',
     },
     auditNote:
-      'I live and work in Bandon, so I have looked at most of the sites in town, and the Coos County numbers hold here too. In a tourist town where the visitor decides in seconds, that is the difference between a booking and a back button.',
+      'I live and work in Bandon, so I have looked at most of the sites in town. The pattern is the same one I found across Coos County: template sites that load slowly and bury the basics. In a tourist town where the visitor decides in seconds, that is the difference between a booking and a back button.',
     faq: [
       {
         q: 'Can we meet in person in Bandon?',
@@ -373,7 +374,7 @@ export const towns: TownEntry[] = [
       },
       {
         q: 'Have you built for a Bandon business before?',
-        a: 'Yes. Sogn Contracting, a 30-year Bandon contractor, is live with a custom site I built in three business days. SeaBreeze, Bandon By The Dunes, US Survey Supply and Professors Golf are Bandon businesses too, and their sites are live and scored on the Wall.',
+        a: `Yes. Sogn Contracting, a 30-year Bandon contractor, is live with a custom site I built in ${bizDaysWord('sogn')}. SeaBreeze, Bandon By The Dunes, US Survey Supply and Professors Golf are Bandon businesses too, and their sites are live and scored on the Wall.`,
       },
       {
         q: 'My business is seasonal. Does a custom site still make sense?',
@@ -432,7 +433,7 @@ export const towns: TownEntry[] = [
         'Coquille\u2019s commercial life centers on the downtown grid around Front Street and First Street, near the Coquille River and the 1922 river bridge, with the county courthouse drawing daily civic traffic. The Sawdust Theatre and the Coquille Valley Museum on North Central anchor the cultural side, and the trades, feed and farm services, the clinic, and the everyday shops serve a working valley rather than tourists. It is a town where customers already know the businesses by name, so the job of a site is less about discovery and more about being findable and reachable when a neighbor finally searches you up. With almost no local web competition, that is a low bar to clear and own.',
     },
     auditNote:
-      'In the audit I ran across 169 Coos County small-business sites, more than half ran on a template platform or site builder. For a Coquille business, a fast custom site stands apart.',
+      'In the audit I ran across 169 Coos County small-business sites, more than half ran on a template platform or site builder. For a Coquille business that is good news: the bar to stand out locally is low.',
     faq: [
       {
         q: 'Is Coquille too small to bother with SEO?',

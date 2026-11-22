@@ -153,14 +153,17 @@ const updatedAt = initialData?.updated_at ?? new Date().toISOString();
   <Breadcrumbs items={[{ name: 'Home', path: '/' }, { name: 'The Wall', path: '/wall' }]} />
 
   <PageHero
-    eyebrow="The Wall"
+    eyebrow="The Wall · Live from the shop"
     h1="The shop, live."
-    sub="Deploys pushed, sites measured, slots open, live on one page. The numbers are real and the sources are linked."
+    sub="Deploys pushed, sites measured, slots open. Everything happening right now, on one page."
+    sub2="Refreshes when you focus the tab. The numbers are real, the sources are linked."
     showStamp={false}
   />
 
-  <!-- S339 round 3: the hire box left (the closer at the foot carries Text and
-       Call), and the 01 to 07 panel numbers are gone. -->
+  <!-- S339 round 3: the hire box's button left (the closer at the foot carries
+       Text and Call), and the 01 to 07 panel numbers are gone. Its words stay
+       (S339 copy audit). -->
+  <p class="wall-hire-line">These are live numbers from sites I built and still run. <span>Want yours on this wall?</span> <a href="#contact">Text Preston</a></p>
 
   <section class="wall-grid" aria-label="Live workshop data">
     <div class="wall-status-bar">
@@ -1106,4 +1109,7 @@ const updatedAt = initialData?.updated_at ?? new Date().toISOString();
 
     .wall-builds-name:hover { color: var(--color-wc-green, #4dd8a8); }}
   .wall-builds-days { font-family: var(--font-mono, monospace); font-size: 15px; font-weight: 700; color: var(--color-copper, #c88a5a); white-space: nowrap; }
+  .wall-hire-line { margin: 18px 0 0; font-size: 15.5px; line-height: 1.55; color: var(--color-ash-300); }
+  .wall-hire-line span { color: #eef1ec; }
+  .wall-hire-line a { color: var(--color-wc-green); text-decoration: underline; text-underline-offset: 3px; }
 </style>

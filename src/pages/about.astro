@@ -46,7 +46,8 @@ import Tabs from '../components/ui/Tabs.astro';
   <PageHero
     eyebrow="About"
     h1="I'm Preston Winters."
-    sub="A one-person software shop in Bandon: I build it, I stand behind it, I answer the phone."
+    sub="6th generation Bandon, Oregon. Solo software shop. I build it, I stand behind it, I answer the phone."
+    sub2="I've owned small businesses. I know what it's like to drown in software you didn't choose."
     bgImage="/photo/local/grass-coast-wash"
     bgOpacity={0.4}
   />
@@ -102,6 +103,9 @@ import Tabs from '../components/ui/Tabs.astro';
         up on time, do the job right, and not make excuses. The same
         rules apply to software.
       </p>
+      <p>
+        Other things I've built are on <a href="/work">the work page</a>.
+      </p>
 
       <p>
         That same AI work runs under every build I do. I built my
@@ -124,30 +128,33 @@ import Tabs from '../components/ui/Tabs.astro';
     label="How I run the shop"
     cols={3}
     tabs={[
-      { id: 'how', label: 'How I work', sub: 'Plain rules', icon: 'all' },
-      { id: 'believe', label: 'What I believe', sub: 'Four I keep', icon: 'lock' },
+      { id: 'how', label: 'How I work', sub: 'Plain rules. I keep them.', icon: 'all' },
+      { id: 'believe', label: 'What I believe', sub: "Four rules I won't bend.", icon: 'lock' },
       { id: 'bandon', label: 'Why Bandon', sub: 'Six generations', icon: 'keep' },
     ]}
   >
     <div slot="panel-how">
       <ul class="wc-bullets ab-list">
-        <li><span><b>I show up in person when it matters.</b> Small towns run on trust, and a phone call doesn't build it the same way.</span></li>
-        <li><span><b>I answer texts within a few hours</b> during business days. A real person, a real response time.</span></li>
-        <li><span><b>No outsourcing.</b> No offshore team, no junior you'll never meet. The work is mine.</span></li>
-        <li><span><b>The site fits your customer.</b> Sometimes a long story, sometimes a big phone number and a way to book. I build the one you need.</span></li>
+        <li><span><b>I show up in person when it matters.</b> Small towns work on trust. Phone calls don't build it the same way.</span></li>
+        <li><span><b>My code loads fast, and I'm the one who keeps it running.</b> Modern stack, no plugins to babysit. Scores are posted live on <a href="/wall">the Wall</a>.</span></li>
+        <li><span><b>I answer my texts within a few hours during business days.</b> Real human, real response time.</span></li>
+        <li><span><b>No outsourcing.</b> No offshore team, no junior you'll never meet. The work is mine, and it's yours to keep.</span></li>
+        <li><span><b>I'm here for the long run.</b> Bandon's home. The shop isn't going anywhere.</span></li>
+        <li><span><b>The site fits your customer, not the other way around.</b> Sometimes that means a long scrolling story. Sometimes that means a big phone number and a clear way to book. I figure out which one you need, then build that.</span></li>
       </ul>
     </div>
     <div slot="panel-believe">
       <ul class="wc-bullets wc-bullets--copper ab-list">
-        <li><span><b>Speed matters.</b> Sites start at 3 business days and apps run in weeks, not quarterly project plans.</span></li>
-        <li><span><b>Quality is non-negotiable.</b> HTTPS, security headers and spam-protected forms on every site, scored live on <a href="/wall">the Wall</a>.</span></li>
-        <li><span><b>The code is custom.</b> The code under your site is the code I wrote for it, and it's yours to keep.</span></li>
-        <li><span><b>Relationships beat one-off projects.</b> The person who built it is the person who maintains it.</span></li>
+        <li><span><b>Speed matters.</b> Sites start at 3 business days, apps run in weeks. Small businesses on the Oregon coast deserve tools that work now, not quarterly project plans.</span></li>
+        <li><span><b>Quality is non-negotiable.</b> Speed without quality is reputation death. Every site gets HTTPS, security headers and spam-protected forms. What's loaded and why is on <a href="/privacy">the privacy page</a>.</span></li>
+        <li><span><b>The code is custom.</b> The code under your site is the code I wrote for your site, and it's yours to keep.</span></li>
+        <li><span><b>Recurring relationships beat one-off projects.</b> The person who built it is the person who maintains it.</span></li>
       </ul>
     </div>
     <div slot="panel-bandon">
-      <p class="ab-p">The coast is full of family businesses that deserve good tools, built by someone they can meet.</p>
-      <p class="ab-p">Bandon gets free in-person consults, at Warehouse Coffee or your shop. Coos and Curry get a free 30-minute video call. If you've ever called a national agency and gotten a ticket number instead of an answer, I'm the opposite of that.</p>
+      <p class="ab-p">The coast is full of family businesses that deserve good tools, built by someone they can meet. That's the gap I'm filling.</p>
+      <p class="ab-p">Bandon gets free in-person consults. I'll meet you at Warehouse Coffee or your shop. Coos and Curry counties get free 30-min video. The phone number stays the same year after year. If you've ever called a national agency and gotten a ticket number instead of an answer, you know exactly what I'm the opposite of.</p>
+      <p class="ab-p">What a site costs, all in, is on <a href="/pricing">the pricing page</a>.</p>
     </div>
   </Tabs>
 
