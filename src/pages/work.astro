@@ -156,7 +156,7 @@ const workLd = {
               <details class="wk-more">
                 <summary>more details</summary>
                 <p class="wk-meta-line">{p.meta}</p>
-                <p class="wk-tags">{p.tags.join(' · ')}</p>
+                <p class="wk-tags wk-stack">{p.tags.join(' · ')}</p>
                 {measuredSite(p.slug)?.lhFallback && <p class="wk-tags" data-lh-row data-lh-stored={LH_FALLBACK_AT}>Lighthouse <span data-lh-nums>{measuredSite(p.slug)!.lhFallback!.map((n, k) => `${LH_LABELS[k]} ${n}`).join(' · ')}</span>, measured <span data-lh-at>{asOf(LH_FALLBACK_AT)}</span></p>}
                 <dl class="wk-rows">{p.details.map((d) => <div><dt>{d.label}</dt><dd>{d.value}</dd></div>)}</dl>
               </details>
@@ -198,7 +198,7 @@ const workLd = {
               <p class="wk-face">{p.meta}</p>
               <details class="wk-more">
                 <summary>more details</summary>
-                <p class="wk-tags">{p.tags.join(' · ')}</p>
+                <p class="wk-tags wk-stack">{p.tags.join(' · ')}</p>
                 <dl class="wk-rows">{p.details.map((d) => <div><dt>{d.label}</dt><dd>{d.value}</dd></div>)}</dl>
               </details>
               <div class="wk-go">{p.caseStudy && <a class="wc-link" href={p.caseStudy}>Read the case study <Arrow size={16} /></a>}</div>
@@ -219,7 +219,7 @@ const workLd = {
                   {p.slug === 'demiurge-mykonos' && <p class="wk-face">An AI companion app I built. Open the demo below and it runs on its real engine, right here in your browser. <b>It remembers between chats.</b> Tell it something, reset, ask again, it still knows.</p>}
                   <details class="wk-more">
                     <summary>more details</summary>
-                    <p class="wk-tags">{p.tags.join(' · ')}</p>
+                    <p class="wk-tags wk-stack">{p.tags.join(' · ')}</p>
                     <dl class="wk-rows">{p.details.map((d) => <div><dt>{d.label}</dt><dd>{d.value}</dd></div>)}</dl>
                   </details>
                   {p.slug === 'demiurge-mykonos' && (
@@ -254,7 +254,7 @@ const workLd = {
           <div>
             <h3 class="wk-name">{p.name}</h3>
             <p class="wk-face">{p.meta}</p>
-            <p class="wk-tags">{p.tags.join(' · ')}</p>
+            <p class="wk-tags wk-stack">{p.tags.join(' · ')}</p>
             {p.details.map((d) => <p class="wk-face"><b>{d.label}.</b> {d.value}</p>)}
             <div class="wk-go">{p.links.map((l) => <a class="wc-link" href={l.href}>{l.label} <Arrow size={16} /></a>)}</div>
           </div>
@@ -338,6 +338,8 @@ const workLd = {
   .wk-more summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; color: var(--color-wc-green); font-weight: 600; }
   .wk-more summary:focus-visible { outline: 2px solid var(--color-wc-green); outline-offset: 2px; }
   .wk-meta-line, .wk-tags { margin: 0 0 6px; font-size: 13.5px; letter-spacing: .02em; color: var(--color-ash-300); }
+  /* Stack tags: real case in the source, capitals on screen (S339 round 6). */
+  .wk-stack { text-transform: uppercase; }
   .wk-rows { margin: 8px 0 0; display: grid; gap: 8px; }
   .wk-rows div { display: grid; gap: 2px; }
   .wk-rows dt { font-size: 12.5px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--color-copper-bright); }
