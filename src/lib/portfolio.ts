@@ -337,7 +337,6 @@ export const portfolio: PortfolioItem[] = [
   },
   {
     slug: 'professors-golf',
-    caseStudy: '/work/professors-golf',
     numeral: 'iv.',
     name: 'Professors Golf',
     category: 'site',
@@ -412,11 +411,11 @@ export const portfolio: PortfolioItem[] = [
       {
         // S339, Preston 2026-11-05: Search Console screenshots, dated.
         label: 'Search',
-        value: 'A brand-new domain, about four months old. Google Search Console, Aug 4 to Nov 3, 2026: 27 clicks and 1,490 search appearances. Average Google position 9 for “bandon concrete”, a search that showed it 24 times.',
+        value: 'A brand-new domain, live since February 28, 2026. Google Search Console, Aug 4 to Nov 3, 2026: 27 clicks and 1,490 search appearances. Average Google position 9 for “bandon concrete”, a search that showed it 24 times.',
       },
       {
         label: 'Upkeep',
-        value: '105 commits across six months, made by the same person who answers the phone.',
+        value: 'Every change since launch on February 28, 2026, made by the same person who answers the phone.',
       },
     ],
     links: [

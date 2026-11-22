@@ -35,10 +35,11 @@ const QUESTIONS: { q: string; a: string[]; why?: boolean; link?: { href: string;
   {
     q: 'Do you keep it running after?',
     a: [
-      'Yes, and it is optional. Basic care starts at $75 a month: hosting and SSL, daily backups, security patches and content edits. Pro starts at $250 a month. Cancel anytime.',
-      'The person who built it is the person who maintains it. You text a real person, not a ticket queue.',
+      // Preston 2026-11-22: lead with optional, and say the site runs on without him.
+      '<strong class="sa-hl">Only if you want it. Care is optional.</strong> Skip it and nothing turns off: the site keeps running exactly as it is, on your own account.',
+      'If you want me on it, Basic care starts at $75 a month: hosting and SSL, daily backups, security patches and content edits. Pro starts at $250 a month. Cancel anytime. You text the person who built it, not a ticket queue.',
     ],
-    link: { href: '/services#care', label: 'Care plans' },
+    link: { href: '/pricing#care', label: 'Care plans' },
   },
   {
     q: "What if I don't have photos or words yet?",
@@ -66,7 +67,7 @@ const QUESTIONS: { q: string; a: string[]; why?: boolean; link?: { href: string;
           </summary>
           <div class="sa-a">
             {item.why && <WhyWintersCode />}
-            {item.a.map((p) => <p>{p}</p>)}
+            {item.a.map((p) => <p set:html={p} />)}
             {item.link && <a class="wc-link" href={item.link.href}>{item.link.label} <Arrow size={16} /></a>}
           </div>
         </details>
@@ -116,6 +117,7 @@ const QUESTIONS: { q: string; a: string[]; why?: boolean; link?: { href: string;
   .sa-item[open] .sa-q { color: var(--color-wc-green-bright); }
 
   .sa-a { padding: 0 18px 16px; max-width: 46rem; }
+  .sa-a :global(.sa-hl) { color: var(--color-wc-green-bright); font-weight: 600; }
   .sa-a p { margin: 0 0 12px; font-size: 16px; line-height: 1.6; color: var(--color-ash-300); }
 
   @media (min-width: 900px) {
