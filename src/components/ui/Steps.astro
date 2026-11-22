@@ -13,7 +13,7 @@ const { steps, label = 'How it goes' } = Astro.props;
   {steps.map((s) => (
     <li class="wsteps-step">
       <span class="wsteps-node" aria-hidden="true"></span>
-      <span class="wsteps-t">{s.title}{s.meta && <span class="wsteps-m">{s.meta}</span>}</span>
+      <span class="wsteps-t">{s.title}{s.meta && <>{' '}<span class="wsteps-m">{s.meta}</span></>}</span>
       <span class="wsteps-b">{s.body}</span>
     </li>
   ))}

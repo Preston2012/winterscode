@@ -52,11 +52,11 @@ const sms = smsHref(Astro.url.pathname);
 
   <div class="closer-keys" data-textbar-hide>
     <a class="wc-btn wc-btn--primary closer-key" href={sms}>
-      <span class="closer-stack"><span class="closer-label">Text Preston</span><span class="closer-num">{phoneDisplay}</span></span>
+      <span class="closer-stack"><span class="closer-label">Text Preston</span>{' '}<span class="closer-num">{phoneDisplay}</span></span>
       <Arrow size={22} />
     </a>
     <a class="wc-btn wc-btn--ghost closer-key" href={telHref}>
-      <span class="closer-stack"><span class="closer-label">Call</span><span class="closer-num">{phoneDisplay}</span></span>
+      <span class="closer-stack"><span class="closer-label">Call</span>{' '}<span class="closer-num">{phoneDisplay}</span></span>
     </a>
   </div>
 
