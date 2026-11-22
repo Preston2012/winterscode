@@ -228,10 +228,6 @@ export const towns: TownEntry[] = [
         a: 'Often, yes. If your current site is slow, built on a page builder, or missing basic security, a custom rebuild usually fixes the speed and search basics. The free audit shows you exactly where your site stands before you decide.',
       },
       {
-        q: 'Coos Bay is competitive. Can a new site actually move my ranking?',
-        a: 'It can, because most of the competition is slow and templated. Google rewards fast, secure, well-structured sites, and that is exactly the gap in this market. I cannot promise a position, but I can promise your site will be the technically better one, which is what ranking is built on.',
-      },
-      {
         q: 'Do you build for clinics and healthcare practices?',
         a: 'Yes. Healthcare is the biggest sector in Coos Bay and a good fit, because the whole job is loading fast and reading as trustworthy. I build with security defaults on every site, which matters more when patients are the audience.',
       },

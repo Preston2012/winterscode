@@ -128,6 +128,9 @@ const crumbs = [
 ];
 const breadcrumbLd = breadcrumbSchema(crumbs);
 const faqLd = town.faq.length ? faqSchema(town.faq) : null;
+// S339 page pass: when a question already gives the drive from Bandon, the
+// travel line under the questions would say it twice.
+const driveInFaq = town.faq.some((f) => /\b(minutes|hours?)\b[^.]*\b(from Bandon|up Highway|south on|inland|on Highway)/i.test(f.a) || /about \d+ minutes from/i.test(f.a));
 ---
 
 <BaseLayout title={title} description={description} canonicalPath={path}>
@@ -210,11 +213,9 @@ const faqLd = town.faq.length ? faqSchema(town.faq) : null;
         </ul>
       )}
     </Fold>
-    {town.localAngle && (
-      <Fold title={town.localAngle.heading}>
-        <p set:html={town.localAngle.body} />
-      </Fold>
-    )}
+    {/* S339 page pass: the town's localAngle essay is not rendered. It said
+        again what the intro and "Why this matters here" already say on every
+        town page, so the data stays in business.ts unused. */}
     {!town.compactServices && (
       <Fold title={`What I build for ${town.name}`} meta={`${serviceLinks.length} services`}>
         <RelatedLinks id="loc-services" title="Services" links={serviceLinks} />
@@ -244,11 +245,11 @@ const faqLd = town.faq.length ? faqSchema(town.faq) : null;
     </section>
   )}
 
-  <p class="loc-travel"><span class="wc-dot" aria-hidden="true"></span>
+  {!driveInFaq && <p class="loc-travel"><span class="wc-dot" aria-hidden="true"></span>
     {town.consultBand === 'in-person-free'
       ? `${town.name} is home base, so meeting in person is free. Most of a build happens over text and video anyway.`
       : `From the shop in Bandon, ${town.name} is ${town.driveFromBandon}. Most of a build happens over text and video.`}
-  </p>
+  </p>}
 
   <Contact />
 </BaseLayout>

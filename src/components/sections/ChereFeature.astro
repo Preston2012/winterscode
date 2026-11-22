@@ -43,7 +43,7 @@ const where = path === '/' ? 'winterscode.com' : `winterscode.com${path}`;
 const sms = `${smsBase}${encodeURIComponent(`Hi Preston, saw Chere' at ${where}. I'd like beta access for my business: `)}`;
 const headingId = `chere-h-${variant}`;
 // The bytes are the public asset; the URL is the range-answering route
-// (src/pages/media/chere-demo.mp4.ts), carrying that asset's content hash.
+// (src/pages/media/[file].ts), carrying that asset's content hash.
 const mediaUrl = (file: string) => {
   const ver = v(`/work/${file}`).split('?')[1];
   return `/media/${file}${ver ? `?${ver}` : ''}`;
@@ -58,12 +58,12 @@ const mediaUrl = (file: string) => {
   aria-labelledby={headingId}
 >
   <div class="chf-media">
-    <img class="chf-ambient" src={v('/work/chere-poster-480.webp')} alt="" aria-hidden="true" width="480" height="270" loading="lazy" decoding="async" />
+    <img class="chf-ambient" src={v('/work/chere-master-poster-480.webp')} alt="" aria-hidden="true" width="480" height="270" loading="lazy" decoding="async" />
     <div class="chf-player" data-chf>
       <picture class="chf-poster" aria-hidden="true">
-        <source type="image/avif" srcset={`${v('/work/chere-poster-480.avif')} 480w, ${v('/work/chere-poster-720.avif')} 720w, ${v('/work/chere-poster-1280.avif')} 1280w`} sizes="(min-width: 900px) 560px, 100vw" />
-        <source type="image/webp" srcset={`${v('/work/chere-poster-480.webp')} 480w, ${v('/work/chere-poster-720.webp')} 720w, ${v('/work/chere-poster-1280.webp')} 1280w`} sizes="(min-width: 900px) 560px, 100vw" />
-        <img src={v('/work/chere-poster-720.webp')} alt="" width="1280" height="720" loading="lazy" decoding="async" />
+        <source type="image/avif" srcset={`${v('/work/chere-master-poster-480.avif')} 480w, ${v('/work/chere-master-poster-720.avif')} 720w, ${v('/work/chere-master-poster-1280.avif')} 1280w`} sizes="(min-width: 900px) 560px, 100vw" />
+        <source type="image/webp" srcset={`${v('/work/chere-master-poster-480.webp')} 480w, ${v('/work/chere-master-poster-720.webp')} 720w, ${v('/work/chere-master-poster-1280.webp')} 1280w`} sizes="(min-width: 900px) 560px, 100vw" />
+        <img src={v('/work/chere-master-poster-720.webp')} alt="" width="1280" height="720" loading="lazy" decoding="async" />
       </picture>
       <video
         class="chf-video"
@@ -72,10 +72,10 @@ const mediaUrl = (file: string) => {
         preload="none"
         width="1280"
         height="720"
-        aria-label="Chere' demo video, 1 minute 32 seconds, with music. A kitchen photo becomes three design options, a priced estimate, and a before and after the customer sees."
+        aria-label="Chere' video, 1 minute 32 seconds, with music. A kitchen photo and one sentence become a priced estimate, and a before and after the customer sees."
       >
-        <source src={mediaUrl('chere-demo.webm')} type="video/webm" />
-        <source src={mediaUrl('chere-demo.mp4')} type="video/mp4" />
+        <source src={mediaUrl('chere-master.webm')} type="video/webm" />
+        <source src={mediaUrl('chere-master.mp4')} type="video/mp4" />
       </video>
       <button type="button" class="chf-play" hidden>
         <span class="chf-play-disc" aria-hidden="true">
