@@ -48,7 +48,9 @@ function headers(type: string, size: number, etag: string | null): Record<string
 }
 
 export const GET: APIRoute = async ({ request, params }) => {
-  const media = MEDIA[String(params.file ?? '')];
+  // Own keys only: '__proto__' or 'constructor' must not pass as a file name.
+  const key = String(params.file ?? '');
+  const media = Object.hasOwn(MEDIA, key) ? MEDIA[key] : undefined;
   if (!media) return new Response('Not found', { status: 404 });
   const env: any = cfEnv ?? {};
   const assets = env.ASSETS as { fetch: (input: URL | Request) => Promise<Response> } | undefined;

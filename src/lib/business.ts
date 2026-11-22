@@ -365,7 +365,7 @@ export const towns: TownEntry[] = [
         'Most of the commercial energy is in Old Town, the ten-block grid down by the harbor: Second Street Gallery and Art by the Sea on the gallery side, Bandon Coffee, Cranberry Sweets, Foley\u2019s, Tony\u2019s Crab Shack and the Bandon Fish Market on the food side, plus the shops along Baltimore and First. Out on Round Lake Road, Bandon Dunes is its own economy of pro shops, lodging, and dining. Then there is Highway 101 frontage and Face Rock Creamery on the way in. Three distinct commercial zones, three different kinds of customer, and almost none of those businesses have a site that loads fast on a phone. That is the gap a custom build steps into.',
     },
     auditNote:
-      'I live and work in Bandon, so I have looked at most of the sites in town. The pattern is the same one I found across Coos County: template sites that load slowly and bury the basics. In a tourist town where the visitor decides in seconds, that is the difference between a booking and a back button.',
+      'I live and work in Bandon, so I have looked at most of the sites in town, and the Coos County numbers hold here too. In a tourist town where the visitor decides in seconds, that is the difference between a booking and a back button.',
     faq: [
       {
         q: 'Can we meet in person in Bandon?',
@@ -432,7 +432,7 @@ export const towns: TownEntry[] = [
         'Coquille\u2019s commercial life centers on the downtown grid around Front Street and First Street, near the Coquille River and the 1922 river bridge, with the county courthouse drawing daily civic traffic. The Sawdust Theatre and the Coquille Valley Museum on North Central anchor the cultural side, and the trades, feed and farm services, the clinic, and the everyday shops serve a working valley rather than tourists. It is a town where customers already know the businesses by name, so the job of a site is less about discovery and more about being findable and reachable when a neighbor finally searches you up. With almost no local web competition, that is a low bar to clear and own.',
     },
     auditNote:
-      'In the audit I ran across 169 Coos County small-business sites, more than half ran on a template platform or site builder. For a Coquille business that is good news: the bar to stand out locally is low.',
+      'In the audit I ran across 169 Coos County small-business sites, more than half ran on a template platform or site builder. For a Coquille business, a fast custom site stands apart.',
     faq: [
       {
         q: 'Is Coquille too small to bother with SEO?',

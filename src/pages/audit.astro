@@ -326,8 +326,9 @@ const sms = smsHref(Astro.url.pathname);
       }
       let html = '';
       for (const f of topFixes) {
-        html += '<li class="au-topfix au-topfix-' + f.impact + '">';
-        html += '<span class="au-topfix-impact">' + f.impact + '</span>';
+        const impact = escapeHtml(String(f.impact));
+        html += '<li class="au-topfix au-topfix-' + impact + '">';
+        html += '<span class="au-topfix-impact">' + impact + '</span>';
         html += '<span class="au-topfix-summary">' + escapeHtml(f.summary) + '</span>';
         html += '</li>';
       }
