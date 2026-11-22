@@ -10,3 +10,6 @@
 /website-maintenance.html /services#care 301
 /core-web-vitals-fix /audit 301
 /core-web-vitals-fix.html /audit 301
+
+# S339, 2026-11-22: tools and people ask for /sitemap.xml; the sitemap is the index.
+/sitemap.xml /sitemap-index.xml 301
