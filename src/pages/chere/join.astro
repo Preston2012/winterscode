@@ -3,7 +3,9 @@
  * /chere/join, one page to get Chere' onto a phone (S384, Preston 2026-11-16: "a page where
  * people can join iOS or Android easily and it's sexy and well done").
  *
- * Two lanes, iPhone and Android, each three taps. A visitor's own phone comes first and is
+ * Two lanes, iPhone and Android, side by side at every width with the last step right under them
+ * (Preston, S339: "Android and Apple should be side by side with the text part just below").
+ * Each lane is a few taps. A visitor's own phone comes first and is
  * marked "Your phone" by a one-line script that reads the user agent; with no script both lanes
  * show in the same order. A computer gets a QR code to carry the page to a phone. The last step
  * is the same on both: text Preston the key the app shows, and he texts back a setup code.
@@ -54,14 +56,14 @@ type Step = { h: string; p: string; href: string; cta: string; badge?: string };
 const ios: Step[] = [
   {
     h: 'Get TestFlight',
-    p: "Apple's free app for trying apps before they're in the App Store.",
+    p: "Apple's free app for beta apps.",
     href: 'https://apps.apple.com/us/app/testflight/id899247664',
     cta: 'Get TestFlight',
     badge: 'appstore',
   },
   {
     h: "Join the Chere' beta",
-    p: 'It opens in TestFlight. Tap Accept, then Install.',
+    p: 'Opens in TestFlight. Tap Accept, then Install.',
     href: 'https://testflight.apple.com/join/9jFFH197',
     cta: "Join the beta",
   },
@@ -69,19 +71,19 @@ const ios: Step[] = [
 const android: Step[] = [
   {
     h: 'Text me your Gmail',
-    p: "The Google account your phone is signed in with. I add it to the tester list and text you back.",
+    p: 'The one your phone signs in with. I add you and text back.',
     href: smsAndroidGmail,
-    cta: 'Text me your Gmail',
+    cta: 'Text your Gmail',
   },
   {
     h: 'Become a tester',
-    p: 'When I text back, one tap on Google Play says you are in.',
+    p: 'After my text, one tap and you are in.',
     href: `https://play.google.com/apps/testing/${PKG}`,
     cta: 'Become a tester',
   },
   {
-    h: 'Install from Google Play',
-    p: 'Updates come through Play from here on, like any other app.',
+    h: 'Install from Play',
+    p: 'Updates come through Play like any app.',
     href: `https://play.google.com/store/apps/details?id=${PKG}`,
     cta: 'Open Google Play',
     badge: 'googleplay',
@@ -163,7 +165,7 @@ const QR_D = 'M0 0h1v1h-1zM1 0h1v1h-1zM2 0h1v1h-1zM3 0h1v1h-1zM4 0h1v1h-1zM5 0h1
           <span class="jn-n mono" aria-hidden="true">03</span>
           <div class="jn-step-body">
             <h3 class="jn-step-h">Open Chere'</h3>
-            <p class="jn-step-p">It shows a short key for your phone. That's the last step, below.</p>
+            <p class="jn-step-p">It shows your phone's key. Text it to me, just below.</p>
           </div>
         </li>
       </ol>
@@ -207,7 +209,7 @@ const QR_D = 'M0 0h1v1h-1zM1 0h1v1h-1zM2 0h1v1h-1zM3 0h1v1h-1zM4 0h1v1h-1zM5 0h1
           <span class="jn-n mono" aria-hidden="true">04</span>
           <div class="jn-step-body">
             <h3 class="jn-step-h">Open Chere'</h3>
-            <p class="jn-step-p">It shows a short key for your phone. That's the last step, below.</p>
+            <p class="jn-step-p">It shows your phone's key. Text it to me, just below.</p>
           </div>
         </li>
       </ol>
@@ -312,7 +314,7 @@ const QR_D = 'M0 0h1v1h-1zM1 0h1v1h-1zM2 0h1v1h-1zM3 0h1v1h-1zM4 0h1v1h-1zM5 0h1
   </section>
 
   <section class="jn-video" aria-labelledby="jn-video-h">
-    <h2 class="h2 jn-video-h" id="jn-video-h">See it work first.</h2>
+    <h2 class="h2 jn-video-h" id="jn-video-h">Watch it work.</h2>
     <p class="jn-video-p">A minute and a half: a kitchen photo becomes a priced estimate.</p>
     <div class="jn-player">
       <video
@@ -377,22 +379,24 @@ const QR_D = 'M0 0h1v1h-1zM1 0h1v1h-1zM2 0h1v1h-1zM3 0h1v1h-1zM4 0h1v1h-1zM5 0h1
   .jn-qr-text { margin: 0; font-size: 14px; line-height: 1.5; color: var(--color-ash-300); }
   .jn-qr-h { display: block; font-family: var(--font-serif); font-size: 17px; color: var(--color-ash-100); margin-bottom: 2px; }
 
+  /* S339: the two lanes sit side by side at every width, so a phone sees both
+     choices at once and the last step lands right under them. */
   .jn-lanes {
     display: grid;
-    grid-template-columns: 1fr;
-    gap: 16px;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
     max-width: 1040px;
-    margin: 32px auto 0;
+    margin: 24px auto 0;
   }
-  @media (min-width: 900px) {
-    .jn-lanes { grid-template-columns: 1fr 1fr; gap: 22px; margin-top: 40px; }
-  }
+  @media (min-width: 740px) { .jn-lanes { gap: 16px; margin-top: 32px; } }
+  @media (min-width: 900px) { .jn-lanes { gap: 22px; margin-top: 40px; } }
   /* The visitor's own phone goes first. */
   :root[data-os='android'] .jn-lane-android { order: -1; }
 
   .jn-lane {
     position: relative;
-    padding: 22px 18px 10px;
+    min-width: 0;
+    padding: 14px 12px 4px;
     border: 1px solid var(--color-ash-700);
     border-radius: 16px;
     background:
@@ -400,15 +404,17 @@ const QR_D = 'M0 0h1v1h-1zM1 0h1v1h-1zM2 0h1v1h-1zM3 0h1v1h-1zM4 0h1v1h-1zM5 0h1
       var(--color-bg-card);
   }
   @media (min-width: 740px) { .jn-lane { padding: 28px 26px 14px; } }
+  @media (max-width: 359.98px) { .jn-lanes { gap: 8px; } .jn-lane { padding: 12px 9px 4px; } .jn-lane-h { font-size: 17px; } }
   :root[data-os='ios'] .jn-lane-ios,
   :root[data-os='android'] .jn-lane-android {
     border-color: rgba(77, 216, 168, 0.45);
     box-shadow: 0 0 0 1px rgba(77, 216, 168, 0.12), 0 18px 48px -24px rgba(77, 216, 168, 0.35);
   }
 
-  .jn-lane-head { display: flex; align-items: center; gap: 14px; margin-bottom: 8px; }
+  .jn-lane-head { display: flex; align-items: center; gap: 14px; margin-bottom: 4px; }
   .jn-lane-titles { min-width: 0; display: flex; flex-direction: column; align-items: flex-start; }
   .jn-glyph {
+    display: none;
     width: 40px; height: 40px; flex: none;
     padding: 8px;
     border-radius: 10px;
@@ -418,7 +424,12 @@ const QR_D = 'M0 0h1v1h-1zM1 0h1v1h-1zM2 0h1v1h-1zM3 0h1v1h-1zM4 0h1v1h-1zM5 0h1
     stroke-width: 1.6;
     stroke-linecap: round;
   }
-  .jn-lane-h { margin: 0; font-family: var(--font-serif); font-size: 22px; font-weight: 600; color: var(--color-ash-100); }
+  .jn-lane-h { margin: 0; font-family: var(--font-serif); font-size: 19px; line-height: 1.15; font-weight: 600; color: var(--color-ash-100); }
+  @media (min-width: 740px) {
+    .jn-glyph { display: block; }
+    .jn-lane-head { margin-bottom: 8px; }
+    .jn-lane-h { font-size: 22px; }
+  }
   .jn-lane-sub { margin: 2px 0 0; font-size: 10.5px; letter-spacing: 0.14em; color: var(--color-ash-500); }
   .jn-yours {
     display: none;
@@ -436,34 +447,50 @@ const QR_D = 'M0 0h1v1h-1zM1 0h1v1h-1zM2 0h1v1h-1zM3 0h1v1h-1zM4 0h1v1h-1zM5 0h1
   :root[data-os='android'] .jn-lane-android .jn-yours { display: inline-block; }
 
   .jn-steps { list-style: none; margin: 0; padding: 0; }
+  /* Phone: the step number rides above its title so a half-width column keeps its words. */
   .jn-step {
     display: grid;
-    grid-template-columns: 34px 1fr;
-    gap: 12px;
-    padding: 16px 0;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2px;
+    padding: 12px 0;
     border-top: 1px solid rgba(170, 183, 186, 0.12);
   }
   .jn-step:first-child { border-top: 0; }
-  .jn-n { padding-top: 3px; font-size: 12px; letter-spacing: 0.08em; color: var(--color-copper); }
-  .jn-step-h { margin: 0 0 4px; font-family: var(--font-sans); font-size: 16px; font-weight: 600; color: var(--color-ash-100); }
-  .jn-step-p { margin: 0; font-size: 14.5px; line-height: 1.55; color: var(--color-ash-300); }
+  .jn-n { font-size: 11px; letter-spacing: 0.08em; color: var(--color-copper); }
+  .jn-step-h { margin: 0 0 3px; font-family: var(--font-sans); font-size: 15px; line-height: 1.3; font-weight: 600; color: var(--color-ash-100); }
+  .jn-step-p { margin: 0; font-size: 13.5px; line-height: 1.5; color: var(--color-ash-300); }
   .jn-btn {
     display: inline-flex;
     align-items: center;
     justify-content: space-between;
-    gap: 12px;
+    gap: 4px;
     width: 100%;
-    min-height: 48px;
-    margin-top: 12px;
+    min-height: 44px;
+    margin-top: 10px;
+    padding: 10px;
+    font-size: 14px;
+    line-height: 1.25;
+    text-align: left;
+    white-space: normal;
   }
-  @media (min-width: 740px) { .jn-btn { width: auto; min-width: 220px; } }
+  .jn-step-body { min-width: 0; overflow-wrap: break-word; }
   .jn-badge {
     display: inline-flex;
-    margin-top: 12px;
+    margin-top: 10px;
     border-radius: 10px;
     line-height: 0;
+    max-width: 100%;
   }
-  .jn-badge img { height: 52px; width: auto; display: block; }
+  .jn-badge img { width: 100%; max-width: 170px; height: auto; display: block; }
+  @media (min-width: 740px) {
+    .jn-step { grid-template-columns: 34px minmax(0, 1fr); gap: 12px; padding: 16px 0; }
+    .jn-n { padding-top: 3px; font-size: 12px; }
+    .jn-step-h { margin-bottom: 4px; font-size: 16px; }
+    .jn-step-p { font-size: 14.5px; line-height: 1.55; }
+    .jn-btn { width: auto; min-width: 220px; min-height: 48px; margin-top: 12px; padding: 15px 22px; font-size: 15px; gap: 12px; }
+    .jn-badge { margin-top: 12px; }
+    .jn-badge img { width: auto; max-width: none; height: 52px; }
+  }
   .jn-badge:focus-visible { outline: 2px solid var(--color-wc-green); outline-offset: 3px; }
   .jn-arrow { transition: transform 160ms ease; }
   @media (hover: hover) { .jn-btn:hover .jn-arrow { transform: translateX(3px); } }
@@ -471,14 +498,14 @@ const QR_D = 'M0 0h1v1h-1zM1 0h1v1h-1zM2 0h1v1h-1zM3 0h1v1h-1zM4 0h1v1h-1zM5 0h1
 
   .jn-connect {
     max-width: 640px;
-    margin: 40px auto 0;
-    padding: 28px 22px;
+    margin: 16px auto 0;
+    padding: 26px 20px;
     text-align: center;
     border: 1px solid var(--copper-hairline);
     border-radius: 16px;
     background: radial-gradient(90% 80% at 50% 0%, rgba(211, 130, 60, 0.10), transparent 70%), var(--color-bg-stone);
   }
-  @media (min-width: 740px) { .jn-connect { margin-top: 56px; padding: 36px 40px; } }
+  @media (min-width: 740px) { .jn-connect { margin-top: 28px; padding: 36px 40px; } }
   .jn-connect-n { font-size: 11px; letter-spacing: 0.18em; color: var(--color-copper); margin-bottom: 10px; }
   .jn-connect-h { margin: 0 0 10px; }
   .jn-connect-p { margin: 0 auto 20px; max-width: 480px; font-size: 15px; line-height: 1.6; color: var(--color-ash-300); }
@@ -538,7 +565,7 @@ const QR_D = 'M0 0h1v1h-1zM1 0h1v1h-1zM2 0h1v1h-1zM3 0h1v1h-1zM4 0h1v1h-1zM5 0h1
     text-underline-offset: 3px;
   }
 
-  .jn-video { max-width: 760px; margin: 48px auto 80px; text-align: center; }
+  .jn-video { max-width: 760px; margin: 48px auto 40px; text-align: center; }
   @media (min-width: 740px) { .jn-video { margin-top: 64px; } }
   .jn-video-h { margin: 0 0 8px; }
   .jn-video-p { margin: 0 auto 20px; max-width: 480px; font-size: 15px; line-height: 1.6; color: var(--color-ash-300); }
