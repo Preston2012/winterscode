@@ -64,6 +64,8 @@ const n = cols ?? (tabs.length >= 4 ? 4 : tabs.length);
         t.setAttribute('aria-selected', on ? 'true' : 'false');
         t.tabIndex = on ? 0 : -1;
         panels[k].hidden = !on;
+        // A hidden panel's video stops with it: its controls are gone with the panel.
+        if (!on) panels[k].querySelectorAll('video').forEach((v) => v.pause());
       });
       if (focus) tabs[i].focus();
     };

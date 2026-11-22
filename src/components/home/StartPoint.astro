@@ -255,6 +255,8 @@ const DOORS: {
         t.setAttribute('aria-selected', on ? 'true' : 'false');
         t.tabIndex = on ? 0 : -1;
         panels[k].hidden = !on;
+        // A door that closes stops its video: a hidden player has no controls to stop it with.
+        if (!on) panels[k].querySelectorAll('video').forEach((v) => v.pause());
       });
       if (focus) tabs[i].focus();
     };
