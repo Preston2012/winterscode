@@ -11,7 +11,8 @@
  * "Below text me your key should be the latest Chere' video".
  *
  * Links: TestFlight's public link for Chere' (Apple approved build 2601 for outside testers),
- * and on Android the testers Google Group, Play's opt-in page and the Play listing. ANDROID_LIVE
+ * and on Android a text with the visitor's Gmail (Preston adds it to the Closed testing email list),
+ * Play's opt-in page and the Play listing. ANDROID_LIVE
  * turns the Android lane's coming-soon note into real links; it is on since Google approved the
  * Closed testing release (Preston, 2026-11-21).
  */
@@ -37,6 +38,11 @@ const PKG = 'com.winterscode.chere.demo';
 // button opened the coming-soon note (Preston, 2026-11-17). Set false to bring the note back.
 const ANDROID_LIVE = true;
 const smsAndroid = smsBase + encodeURIComponent("Hi Preston, I'd like Chere' on my Android phone. ");
+// Android's first step is a text, not a Google Group (Preston, 2026-11-21: "The stupid groups shit
+// isn't working. It says failed to load... People aren't gonna want to do all this"). Google Groups
+// failed to load on a tester's phone, so Preston adds each Gmail to the Closed testing email list in
+// Play Console and texts back; the opt-in link works for that account from then on.
+const smsAndroidGmail = smsBase + encodeURIComponent("Hi Preston, I'd like Chere' on my Android phone. My Gmail is: ");
 // Official store badges (the same files baseline.marketing uses). Apple's badge may only link to an App
 // Store page, so it sits on Get TestFlight (TestFlight's own App Store page), never on the beta link.
 const BADGES: Record<string, { src: string; alt: string; w: number; h: number }> = {
@@ -62,14 +68,14 @@ const ios: Step[] = [
 ];
 const android: Step[] = [
   {
-    h: 'Join the testers group',
-    p: 'Use the Google account your phone is signed in with, then tap Join group.',
-    href: 'https://groups.google.com/g/chere-testers',
-    cta: 'Join the group',
+    h: 'Text me your Gmail',
+    p: "The Google account your phone is signed in with. I add it to the tester list and text you back.",
+    href: smsAndroidGmail,
+    cta: 'Text me your Gmail',
   },
   {
     h: 'Become a tester',
-    p: 'One tap on Google Play says you are in.',
+    p: 'When I text back, one tap on Google Play says you are in.',
     href: `https://play.google.com/apps/testing/${PKG}`,
     cta: 'Become a tester',
   },
