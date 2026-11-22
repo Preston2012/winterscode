@@ -2,70 +2,69 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/layout/Header.astro';
 import MobileMenu from '../components/layout/MobileMenu.astro';
-import Hero from '../components/sections/Hero.astro';
-import Tangle from '../components/sections/Tangle.astro';
-import SelectedWork from '../components/sections/SelectedWork.astro';
-import WhyPrice from '../components/sections/WhyPrice.astro';
-import CareLine from '../components/sections/CareLine.astro';
-import ClientWord from '../components/sections/ClientWord.astro';
-import ServicesTeaser from '../components/sections/ServicesTeaser.astro';
-import AboutTeaser from '../components/sections/AboutTeaser.astro';
-import FaqQ1 from '../components/sections/FaqQ1.astro';
-import Contact from '../components/sections/Contact.astro';
-import Divider from '../components/ui/Divider.astro';
+import Seam from '../components/ui/Seam.astro';
+import HomeHero from '../components/home/HomeHero.astro';
+import StartPoint from '../components/home/StartPoint.astro';
+import ProofStrip from '../components/home/ProofStrip.astro';
+import WhyMe from '../components/home/WhyMe.astro';
+import StraightAnswers from '../components/home/StraightAnswers.astro';
+import HomeClose from '../components/home/HomeClose.astro';
 ---
 
 <BaseLayout
   title="Oregon Coast Web Design & Apps · Bandon · Winters Code"
   description="Custom websites, apps, and tools for Oregon coast businesses, built in Bandon. Sites from $1,750, starting at 3 business days. Help is just a text away."
 >
-  <Fragment slot="head">
-    <!-- Preload the hero stamp (homepage LCP element). Fetching during HTML
-         parse instead of after the picture element pulls LCP toward FCP on mobile. -->
-    <link rel="preload" as="image" href="/wc-seal-256.webp" type="image/webp" fetchpriority="high" />
-  </Fragment>
+  <!-- S339 home consolidation (Preston 2026-11-21: "bolder, more connect,
+       more explore", restrained). Five beats instead of ten sections:
+       the hero, what I build (four doors that open in place), the work
+       counted in days, why it's worth it with who builds it, straight
+       answers, and the tagline as the close. The H1 is the LCP element, so
+       nothing is preloaded. The Tangle, WhyPrice, ClientWord, SelectedWork,
+       CareLine, ServicesTeaser, AboutTeaser and FaqQ1 are off Home; their
+       content is condensed into these beats and every one of their pages
+       is unchanged.
 
-  <!-- S339 HONE-SPEC (Nov 4) order: hero, why $1,750, Rod, the work, care,
-       the tangle, services, about, the first question, the closer. Each
-       section is one beat that points at its own page. "Built on the coast"
-       and the logo band are off Home; their pages are unchanged. -->
+       Round 2, Preston's phone markup the same day: "if it's gonna be boxy
+       it should be softer, rounded, clipped corners, bullets, rivets. It
+       should feel well manufactured." Every surface is a rounded plate,
+       the important ones carry corner rivets, the site's own numbered bezel
+       divides the beats, and arrows and icons are drawn for this page. -->
   <Header homepage />
   <MobileMenu />
 
-  <Hero />
-
-  <WhyPrice />
-
-  <Divider label="WC" ariaLabel="In the client's words, return to top" />
-
-  <ClientWord />
-
-  <Divider label="WC" ariaLabel="Selected work, return to top" />
-
-  <SelectedWork />
-
-  <CareLine />
-
-  <Divider label="WC" ariaLabel="The tangle, return to top" />
-
-  <Tangle />
-
-  <Divider label="WC" ariaLabel="Services, return to top" />
-
-  <ServicesTeaser />
-
-  <Divider label="WC" ariaLabel="About, return to top" />
-
-  <AboutTeaser />
-
-  <Divider label="WC" ariaLabel="A question, return to top" />
-
-  <FaqQ1 />
-
-  <Divider label="WC" ariaLabel="Reach out, return to top" />
-
-  <Contact
-    sectionNumber=""
-    why="You're not renting a template. You own a hand-built site that loads fast on a phone and comes with the words, photos and branding, from someone in Bandon you can text."
-  />
+  <div class="home">
+    <HomeHero />
+    <Seam />
+    <StartPoint />
+    <Seam />
+    <ProofStrip />
+    <Seam />
+    <WhyMe />
+    <Seam />
+    <StraightAnswers />
+    <Seam />
+    <HomeClose />
+  </div>
 </BaseLayout>
+
+<style is:global>
+  /* Home layout. The plates, rivets, buttons and type come from the shop
+     system in global.css; Home only sets its own page measure. */
+  .home {
+    --home-gut: 16px;
+    --home-max: 1120px;
+    --home-pad: clamp(40px, 6vw, 84px);
+    background: var(--color-bg-deep);
+    hyphens: manual;
+    /* Home runs edge to edge; the framed column is for reading pages. */
+    width: 100vw;
+    margin-inline: calc(50% - 50vw);
+  }
+  /* From tablet up, the content edge lines up with the framed header and
+     footer column (.page in global.css: 92vw up to 960 with 24px inside,
+     then 1200 with 40px inside), so the logo, the H1 and every section
+     start on one line. Phones keep a 16px gutter for room. */
+  @media (min-width: 700px) { .home { --home-gut: calc(4vw + 24px); --home-max: calc(min(92vw, 960px) - 48px); } }
+  @media (min-width: 1024px) { .home { --home-gut: 40px; --home-max: 1120px; } }
+</style>

@@ -48,6 +48,8 @@ const steps = [
 
 let n = 0;
 const nx = () => String(++n).padStart(2, '0');
+import Steps from '../../components/ui/Steps.astro';
+import Fold from '../../components/ui/Fold.astro';
 ---
 
 <BaseLayout
@@ -65,82 +67,44 @@ const nx = () => String(++n).padStart(2, '0');
   <Breadcrumbs items={crumbs} />
 
   <PageHero
-    eyebrow="Chere' · For contractors · In beta"
+    eyebrow="Chere' · In beta"
     h1="The contractor's back office."
-    sub="Said like Sherrie. Photo in, signed job out, and the office work done from the truck. Built in Bandon by a licensed contractor who needed it first."
+    sub="Said like Sherrie. The office work, done from the truck. Built in Bandon by a licensed contractor who needed it first."
   />
 
-  <Divider label={nx()} />
-
+  <!-- S339 round 3 (Preston 2026-11-21: fold, cut numbers). The demo and
+       the story stay open; the steps run on the house rail with no numbers;
+       "your yes" and the setup fold. -->
   <section class="ch-feature" aria-label="Chere' in a minute and a half">
     <ChereFeature variant="page" />
   </section>
 
-  <Divider label={nx()} />
-
   <section class="ch-block" aria-labelledby="ch-why-h">
     <h2 class="ch-h" id="ch-why-h">I became the office.</h2>
     <p class="ch-lead">
-      In 2023 I came home to Bandon to work in my dad's contracting business. One truck, no office.
-      So I became the office: bids, contracts, Oregon's required notices, invoices and the books.
-      <strong>Twenty to thirty hours a week.</strong> A big bid took two of us a full day.
-    </p>
-    <p class="ch-lead">
-      Most remodeling and repair contractors work alone, and every one of those hours comes off the
-      job or off the family. I went looking for software that would take it. What I found handed you
-      a login and walked away, and none of it built in Oregon's contract notices. So I built Chere'.
+      In 2023 I came home to Bandon to work in my dad's contracting business. One truck, no office,
+      so I became the office: bids, contracts, Oregon's required notices, invoices and the books.
+      <strong>Twenty to thirty hours a week.</strong> Nothing I found built in Oregon's contract notices, so I built Chere'.
     </p>
     <p class="ch-lead">
       It runs the office at SeaBreeze today. <em>A bid that took two of us a full day now takes about an hour.</em>
     </p>
   </section>
 
-  <Divider label={nx()} />
-
-  <section class="ch-block" aria-labelledby="ch-how-h">
+  <section class="ch-block ch-rail wc-plate" aria-labelledby="ch-how-h">
     <h2 class="ch-h" id="ch-how-h">Photo in. Signed job out.</h2>
-    <ol class="ch-steps">
-      {steps.map((s, i) => (
-        <li class="ch-step">
-          <span class="ch-step-n" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
-          <div>
-            <h3 class="ch-step-h">{s.h}</h3>
-            <p class="ch-step-p">{s.p}</p>
-          </div>
-        </li>
-      ))}
-    </ol>
+    <Steps label="How Chere' works" steps={steps.map((x) => ({ title: x.h, body: x.p }))} />
   </section>
 
-  <Divider label={nx()} />
-
-  <section class="ch-block" aria-labelledby="ch-yes-h">
-    <h2 class="ch-h" id="ch-yes-h">Nothing reaches a customer without your yes.</h2>
-    <p class="ch-lead">
-      Chere' does the paperwork. You stay the contractor. It never sends a bid, a contract or an
-      invoice on its own, and anything it read off a photo is flagged for you to check before a
-      customer sees it. The price comes from your prices, and your work stays yours.
-    </p>
-    <p class="ch-lead">
-      Each business runs on its own server, set up for that business alone. What Chere' keeps and
-      why is on <a href="/chere/privacy">the privacy page</a>, in plain words.
-    </p>
-  </section>
-
-  <Divider label={nx()} />
-
-  <section class="ch-block" aria-labelledby="ch-setup-h">
-    <h2 class="ch-h" id="ch-setup-h">Set up in person, by the people who built it.</h2>
-    <p class="ch-lead">
-      Most contractors won't learn new software alone, and they shouldn't have to. Before your first
-      job I load your contract, your prices and your customers, then walk you through it on your own
-      job. When you need help later, you text the person who set it up.
-    </p>
-    <p class="ch-lead">
-      Right now Chere' is in beta with a few contractors on the South Coast, on iPhone and Android.
-      If you run a one-truck shop doing repair, remodel or exterior work, text me and I'll show you
-      on a job of yours.
-    </p>
+  <section class="ch-block ch-folds" aria-label="More about Chere'">
+    <Fold title="It never acts on its own.">
+      <p>Chere' does the paperwork; you stay the contractor. It never sends a bid, a contract or an invoice by itself.</p>
+      <p>Each business runs on its own server, set up for that business alone. What Chere' keeps and why is on <a href="/chere/privacy">the privacy page</a>.</p>
+    </Fold>
+    <Fold title="Set up in person, by the people who built it.">
+      <p>Before your first job I load your contract, your prices and your customers, then walk you through it on a job of yours. When you need help later, you text the person who set it up.</p>
+      <p>Chere' is in beta with a few South Coast contractors on iPhone and Android, built for one-truck repair, remodel and exterior shops.</p>
+    </Fold>
   </section>
 
   <section class="ch-block ch-end" aria-label="Text Preston for beta access">
@@ -153,8 +117,6 @@ const nx = () => String(++n).padStart(2, '0');
       ]}
     />
   </section>
-
-  <Divider label={nx()} />
 
   <RelatedLinks
     id="ch-related"
@@ -238,4 +200,9 @@ const nx = () => String(++n).padStart(2, '0');
   }
 
   .ch-end { padding-top: 8px; }
+
+  /* S339 round 3 */
+  .ch-rail { margin-top: 12px; padding: 24px 20px; }
+  @media (min-width: 740px) { .ch-rail { padding: 32px 36px; } }
+  .ch-folds :global(a) { color: var(--color-wc-green); }
 </style>

@@ -25,13 +25,13 @@ const breadcrumbLd = breadcrumbSchema(crumbs);
 const steps = [
   {
     num: '01',
-    name: 'A text + a consult',
+    name: 'A text and a consult',
     meta: 'no cost, no pitch deck',
     body: 'Start with a text about your business and what you need. Then we talk: in person in Bandon, or by video across Coos and Curry. There is a short questionnaire if you would rather write it all out, but it is optional and never a gate before the first meeting.',
   },
   {
     num: '02',
-    name: 'Quote + SOW + 50%',
+    name: 'A quote, a scope and 50%',
     meta: 'locks scope and the start date',
     body: 'I send a custom quote and a plain-English scope of work. Quotes hold for 14 days. A 50 percent deposit locks the scope and the start date the quote sets, and the build begins once I have what it needs. No waiting for next quarter.',
   },
@@ -54,6 +54,7 @@ const steps = [
     body: 'If you want it, a monthly care plan keeps the site hosted, secure, backed up, and edited. The person who built it is the person who maintains it.',
   },
 ];
+import Steps from '../components/ui/Steps.astro';
 ---
 
 <BaseLayout
@@ -72,47 +73,21 @@ const steps = [
   <PageHero
     eyebrow="The Process"
     h1="From first conversation to a live site you own."
-    sub="A clear, honest path in five steps. No agency runaround."
+    sub="Five steps, in plain words."
     bgImage="/photo/local/scenes/beach-bigsky"
     showcase
     bgPosition="center 62%"
     textPos="top"
   />
 
-  <Divider label="01" />
-
-  <section class="proc" aria-label="The five steps">
-    <ol class="proc-steps">
-      {steps.map((s) => (
-        <li class="proc-step">
-          <span class="proc-num">{s.num}</span>
-          <div class="proc-body">
-            <h2 class="proc-name">{s.name}</h2>
-            <p class="proc-meta">{s.meta}</p>
-            <p class="proc-text">{s.body}</p>
-          </div>
-        </li>
-      ))}
-    </ol>
-    <TextCta lead="Step one is a text." links={[{ href: '/pricing', label: 'See pricing' }]} />
+  <!-- S339 round 3: the five steps on the house rail, no numbers. The "How
+       I work" list repeated About word for word and is gone. -->
+  <section class="proc wc-plate" aria-label="The five steps">
+    <Steps label="The five steps" steps={steps.map((x) => ({ title: x.name, meta: x.meta, body: x.body }))} />
   </section>
+  <TextCta lead="Step one is a text." links={[{ href: '/pricing', label: 'Pricing' }, { href: '/about', label: 'How I work' }]} />
 
-  <Divider label="02" />
-
-  <section class="proc-creed" aria-labelledby="proc-creed-h">
-    <h2 class="proc-creed-h" id="proc-creed-h">How I work</h2>
-    <ul class="proc-creed-list">
-      <li>The work is mine, end to end. No offshore team, no junior you will never meet.</li>
-      <li>I show up in person when it matters. Small towns run on trust, and that is built face to face.</li>
-      <li><a href={sms} class="proc-text-link">I answer my texts within a few hours on business days.</a> Real human, real response time.</li>
-      <li>The site fits your customer, not the other way around. Sometimes that is a long scrolling story, sometimes a big phone number and a clear way to book.</li>
-      <li>I am here for the long run. Bandon is home, and the person who built your site is the one who maintains it.</li>
-    </ul>
-  </section>
-
-  <Divider label="03" />
-
-  <Contact sectionNumber="03" centered suppressHeader />
+  <Contact />
 </BaseLayout>
 
 <style>
@@ -207,4 +182,8 @@ const steps = [
     height: 1px;
     background: var(--color-copper);
   }
+
+  /* S339 round 3 */
+  .proc { margin-top: 12px; padding: 24px 20px; }
+  @media (min-width: 740px) { .proc { padding: 32px 36px; } }
 </style>

@@ -7,6 +7,7 @@ import Divider from '../components/ui/Divider.astro';
 import Breadcrumbs from '../components/ui/Breadcrumbs.astro';
 import Contact from '../components/sections/Contact.astro';
 import { breadcrumbSchema, absUrl } from '../lib/schema';
+import Arrow from '../components/ui/Arrow.astro';
 
 // Posts, newest first. Add an entry here when a new piece ships.
 const posts = [
@@ -58,12 +59,12 @@ const blogLd = {
   <section class="ins-list" aria-label="Posts">
     <ul>
       {posts.map((p) => (
-        <li class="ins-card">
+        <li class="ins-card wc-plate wc-rv">
           <a href={p.href}>
             <span class="ins-date mono">{p.date}</span>
             <h2 class="ins-title">{p.title}</h2>
             <p class="ins-blurb">{p.blurb}</p>
-            <span class="ins-more">Read the report →</span>
+            <span class="ins-more">Read the report <Arrow size={16} /></span>
           </a>
         </li>
       ))}
@@ -95,12 +96,8 @@ const blogLd = {
     text-decoration-color: var(--copper-hairline);
     text-underline-offset: 3px;
   }
-  .ins-card {
-    background: var(--color-bg-card);
-    border: 1px solid var(--copper-hairline);
-    border-radius: var(--radius-card, 10px);
-    overflow: hidden;
-  }
+  /* S339 page pass: the post is a riveted plate, the link the house arrow. */
+  .ins-card { overflow: hidden; padding: 0; }
   .ins-card a {
     display: block;
     padding: 22px 22px 20px;
@@ -130,9 +127,9 @@ const blogLd = {
     max-width: 60ch;
   }
   .ins-more {
-    font-family: var(--font-mono);
-    font-size: 12px;
+    display: inline-flex; align-items: center; gap: 8px; min-height: 32px;
+    font-size: 15px; font-weight: 600;
     color: var(--color-wc-green);
-    letter-spacing: 0.04em;
   }
+  .ins-card a:hover :global(.wc-arrow) { transform: translateX(3px); }
 </style>

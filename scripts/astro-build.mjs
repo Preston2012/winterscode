@@ -25,6 +25,8 @@ const KEEP = [
   'HTTPS_PROXY', 'HTTP_PROXY', 'NO_PROXY', 'https_proxy', 'http_proxy', 'no_proxy',
   // src/layouts/BaseLayout.astro reads CF_PAGES_BRANCH to noindex Pages previews
   'CF_PAGES', 'CF_PAGES_BRANCH', 'CF_PAGES_COMMIT_SHA', 'CF_PAGES_URL',
+  // A public host name, not a secret: the preview build's share-card origin.
+  'WC_OG_ORIGIN',
 ]
 
 // Fixed values only: a constant cannot make two builders differ.

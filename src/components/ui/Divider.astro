@@ -1,165 +1,38 @@
 ---
 /**
- * Divider, copper-gradient hairline with center bezel, drops between every
- * major homepage section. Reusable. Replaces v5.1's inline divider pattern.
+ * Divider, the break between two sections on every reading page.
  *
- * Props:
- *   label?: string , text inside the bezel (default "WC"). Use "01"-"07"
- *                     for section numbering, "?" for FAQ, "+" for process.
- *   onClick scrolls to top of page smoothly. Hover rotates bezel 60deg.
+ * S339, Preston 2026-11-21: "Cut unneeded numbers. 04 into 01, 02 and 03,
+ * into 05... none of that makes sense." The numbered bezel, the dashed inner
+ * ring and the return-to-top button are gone. What stays is the house seam:
+ * a copper hairline that fades at both ends with one rivet at the center,
+ * with less air around it so pages run shorter.
  *
- * Spec ref: docs/design/S6_PLUS.md "Section dividers" (~ line 946).
- *
- * No JS framework. The click handler is a 1-line vanilla script,
- * tree-shaken when label is unset (still scrolls to top, useful pattern).
+ * label and ariaLabel are still accepted so the 80 existing call sites keep
+ * building; neither renders. The divider is decoration and is hidden from
+ * assistive tech.
  */
-
 interface Props {
   label?: string;
   ariaLabel?: string;
 }
-
-const { label = 'WC', ariaLabel } = Astro.props;
-
-/*
- * WCAG 2.5.3 Label in Name. The bezel renders `label` as visible text, so the
- * accessible name has to contain it or a voice-control user cannot say what
- * they can see. The default name already did. A caller-supplied ariaLabel did
- * not: index.astro passes label="WC" with names like "Workshop intro, return
- * to top", and axe named exactly those two on the live homepage.
- *
- * Prefix only when the name does not already carry the glyph, so
- * label="02" with "Section 02, return to top" keeps the name it has rather
- * than becoming "02, Section 02, return to top". S285.
- */
-const spokenName = ariaLabel ?? `Section ${label}, return to top`;
-const accessibleName = spokenName.toLowerCase().includes(String(label).toLowerCase())
-  ? spokenName
-  : `${label}, ${spokenName}`;
 ---
 
-<div
-  class="divider"
-  role="button"
-  tabindex="0"
-  aria-label={accessibleName}
-  data-divider
->
-  <div class="divider-line" aria-hidden="true"></div>
-  <div class="divider-mark" aria-hidden="true">
-    <span>{label}</span>
-  </div>
-  <div class="divider-line" aria-hidden="true"></div>
-</div>
+<div class="divider" aria-hidden="true"><span></span></div>
 
 <style>
   .divider {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 28px 0;
-    margin: 0;
-    cursor: pointer;
-    background: transparent;
-    border: 0;
-    width: 100%;
-  }
-  @media (min-width: 740px) {
-    .divider { padding: 36px 0; gap: 16px; }
-  }
-  @media (min-width: 1024px) {
-    .divider { padding: 48px 0; gap: 20px; }
-  }
-  .divider-line {
-    flex: 1;
-    height: 4px;
-    /* Double-hairline, matching the header/footer seam (business-card motif):
-       two 1px copper-gradient lines 3px apart. No teal here. Teal stays a
-       sparse special marker (the masthead seam dot, highlight cards), never on
-       the six repeating dividers. */
-    background-image:
-      linear-gradient(90deg, transparent, var(--copper-dim) 18%, var(--color-copper) 50%, var(--copper-dim) 82%, transparent),
-      linear-gradient(90deg, transparent, var(--copper-dim) 18%, var(--color-copper) 50%, var(--copper-dim) 82%, transparent);
-    background-size: 100% 1px, 100% 1px;
-    background-position: 0 0, 0 3px;
-    background-repeat: no-repeat;
-  }
-  .divider-mark {
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    border: 1px solid var(--color-copper);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--color-bg-deep);
     position: relative;
-    transition: transform 400ms ease-out, box-shadow 400ms ease-out;
+    height: 1px;
+    margin: 24px 0;
+    background: linear-gradient(90deg, transparent, rgba(216, 144, 90, 0.32) 20%, rgba(216, 144, 90, 0.5) 50%, rgba(216, 144, 90, 0.32) 80%, transparent);
   }
-  @media (min-width: 1024px) {
-    .divider-mark { width: 36px; height: 36px; }
-  }
-  .divider:focus-visible .divider-mark {
-    transform: rotate(60deg);
-    box-shadow: 0 0 24px rgba(240, 160, 110, 0.4);
-  }
-
-  @media (hover: hover) {
-
-    .divider:hover .divider-mark {
-    transform: rotate(60deg);
-    box-shadow: 0 0 24px rgba(240, 160, 110, 0.4);
-  }}
-  .divider:focus-visible {
-    outline: 2px solid var(--color-copper-bright);
-    outline-offset: 8px;
-    border-radius: 4px;
-  }
-  .divider-mark::before {
-    content: '';
-    position: absolute;
-    inset: 3px;
-    border-radius: 50%;
-    border: 1px dashed var(--copper-dim);
-  }
-  .divider-mark span {
-    font-family: var(--font-mono);
-    font-size: 9px;
-    color: var(--color-copper);
-    font-weight: 500;
-    letter-spacing: 0.05em;
-  }
-  @media (min-width: 1024px) {
-    .divider-mark span { font-size: 11px; }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .divider-mark { transition: none; }
-    @media (hover: hover) {
-
-      .divider:hover .divider-mark { transform: none; }}
+  @media (min-width: 740px) { .divider { margin: 32px 0; } }
+  @media (min-width: 1024px) { .divider { margin: 40px 0; } }
+  .divider span {
+    position: absolute; left: 50%; top: 50%;
+    width: 7px; height: 7px; margin: -3.5px 0 0 -3.5px; border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #f6c39c, #c47b45 55%, #8a5430);
+    box-shadow: 0 0 0 4px var(--color-bg-deep);
   }
 </style>
-
-<script>
-  // Smooth scroll-to-top on click or Enter/Space, page-wide.
-  // Selector is page-scoped (querySelectorAll) so multiple dividers all work.
-  const dividers = document.querySelectorAll('[data-divider]');
-  const scrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches
-        ? 'auto'
-        : 'smooth',
-    });
-  };
-  dividers.forEach((d) => {
-    d.addEventListener('click', scrollToTop);
-    d.addEventListener('keydown', (e) => {
-      const ke = e as KeyboardEvent;
-      if (ke.key === 'Enter' || ke.key === ' ') {
-        ke.preventDefault();
-        scrollToTop();
-      }
-    });
-  });
-</script>

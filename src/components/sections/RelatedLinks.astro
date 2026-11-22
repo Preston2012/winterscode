@@ -19,9 +19,14 @@ interface Props {
   links: LinkItem[];
   /** aria id seed so multiple instances on a page stay unique. */
   id?: string;
+  /** S339 page pass: a long list (the eight towns) reads as a row of chips,
+      not a screen of cards. Defaults on past six links. */
+  compact?: boolean;
 }
 const { title, intro, links, id = 'related' } = Astro.props;
+const compact = Astro.props.compact ?? links.length > 6;
 const headingId = `${id}-h`;
+import Arrow from '../ui/Arrow.astro';
 ---
 
 <section class="rl" aria-labelledby={headingId}>
@@ -30,20 +35,36 @@ const headingId = `${id}-h`;
     {intro && <p class="rl-sub">{intro}</p>}
   </header>
 
+  {compact ? (
+    <ul class="rl-chips">
+      {links.map((l) => (
+        <li><a href={l.href} class="rl-chip">{l.label.replace(/, OR$/, '')}</a></li>
+      ))}
+    </ul>
+  ) : (
   <ul class="rl-grid">
     {links.map((l) => (
       <li class="rl-card">
         <a href={l.href} class="rl-link">
           <span class="rl-label">{l.label}</span>
           {l.sub && <span class="rl-meta">{l.sub}</span>}
-          <span class="rl-arrow" aria-hidden="true">→</span>
+          <span class="rl-arrow" aria-hidden="true"><Arrow size={18} /></span>
         </a>
       </li>
     ))}
   </ul>
+  )}
 </section>
 
 <style>
+  .rl-chips { list-style: none; margin: 16px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+  .rl-chip {
+    display: inline-flex; align-items: center; min-height: 44px; padding: 0 16px;
+    border: 1px solid var(--wc-line, rgba(221, 228, 230, 0.12)); border-radius: 999px;
+    background: var(--wc-raised, #12171a); color: var(--color-ash-100); font-size: 15px; font-weight: 500;
+    transition: border-color .2s ease, color .2s ease;
+  }
+  .rl-chip:hover, .rl-chip:focus-visible { border-color: rgba(200, 128, 74, 0.6); color: var(--color-copper-bright); }
   .rl {
     padding: 32px 4px 24px;
     max-width: 960px;
@@ -149,4 +170,19 @@ const headingId = `${id}-h`;
     transform: translateX(3px);
     color: var(--color-wc-green);
   }}
+
+  /* S339 round 3: house plates and the drawn arrow. */
+  .rl-link { border-radius: var(--wc-r) !important; background-color: var(--wc-raised) !important; border-color: var(--wc-line) !important; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04); }
+  .rl-link:hover, .rl-link:focus-visible { border-color: rgba(77, 216, 168, 0.45) !important; }
+  .rl-meta { font-family: var(--font-sans) !important; letter-spacing: 0 !important; font-size: 13.5px !important; color: var(--color-ash-300) !important; }
+  .rl-arrow { color: var(--color-wc-green) !important; display: inline-flex; }
+  .rl-h { font-family: var(--wc-display) !important; font-weight: 500 !important; }
+  /* Phones: two across, so a list of towns or services is half as tall. */
+  @media (max-width: 739px) {
+    .rl-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+    .rl-link { padding: 12px 12px !important; min-height: 64px; }
+    .rl-label { font-size: 15px !important; }
+    .rl-meta { font-size: 12.5px !important; }
+    .rl-arrow { display: none !important; }
+  }
 </style>

@@ -36,7 +36,9 @@ import Header from '../layout/Header.astro';
 import MobileMenu from '../layout/MobileMenu.astro';
 import Breadcrumbs from '../ui/Breadcrumbs.astro';
 import PageHero from '../sections/PageHero.astro';
-import Divider from '../ui/Divider.astro';
+import Fold from '../ui/Fold.astro';
+import CardArt from '../ui/CardArt.astro';
+import Arrow from '../ui/Arrow.astro';
 import RelatedLinks from '../sections/RelatedLinks.astro';
 import Contact from '../sections/Contact.astro';
 import TextCta from '../ui/TextCta.astro';
@@ -79,6 +81,26 @@ const details = [...item.details].sort(
   (a, b) => Number(a.label === 'Stack') - Number(b.label === 'Stack'),
 );
 const visit = item.links.find((l) => l.primary) ?? item.links[0];
+// S339 round 4 (Preston: "don't bury and hide important stuff"): the first
+// time the story names the client, the name links to their live site.
+// The story may use a shorter name ("SeaBreeze", "Baseline"), so the full
+// name is tried first, then its first four words, then its first word when
+// that word is a name and not a place.
+let named = false;
+const esc = (t: string) => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+const words = item.name.split(' ');
+const PLACES = new Set(['Bandon', 'Coos', 'Grand', 'South', 'US', 'North']);
+const names = [item.name, words.slice(0, 4).join(' '), ...(PLACES.has(words[0]) || words[0].length < 5 ? [] : [words[0]])];
+const introLinked = intro.map((para) => {
+  if (named || !visit) return para;
+  for (const n of names) {
+    const re = new RegExp(`\\b${esc(n)}\\b`);
+    if (!re.test(para)) continue;
+    named = true;
+    return para.replace(re, `<a class="cs-client" href="${visit.href}" target="_blank" rel="noopener">${n}</a>`);
+  }
+  return para;
+});
 const closing: EndLink[] = endLinks ?? [
   ...(visit ? [{ href: visit.href, label: 'Visit the live site', external: true }] : []),
   { href: '/pricing', label: 'See pricing' },
@@ -101,9 +123,6 @@ const workLd = {
   ...(item.image ? { image: absUrl(item.image.src) } : {}),
 };
 
-// Divider labels run in document order so adding a section never leaves a gap.
-let n = 0;
-const nx = () => String(++n).padStart(2, '0');
 ---
 
 <BaseLayout title={title} description={description} canonicalPath={path}>
@@ -116,31 +135,34 @@ const nx = () => String(++n).padStart(2, '0');
   <MobileMenu />
   <Breadcrumbs items={crumbs} />
 
+  <!-- S339 round 3 (Preston 2026-11-21: fold, cut numbers, every word
+       earns its place). The numbered dividers are gone; the story and the
+       numbers stay open, the build table and the named sections fold (their
+       text stays in the HTML for search), and one Text key carries the live
+       site link instead of two Text blocks. -->
   <PageHero eyebrow={eyebrow} h1={h1} sub={sub} />
 
-  <Divider label={nx()} />
+  {visit && (
+    <p class="cs-visit">
+      <a class="wc-btn wc-btn--ghost" href={visit.href} target="_blank" rel="noopener">Visit {visit.href.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')} <Arrow dir="up-right" size={16} /></a>
+    </p>
+  )}
 
   {item.image && (
-    <section class="cs-hero-img" aria-hidden="false">
-      <img
-        src={item.image.src}
-        srcset={item.image.srcSmall ? `${item.image.srcXSmall ?? item.image.src} 480w, ${item.image.srcSmall} 720w, ${item.image.src} 1200w` : undefined}
-        sizes="(min-width: 1024px) 960px, 100vw"
-        alt={item.image.alt}
-        width={item.image.width}
-        height={item.image.height}
-        loading="eager"
-        decoding="async"
-      />
+    <section class="cs-hero-img" aria-label={`${item.name}, live site`}>
+      {visit ? (
+        <a class="cs-hero-link" href={visit.href} target="_blank" rel="noopener">
+          <CardArt slug={slug} image={item.image} eager sizes="(min-width: 1024px) 960px, 100vw" />
+          <span class="cs-hero-chip">Open the live site <Arrow dir="up-right" size={14} /></span>
+        </a>
+      ) : (
+        <CardArt slug={slug} image={item.image} eager sizes="(min-width: 1024px) 960px, 100vw" />
+      )}
     </section>
   )}
 
-  <section class="cs-intro" aria-label="Overview">
-    {intro.map((p) => <p class="cs-lead" set:html={p} />)}
-  </section>
-
   {stats.length > 0 && (
-    <section class="cs-stats" aria-label="By the numbers">
+    <section class="cs-stats wc-plate wc-rv" aria-label="By the numbers">
       {stats.map((s) => (
         <div class="cs-stat">
           <span class="cs-stat-v" set:html={s.value} />
@@ -150,62 +172,50 @@ const nx = () => String(++n).padStart(2, '0');
     </section>
   )}
 
+  <section class="cs-intro" aria-label="Overview">
+    {introLinked.map((p) => <p class="cs-lead" set:html={p} />)}
+  </section>
+
   {item.quote && (
     <section class="cs-quote-wrap" aria-label="In the client's words">
       <ClientQuote quote={item.quote} />
     </section>
   )}
 
-  {stats.length > 0 && (
-    <section class="cs-block cs-cta" aria-label="Text Preston">
-      <TextCta links={[{ href: '/pricing', label: 'See pricing' }]} />
-    </section>
-  )}
-
-  <Divider label={nx()} />
-
-  <section class="cs-block" aria-labelledby="cs-build-h">
-    <h2 class="cs-h" id="cs-build-h">The build</h2>
-    <dl class="cs-details">
-      {details.map((d) => (
-        <div class="cs-row">
-          <dt>{d.label}</dt>
-          <dd>{d.value}</dd>
-        </div>
-      ))}
-    </dl>
-  </section>
-
-  {sections.map((s, i) => (
-    <>
-      <Divider label={nx()} />
-      <section class="cs-block" aria-labelledby={`cs-sec-${i}`}>
-        <h2 class="cs-h" id={`cs-sec-${i}`}>{s.h}</h2>
-        {s.body.map((p) => <p class="cs-lead" set:html={p} />)}
-      </section>
-    </>
-  ))}
-
-  <section class="cs-block cs-end" aria-label="Text Preston about a build like this">
+  <section class="cs-block cs-cta" aria-label="Text Preston about a build like this">
     <TextCta label="Text me about a build like this" about={item.name} links={closing} />
   </section>
 
-  <Divider label={nx()} />
+  <section class="cs-folds" aria-label="More about the build">
+    <Fold title="The build" meta={details.map((d) => d.label).join(' · ')}>
+      <dl class="cs-details">
+        {details.map((d) => (
+          <div class="cs-row">
+            <dt>{d.label}</dt>
+            <dd>{d.value}</dd>
+          </div>
+        ))}
+      </dl>
+    </Fold>
+    {sections.map((s) => (
+      <Fold title={s.h}>
+        {s.body.map((p) => <p class="cs-lead" set:html={p} />)}
+      </Fold>
+    ))}
+  </section>
 
   <RelatedLinks id="cs-related" title="Related" links={relatedLinks} />
 
-  <Divider label={nx()} />
-
-  <Contact sectionNumber={String(n).padStart(2, '0')} centered suppressHeader />
+  <Contact />
 </BaseLayout>
 
 <style>
-  .cs-hero-img { max-width: 960px; margin: 0 auto; padding: 8px 4px 0; }
+  .cs-hero-img { max-width: 960px; margin: 0 auto; padding: 4px 0 0; }
   .cs-hero-img img {
     width: 100%;
     height: auto;
-    border-radius: var(--radius-card, 10px);
-    border: 1px solid var(--copper-hairline);
+    border-radius: var(--wc-r-lg);
+    border: 1px solid var(--wc-line);
   }
   .cs-intro { padding: 20px 4px 8px; max-width: 720px; margin: 0 auto; }
   .cs-lead {
@@ -295,4 +305,33 @@ const nx = () => String(++n).padStart(2, '0');
 
   .cs-quote-wrap { padding: 20px 16px 4px; max-width: 760px; margin: 0 auto; }
   @media (min-width: 740px) { .cs-quote-wrap { padding: 28px 24px 4px; } }
+
+  /* S339 round 3: the numbers on a riveted plate, the annealed copper. */
+  .cs-stats { margin-top: 14px; padding: 6px; gap: 0; background-color: var(--wc-raised); border: 1px solid var(--wc-line); border-radius: var(--wc-r-lg); }
+  .cs-stat { background: transparent; padding: 18px 16px; align-items: flex-start; }
+  .cs-stat + .cs-stat { border-left: 1px solid var(--wc-line); }
+  @media (max-width: 739px) { .cs-stat:nth-child(odd) { border-left: 0; } .cs-stat:nth-child(n + 3) { border-top: 1px solid var(--wc-line); } }
+  .cs-stat-v { font-family: var(--wc-display); font-size: clamp(30px, 4vw, 40px); font-weight: 500; letter-spacing: -0.02em; background: var(--wc-annealed); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .cs-stat-l { font-family: var(--font-sans); font-size: 13px; letter-spacing: 0; text-transform: none; color: var(--color-ash-300); }
+  .cs-cta { padding-top: 4px; padding-bottom: 8px; }
+  .cs-folds { max-width: 720px; margin: 8px auto 0; }
+  .cs-folds .cs-lead { font-size: 15.5px; }
+
+  /* S339 round 4: the live site is one tap from the top of the page. */
+  .cs-visit { margin: 4px 0 14px; }
+  .cs-visit :global(.wc-btn) { min-height: 48px; font-size: 15px; }
+  .cs-hero-link { position: relative; display: block; border-radius: var(--wc-r-lg); overflow: hidden; border: 1px solid var(--wc-line); }
+  .cs-hero-link:hover, .cs-hero-link:focus-visible { border-color: rgba(77, 216, 168, 0.5); }
+  .cs-hero-chip {
+    position: absolute; right: 12px; bottom: 12px;
+    display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 12px;
+    font-size: 13.5px; font-weight: 600; color: #06150f;
+    background: var(--color-wc-green); border-radius: 999px;
+    box-shadow: 0 6px 18px -6px rgba(0, 0, 0, 0.7);
+  }
+  .cs-lead :global(a.cs-client) {
+    color: var(--color-copper-bright); font-weight: 600;
+    text-decoration: underline; text-decoration-color: rgba(244, 168, 116, 0.5); text-underline-offset: 4px;
+  }
+  .cs-lead :global(a.cs-client)::after { content: ' \2197'; font-size: 0.85em; }
 </style>

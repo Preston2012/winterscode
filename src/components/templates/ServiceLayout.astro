@@ -14,7 +14,7 @@ import Header from '../layout/Header.astro';
 import MobileMenu from '../layout/MobileMenu.astro';
 import Breadcrumbs from '../ui/Breadcrumbs.astro';
 import PageHero from '../sections/PageHero.astro';
-import Divider from '../ui/Divider.astro';
+import Fold from '../ui/Fold.astro';
 import RelatedLinks from '../sections/RelatedLinks.astro';
 import Contact from '../sections/Contact.astro';
 import TextCta from '../ui/TextCta.astro';
@@ -133,11 +133,16 @@ const crumbs = breadcrumb ?? [
 ];
 const breadcrumbLd = breadcrumbSchema(crumbs);
 const faqLd = faq.length ? faqSchema(faq) : null;
+// S339 page pass: the why and process links ride beside the Text key, not
+// as a lone line of links floating between sections.
+const ctaLinks = [
+  ...(textLinks ?? []),
+  ...(whyLink ? [{ href: '/services/web-design#why', label: 'Why custom code' }] : []),
+  ...(processLink ? [{ href: '/process', label: 'How a build goes' }] : []),
+];
 // S339 (Nov 4 site audit): divider numbers run in document order. The
 // fixed 04/05/06 after the counted sections printed 04 twice on any page
 // with two sections (real estate, redesign).
-let n = 2;
-const nx = () => String(++n).padStart(2, '0');
 ---
 
 <BaseLayout title={title} description={description} canonicalPath={path}>
@@ -163,9 +168,10 @@ const nx = () => String(++n).padStart(2, '0');
     textPos={heroTextPos}
   />
 
-  <Divider label="01" />
-
-  <!-- Intro / lead -->
+  <!-- S339 round 3 (Preston 2026-11-21: fold, dedupe, cut numbers). The
+       story, the proof and the Text key stay open; what's included, the named
+       sections, the why and the questions fold, text still in the HTML for
+       search. /services/web-design#why opens its fold. -->
   <section class="svc-intro" aria-label="Overview">
     {intro.map((p) => <p class="svc-lead" set:html={p} />)}
     {figure && (
@@ -186,34 +192,19 @@ const nx = () => String(++n).padStart(2, '0');
     )}
   </section>
 
-  <Divider label="02" />
-
-  <!-- What's included -->
-  <section class="svc-block" aria-labelledby="svc-incl-h">
-    <header class="svc-block-head">
-      <h2 class="svc-block-h" id="svc-incl-h">{includesTitle}</h2>
-    </header>
-    <div class="svc-grid">
+  <!-- S339 page pass: what's included reads at a glance on one riveted
+       spec sheet (name and one line each), not six folds of one sentence. -->
+  <section class="svc-incl" aria-labelledby="svc-incl-h">
+    <h2 class="svc-sub-h" id="svc-incl-h">{includesTitle}</h2>
+    <ul class="svc-spec wc-plate wc-rv">
       {includes.map((it) => (
-        <article class="svc-card">
-          <h3 class="svc-card-h">{it.h}</h3>
-          <p class="svc-card-body" set:html={it.body} />
-        </article>
+        <li class="svc-spec-i">
+          <span class="svc-spec-h"><span class="svc-spec-dot" aria-hidden="true"></span>{it.h}</span>
+          <span class="svc-spec-b" set:html={it.body} />
+        </li>
       ))}
-    </div>
+    </ul>
   </section>
-
-  {sections.map((sec, i) => (
-    <>
-      <Divider label={nx()} />
-      <section class="svc-block svc-section" aria-label={sec.heading}>
-        <header class="svc-block-head">
-          <h2 class="svc-block-h">{sec.heading}</h2>
-        </header>
-        {sec.body.map((para) => <p class="svc-section-p" set:html={para} />)}
-      </section>
-    </>
-  ))}
 
   {Astro.slots.has('proof') && (
     <section class="svc-block svc-proof" aria-label="Featured build">
@@ -221,59 +212,33 @@ const nx = () => String(++n).padStart(2, '0');
     </section>
   )}
 
-  {why.length > 0 && !whyLink && (
-    <>
-      <Divider label={nx()} />
-      <section class="svc-block svc-why" id="why" aria-labelledby="svc-why-h">
-        <header class="svc-block-head">
-          <h2 class="svc-block-h" id="svc-why-h">{whyTitle}</h2>
-        </header>
-        {why.map((para) => <p class="svc-why-p" set:html={para} />)}
-      </section>
-    </>
-  )}
-
-  {whyLink && (
-    <section class="svc-block svc-inline-link">
-      <p class="svc-section-p">Curious why it is custom code instead of WordPress or a builder? <a href="/services/web-design#why">Here is the full reasoning, with the numbers</a>.</p>
-    </section>
-  )}
-
-  {processLink && (
-    <section class="svc-block svc-inline-link">
-      <p class="svc-section-p">Every build follows the same clear path, from the first text to launch. <a href="/process">See exactly how it goes</a>.</p>
-    </section>
-  )}
-
   <section class="svc-block svc-cta" aria-label="Text Preston">
-
-    <TextCta label={textLabel} links={textLinks} />
-
+    <TextCta label={textLabel} links={ctaLinks} />
   </section>
 
-  {faq.length > 0 && (
-    <>
-      <Divider label={nx()} />
-      <section class="svc-faq" aria-labelledby="svc-faq-h">
-        <header class="svc-block-head">
-          <h2 class="svc-block-h" id="svc-faq-h">Questions</h2>
-        </header>
-        <div class="svc-faq-list">
-          {faq.map((item, i) => (
-            <details class="svc-faq-item" open={i === 0}>
-              <summary class="svc-faq-q">
-                <span class="svc-faq-q-text">{item.q}</span>
-                <span class="svc-faq-toggle" aria-hidden="true">+</span>
-              </summary>
-              <div class="svc-faq-a"><p set:html={item.a} /></div>
-            </details>
-          ))}
-        </div>
-      </section>
-    </>
+  {(faq.length > 0 || sections.length > 0 || (why.length > 0 && !whyLink)) && (
+    <section class="svc-faq" aria-labelledby="svc-faq-h">
+      <p class="wc-eyebrow"><span class="wc-dot" aria-hidden="true"></span>Questions</p>
+      <h2 class="svc-faq-h" id="svc-faq-h">Straight answers</h2>
+      {/* S339 page pass: the named sections and the why join the answers,
+          instead of a lone fold standing between the Text key and them. */}
+      {sections.map((sec) => (
+        <Fold title={sec.heading} group="svc-faq">
+          {sec.body.map((para) => <p set:html={para} />)}
+        </Fold>
+      ))}
+      {why.length > 0 && !whyLink && (
+        <Fold title={whyTitle} id="why" group="svc-faq">
+          {why.map((para) => <p set:html={para} />)}
+        </Fold>
+      )}
+      {faq.map((item, i) => (
+        <Fold title={item.q} group="svc-faq" open={i === 0 && sections.length === 0 && !(why.length > 0 && !whyLink)}>
+          <p set:html={item.a} />
+        </Fold>
+      ))}
+    </section>
   )}
-
-  <Divider label={nx()} />
 
   <RelatedLinks
     id="svc-related"
@@ -282,9 +247,7 @@ const nx = () => String(++n).padStart(2, '0');
     links={relatedLinks}
   />
 
-  <Divider label={nx()} />
-
-  <Contact sectionNumber="06" centered suppressHeader why={closerWhy} />
+  <Contact />
 </BaseLayout>
 
 <style>
@@ -352,84 +315,9 @@ const nx = () => String(++n).padStart(2, '0');
     margin: 0 auto;
   }
   @media (min-width: 740px) { .svc-block { padding: 48px 4px 32px; } }
-  .svc-block-head { margin: 0 0 18px; }
-  .svc-block-h {
-    font-family: var(--font-serif);
-    font-size: 28px;
-    line-height: 1.15;
-    margin: 0;
-    color: var(--color-ash-100);
-    font-weight: 600;
-  }
-  @media (min-width: 740px) { .svc-block-h { font-size: 36px; } }
-  @media (min-width: 1024px) { .svc-block-h { font-size: 42px; } }
 
-  .svc-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 14px;
-    margin: 18px 0 0;
-  }
-  @media (min-width: 740px) { .svc-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; } }
-  @media (min-width: 1024px) { .svc-grid { grid-template-columns: repeat(3, 1fr); } }
-  .svc-card {
-    background: var(--color-bg-card);
-    border: 1px solid var(--copper-hairline);
-    border-radius: var(--radius-card, 10px);
-    padding: 18px 16px 16px;
-  }
-  .svc-card-h {
-    font-family: var(--font-serif);
-    font-size: 19px;
-    margin: 0 0 8px;
-    color: var(--color-ash-100);
-    font-weight: 600;
-  }
-  @media (min-width: 740px) { .svc-card-h { font-size: 21px; } }
-  .svc-card-body {
-    font-family: var(--font-sans);
-    font-size: 14px;
-    line-height: 1.6;
-    color: var(--color-ash-300);
-    margin: 0;
-  }
-  @media (min-width: 740px) { .svc-card-body { font-size: 14.5px; } }
-  .svc-card-body :global(strong) { color: var(--color-ash-100); }
-
-  .svc-why { max-width: 720px; }
-  .svc-why-p {
-    font-family: var(--font-sans);
-    font-size: 15px;
-    line-height: 1.7;
-    color: var(--color-ash-300);
-    margin: 0 0 16px;
-    max-width: 62ch;
-  }
-  @media (min-width: 740px) { .svc-why-p { font-size: 16px; } }
-  .svc-why-p :global(strong) { color: var(--color-ash-100); font-weight: 600; }
-  /* Flexible per-page sections + inline canonical links (re-spine system) */
-  .svc-section { max-width: 720px; }
   /* S339: one featured build under the sections (App Development: Chere'). */
   .svc-proof { max-width: 720px; padding-top: 4px; }
-  .svc-section-p {
-    font-family: var(--font-sans);
-    font-size: 15px;
-    line-height: 1.7;
-    color: var(--color-ash-300);
-    margin: 0 0 16px;
-    max-width: 62ch;
-  }
-  @media (min-width: 740px) { .svc-section-p { font-size: 16px; } }
-  .svc-section-p :global(strong) { color: var(--color-ash-100); font-weight: 600; }
-  .svc-section-p :global(a) { color: var(--color-copper-bright); text-decoration: underline; text-underline-offset: 3px; }
-  .svc-inline-link { max-width: 720px; padding-top: 4px; padding-bottom: 4px; }
-  .svc-inline-link .svc-section-p { color: var(--color-ash-400); font-size: 14px; margin: 0; }
-  @media (min-width: 740px) { .svc-inline-link .svc-section-p { font-size: 15px; } }
-  .svc-why-p :global(em) {
-    color: var(--color-copper-bright);
-    font-style: italic;
-    font-family: var(--font-serif);
-  }
 
   /* FAQ accordion, mirrors services.astro pattern */
   .svc-faq {
@@ -438,63 +326,27 @@ const nx = () => String(++n).padStart(2, '0');
     margin: 0 auto;
   }
   @media (min-width: 740px) { .svc-faq { padding: 48px 4px 32px; } }
-  .svc-faq-list { margin: 18px 0 0; display: grid; gap: 8px; }
-  .svc-faq-item {
-    background: var(--color-bg-card);
-    border: 1px solid var(--copper-hairline);
-    border-radius: var(--radius-card, 10px);
-    overflow: hidden;
-  }
-  .svc-faq-item[open] { border-color: var(--copper-dim, rgba(240, 160, 110, 0.5)); }
-  .svc-faq-q {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 12px;
-    align-items: center;
-    padding: 14px 16px;
-    cursor: pointer;
-    list-style: none;
-    user-select: none;
-  }
-  .svc-faq-q::-webkit-details-marker { display: none; }
-  .svc-faq-q:focus-visible {
-    background-color: rgba(200, 128, 74, 0.04);
-    outline: none;
+
+  /* S339 round 3 */
+  .svc-sub-h { margin: 0 0 14px; font-family: var(--wc-display); font-weight: 500; font-size: clamp(26px, 4vw, 40px); line-height: 1.1; letter-spacing: -0.015em; color: #eef1ec; }
+
+  .svc-incl { margin-top: 28px; }
+  .svc-spec { list-style: none; margin: 0; padding: 6px 0; display: grid; grid-template-columns: 1fr; }
+  .svc-spec-i { display: grid; gap: 4px; padding: 14px 20px; }
+  .svc-spec-i + .svc-spec-i { border-top: 1px solid var(--wc-line); }
+  .svc-spec-h { display: flex; align-items: center; gap: 10px; font-size: 16px; font-weight: 600; color: #eef1ec; }
+  .svc-spec-dot { flex: none; width: 7px; height: 7px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #f0b07c, #8a4f22 70%); box-shadow: 0 0 0 3px rgba(200, 128, 74, 0.14); }
+  .svc-spec-b { padding-left: 17px; font-size: 14.5px; line-height: 1.5; color: var(--color-ash-300); }
+  .svc-spec-b :global(a) { color: var(--color-wc-green); text-decoration: underline; text-underline-offset: 3px; }
+  @media (min-width: 740px) {
+    .svc-spec { grid-template-columns: 1fr 1fr; padding: 8px 0; }
+    .svc-spec-i { padding: 18px 26px; }
+    .svc-spec-i:nth-child(2) { border-top: 0; }
+    .svc-spec-i:nth-child(even) { border-left: 1px solid var(--wc-line); }
+    .svc-spec-h { font-size: 17px; }
+    .svc-spec-b { font-size: 15px; }
   }
 
-  @media (hover: hover) {
-
-    .svc-faq-q:hover {
-    background-color: rgba(200, 128, 74, 0.04);
-    outline: none;
-  }}
-  .svc-faq-q-text {
-    font-family: var(--font-sans);
-    font-size: 15px;
-    color: var(--color-ash-100);
-    font-weight: 600;
-    line-height: 1.35;
-  }
-  @media (min-width: 740px) { .svc-faq-q-text { font-size: 17px; } }
-  .svc-faq-toggle {
-    font-family: var(--font-mono);
-    font-size: 18px;
-    color: var(--color-copper);
-    width: 20px;
-    text-align: center;
-    transition: transform 0.15s ease;
-  }
-  .svc-faq-item[open] .svc-faq-toggle { transform: rotate(45deg); }
-  .svc-faq-a {
-    padding: 0 16px 16px 16px;
-    font-family: var(--font-sans);
-    font-size: 14px;
-    line-height: 1.6;
-    color: var(--color-ash-300);
-    border-top: 1px solid rgba(255, 255, 255, 0.04);
-  }
-  @media (min-width: 740px) { .svc-faq-a { font-size: 15px; } }
-  .svc-faq-a p { margin: 14px 0 0; }
-  .svc-faq-a :global(strong) { color: var(--color-ash-100); }
-  .svc-faq-a :global(em) { color: var(--color-copper-bright); font-style: italic; }
+  .svc-faq { margin-top: 0; }
+  .svc-faq-h { margin: 0 0 16px; font-family: var(--wc-display); font-weight: 500; font-size: clamp(30px, 4.6vw, 48px); line-height: 1.05; letter-spacing: -0.02em; color: #eef1ec; }
 </style>

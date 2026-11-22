@@ -1,0 +1,18 @@
+---
+/**
+ * Arrow. The house arrow for Home (S339, Preston 2026-11-21: "custom bespoke
+ * arrows"). A rivet for a tail, a rounded shaft and an open head, drawn on a
+ * 24px grid so it sits on the text's center line instead of riding low like
+ * the → glyph. Direction turns the drawing, never the element, so a hover
+ * nudge on the element still works.
+ */
+interface Props { dir?: 'right' | 'down' | 'up-right'; size?: number; class?: string }
+const { dir = 'right', size = 18, class: cls = '' } = Astro.props;
+const turn = dir === 'down' ? 'rotate(90 12 12)' : dir === 'up-right' ? 'rotate(-45 12 12)' : undefined;
+---
+<svg class:list={['wc-arrow', `wc-arrow--${dir}`, cls]} width={size} height={size} viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+  <g transform={turn}>
+    <circle cx="4.4" cy="12" r="1.8" fill="currentColor" />
+    <path d="M8.4 12h11M14.6 6.9 19.7 12l-5.1 5.1" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+  </g>
+</svg>

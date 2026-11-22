@@ -1,0 +1,456 @@
+---
+/**
+ * StartPoint: "Find your starting point". S339 home consolidation.
+ *
+ * Four doors in one section instead of four sections: websites, apps,
+ * branding, automation. A visitor taps the one that fits and it opens in
+ * place with what they get, one real proof, what it costs or takes, and a
+ * link to its full page. Every line is lifted from or condensed out of
+ * /services, /services/web-design, /services/app-development, /logo-design
+ * and /services/ai-automation.
+ *
+ * Round 2 (Preston's phone markup): the doors are separate rounded plates
+ * with a drawn icon instead of a ruled grid with numbers, the open panel is a
+ * riveted paper plate, and what you get is a 2 by 2 of rivet bullets instead
+ * of a list of dashes.
+ *
+ * Tabs pattern (WAI-ARIA APG): roving tabindex, arrow keys, Home and End.
+ * Every panel is in the HTML, so search engines and screen readers get all
+ * four. Without JavaScript all four panels show, stacked.
+ */
+import { smsBase } from '../../lib/text-cta';
+import { v } from '../../lib/asset';
+import { brand } from '../../lib/portfolio';
+
+const boardImg = brand[0]?.image;
+
+// The demo-night video plays through /media/[file], which answers byte
+// ranges (iPhone Safari needs them), the same way ChereFeature serves it.
+const mediaUrl = (file: string) => {
+  const ver = v(`/work/${file}`).split('?')[1];
+  return `/media/${file}${ver ? `?${ver}` : ''}`;
+};
+import Arrow from '../ui/Arrow.astro';
+import Icon from '../ui/Icon.astro';
+
+const ask = (topic: string) =>
+  smsBase + encodeURIComponent(`Hi Preston, found you at winterscode.com. I'd like help with ${topic}: `);
+
+type IconName = 'web' | 'apps' | 'brand' | 'auto';
+// A silent reel cut from real screens, served through /media for byte ranges.
+type Film = { file: string; poster: string; dur: string; name: string; label: string; caption: string; href?: string; linkLabel?: string };
+const DOORS: {
+  id: string; icon: IconName; need: string; label: string; head: string; lead: string; gets: string[];
+  proofWho: string; proof: string; proofHref: string; video?: boolean; board?: boolean; film?: Film; terms: string; more: string; moreLabel: string; topic: string; cta: string;
+}[] = [
+  {
+    id: 'web', icon: 'web',
+    need: 'My online presence', label: 'Websites',
+    head: 'Found, fast and yours to keep.',
+    lead: 'A custom site that says what you do and makes you easy to reach.',
+    gets: ['Custom design and code, never a template', 'Words, real photos and branding, included', 'Search Console and Business Profile set up', 'Domain and code in your name'],
+    proofWho: 'Grand Management · Coos Bay',
+    proof: '50 bilingual pages, rebuilt off WordPress and live in 13 business days.',
+    proofHref: '/work/grand-management',
+    // S339 round 4 (Preston): the door shows the work itself, a 52 second
+    // reel of nine live sites filmed on a phone (his pick over desktop), each
+    // one continuous scroll from hero to footer, the name set beside it.
+    film: {
+      file: 'sites-reel', poster: '/work/sites-reel-poster-720.webp', dur: '0:52', name: 'the reel',
+      label: 'Reel of nine live sites I built, 52 seconds, no sound, each filmed on a phone and scrolled from top to footer: Grand Management, Bandon By The Dunes Realtee, Makai Painting, US Survey Supply, SeaBreeze, Baseline, Sogn Contracting, Professors Golf and South Coast Cuisine, with eight of their phone menus opening and every footer.',
+      caption: 'Nine live sites, menus to footers', href: '/work', linkLabel: 'See the work',
+    },
+    terms: 'Free consult in Bandon, or by video across Coos and Curry',
+    more: '/services/web-design', moreLabel: 'Websites in detail',
+    topic: 'a website', cta: 'Text me about a site',
+  },
+  {
+    id: 'apps', icon: 'apps',
+    need: 'The tools I work with', label: 'Apps & software',
+    head: 'Software shaped to how you work.',
+    lead: 'Phone apps and internal tools for the jobs off-the-shelf software gets wrong. One build runs on iPhone and Android.',
+    gets: ['iPhone and Android from one build', 'Real logins, payments and backends', 'Tools for your crew and your office', 'AI and API running costs named in the quote'],
+    proofWho: "Chere' · runs the office at SeaBreeze",
+    proof: 'It runs the office at SeaBreeze. A bid that took two of us a full day now takes about an hour.',
+    proofHref: '/chere',
+    video: true,
+    terms: 'An MVP in 2 to 4 weeks · full builds in 4 to 8',
+    more: '/services/app-development', moreLabel: 'Apps in detail',
+    topic: 'an app', cta: 'Text me about an app',
+  },
+  {
+    id: 'brand', icon: 'brand',
+    need: 'How my business looks', label: 'Branding & logos',
+    head: 'A mark that means business.',
+    lead: 'A logo drawn for you, with the colors and type that go with it, so the sign, the truck and the site all look like the same business.',
+    gets: ['A custom logo, in every size it needs', 'Colors and type that belong together', 'Print-ready vector files', 'Artwork you own outright'],
+    proofWho: 'Design and build, one shop',
+    proof: 'I design the brand and build the site it lives on, so nothing gets lost handing a logo to someone else.',
+    proofHref: '/logo-design',
+    board: true,
+    terms: 'Part of a site build when you need one · also on its own',
+    more: '/logo-design', moreLabel: 'Branding in detail',
+    topic: 'a logo or brand', cta: 'Text me about a brand',
+  },
+  {
+    id: 'auto', icon: 'auto',
+    need: 'The work on repeat', label: 'Automation',
+    head: 'Quiet systems for the busywork.',
+    lead: 'Name the repetitive task eating your week. I automate that one thing well, prove it saves hours, then move to the next.',
+    gets: ['Messy intake into clean records', 'Inquiries routed to the right place', 'Drafted replies in your voice', 'Your tools wired so data moves once'],
+    proofWho: 'StainSlayer AI · built alone',
+    proof: 'Photograph a stain, get the removal steps. Live and approved on the App Store and Google Play for most of 2026.',
+    proofHref: '/work/stainslayer-ai',
+    // S339 round 4 (Preston): automation shown, not described. The live
+    // command deck on a phone leads (Pulse, then Spend, filmed off the real
+    // deck), then two of the LLRSX system blueprints.
+    film: {
+      file: 'auto-reel', poster: '/work/auto-reel-poster-720.webp', dur: '0:29', name: 'the automation reel',
+      label: 'Automation reel, 29 seconds, no sound: my live command deck on a phone, a day of runs across 44 loops and the spend tracked against its daily target, then two system blueprints, the action kernel and the portfolio governor.',
+      caption: 'My own ops deck: 44 loops, spend tracked daily',
+    },
+    terms: 'Scoped to one task at a time · running costs named up front',
+    more: '/services/ai-automation', moreLabel: 'Automation in detail',
+    topic: 'automating a task', cta: 'Text me a task to automate',
+  },
+];
+---
+
+<section class="sp" id="start" aria-labelledby="sp-h2">
+  <div class="sp-inner">
+    <p class="wc-eyebrow"><span class="wc-dot" aria-hidden="true"></span>Find your starting point</p>
+    <h2 class="wc-h2" id="sp-h2">What needs to <span class="wc-soft">work better?</span></h2>
+    <p class="wc-lead">Start with the part of your business that needs attention. Each one opens right here.</p>
+
+    <div class="sp-tabs" role="tablist" aria-label="What I build">
+      {DOORS.map((d, i) => (
+        <button
+          type="button"
+          class="sp-tab"
+          role="tab"
+          id={`sp-tab-${d.id}`}
+          aria-controls={`sp-panel-${d.id}`}
+          aria-selected={i === 0 ? 'true' : 'false'}
+          tabindex={i === 0 ? 0 : -1}
+        >
+          <Icon name={d.icon} class="sp-tab-icon" />
+          <span class="sp-tab-need">{d.need}</span>
+          <span class="sp-tab-label">{d.label}</span>
+          <span class="sp-tab-lamp" aria-hidden="true"></span>
+        </button>
+      ))}
+    </div>
+
+    <div class="sp-panels">
+      {DOORS.map((d, i) => (
+        <div
+          class="sp-panel wc-rv-ink"
+          role="tabpanel"
+          id={`sp-panel-${d.id}`}
+          aria-labelledby={`sp-tab-${d.id}`}
+          tabindex="0"
+        >
+          <div class="sp-main">
+            <p class="sp-kicker"><Icon name={d.icon} size={18} />{d.label}</p>
+            <h3 class="sp-h3">{d.head}</h3>
+            <p class="sp-lead">{d.lead}</p>
+            <ul class="sp-gets">
+              {d.gets.map((g) => <li>{g}</li>)}
+            </ul>
+          </div>
+          <div class="sp-side">
+            {d.board && boardImg ? (
+              <figure class="sp-board">
+                <a href="/work#branding" class="sp-board-link">
+                  <img
+                    src={boardImg.srcSmall ?? boardImg.src}
+                    srcset={`${boardImg.srcXSmall ? boardImg.srcXSmall + ' 480w, ' : ''}${boardImg.srcSmall ? boardImg.srcSmall + ' 800w, ' : ''}${boardImg.src} 1200w`}
+                    sizes="(min-width: 900px) 400px, 90vw"
+                    alt={boardImg.alt}
+                    width={boardImg.width}
+                    height={boardImg.height}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </a>
+                <figcaption>
+                  <span class="sp-proof-who">Logos and marks I've drawn</span>
+                  <a class="wc-link wc-link--ink" href="/work#branding">See the full board <Arrow size={16} /></a>
+                </figcaption>
+              </figure>
+            ) : d.film ? (
+              <figure class="sp-video">
+                <div class="sp-vwrap">
+                  <video
+                    controls
+                    muted
+                    playsinline
+                    preload="none"
+                    width="1280"
+                    height="720"
+                    poster={v(d.film.poster)}
+                    aria-label={d.film.label}
+                  >
+                    <source src={mediaUrl(`${d.film.file}.webm`)} type="video/webm" />
+                    <source src={mediaUrl(`${d.film.file}.mp4`)} type="video/mp4" />
+                  </video>
+                  <button type="button" class="sp-play" hidden aria-label={`Play ${d.film.name}, ${d.film.dur}`}><span class="sp-play-key" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor"/></svg></span><span class="sp-play-chip">Play · {d.film.dur}</span></button>
+                </div>
+                <figcaption>
+                  <span class="sp-proof-who">{d.film.caption}</span>
+                  {d.film.href && <a class="wc-link wc-link--ink" href={d.film.href}>{d.film.linkLabel} <Arrow size={16} /></a>}
+                </figcaption>
+              </figure>
+            ) : d.video ? (
+              <figure class="sp-video">
+                <div class="sp-vwrap">
+                  <video
+                    controls
+                    playsinline
+                    preload="none"
+                    width="1280"
+                    height="720"
+                    poster={v('/work/chere-master-poster-720.webp')}
+                    aria-label="Chere' video, 1 minute 32 seconds, with music. A kitchen photo and one sentence become a priced estimate, and a before and after the customer sees."
+                  >
+                    <source src={mediaUrl('chere-master.webm')} type="video/webm" />
+                    <source src={mediaUrl('chere-master.mp4')} type="video/mp4" />
+                  </video>
+                  <button type="button" class="sp-play" hidden aria-label="Play the demo, 1:32"><span class="sp-play-key" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor"/></svg></span><span class="sp-play-chip">Play · 1:32</span></button>
+                </div>
+                <figcaption>
+                  <span class="sp-proof-who">{d.proofWho}</span>
+                  <a class="wc-link wc-link--ink" href={d.proofHref}>More on Chere' <Arrow size={16} /></a>
+                </figcaption>
+              </figure>
+            ) : (
+              <a class="sp-proof" href={d.proofHref}>
+                <span class="sp-proof-who">{d.proofWho}</span>
+                <span class="sp-proof-text">{d.proof}</span>
+                <span class="sp-proof-go">See it <Arrow size={16} /></span>
+              </a>
+            )}
+            <p class="sp-terms">{d.terms}</p>
+            <div class="sp-actions">
+              <a class="wc-btn wc-btn--ink" href={ask(d.topic)}>{d.cta} <Arrow size={16} /></a>
+              <a class="wc-link wc-link--ink" href={d.more}>{d.moreLabel} <Arrow size={16} /></a>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<script>
+  // Tabs: click, arrow keys, Home and End. Runs once per page; the section
+  // works as four stacked panels until this marks it ready.
+  const root = document.querySelector<HTMLElement>('.sp');
+  if (root) {
+    const tabs = Array.from(root.querySelectorAll<HTMLButtonElement>('[role="tab"]'));
+    const panels = Array.from(root.querySelectorAll<HTMLElement>('[role="tabpanel"]'));
+    const select = (i: number, focus: boolean) => {
+      tabs.forEach((t, k) => {
+        const on = k === i;
+        t.setAttribute('aria-selected', on ? 'true' : 'false');
+        t.tabIndex = on ? 0 : -1;
+        panels[k].hidden = !on;
+        // A door that closes stops its video: a hidden player has no controls to stop it with.
+        if (!on) panels[k].querySelectorAll('video').forEach((v) => v.pause());
+      });
+      if (focus) tabs[i].focus();
+    };
+    tabs.forEach((t, i) => {
+      t.addEventListener('click', () => select(i, false));
+      t.addEventListener('keydown', (e) => {
+        const n = tabs.length;
+        let j = -1;
+        if (e.key === 'ArrowRight' || e.key === 'ArrowDown') j = (i + 1) % n;
+        else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') j = (i - 1 + n) % n;
+        else if (e.key === 'Home') j = 0;
+        else if (e.key === 'End') j = n - 1;
+        if (j >= 0) { e.preventDefault(); select(j, true); }
+      });
+    });
+    // Play keys: hide the native bar until the first play, then hand over.
+    // Starting one video pauses any other in the section.
+    const vids = Array.from(root.querySelectorAll<HTMLVideoElement>('.sp-vwrap video'));
+    root.querySelectorAll<HTMLElement>('.sp-vwrap').forEach((w) => {
+      const vid = w.querySelector('video'); const key = w.querySelector<HTMLButtonElement>('.sp-play');
+      if (!vid || !key) return;
+      vid.controls = false; key.hidden = false;
+      key.addEventListener('click', () => { key.hidden = true; vid.controls = true; vid.play().catch(() => {}); });
+      vid.addEventListener('play', () => { key.hidden = true; vid.controls = true; vids.forEach((o) => { if (o !== vid) o.pause(); }); });
+    });
+    select(0, false);
+    root.classList.add('sp-ready');
+  }
+</script>
+
+<style>
+  .sp { padding: var(--home-pad) var(--home-gut); }
+  .sp-inner { max-width: var(--home-max); margin: 0 auto; }
+
+  /* The doors: four separate plates. The open one lights its lamp and takes
+     a sage edge; the rest stay quiet. */
+  .sp-tabs {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+    margin-top: clamp(24px, 4vw, 44px);
+  }
+  .sp-tab {
+    position: relative;
+    display: flex; flex-direction: column; align-items: flex-start; gap: 4px;
+    min-height: 124px;
+    padding: 16px 16px 16px;
+    text-align: left;
+    background-color: var(--wc-raised);
+    background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.025), rgba(255, 255, 255, 0) 60%);
+    border: 1px solid var(--wc-line);
+    border-radius: var(--wc-r);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    color: inherit; font: inherit; cursor: pointer;
+    transition: border-color .2s ease, background-color .2s ease, transform .2s ease;
+  }
+  .sp-tab:hover { border-color: rgba(221, 228, 230, 0.2); }
+  .sp-tab:active { transform: scale(0.985); }
+  .sp-tab:focus-visible { outline: 2px solid var(--color-wc-green); outline-offset: 3px; }
+  .sp-tab[aria-selected='true'] {
+    border-color: rgba(77, 216, 168, 0.55);
+    background-color: #142420;
+    background-image: linear-gradient(180deg, rgba(77, 216, 168, 0.09), rgba(77, 216, 168, 0) 70%);
+  }
+  .sp-tab :global(.sp-tab-icon) { color: var(--color-ash-300); margin-bottom: 8px; transition: color .2s ease; }
+  .sp-tab[aria-selected='true'] :global(.sp-tab-icon) { color: var(--color-wc-green-bright); }
+  .sp-tab-need { font-size: 16px; line-height: 1.25; font-weight: 500; color: #eef1ec; }
+  .sp-tab-label { font-size: 13.5px; color: var(--color-ash-300); }
+  .sp-tab-lamp {
+    position: absolute; top: 14px; right: 14px;
+    width: 7px; height: 7px; border-radius: 50%;
+    background: #2a3337; box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.6);
+    transition: background-color .2s ease, box-shadow .2s ease;
+  }
+  .sp-tab[aria-selected='true'] .sp-tab-lamp { background: var(--color-wc-green-bright); box-shadow: 0 0 0 3px rgba(77, 216, 168, 0.18), 0 0 10px rgba(95, 232, 181, 0.6); }
+
+  /* The open door: the one light surface on the page. Warm paper, ink type,
+     four ink rivets. */
+  .sp-panels { margin-top: 12px; display: grid; gap: 12px; }
+  .sp-panel {
+    display: grid; gap: 24px;
+    padding: clamp(26px, 4vw, 52px) clamp(20px, 4vw, 56px) clamp(26px, 4vw, 48px);
+    background-color: var(--wc-paper);
+    color: var(--wc-ink);
+    border-radius: var(--wc-r-lg);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7), 0 24px 60px -30px rgba(0, 0, 0, 0.8);
+  }
+  :global(.sp.sp-ready) .sp-panel[hidden] { display: none; }
+  .sp-panel:focus-visible { outline: 2px solid var(--color-copper); outline-offset: 3px; }
+
+  .sp-kicker {
+    display: flex; align-items: center; gap: 8px;
+    margin: 0 0 12px;
+    font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--wc-ink-soft);
+  }
+  .sp-h3 {
+    margin: 0;
+    font-family: var(--wc-display);
+    font-weight: 500;
+    font-size: clamp(32px, 4.6vw, 56px);
+    line-height: 1.02;
+    letter-spacing: -0.02em;
+    color: var(--wc-ink);
+    text-wrap: balance;
+  }
+  .sp-lead { margin: 16px 0 0; max-width: 36rem; font-size: 17px; line-height: 1.6; color: var(--wc-ink-soft); }
+
+  /* What you get: a 2 by 2 of rivet bullets. */
+  .sp-gets {
+    list-style: none; padding: 0; margin: 22px 0 0;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 16px 18px;
+  }
+  /* The rivet sits on the first line of its item, not above it. */
+  .sp-gets li {
+    display: flex; align-items: flex-start; gap: 10px;
+    font-size: 15px; line-height: 1.4; color: var(--wc-ink);
+  }
+  .sp-gets li::before {
+    content: ''; flex: none; width: 9px; height: 9px; margin-top: 6px; border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #3fa57f, #1a6e51 70%);
+    box-shadow: 0 0 0 3px rgba(26, 110, 81, 0.14);
+  }
+
+  .sp-side { display: flex; flex-direction: column; gap: 16px; }
+  .sp-proof {
+    display: flex; flex-direction: column; gap: 8px;
+    padding: 18px 18px 14px;
+    background: #f8f6f0;
+    border: 1px solid rgba(20, 24, 22, 0.1);
+    border-radius: var(--wc-r-sm);
+    box-shadow: 0 1px 0 rgba(20, 24, 22, 0.04);
+    text-decoration: none; color: inherit;
+    transition: border-color .2s ease, transform .2s ease;
+  }
+  .sp-proof:hover, .sp-proof:focus-visible { border-color: rgba(138, 79, 34, 0.4); transform: translateY(-2px); }
+  .sp-proof-who {
+    display: flex; align-items: center; gap: 8px;
+    font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--wc-copper-ink);
+  }
+  .sp-proof-who::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #c98a58, #8a4f22 70%); flex: none; }
+  .sp-proof-text { font-size: 16px; line-height: 1.5; color: var(--wc-ink); }
+  .sp-proof-go { display: inline-flex; align-items: center; gap: 8px; align-self: flex-end; min-height: 32px; font-size: 14px; font-weight: 600; color: var(--wc-copper-ink); }
+  .sp-proof:hover :global(.wc-arrow) { transform: translateX(3px); }
+  .sp-terms { margin: 0; font-size: 15px; line-height: 1.5; color: var(--wc-ink-soft); }
+  .sp-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 22px; }
+
+  @media (min-width: 900px) {
+    .sp-tabs { grid-template-columns: repeat(4, 1fr); gap: 12px; }
+    .sp-tab { min-height: 148px; padding: 20px 20px 20px; }
+    .sp-tab-need { font-size: 18px; }
+    .sp-panel { grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: clamp(32px, 5vw, 72px); align-items: start; }
+    .sp-gets { gap: 18px 28px; }
+    .sp-gets li { font-size: 16px; }
+    .sp-gets li::before { margin-top: 7px; }
+  }
+
+  /* Phones: the four rivet bullets say what the lead says, so the lead
+     steps aside and the open door stays close to one screen. */
+  @media (max-width: 599px) { .sp-lead, .sp-kicker { display: none; } }
+  @media (max-width: 359px) { .sp-gets { grid-template-columns: 1fr; } }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sp-tab, .sp-proof, .sp-tab-lamp { transition: none; }
+  }
+
+  /* Apps door: the Chere' demo plays right in the panel (Preston, round 4). */
+  .sp-video { margin: 0; display: grid; gap: 8px; }
+  .sp-video video { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; border-radius: var(--wc-r); background: #0e1214; border: 1px solid rgba(20, 24, 22, 0.15); }
+  /* The play key: the native bar covers a third of a 16:9 poster on a phone,
+     so it waits until play. Without JavaScript the native controls stay. */
+  .sp-vwrap { position: relative; }
+  /* The key sits in the bottom corner, so the poster's own title stays in view. */
+  .sp-play {
+    position: absolute; inset: 0; display: flex; flex-direction: row; align-items: flex-end; justify-content: flex-start; gap: 12px;
+    width: 100%; border: 0; padding: 14px; cursor: pointer; border-radius: var(--wc-r);
+    background: linear-gradient(0deg, rgba(10, 13, 12, 0.55), rgba(10, 13, 12, 0) 45%);
+  }
+  .sp-play[hidden] { display: none; }
+  .sp-play-key {
+    display: grid; place-items: center; width: 52px; height: 52px; border-radius: 50%; padding-left: 3px;
+    color: #0a0d0c; background: linear-gradient(180deg, #f0b07c, #c8804a);
+    box-shadow: 0 0 0 5px rgba(10, 13, 12, 0.55), 0 0 0 6px rgba(240, 176, 124, 0.45), 0 14px 30px -10px rgba(0, 0, 0, 0.8);
+    transition: transform .2s ease;
+  }
+  .sp-play-key svg { width: 24px; height: 24px; }
+  .sp-play:hover .sp-play-key, .sp-play:focus-visible .sp-play-key { transform: scale(1.06); }
+  .sp-play:focus-visible { outline: 2px solid var(--color-wc-green); outline-offset: 3px; }
+  .sp-play-chip {
+    font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: #eef1ec;
+    background: rgba(10, 13, 12, 0.82); border: 1px solid rgba(200, 128, 74, 0.45); border-radius: 999px; padding: 6px 12px; margin-bottom: 11px;
+  }
+  .sp-video figcaption { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0 14px; }
+  /* Branding door: the graphics board itself, not a sentence about it. */
+  .sp-board { margin: 0; display: grid; gap: 8px; }
+  .sp-board-link { display: block; border-radius: var(--wc-r); overflow: hidden; border: 1px solid rgba(20, 24, 22, 0.15); background: #0e1214; }
+  .sp-board img { display: block; width: 100%; height: auto; }
+  .sp-board figcaption { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0 14px; }
+</style>

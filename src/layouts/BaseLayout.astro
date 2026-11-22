@@ -10,6 +10,7 @@ import '../styles/global.css';
 import KeyboardShortcuts from '../components/layout/KeyboardShortcuts.astro';
 import Footer from '../components/layout/Footer.astro';
 import TextBar from '../components/layout/TextBar.astro';
+import ogCards from '../lib/og-cards.json';
 // Print stylesheet. loaded with media="print" so the browser parses it
 // at lowest priority and NEVER blocks screen paint. Saves ~1KB off the
 // render-blocking BaseLayout CSS chunk.
@@ -28,7 +29,8 @@ export interface Props {
   canonicalPath?: string;
   /**
    * OG image path (relative to site root) or null to suppress OG image tags.
-   * Defaults to '/og-image.png' which renders reliably on Facebook, LinkedIn, Twitter/X, iMessage (SVG previews are unreliable across social platforms. we keep the .svg around as the design source but ship the .png).
+   * Defaults to the page's own card in /og (S339), else /og/home.jpg. The old
+   * single card, '/og-image.png', which rendered reliably on Facebook, LinkedIn, Twitter/X, iMessage (SVG previews are unreliable across social platforms. we keep the .svg around as the design source but ship the .png).
    */
   ogImage?: string | null;
   /** Suppress sitewide chrome (footer etc.), used by /404. */
@@ -41,7 +43,7 @@ const {
   title,
   description,
   canonicalPath,
-  ogImage = '/og-image.png?v=2',
+  ogImage: ogImageProp,
   bare = false,
   noindex = false,
 } = Astro.props;
@@ -58,8 +60,21 @@ const cleanPath = rawPath === '/index.html'
 const canonical = canonicalPath
   ? `${siteUrl}${canonicalPath}`
   : `${siteUrl}${cleanPath || '/'}`;
+// S339 round 3: every page has its own share card, its H1 set on the
+// riveted plate (scripts/cards/og-cards.mjs writes public/og and the list in
+// src/lib/og-cards.json). A page without one keeps the sitewide card.
+const ownCard = (ogCards as string[]).includes(cleanPath || '/')
+  ? `/og/${cleanPath === '/' || !cleanPath ? 'home' : cleanPath.slice(1).replace(/\//g, '-')}.jpg`
+  : '/og/home.jpg';
+const ogImage = ogImageProp === undefined ? ownCard : ogImageProp;
+// The card is fetched by the messaging app from the host the link names. A
+// preview build sets WC_OG_ORIGIN to its own host, so a shared preview link
+// shows a card that exists there instead of a production 404. Production
+// builds leave it unset and use the site origin. Canonical never moves.
+declare const __WC_OG_ORIGIN__: string;
+const ogOrigin = (__WC_OG_ORIGIN__ || siteUrl).replace(/\/$/, '');
 const ogImageUrl =
-  ogImage === null ? null : ogImage.startsWith('http') ? ogImage : `${siteUrl}${ogImage}`;
+  ogImage === null ? null : ogImage.startsWith('http') ? ogImage : `${ogOrigin}${ogImage}`;
 // The type follows the file: a page's own card may be a JPEG (S384, the Chere' join card is a photo
 // and a lossless PNG of it runs past 800 KB, over what chat apps fetch for a preview).
 const ogImageType = ogImageUrl && /\.jpe?g(\?|$)/i.test(ogImageUrl) ? 'image/jpeg' : 'image/png';

@@ -1,0 +1,131 @@
+---
+/**
+ * StraightAnswers. S339 home consolidation, beat 04: the five questions
+ * everyone asks, closed until tapped. Answers are condensed from /services
+ * (Q.01 to Q.05) and the hero facts on the old Home; nothing new is claimed.
+ *
+ * Native <details>, so it works with no JavaScript, every answer is in the
+ * HTML, and the browser handles keyboard and screen reader state. No FAQPage
+ * JSON-LD here: /faq carries it for the full list, and two pages marking up
+ * the same questions would compete with each other.
+ *
+ * Round 2 (Preston's phone markup): rounded plates with a gap instead of
+ * ruled rows, no Q numbers.
+ */
+import Arrow from '../ui/Arrow.astro';
+import WhyWintersCode from '../ui/WhyWintersCode.astro';
+
+const QUESTIONS: { q: string; a: string[]; why?: boolean; link?: { href: string; label: string } }[] = [
+  { q: 'Why Winters Code?', a: [], why: true, link: { href: '/work', label: 'See the work' } },
+  {
+    q: 'What does a site cost?',
+    a: [
+      'Most local business sites start at $1,750. Bigger jobs cost more, and the written quote says how much before any work starts. It holds for 14 days.',
+    ],
+    link: { href: '/pricing', label: 'See pricing' },
+  },
+  {
+    q: 'How fast can it be live?',
+    a: [
+      'Site builds start at 3 business days, counted from the day I have what the build needs, and a bigger site gets its timeline in the quote.',
+      'A custom software system runs 8 to 16 weeks.',
+    ],
+    link: { href: '/process', label: 'How a build goes' },
+  },
+  {
+    q: 'Do you keep it running after?',
+    a: [
+      'Yes, and it is optional. Basic care starts at $75 a month: hosting and SSL, daily backups, security patches and content edits. Pro starts at $250 a month. Cancel anytime.',
+      'The person who built it is the person who maintains it. You text a real person, not a ticket queue.',
+    ],
+    link: { href: '/services#care', label: 'Care plans' },
+  },
+  {
+    q: "What if I don't have photos or words yet?",
+    a: [
+      'I do most of the lift. I can shoot the photos and draft the words, and you edit. Start with a text about what you have and what you need.',
+    ],
+  },
+];
+---
+
+<section class="sa" id="questions" aria-labelledby="sa-h2">
+  <div class="sa-inner">
+    <div class="sa-head">
+      <p class="wc-eyebrow"><span class="wc-dot" aria-hidden="true"></span>Straight answers</p>
+      <h2 class="wc-h2" id="sa-h2">The questions <span class="wc-soft">everyone asks.</span></h2>
+      <a class="wc-link sa-more" href="/faq">More questions <Arrow size={16} /></a>
+    </div>
+
+    <div class="sa-list">
+      {QUESTIONS.map((item) => (
+        <details class="sa-item" name="home-faq">
+          <summary class="sa-q">
+            <span class="sa-q-text">{item.q}</span>
+            <span class="sa-toggle" aria-hidden="true"></span>
+          </summary>
+          <div class="sa-a">
+            {item.why && <WhyWintersCode />}
+            {item.a.map((p) => <p>{p}</p>)}
+            {item.link && <a class="wc-link" href={item.link.href}>{item.link.label} <Arrow size={16} /></a>}
+          </div>
+        </details>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .sa { padding: var(--home-pad) var(--home-gut); }
+  .sa-inner { max-width: var(--home-max); margin: 0 auto; display: grid; gap: clamp(24px, 4vw, 40px); }
+  .sa-head { display: flex; flex-direction: column; align-items: flex-start; }
+  .sa-more { margin-top: 8px; }
+
+  .sa-list { display: grid; gap: 8px; }
+  .sa-item {
+    background-color: var(--wc-raised);
+    border: 1px solid var(--wc-line);
+    border-radius: var(--wc-r);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    transition: border-color .2s ease;
+  }
+  .sa-item[open] { border-color: rgba(77, 216, 168, 0.4); }
+  .sa-q {
+    display: grid; grid-template-columns: 1fr 32px; align-items: center; gap: 12px;
+    min-height: 60px; padding: 12px 14px 12px 18px;
+    cursor: pointer; list-style: none;
+    font-size: 17px; font-weight: 500; color: #eef1ec;
+    border-radius: var(--wc-r);
+  }
+  .sa-q::-webkit-details-marker { display: none; }
+  .sa-q:hover .sa-toggle { border-color: rgba(77, 216, 168, 0.6); }
+  .sa-q:focus-visible { outline: 2px solid var(--color-wc-green); outline-offset: 2px; }
+  .sa-toggle {
+    position: relative; width: 32px; height: 32px; border-radius: 50%;
+    border: 1px solid rgba(221, 228, 230, 0.18);
+    background: #0e1316;
+    transition: border-color .2s ease, background-color .2s ease;
+  }
+  .sa-toggle::before, .sa-toggle::after {
+    content: ''; position: absolute; left: 50%; top: 50%; width: 12px; height: 2px; margin: -1px 0 0 -6px;
+    background: var(--color-ash-100); border-radius: 1px; transition: transform .25s ease;
+  }
+  .sa-toggle::after { transform: rotate(90deg); }
+  .sa-item[open] .sa-toggle { background: rgba(77, 216, 168, 0.14); border-color: rgba(77, 216, 168, 0.6); }
+  .sa-item[open] .sa-toggle::after { transform: rotate(0deg); }
+  .sa-item[open] .sa-q { color: var(--color-wc-green-bright); }
+
+  .sa-a { padding: 0 18px 16px; max-width: 46rem; }
+  .sa-a p { margin: 0 0 12px; font-size: 16px; line-height: 1.6; color: var(--color-ash-300); }
+
+  @media (min-width: 900px) {
+    .sa-inner { grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); align-items: start; gap: 72px; }
+    .sa-head { position: sticky; top: 112px; }
+    .sa-q { font-size: 19px; min-height: 68px; padding-left: 22px; }
+    .sa-a { padding: 0 22px 18px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sa-toggle::before, .sa-toggle::after, .sa-item, .sa-toggle { transition: none; }
+  }
+</style>

@@ -17,7 +17,7 @@ import Header from '../layout/Header.astro';
 import MobileMenu from '../layout/MobileMenu.astro';
 import Breadcrumbs from '../ui/Breadcrumbs.astro';
 import PageHero from '../sections/PageHero.astro';
-import Divider from '../ui/Divider.astro';
+import Fold from '../ui/Fold.astro';
 import RelatedLinks from '../sections/RelatedLinks.astro';
 import Contact from '../sections/Contact.astro';
 import TextCta from '../ui/TextCta.astro';
@@ -128,6 +128,9 @@ const crumbs = [
 ];
 const breadcrumbLd = breadcrumbSchema(crumbs);
 const faqLd = town.faq.length ? faqSchema(town.faq) : null;
+// S339 page pass: when a question already gives the drive from Bandon, the
+// travel line under the questions would say it twice.
+const driveInFaq = town.faq.some((f) => /\b(minutes|hours?)\b[^.]*\b(from Bandon|up Highway|south on|inland|on Highway)/i.test(f.a) || /about \d+ minutes from/i.test(f.a));
 ---
 
 <BaseLayout title={title} description={description} canonicalPath={path}>
@@ -154,9 +157,11 @@ const faqLd = town.faq.length ? faqSchema(town.faq) : null;
     textPos={heroTextPos}
   />
 
-  <Divider label="01" />
-
-  <!-- Lead + real local context -->
+  <!-- S339 round 3 (Preston 2026-11-21: fold, dedupe, cut numbers). The
+       story and the proof stay open; industries, the local angle, the link
+       lists and the questions fold, their text still in the HTML for search.
+       Rod's line left (it repeats on Home, Work and Pricing) and the travel
+       note is one line. -->
   <section class="loc-intro" aria-label={`About ${town.name}`}>
     {intro.map((p) => <p class="loc-lead" set:html={p} />)}
     {town.context && <p class="loc-context" set:html={town.context} />}
@@ -164,167 +169,89 @@ const faqLd = town.faq.length ? faqSchema(town.faq) : null;
   </section>
 
   {proof && (
-    <>
-      <Divider label="01b" />
-      <section class="loc-block loc-proof" aria-labelledby="loc-proof-h">
-        <header class="loc-block-head">
-          <h2 class="loc-block-h" id="loc-proof-h">{proof.heading}</h2>
-        </header>
-        <ul class="loc-proof-list" role="list">
-          {proof.items.map((it) => (
-            <li class="loc-proof-item">
-              <p set:html={it.body} />
-              <a href={it.href} class="loc-link">{it.label}</a>
-            </li>
-          ))}
-        </ul>
-        <TextCta />
-      </section>
-    </>
+    <section class="loc-proof-plate wc-plate" aria-labelledby="loc-proof-h">
+      <h2 class="loc-sub-h" id="loc-proof-h">{proof.heading}</h2>
+      <ul class="wc-bullets loc-proof-list" role="list">
+        {proof.items.map((it) => (
+          <li><span><span set:html={it.body} /> <a href={it.href} class="loc-link">{it.label}</a></span></li>
+        ))}
+      </ul>
+      <TextCta />
+    </section>
   )}
 
-  <Divider label="02" />
+  {showAuditHook && (
+    <section class="loc-audit-plate wc-plate wc-rv" aria-labelledby="loc-audit-h">
+      <h2 class="loc-sub-h" id="loc-audit-h">Why this matters here</h2>
+      {town.auditNote ? (
+        <p class="loc-audit-p" set:html={town.auditNote} />
+      ) : (
+        <p class="loc-audit-p">
+          I audited <strong>169 Coos County small-business websites</strong> with Google
+          Lighthouse and Mozilla Observatory. The average mobile speed score was
+          <strong> 61 out of 100</strong> among those Lighthouse could score, and not one site earned an A for security.
+        </p>
+      )}
+      {!proof && <TextCta links={[{ href: '/audit', label: 'Free audit of your site' }]} />}
+    </section>
+  )}
 
-  <!-- Common local industries (real) -->
-  <section class="loc-block" aria-labelledby="loc-ind-h">
-    <header class="loc-block-head">
-      <h2 class="loc-block-h" id="loc-ind-h">Built for {town.name}'s businesses</h2>
-      <p class="loc-block-sub">The trades and industries that drive {town.name}, and the kind of work each one needs online.</p>
-    </header>
-    {town.industriesDetail && town.industriesDetail.length > 0 ? (
-      <dl class="loc-industries-detail">
-        {town.industriesDetail.map((ind) => (
-          <div class="loc-ind-row">
-            <dt class="loc-ind-name">{ind.name}</dt>
-            <dd class="loc-ind-note" set:html={ind.note} />
-          </div>
-        ))}
-      </dl>
-    ) : (
-      <ul class="loc-industries">
-        {town.industries.map((ind) => <li>{ind}</li>)}
-      </ul>
+  <section class="loc-folds" aria-label={`More about ${town.name}`}>
+    <Fold title={`Built for ${town.name}'s businesses`} meta="the trades and what each needs">
+      {town.industriesDetail && town.industriesDetail.length > 0 ? (
+        <dl class="loc-industries-detail">
+          {town.industriesDetail.map((ind) => (
+            <div class="loc-ind-row">
+              <dt class="loc-ind-name">{ind.name}</dt>
+              <dd class="loc-ind-note" set:html={ind.note} />
+            </div>
+          ))}
+        </dl>
+      ) : (
+        <ul class="wc-bullets">
+          {town.industries.map((ind) => <li>{ind}</li>)}
+        </ul>
+      )}
+    </Fold>
+    {/* S339 page pass: the town's localAngle essay is not rendered. It said
+        again what the intro and "Why this matters here" already say on every
+        town page, so the data stays in business.ts unused. */}
+    {!town.compactServices && (
+      <Fold title={`What I build for ${town.name}`} meta={`${serviceLinks.length} services`}>
+        <RelatedLinks id="loc-services" title="Services" links={serviceLinks} />
+      </Fold>
+    )}
+    {comboLinks.length > 0 && (
+      <Fold title={`Other services in ${town.name}`} meta="apps and automation">
+        <RelatedLinks id="loc-combos" title="Apps and automation" links={comboLinks} />
+      </Fold>
+    )}
+    {neighborLinks.length > 0 && (
+      <Fold title="Nearby towns I serve" meta={`${neighborLinks.length} towns`}>
+        <RelatedLinks id="loc-neighbors" title="Nearby towns" links={neighborLinks} />
+      </Fold>
     )}
   </section>
 
-  {town.localAngle && (
-    <>
-      <Divider label="02b" />
-      <section class="loc-block loc-angle" aria-labelledby="loc-angle-h">
-        <header class="loc-block-head">
-          <h2 class="loc-block-h" id="loc-angle-h">{town.localAngle.heading}</h2>
-        </header>
-        <p class="loc-angle-p" set:html={town.localAngle.body} />
-      </section>
-    </>
-  )}
-
-  {/* localScene retired in S326: it told the local economy a third time after the intro and context. The data stays in business.ts. */}
-
-  {showAuditHook && (
-    <>
-      <Divider label="03" />
-      <section class="loc-block loc-audit" aria-labelledby="loc-audit-h">
-        <header class="loc-block-head">
-          <h2 class="loc-block-h" id="loc-audit-h">Why this matters here</h2>
-        </header>
-        {town.auditNote ? (
-          <p class="loc-audit-p" set:html={town.auditNote} />
-        ) : (
-          <p class="loc-audit-p">
-            I audited <strong>169 Coos County small-business websites</strong> with Google
-            Lighthouse and Mozilla Observatory. The average mobile speed score was
-            <strong> 61 out of 100</strong> among those Lighthouse could score, and not one site earned an A for security.
-            More than half run on a template platform or site builder.
-          </p>
-        )}
-        <TextCta links={[{ href: '/audit', label: 'Run a free audit of your site' }, { href: '/work', label: 'See the work' }]} />
-      </section>
-    </>
-  )}
-
-  <Divider label="04" />
-
-  {town.compactServices ? (
-    <section class="loc-block" aria-label="Services">
-      <p class="loc-audit-p">Sites, apps, automation and logo work are all on the <a href="/services" class="loc-link">services page</a>.</p>
-    </section>
-  ) : (
-    <RelatedLinks
-    id="loc-services"
-    title={`What I build for ${town.name}`}
-    intro="Every service, available to businesses in your town. The work is mine, end to end."
-    links={serviceLinks}
-  />
-  )}
-
   {town.faq.length > 0 && (
-    <>
-      <Divider label="05" />
-      <section class="loc-faq" aria-labelledby="loc-faq-h">
-        <header class="loc-block-head">
-          <h2 class="loc-block-h" id="loc-faq-h">{town.name} questions</h2>
-        </header>
-        <div class="loc-faq-list">
-          {town.faq.map((item, i) => (
-            <details class="loc-faq-item" open={i === 0}>
-              <summary class="loc-faq-q">
-                <span class="loc-faq-q-text">{item.q}</span>
-                <span class="loc-faq-toggle" aria-hidden="true">+</span>
-              </summary>
-              <div class="loc-faq-a"><p set:html={item.a} /></div>
-            </details>
-          ))}
-        </div>
-        {rod && (
-          <div class="loc-rod">
-            <ClientQuote quote={{ text: 'We are proud to endorse and recommend WintersCode.com.', attr: 'General Manager, US Survey Supply' }} />
-          </div>
-        )}
-      </section>
-    </>
+    <section class="loc-faq" aria-labelledby="loc-faq-h">
+      <p class="wc-eyebrow"><span class="wc-dot" aria-hidden="true"></span>Questions</p>
+      <h2 class="loc-faq-h" id="loc-faq-h">{town.name} questions</h2>
+      {town.faq.map((item, i) => (
+        <Fold title={item.q} group="loc-faq" open={i === 0}>
+          <p set:html={item.a} />
+        </Fold>
+      ))}
+    </section>
   )}
 
-  <Divider label="06" />
+  {!driveInFaq && <p class="loc-travel"><span class="wc-dot" aria-hidden="true"></span>
+    {town.consultBand === 'in-person-free'
+      ? `${town.name} is home base, so meeting in person is free. Most of a build happens over text and video anyway.`
+      : `From the shop in Bandon, ${town.name} is ${town.driveFromBandon}. Most of a build happens over text and video.`}
+  </p>}
 
-  <!-- Getting together (real travel facts) -->
-  <section class="loc-block loc-travel" aria-labelledby="loc-travel-h">
-    <header class="loc-block-head">
-      <h2 class="loc-block-h" id="loc-travel-h">Getting together</h2>
-    </header>
-    <p class="loc-travel-p">
-      {town.consultBand === 'in-person-free'
-        ? `${town.name} is home base, so meeting in person is free. Most of a build happens over text and video anyway.`
-        : `From the shop in Bandon, ${town.name} is ${town.driveFromBandon}. Most of a build happens over text and video.`}
-    </p>
-  </section>
-
-  {comboLinks.length > 0 && (
-    <>
-      <Divider label="06b" />
-      <RelatedLinks
-        id="loc-combos"
-        title={`Other services in ${town.name}`}
-        intro={`Apps and automation built for ${town.name} businesses, not just sites.`}
-        links={comboLinks}
-      />
-    </>
-  )}
-
-  {neighborLinks.length > 0 && (
-    <>
-      <Divider label="07" />
-      <RelatedLinks
-        id="loc-neighbors"
-        title="Nearby towns I serve"
-        links={neighborLinks}
-      />
-    </>
-  )}
-
-  <Divider label="08" />
-
-  <Contact sectionNumber="08" centered suppressHeader why={why} />
+  <Contact />
 </BaseLayout>
 
 <style>
@@ -555,4 +482,20 @@ const faqLd = town.faq.length ? faqSchema(town.faq) : null;
   }
   @media (min-width: 740px) { .loc-faq-a { font-size: 15px; } }
   .loc-faq-a p { margin: 14px 0 0; }
+
+  /* S339 round 3 */
+  .loc-sub-h { margin: 0 0 14px; font-family: var(--wc-display); font-weight: 500; font-size: clamp(24px, 3.4vw, 34px); line-height: 1.15; color: #eef1ec; }
+  .loc-proof-plate, .loc-audit-plate { margin-top: 20px; padding: 24px 20px 20px; }
+  @media (min-width: 740px) { .loc-proof-plate, .loc-audit-plate { padding: 32px 36px 28px; } }
+  .loc-proof-list { color: var(--color-ash-300); }
+  .loc-proof-list :global(p) { margin: 0; display: inline; }
+  .loc-audit-p { margin: 0; font-size: 16px; line-height: 1.6; color: var(--color-ash-300); }
+  .loc-audit-p :global(strong) { color: #eef1ec; }
+  .loc-folds { margin-top: 20px; }
+  .loc-folds :global(.rl) { padding: 0; margin: 0; }
+  .loc-folds :global(.rl-head) { display: none; }
+  .loc-faq { margin-top: 36px; }
+  .loc-faq-h { margin: 0 0 16px; font-family: var(--wc-display); font-weight: 500; font-size: clamp(30px, 4.6vw, 48px); line-height: 1.05; letter-spacing: -0.02em; color: #eef1ec; }
+  .loc-travel { display: flex; gap: 10px; align-items: flex-start; margin: 20px 4px 0; font-size: 15px; line-height: 1.5; color: var(--color-ash-300); }
+  .loc-travel .wc-dot { margin-top: 6px; }
 </style>

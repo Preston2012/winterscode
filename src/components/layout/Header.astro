@@ -112,9 +112,17 @@ const navItems = [
     position: sticky;
     top: 0;
     z-index: 50;
-    background: rgba(10, 13, 12, 0.94);
-    backdrop-filter: blur(12px);
+    /* S339 (Preston 2026-11-21): a solid bar. The old 94% backing let page
+       text ghost through, worst in the gutters beside the framed column
+       where the backdrop blur never reached. Opaque page colour, no blur. */
+    background: var(--color-bg-deep);
     gap: 16px;
+    /* The backing runs the full viewport width, not just the framed column,
+       so a full-bleed page (Home) never shows through beside it. The clip
+       stops it 8px under the bar, keeping the seam and its dot on solid
+       ground. */
+    box-shadow: 0 0 0 100vmax var(--color-bg-deep);
+    clip-path: inset(0 -100vmax -8px);
   }
   /* Double-hairline seam + centered teal registration dot (business-card motif). */
   .topmark::after {
@@ -325,37 +333,52 @@ const navItems = [
   }
 
   /* Mobile menu button */
+  /* S339 menu button: a machined key. Rounded plate, top light, three
+     full bars, the middle one blended copper to sage. */
   .topmark-menu-btn {
     font-family: var(--font-sans);
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--color-ash-400);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: var(--color-ash-100);
     cursor: pointer;
-    background: none;
+    min-width: 48px;
+    height: 48px;
+    padding: 0 14px;
     border: 1px solid var(--copper-hairline);
-    padding: 8px 12px;
-    border-radius: 6px;
-    transition: all 200ms;
+    border-radius: 12px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0) 70%), #12171a;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 6px 16px -10px rgba(0, 0, 0, 0.9);
+    transition: border-color 200ms, transform 150ms;
     display: flex;
     align-items: center;
-    gap: 6px;
+    justify-content: center;
+    gap: 10px;
     flex-shrink: 0;
   }
+  .topmark-menu-btn:active { transform: scale(0.96); }
+  .topmark-menu-btn:focus-visible { outline: 2px solid var(--color-wc-green); outline-offset: 3px; }
   @media (hover: hover) {
-
-    .topmark-menu-btn:hover {
-    border-color: var(--color-copper);
-    color: var(--color-copper-bright);
-  }}
+    .topmark-menu-btn:hover { border-color: var(--color-copper); }
+    .topmark-menu-btn:hover .bars span:nth-child(2) { filter: brightness(1.18); }
+  }
   .topmark-menu-btn .bars {
     display: flex;
     flex-direction: column;
-    gap: 3px;
+    align-items: flex-end;
+    gap: 4px;
   }
   .topmark-menu-btn .bars span {
-    width: 12px;
-    height: 1.5px;
+    width: 18px;
+    height: 2px;
+    border-radius: 2px;
     background: currentColor;
+  }
+  /* The middle bar runs copper into sage, the two brand metals in one
+     stroke. Hover brightens it. */
+  .topmark-menu-btn .bars span:nth-child(2) {
+    background: linear-gradient(90deg, var(--color-copper-bright) 0%, var(--color-copper-bright) 22%, #b9b27f 52%, var(--color-wc-green) 80%, var(--color-wc-green-bright) 100%);
+    transition: filter 200ms ease;
   }
   .topmark-menu-btn > span:not(.bars) { display: none; }
   @media (min-width: 740px) {

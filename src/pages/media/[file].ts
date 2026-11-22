@@ -27,6 +27,12 @@ const MEDIA: Record<string, { path: string; type: string }> = {
   // S384: the Chere' master video (2026-11-10 cut, 720p web encode), on /chere/join.
   'chere-master.mp4': { path: '/work/chere-master.mp4', type: 'video/mp4' },
   'chere-master.webm': { path: '/work/chere-master.webm', type: 'video/webm' },
+  // S339: the live-sites reel in the Home Websites door.
+  'sites-reel.mp4': { path: '/work/sites-reel.mp4', type: 'video/mp4' },
+  'sites-reel.webm': { path: '/work/sites-reel.webm', type: 'video/webm' },
+  // S339: the automation reel in the Home Automation door.
+  'auto-reel.mp4': { path: '/work/auto-reel.mp4', type: 'video/mp4' },
+  'auto-reel.webm': { path: '/work/auto-reel.webm', type: 'video/webm' },
 };
 
 function headers(type: string, size: number, etag: string | null): Record<string, string> {
@@ -42,7 +48,9 @@ function headers(type: string, size: number, etag: string | null): Record<string
 }
 
 export const GET: APIRoute = async ({ request, params }) => {
-  const media = MEDIA[String(params.file ?? '')];
+  // Own keys only: '__proto__' or 'constructor' must not pass as a file name.
+  const key = String(params.file ?? '');
+  const media = Object.hasOwn(MEDIA, key) ? MEDIA[key] : undefined;
   if (!media) return new Response('Not found', { status: 404 });
   const env: any = cfEnv ?? {};
   const assets = env.ASSETS as { fetch: (input: URL | Request) => Promise<Response> } | undefined;

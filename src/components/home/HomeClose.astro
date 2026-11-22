@@ -1,0 +1,78 @@
+---
+/**
+ * HomeClose. S339 home consolidation, beat 05: the tagline as the last word.
+ *
+ * "Help is just a text away." set as large as the H1, then the one filled
+ * control on the page's final screen (Text), Call as the quiet second, and the
+ * reply line. The Tangle's locked close ("I'm down the road. I pick up the
+ * phone.") lands here now that the Tangle is off Home.
+ *
+ * Keeps id="contact" from the shared closer, so header links to #contact
+ * still land; data-textbar-hide sits on the keys row, so the phone thumb bar
+ * steps aside only while these keys are on screen.
+ */
+import { smsHref, telHref, phoneDisplay } from '../../lib/text-cta';
+import Arrow from '../ui/Arrow.astro';
+
+const sms = smsHref('/');
+---
+
+<section class="hc" id="contact" aria-labelledby="hc-h2">
+  <div class="hc-glow" aria-hidden="true"></div>
+  <div class="hc-inner">
+    <p class="wc-eyebrow"><span class="wc-dot" aria-hidden="true"></span>Reach out</p>
+    <h2 class="hc-h2" id="hc-h2">Help is just a <span class="hc-cu">text away.</span></h2>
+    <p class="hc-sub">I'm down the road. I pick up the phone.</p>
+
+    <div class="hc-actions" data-textbar-hide>
+      <a class="wc-btn wc-btn--primary hc-btn" href={sms}>
+        <span class="hc-btn-stack">
+          <span class="hc-btn-label">Text Preston</span>
+          <span class="hc-btn-num">{phoneDisplay}</span>
+        </span>
+        <Arrow size={22} />
+      </a>
+      <a class="wc-btn wc-btn--ghost hc-call" href={telHref}>
+        <span class="hc-btn-stack">
+          <span class="hc-btn-label">Call</span>
+          <span class="hc-btn-num">{phoneDisplay}</span>
+        </span>
+      </a>
+    </div>
+
+    <p class="hc-reply">I answer my texts within a few hours during business days.</p>
+  </div>
+</section>
+
+<style>
+  .hc {
+    position: relative; overflow: hidden; isolation: isolate;
+    padding: clamp(72px, 11vw, 160px) var(--home-gut) clamp(72px, 10vw, 140px);
+  }
+  .hc-glow {
+    position: absolute; z-index: -1; inset: 0; pointer-events: none;
+    background:
+      radial-gradient(50% 60% at 85% 20%, rgba(240, 160, 110, 0.11), transparent 70%),
+      radial-gradient(45% 55% at 10% 95%, rgba(77, 216, 168, 0.07), transparent 72%);
+  }
+  .hc-inner { max-width: var(--home-max); margin: 0 auto; }
+  .hc-h2 {
+    margin: 0; max-width: 14ch;
+    font-family: var(--wc-display); font-weight: 500;
+    font-size: clamp(44px, 8.6vw, 112px); line-height: 0.98; letter-spacing: -0.025em;
+    color: #eef1ec; text-wrap: balance;
+  }
+  .hc-cu {
+    background: var(--wc-annealed); -webkit-background-clip: text; background-clip: text; color: transparent;
+    font-style: italic; padding-right: 0.06em;
+  }
+  .hc-sub { margin: clamp(20px, 3vw, 30px) 0 0; font-size: clamp(18px, 1.8vw, 22px); line-height: 1.5; color: var(--color-ash-300); }
+
+  .hc-actions { display: grid; grid-template-columns: 1.5fr 1fr; gap: 10px; max-width: 460px; margin-top: clamp(28px, 4vw, 44px); }
+  .hc-btn, .hc-call { min-height: 72px; }
+  .hc-btn-stack { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; text-align: left; }
+  .hc-btn-label { font-size: 18px; font-weight: 600; }
+  .hc-btn-num { font-family: var(--font-mono); font-size: 12.5px; font-weight: 400; opacity: 0.78; }
+  .hc-reply { margin: 22px 0 0; font-size: 15px; color: var(--color-ash-500); }
+
+</style>

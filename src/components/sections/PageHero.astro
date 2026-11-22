@@ -56,6 +56,18 @@ const { eyebrow, h1, sub, sub2, sub3, showStamp = false, bgImage, bgOpacity = 0.
 // was written for it. Anything else stays decorative, which is the honest
 // state for a background wash.
 const described = Boolean(showcase && bgImage && bgAlt);
+
+// S339 round 3: the H1's closing phrase takes the annealed copper, the same
+// rule the share cards use: the second sentence when there are two, else the
+// last two words (the last one on a two-word line).
+const sentences = h1.match(/[^.!?]+[.!?]/g);
+const words = h1.split(' ');
+const cu = sentences && sentences.length > 1
+  ? sentences[sentences.length - 1].trim()
+  : words.slice(words.length > 2 ? -2 : -1).join(' ');
+const cut = h1.lastIndexOf(cu);
+const h1Lead = cut > 0 ? h1.slice(0, cut) : h1;
+const h1Cu = cut > 0 ? cu : '';
 ---
 
 <section class:list={['page-hero', { showcase: showcase && bgImage, 'showcase-top': showcase && bgImage && textPos === 'top', 'showcase-split': showcase && bgImage && textPos === 'split' }]} aria-labelledby="page-hero-h1">
@@ -74,11 +86,11 @@ const described = Boolean(showcase && bgImage && bgAlt);
   <div class="ph-row">
     <div class="ph-text">
       <div class="ph-eyebrow">
-        <span class="line" aria-hidden="true"></span>
+        <span class="wc-dot" aria-hidden="true"></span>
         <span class="text">{eyebrow}</span>
       </div>
 
-      <h1 class="ph-h1" id="page-hero-h1">{h1}</h1>
+      <h1 class="ph-h1" id="page-hero-h1">{h1Lead}{h1Cu && <span class="wc-cu">{h1Cu}</span>}</h1>
     </div>
 
     {showStamp && (
@@ -90,9 +102,8 @@ const described = Boolean(showcase && bgImage && bgAlt);
 
   <p class="ph-sub">
     {sub}
-    {sub2 && <><br /><em>{sub2}</em></>}
-    {sub3 && <><br /><em>{sub3}</em></>}
   </p>
+  {sub2 && <p class="ph-sub ph-sub2">{sub2}</p>}
 </section>
 
 <style>
@@ -275,4 +286,22 @@ const described = Boolean(showcase && bgImage && bgAlt);
       linear-gradient(to bottom, rgba(8, 11, 10, 0.95) 0%, rgba(8, 11, 10, 0.66) 20%, rgba(8, 11, 10, 0.14) 40%, rgba(8, 11, 10, 0.14) 60%, rgba(8, 11, 10, 0.66) 82%, rgba(8, 11, 10, 0.95) 100%),
       linear-gradient(to right, rgba(8, 11, 10, 0.4), rgba(8, 11, 10, 0) 65%);
   }
+
+  /* S339 round 3 overrides: brighter, bigger, the house eyebrow, the
+     annealed closing phrase. sub3 no longer renders (one tagline too many). */
+  .ph-eyebrow { gap: 12px; }
+  .ph-eyebrow .text { color: var(--color-ash-300); letter-spacing: 0.16em; }
+  .ph-h1 {
+    font-family: var(--wc-display) !important;
+    font-weight: 500 !important;
+    font-size: clamp(40px, 8.4vw, 88px) !important;
+    line-height: 1 !important;
+    letter-spacing: -0.025em !important;
+    color: #eef1ec !important;
+    text-wrap: balance;
+  }
+  .ph-sub { font-size: clamp(16.5px, 1.6vw, 20px) !important; line-height: 1.55 !important; color: var(--color-ash-300) !important; max-width: 40rem; }
+  .ph-sub2 { margin-top: 10px; }
+  /* Text over a showcase photo keeps its contrast whatever the photo does. */
+  .showcase .ph-h1, .showcase .ph-sub, .showcase .ph-eyebrow { text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7), 0 4px 22px rgba(0, 0, 0, 0.75); }
 </style>

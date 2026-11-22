@@ -1,524 +1,149 @@
 ---
 /**
- * Contact (section 04), final CTA, no form.
+ * Contact, the closer at the foot of every reading page. No form.
  *
- * Design intent: filter for serious prospects rather than collect form
- * submissions from tire-kickers. S326 Text-first: Text is the one filled
- * control ("Help is just a text away" made literal), Call is the second
- * button, and Cal.com and email stay as plain links for people who would
- * rather schedule it or write it out.
+ * S339 round 3 (Preston 2026-11-21: "no words of no value, cut unneeded
+ * numbers, brighten everything up"). The closer is now the Home close on a
+ * riveted plate: the tagline as the heading, the Tangle's locked close as the
+ * one line under it, Text and Call as two keys that each show the number, and
+ * the reply line. The section numeral, the body paragraph and the per-page
+ * "why" line are gone: every page above it already made its case.
  *
- * Consult policy is published so prospects self-qualify on geography +
- * travel, but it sits UNDER the Text button and starts collapsed (S326 DNA:
- * policy and deposit text never stand as a wall before Text). On a phone the
- * left column stacks first, so four policy bullets there put a wall between
- * the visitor and the one control that matters.
+ * Kept: /contact's strip (reply hours, consult geography, the 50/50 terms,
+ * then Book and Email), /pricing's collapsed consult policy, id="contact" and
+ * so header links land; data-textbar-hide sits on the keys row, so the phone
+ * thumb bar steps aside only while these keys are on screen.
+ *
+ * Old props (sectionNumber, centered, suppressHeader, headerKicker, why) are
+ * still accepted so every call site builds. headerTitle still replaces the
+ * heading when a page passes one.
  */
-import SectionHead from '../ui/SectionHead.astro';
-import { smsHref } from '../../lib/text-cta';
+import { smsHref, telHref, phoneDisplay, bookHref, mailHref } from '../../lib/text-cta';
+import { business } from '../../lib/business';
+import Arrow from '../ui/Arrow.astro';
 
-// Props:
-//   sectionNumber: numeral above the kicker+title. Homepage is the 7th
-//     major section so default is '07'. On /work this is the 4th section
-//     (callers pass '04'). On /contact this is the 1st section ('01').
-//   centered: when true, drops the SectionHead numeral-indent on the body
-//     text and stacks content centered. Use on dedicated pages where the
-//     PageHero already establishes context and the numeral-anchored layout
-//     looks off-center. Homepage and /work keep the default (false).
 export interface Props {
   sectionNumber?: string;
   centered?: boolean;
-  /**
-   * suppressHeader: when true, drops the SectionHead block entirely.
-   * Use on /contact where PageHero already does the work. avoids a
-   * redundant "Reach out / Ready to build?" stacking under the page H1
-   * "Let's build something." Caller should also drop the Divider that
-   * normally precedes Contact on that page so the numbering reads
-   * cleanly (01 Brief form vs 02 Send a brief duplication).
-   */
   suppressHeader?: boolean;
-  /**
-   * headerTitle / headerKicker: override the SectionHead text when
-   * suppressHeader is false. Default: kicker "Reach out", title
-   * "Ready to build?". /contact uses suppressHeader instead, but
-   * other pages may want contextual variants.
-   */
   headerKicker?: string;
   headerTitle?: string;
-  /**
-   * strip: /contact only. Under the buttons, three short facts from live copy
-   * (reply hours, consult geography, the 50/50 terms) instead of the
-   * collapsed policy, because /contact carries the full policy further down.
-   */
   strip?: boolean;
-  /**
-   * policy: show the collapsed consult policy. S339, the Nov 4 site audit:
-   * it sat in the closer on 43 pages, so deposits came up before anyone
-   * asked about a consult. Now /pricing only; /contact carries its own table.
-   */
   policy?: boolean;
-  /**
-   * why: S339 HONE-SPEC, the page's "Why $1,750" line, shown under the body
-   * line in the closer. Optional; each page passes its own.
-   */
   why?: string;
 }
-const {
-  sectionNumber = '07',
-  centered = false,
-  suppressHeader = false,
-  headerKicker = 'Reach out',
-  headerTitle = 'Ready to build?',
-  strip = false,
-  policy = false,
-  why,
-} = Astro.props;
-
-const phone = '5415510731';
-const phoneDisplay = '541-551-0731';
-const email = 'preston@winterscode.com';
-const cal = 'https://cal.com/preston-winters';
+const { headerKicker = 'Reach out', headerTitle, strip = false, policy = false } = Astro.props;
 const sms = smsHref(Astro.url.pathname);
 ---
 
-<section class={`terminus${centered ? " terminus-centered" : ""}${!sectionNumber && !suppressHeader ? " terminus-nonum" : ""}`} id="contact" data-textbar-hide>
-  <!-- Rivets at each corner, magazine binding feel -->
-  <div class="rivet tl" aria-hidden="true"></div>
-  <div class="rivet tr" aria-hidden="true"></div>
-  <div class="rivet bl" aria-hidden="true"></div>
-  <div class="rivet br" aria-hidden="true"></div>
+<section class="closer wc-plate wc-rv" id="contact" aria-labelledby="closer-h">
+  <div class="closer-glow" aria-hidden="true"></div>
+  {strip ? (
+    <h2 class="closer-h closer-h--sm" id="closer-h">Text or call.</h2>
+  ) : (
+    <>
+      <p class="wc-eyebrow"><span class="wc-dot" aria-hidden="true"></span>{headerKicker}</p>
+      <h2 class="closer-h" id="closer-h">
+        {headerTitle ? headerTitle : <>Help is just a <span class="wc-cu">text away.</span></>}
+      </h2>
+      <p class="closer-sub">I'm down the road. I pick up the phone.</p>
+    </>
+  )}
 
-  <div class="terminus-left">
-    {!suppressHeader && (
-      <SectionHead number={sectionNumber} kicker={headerKicker} title={headerTitle} />
-    )}
-
-    {strip ? (
-      <p class="body-text terminus-body">Sites from $1,750, everything in.</p>
-    ) : (
-      <p class="body-text terminus-body">
-        Custom websites and apps for Oregon coast businesses, built in Bandon.
-        Sites from $1,750, starting at 3 business days. One text gets it started.
-      </p>
-    )}
-    {why && <p class="body-text terminus-body terminus-why">{why}</p>}
+  <div class="closer-keys" data-textbar-hide>
+    <a class="wc-btn wc-btn--primary closer-key" href={sms}>
+      <span class="closer-stack"><span class="closer-label">Text Preston</span><span class="closer-num">{phoneDisplay}</span></span>
+      <Arrow size={22} />
+    </a>
+    <a class="wc-btn wc-btn--ghost closer-key" href={telHref}>
+      <span class="closer-stack"><span class="closer-label">Call</span><span class="closer-num">{phoneDisplay}</span></span>
+    </a>
   </div>
 
-  <div class="terminus-right">
-    <!-- S339 HONE-SPEC sitewide 6: the shared closer keeps one filled Text,
-         Call as a plain link and the reply line. Book and Email, and the
-         second button, are /contact (strip) only. -->
-    <div class:list={['contact-action-row', { solo: !strip }]}>
-      <a href={sms} class="contact-action-btn contact-text">
-        <div class="contact-stack">
-          <span class="contact-label">Text Preston</span>
-          <span class="contact-sub mono">{phoneDisplay}</span>
-        </div>
-      </a>
-
-      {strip && <a href={`tel:${phone}`} class="contact-action-btn">
-        <div class="contact-stack">
-          <span class="contact-label">Call Preston</span>
-          <span class="contact-sub mono">{phoneDisplay}</span>
-        </div>
-      </a>}
-    </div>
-
-    {strip ? (
-      <ul class="contact-strip">
+  {strip ? (
+    <>
+      <ul class="closer-strip">
         <li>I answer my texts within a few hours during business days.</li>
         <li>Consults are free in Bandon, and free by 30-minute video across Coos and Curry.</li>
         <li>Every build has a written SOW: 50% on signing, 50% at launch.</li>
       </ul>
-    ) : (
-      <p class="contact-reply">I answer my texts within a few hours during business days.</p>
-    )}
-
-    {strip ? (
-      <div class="contact-quiet-row">
-        <a href={cal} target="_blank" rel="noopener">Book a 30-min call</a>
-        <a href={`mailto:${email}?subject=Winters%20Code%20consult%20request`}>Email {email}</a>
+      <div class="closer-quiet">
+        <a class="wc-link" href={bookHref} target="_blank" rel="noopener">Book a 30-min call <Arrow size={16} /></a>
+        <a class="wc-link" href={mailHref}>Email {business.email} <Arrow size={16} /></a>
       </div>
-    ) : (
-      <div class="contact-quiet-row">
-        <a href={`tel:${phone}`}>or call {phoneDisplay}</a>
-      </div>
-    )}
+    </>
+  ) : (
+    <p class="closer-reply">I answer my texts within a few hours during business days.</p>
+  )}
 
-    {!strip && policy && <details class="consult-policy">
-      <summary class="consult-policy-title mono">Consult policy</summary>
+  {!strip && policy && (
+    <details class="closer-policy">
+      <summary>Consult policy <span class="closer-plus" aria-hidden="true"></span></summary>
       <ul>
-        <li><strong>Bandon:</strong> free in-person or video</li>
-        <li><strong>Coos & Curry counties:</strong> free 30-min video</li>
-        <li><strong>In-person up to 1.5 hours away:</strong> $250 deposit, credits to project on signing</li>
-        <li><strong>In-person up to 2.5 hours away:</strong> $400 deposit, credits to project on signing</li>
+        <li><strong>Bandon:</strong> free in person or by video</li>
+        <li><strong>Coos and Curry counties:</strong> free 30-min video</li>
+        <li><strong>In person up to 1.5 hours away:</strong> $250 deposit, credited to the project on signing</li>
+        <li><strong>In person up to 2.5 hours away:</strong> $400 deposit, credited to the project on signing</li>
       </ul>
-    </details>}
-  </div>
+    </details>
+  )}
 </section>
 
 <style>
-  /* ─── Terminus card ─── */
-  .terminus {
-    position: relative;
-    padding: 36px 16px 32px;
-    margin-top: 24px;
-    background: var(--color-bg-card);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    border-radius: var(--radius-card);
-    text-align: left;
-    overflow: hidden;
-    scroll-margin-top: 24px;
+  .closer {
+    position: relative; overflow: hidden; isolation: isolate;
+    margin-top: 28px;
+    padding: 40px 20px 32px;
+    scroll-margin-top: 96px;
   }
-  .terminus::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border: 1px solid var(--copper-hairline);
-    border-radius: var(--radius-card);
-    pointer-events: none;
+  @media (min-width: 740px) { .closer { padding: 56px 40px 44px; margin-top: 36px; } }
+  @media (min-width: 1024px) { .closer { padding: 72px 64px 56px; margin-top: 44px; } }
+  .closer-glow {
+    position: absolute; z-index: -1; inset: 0; pointer-events: none;
+    background:
+      radial-gradient(55% 70% at 88% 12%, rgba(240, 160, 110, 0.12), transparent 70%),
+      radial-gradient(50% 60% at 8% 100%, rgba(77, 216, 168, 0.08), transparent 72%);
   }
-  @media (min-width: 740px) {
-    .terminus { padding: 48px 32px 40px; margin-top: 32px; }
+  .closer-h {
+    margin: 0; max-width: 14ch;
+    font-family: var(--wc-display); font-weight: 500;
+    font-size: clamp(40px, 7vw, 88px); line-height: 1; letter-spacing: -0.025em;
+    color: #eef1ec; text-wrap: balance;
   }
-  @media (min-width: 1024px) {
-    .terminus {
-      padding: 60px 48px 48px;
-      margin-top: 48px;
-      display: grid;
-      grid-template-columns: 1.3fr 1fr;
-      gap: 48px;
-      align-items: start;
-    }
-  }
+  /* /contact: its hero already carries the tagline, so the closer just
+     names the two keys. */
+  .closer-h--sm { font-size: clamp(30px, 4.6vw, 44px); }
+  .closer-sub { margin: 18px 0 0; font-size: clamp(17px, 1.8vw, 21px); line-height: 1.5; color: var(--color-ash-300); }
 
-  .terminus-left,
-  .terminus-right {
-    position: relative;
-    z-index: 2;
-  }
+  .closer-keys { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 10px; max-width: 460px; margin-top: 28px; }
+  .closer-key { min-height: 70px; padding: 0 14px; gap: 10px; }
+  @media (min-width: 740px) { .closer-key { padding: 0 20px; } }
+  .closer-stack { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; text-align: left; }
+  .closer-label { font-size: 18px; font-weight: 600; }
+  .closer-num { font-family: var(--font-mono); font-size: 12.5px; font-weight: 400; opacity: 0.78; }
+  .closer-reply { margin: 18px 0 0; font-size: 15px; color: var(--color-ash-500); }
 
-  /* Body copy under section head, indented to match numeral width */
-  .terminus-body {
-    margin: 0 0 22px;
-    max-width: 340px;
-    padding-left: 62px;
+  .closer-strip { list-style: none; margin: 22px 0 0; padding: 0; display: grid; gap: 10px; max-width: 40rem; }
+  .closer-strip li { display: flex; gap: 10px; align-items: flex-start; font-size: 15px; line-height: 1.5; color: var(--color-ash-300); }
+  .closer-strip li::before {
+    content: ''; flex: none; width: 8px; height: 8px; margin-top: 7px; border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #7ff0c8, #2f9e78 70%);
+    box-shadow: 0 0 0 3px rgba(77, 216, 168, 0.14);
   }
-  @media (min-width: 740px) {
-    .terminus-body { padding-left: 84px; max-width: 560px; }
-  }
-  @media (min-width: 1024px) {
-    .terminus-body { padding-left: 116px; max-width: none; }
-  }
+  .closer-quiet { display: flex; flex-wrap: wrap; gap: 0 24px; margin-top: 10px; }
 
-  /* ─── Corner rivets ─── */
-  .rivet {
-    position: absolute;
-    width: 4px;
-    height: 4px;
-    border-radius: 50%;
-    background: radial-gradient(circle at 30% 30%, var(--color-copper-bright), var(--color-copper-deep));
-    z-index: 3;
-    pointer-events: none;
-    box-shadow: 0 0 4px rgba(240, 160, 110, 0.4);
+  .closer-policy { margin-top: 22px; max-width: 40rem; border: 1px solid var(--wc-line); border-radius: var(--wc-r); background: rgba(10, 13, 12, 0.5); }
+  .closer-policy summary {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    min-height: 52px; padding: 0 16px; cursor: pointer; list-style: none;
+    font-size: 15px; font-weight: 600; color: #eef1ec;
   }
-  .rivet.tl { top: 7px; left: 7px; }
-  .rivet.tr { top: 7px; right: 7px; }
-  .rivet.bl { bottom: 7px; left: 7px; }
-  .rivet.br { bottom: 7px; right: 7px; }
-
-  .terminus-why { margin-top: 10px; color: var(--color-ash-300); }
-  /* No numeral (Home, S339): the body lines up under the heading. */
-  .terminus-nonum .terminus-body { padding-left: 0; }
-
-  /* ─── Reply line, right under the buttons ─── */
-  .contact-reply {
-    margin: 12px 0 0;
-    font-family: var(--font-sans);
-    font-size: 13px;
-    line-height: 1.5;
-    color: var(--color-ash-300);
-  }
-
-  /* ─── /contact strip: three facts under the buttons ─── */
-  .contact-strip {
-    list-style: none;
-    margin: 14px 0 0;
-    padding: 0;
-    display: grid;
-    gap: 6px;
-    font-family: var(--font-sans);
-    font-size: 13px;
-    line-height: 1.5;
-    color: var(--color-ash-300);
-  }
-  .contact-strip li {
-    position: relative;
-    padding-left: 16px;
-  }
-  .contact-strip li::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 0.72em;
-    width: 8px;
-    height: 1px;
-    background: var(--color-copper);
-  }
-
-  /* ─── Consult policy, collapsed under Text ─── */
-  .consult-policy {
-    margin-top: 6px;
-    padding: 0 14px;
-    background: var(--color-bg-deep);
-    border: 1px solid var(--copper-hairline);
-    border-radius: 8px;
-    position: relative;
-  }
-  @media (min-width: 740px) {
-    .consult-policy { padding: 0 18px; }
-  }
-  .consult-policy-title {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    min-height: 44px;
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.16em;
-    color: var(--color-copper);
-    text-transform: uppercase;
-    cursor: pointer;
-    list-style: none;
-  }
-  .consult-policy-title::-webkit-details-marker { display: none; }
-  .consult-policy-title::after {
-    content: "+";
-    font-size: 14px;
-    letter-spacing: 0;
-    color: var(--color-ash-500);
-  }
-  .consult-policy[open] .consult-policy-title::after { content: "\2212"; }
-  .consult-policy-title:focus-visible {
-    outline: 2px solid var(--color-wc-green);
-    outline-offset: 2px;
-    border-radius: 4px;
-  }
-  .consult-policy[open] { padding-bottom: 12px; }
-  @media (min-width: 740px) {
-    .consult-policy[open] { padding-bottom: 16px; }
-  }
-  .consult-policy ul {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    font-size: 13px;
-    color: var(--color-ash-300);
-    line-height: 1.7;
-  }
-  @media (min-width: 740px) {
-    .consult-policy ul { font-size: 14px; }
-  }
-  .consult-policy li {
-    padding-left: 14px;
-    position: relative;
-    transition: color 200ms;
-  }
-  @media (hover: hover) {
-
-    .consult-policy li:hover { color: var(--color-ash-100); }}
-  .consult-policy li::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 11px;
-    width: 7px;
-    height: 1px;
-    background: var(--color-copper);
-    transition: width 200ms;
-  }
-  @media (hover: hover) {
-
-    .consult-policy li:hover::before {
-    width: 11px;
-    background: var(--color-wc-green);
-  }}
-  .consult-policy li strong {
-    color: var(--color-ash-100);
-    font-weight: 600;
-  }
-
-  /* ─── Contact action grid ─── */
-  .contact-action-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-    margin-top: 18px;
-  }
-  @media (min-width: 1024px) {
-    .contact-action-row {
-      grid-template-columns: 1fr;
-      gap: 10px;
-      margin-top: 0;
-    }
-  }
-  .contact-action-row.solo { grid-template-columns: 1fr; }
-  .contact-action-btn {
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 14px 12px;
-    border-radius: 8px;
-    background: var(--color-bg-deep);
-    border: 1px solid var(--copper-hairline);
-    color: var(--color-ash-100);
-    transition: all 200ms;
-    cursor: pointer;
-    text-decoration: none;
-    gap: 4px;
-  }
-  @media (min-width: 1024px) {
-    .contact-action-btn {
-      flex-direction: row;
-      padding: 16px 18px;
-      gap: 14px;
-      justify-content: flex-start;
-    }
-  }
-  @media (hover: hover) {
-
-    .contact-action-btn:hover {
-    border-color: var(--color-wc-green);
-    transform: translateY(-1px);
-  }}
-
-  .contact-stack {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 2px;
-  }
-  @media (min-width: 1024px) {
-    .contact-stack { align-items: flex-start; }
-  }
-
-  .contact-label {
-    font-family: var(--font-sans);
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--color-ash-100);
-  }
-  @media (min-width: 1024px) {
-    .contact-label { font-size: 14px; }
-  }
-  .contact-sub {
-    font-size: 9px;
-    color: var(--color-ash-500);
-    letter-spacing: 0.08em;
-  }
-  /* Email is 22 chars. gets tighter tracking + smaller min size so it
-     never wraps to a second line in the 2x2 button grid on narrow phones.
-     Phone numbers (12 chars) keep the default tracking for readability. */
-  .contact-sub-email {
-    font-size: clamp(7.5px, 2.1vw, 10px);
-    letter-spacing: 0.02em;
-    white-space: nowrap;
-    max-width: 100%;
-  }
-  @media (min-width: 1024px) {
-    .contact-sub { font-size: 10px; }
-    .contact-sub-email { letter-spacing: 0.06em; }
-  }
-
-  /* ─── Text is the filled one (S326 Text-first) ─── */
-  .contact-text {
-    background: var(--color-wc-green);
-    border-color: var(--color-wc-green);
-  }
-  .contact-text .contact-label { color: var(--color-bg-deep); }
-  .contact-text .contact-sub { color: rgba(10, 13, 12, 0.72); }
-  @media (hover: hover) {
-    .contact-text:hover {
-      background: var(--color-wc-green-bright);
-      border-color: var(--color-wc-green-bright);
-    }
-  }
-
-  /* ─── Book and Email as plain links ─── */
-  .contact-quiet-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0 18px;
-    margin-top: 12px;
-  }
-  .contact-quiet-row a {
-    display: inline-flex;
-    align-items: center;
-    min-height: 44px;
-    font-family: var(--font-sans);
-    font-size: 13px;
-    color: var(--color-ash-300);
-    text-decoration: underline;
-    text-decoration-color: var(--copper-hairline);
-    text-underline-offset: 4px;
-    overflow-wrap: anywhere;
-  }
-  @media (hover: hover) {
-    .contact-quiet-row a:hover { color: var(--color-copper-bright); }
-  }
-
-  /* ─── Centered mode (dedicated pages like /contact) ─────────────────
-     Drops the numeral-anchored body indent and centers all content. Used
-     when the surrounding page already provides context via PageHero, so
-     the off-center-looking left indent reads as a layout bug instead of
-     a homepage rhythm beat. */
-  .terminus-centered .terminus-body {
-    padding-left: 0;
-    max-width: 620px;
-    margin-left: auto;
-    margin-right: auto;
-    text-align: center;
-  }
-  .terminus-centered .consult-policy,
-  .terminus-centered .contact-reply {
-    max-width: 560px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-  .terminus-centered .contact-reply { text-align: center; }
-  .terminus-centered .contact-strip {
-    max-width: 560px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-  .terminus-centered .contact-action-row {
-    max-width: 560px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-  .terminus-centered .contact-quiet-row {
-    max-width: 560px;
-    margin-left: auto;
-    margin-right: auto;
-    justify-content: center;
-  }
-  @media (min-width: 1024px) {
-    /* Disable the 2-column grid in centered mode so everything stacks
-       and centers as a single column. The desktop side-by-side layout
-       is a homepage-only rhythm; on /contact it pushes content right. */
-    .terminus-centered {
-      display: block;
-      max-width: 760px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-    .terminus-centered .terminus-left,
-    .terminus-centered .terminus-right {
-      max-width: 620px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-  }
+  .closer-policy summary::-webkit-details-marker { display: none; }
+  .closer-policy summary:focus-visible { outline: 2px solid var(--color-wc-green); outline-offset: 2px; border-radius: var(--wc-r); }
+  .closer-plus { position: relative; width: 14px; height: 14px; }
+  .closer-plus::before, .closer-plus::after { content: ''; position: absolute; left: 0; right: 0; top: 50%; height: 2px; margin-top: -1px; background: currentColor; border-radius: 1px; transition: transform .2s ease; }
+  .closer-plus::after { transform: rotate(90deg); }
+  .closer-policy[open] .closer-plus::after { transform: rotate(0deg); }
+  .closer-policy ul { margin: 0; padding: 0 16px 16px 34px; display: grid; gap: 6px; font-size: 15px; line-height: 1.5; color: var(--color-ash-300); }
+  .closer-policy strong { color: #eef1ec; font-weight: 600; }
 </style>

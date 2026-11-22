@@ -1,0 +1,199 @@
+---
+/**
+ * ProofStrip. S339 home consolidation, beat 02: the work, counted.
+ *
+ * Three live builds, each led by the one number a business owner weighs
+ * first: how many business days it took. Day counts, page counts and links
+ * come from SelectedWork and portfolio.ts, the same records /work renders.
+ * Rod Taylor's closing sentence sits under the cards, credited by role off
+ * his case page, per Preston 2026-11-05.
+ *
+ * On a phone the three cards sit in one swipeable row so the beat stays one
+ * screen tall; the next card peeks in so the row reads as a row. From 900px
+ * they sit side by side.
+ *
+ * Round 2 (Preston's phone markup): rounded plates, the house Arrow, the
+ * quote without a rule down its side.
+ */
+import Arrow from '../ui/Arrow.astro';
+import CardArt from '../ui/CardArt.astro';
+import { portfolio } from '../../lib/portfolio';
+
+const liveOf = (slug: string) => {
+  const p = portfolio.find((x) => x.slug === slug);
+  return p ? (p.links.find((l) => l.primary) ?? p.links[0])?.href : undefined;
+};
+const BUILDS = [
+  {
+    name: 'Grand Management',
+    place: 'Property management · Coos Bay',
+    days: 13,
+    line: '50 bilingual pages, rebuilt off WordPress, with live rental listings.',
+    href: '/work/grand-management',
+    slug: 'grand-management',
+    img: 'grand-card',
+    alt: 'Grand Management Services, Coos Bay, Oregon: the Grand logo over the line How can we help?, beside a map of Oregon with a gold pin in every town where Grand manages a community.',
+  },
+  {
+    name: 'US Survey Supply',
+    place: 'Surveying equipment · Bandon',
+    days: 8,
+    line: 'A 42-page rebuild for an equipment dealer shipping nationwide from Bandon.',
+    href: '/work/us-survey-supply',
+    slug: 'us-survey-supply',
+    img: 'taylor-card',
+    alt: 'US Survey Supply, Bandon, Oregon: white wordmark and red-and-white survey target on navy over an American flag. Surveying equipment, rentals, and service.',
+  },
+  {
+    name: 'Makai Painting',
+    place: 'Painting and rehab · Coos Bay',
+    days: 5,
+    line: 'A new site with pages that paint themselves in as you scroll.',
+    href: '/work#makai-painting',
+    slug: 'makai-painting',
+    img: 'makai-card',
+    alt: 'Makai Painting and Residential Rehab, Coos Bay, Oregon: the pink hibiscus logo over the words Interior, Exterior, Repairs and Hauling on gold, pink and white brush strokes, beside a freshly painted blue room with ladders and drop cloths.',
+  },
+];
+---
+
+<section class="ps" id="work" aria-labelledby="ps-h2">
+  <div class="ps-inner">
+    <div class="ps-head">
+      <div>
+        <p class="wc-eyebrow"><span class="wc-dot" aria-hidden="true"></span>The work</p>
+        <h2 class="wc-h2" id="ps-h2">Real coast businesses. <span class="wc-soft">Counted in days.</span></h2>
+      </div>
+      <a class="ps-wall" href="/wall">
+        <span class="ps-wall-lamp" aria-hidden="true"></span>
+        Every score measured live on the Wall <Arrow size={16} />
+      </a>
+    </div>
+
+    <ul class="ps-row" aria-label="Recent builds">
+      {BUILDS.map((b) => (
+        <li class="ps-card">
+          <article class="ps-link">
+            <a class="ps-main" href={b.href} aria-label={`${b.name}: see the build`}>
+              <CardArt slug={b.slug} image={{ src: `/work/${b.img}.webp`, srcSmall: `/work/${b.img}-720.webp`, srcXSmall: `/work/${b.img}-480.webp`, alt: b.alt, width: 1200, height: 630 }} sizes="(min-width: 1240px) 370px, (min-width: 900px) 31vw, 80vw" />
+            </a>
+            <span class="ps-body">
+              <span class="ps-days"><b>{b.days}</b> business days</span>
+              <span class="ps-name">{b.name}</span>
+              <span class="ps-place">{b.place}</span>
+              <span class="ps-line">{b.line}</span>
+              <span class="ps-go">
+                <a class="wc-link" href={b.href}>See the build <Arrow size={16} /></a>
+                {liveOf(b.slug) && <a class="wc-link ps-live" href={liveOf(b.slug)} target="_blank" rel="noopener">Live site <Arrow dir="up-right" size={14} /></a>}
+              </span>
+            </span>
+          </article>
+        </li>
+      ))}
+    </ul>
+
+    <figure class="ps-quote">
+      <span class="ps-quote-mark" aria-hidden="true">“</span>
+      <blockquote>
+        <p>We are proud to endorse and recommend WintersCode.com.</p>
+      </blockquote>
+      <figcaption>
+        <span class="ps-quote-who">General Manager, US Survey Supply</span>
+        <a class="wc-link" href="/work/us-survey-supply">Read the whole review <Arrow size={16} /></a>
+      </figcaption>
+    </figure>
+
+    <p class="ps-all"><a class="wc-link" href="/work">All the work, sites and apps <Arrow size={16} /></a></p>
+  </div>
+</section>
+
+<style>
+  .ps { padding: var(--home-pad) 0; }
+  .ps-inner { max-width: calc(var(--home-max) + 2 * var(--home-gut)); margin: 0 auto; }
+  .ps-head, .ps-quote, .ps-all { padding: 0 var(--home-gut); }
+  .ps-head { display: flex; flex-direction: column; gap: 14px; }
+
+  .ps-wall {
+    display: inline-flex; align-items: center; gap: 10px; align-self: flex-start;
+    min-height: 44px; white-space: nowrap;
+    font-size: 15px; color: var(--color-ash-300); text-decoration: none;
+  }
+  .ps-wall:hover, .ps-wall:focus-visible { color: #eef1ec; }
+  .ps-wall:hover :global(.wc-arrow) { transform: translateX(3px); }
+  .ps-wall-lamp {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--color-wc-green-bright);
+    box-shadow: 0 0 0 3px rgba(77, 216, 168, 0.16), 0 0 10px rgba(95, 232, 181, 0.55);
+  }
+
+  .ps-row {
+    list-style: none; margin: clamp(24px, 4vw, 40px) 0 0; padding: 4px var(--home-gut) 8px;
+    display: grid; grid-auto-flow: column; grid-auto-columns: 80%;
+    gap: 12px;
+    overflow-x: auto; overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory; scroll-padding: 0 var(--home-gut);
+    scrollbar-width: none;
+  }
+  .ps-row::-webkit-scrollbar { display: none; }
+  .ps-card { scroll-snap-align: start; min-width: 0; }
+
+  .ps-link {
+    display: flex; flex-direction: column; height: 100%;
+    background-color: var(--wc-raised);
+    border: 1px solid var(--wc-line);
+    border-radius: var(--wc-r-lg);
+    overflow: hidden;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    text-decoration: none; color: inherit;
+    transition: border-color .2s ease, transform .25s ease;
+  }
+  .ps-link:hover { border-color: rgba(244, 168, 116, 0.45); transform: translateY(-3px); }
+  .ps-main { display: block; border-bottom: 1px solid var(--wc-line); }
+  .ps-main:focus-visible { outline: 2px solid var(--color-wc-green); outline-offset: -2px; }
+
+  .ps-body { display: flex; flex-direction: column; gap: 6px; padding: 18px 18px 16px; flex: 1; }
+  .ps-days { display: flex; align-items: baseline; gap: 8px; font-size: 14px; color: var(--color-ash-300); margin-bottom: 6px; }
+  .ps-days b {
+    font-family: var(--wc-display); font-weight: 500;
+    font-size: 44px; line-height: 1; letter-spacing: -0.02em;
+    background: var(--wc-annealed); -webkit-background-clip: text; background-clip: text; color: transparent;
+    padding-right: 0.04em;
+  }
+  .ps-name { font-size: 19px; font-weight: 600; color: #eef1ec; }
+  .ps-place { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-ash-500); }
+  .ps-line { margin-top: 6px; font-size: 15px; line-height: 1.5; color: var(--color-ash-300); }
+  .ps-go { display: flex; flex-wrap: wrap; gap: 0 20px; margin-top: auto; padding-top: 8px; }
+  .ps-live { color: var(--color-ash-100); }
+
+  .ps-quote { margin: clamp(30px, 5vw, 52px) 0 0; display: grid; gap: 10px; justify-items: start; }
+  .ps-quote-mark {
+    display: block; margin-bottom: -18px;
+    font-family: var(--font-serif); font-weight: 600; font-size: 76px; line-height: 1;
+    background: var(--wc-annealed); -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .ps-quote blockquote { margin: 0; }
+  .ps-quote p {
+    margin: 0; max-width: 26ch;
+    font-family: var(--wc-display); font-style: italic; font-weight: 400;
+    font-size: clamp(26px, 3.4vw, 40px); line-height: 1.18; letter-spacing: -0.01em;
+    color: #eef1ec; text-wrap: balance;
+  }
+  .ps-quote figcaption { display: flex; flex-wrap: wrap; align-items: center; gap: 0 18px; font-size: 15px; }
+  .ps-quote-who { color: var(--color-ash-300); }
+  .ps-all { margin: 4px 0 0; }
+
+  @media (min-width: 600px) { .ps-row { grid-auto-columns: 58%; } }
+  @media (min-width: 900px) {
+    .ps-head { flex-direction: row; align-items: flex-end; justify-content: space-between; }
+    .ps-wall { align-self: auto; }
+    .ps-row { grid-auto-flow: row; grid-template-columns: repeat(3, 1fr); overflow: visible; gap: 16px; }
+    .ps-body { padding: 22px 22px 20px; }
+    .ps-days b { font-size: 52px; }
+    .ps-quote p { max-width: 34ch; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ps-link, .ps-img img { transition: none; }
+    .ps-link:hover { transform: none; }
+  }
+</style>
