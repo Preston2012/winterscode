@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Breadcrumbs from '../components/ui/Breadcrumbs.astro';
+import Fold from '../components/ui/Fold.astro';
 import { breadcrumbSchema } from '../lib/schema';
 import { smsHref, phoneDisplay } from '../lib/text-cta';
 const sms = smsHref(Astro.url.pathname);
@@ -37,88 +38,91 @@ const lastUpdated = '2026-11-05';
         I don't sell it, I don't track you across the web, and I delete it if you ask.
       </p>
 
-      <h2 class="h2 legal-h2">What I collect</h2>
-      <p>
-        <strong>When you contact me:</strong> name, email, phone if you share it, business name,
-        city, industry, project type, and whatever you write in the brief. Stored with it: the
-        IP address, country and referring page the request came from, which the site uses to
-        keep spam out. A text or a call reaches my phone like any other.
-      </p>
-      <p>
-        <strong>When you visit the site:</strong> Cloudflare (my host) logs standard server stuff
-        like IP address, browser, and referrer. No Google Analytics. No Facebook Pixel. No
-        advertising trackers. No cross-site cookies.
-      </p>
-
-      <h2 class="h2 legal-h2">What this site loads, and where your words go</h2>
-      <ul class="legal-list">
-        <li><strong>Every page:</strong> Cloudflare hosts it, and Cloudflare Web Analytics counts page
-          views with a small script from static.cloudflareinsights.com. It sets no cookies.</li>
-        <li><strong>The brief form on /contact:</strong> Cloudflare Turnstile, from
-          challenges.cloudflare.com, checks for spam. A brief you send is stored in my Cloudflare
-          account and a copy is emailed to me.</li>
-        <li><strong>The free audit on /audit:</strong> the address you enter goes from my server to
-          Google PageSpeed Insights and Mozilla Observatory, which score it. Results are kept for six
-          hours so a repeat check is quick, and your IP address counts toward a daily limit. An
-          audit link contains only the site address and reruns the check when opened.</li>
-        <li><strong>The MyKonos chat demo:</strong> what you type, and your IP address for its five
-          messages a day, goes to my own server, which runs it through an AI model provider.</li>
-        <li><strong>Cal.com, email and text:</strong> those open only when you tap them.</li>
-      </ul>
-
-      <h2 class="h2 legal-h2">What I do with it</h2>
-      <p>
-        I answer your message, scope your project, prepare a quote, deliver the work, and
-        keep in touch on active builds. That's the whole list. I don't sell, rent, share,
-        or trade client information with marketing companies, data brokers, or anyone else.
-      </p>
-
-      <h2 class="h2 legal-h2">Where it lives</h2>
-      <p>
-        Client emails sit in standard business inboxes. Project code sits in private GitHub
-        repos I control. Anything I build for you that handles your customers' data uses
-        encryption in transit (HTTPS), row-level security on the database, and patched
-        dependencies. I treat your data like I'd want mine treated.
-      </p>
-      <p>
-        <strong>Project notes:</strong> I keep notes on each client project in my own
-        AI-assisted notes system so I don't relearn your business. Ask and I'll delete them.
-      </p>
-
-      <h2 class="h2 legal-h2">Third parties I rely on</h2>
-      <p>
-        Cloudflare hosts the site and DNS, checks forms for spam and counts page views. If you choose to pay an invoice online,
-        Stripe takes the card or bank payment, and your card details never touch my servers.
-        Supabase or similar managed backends
-        run client apps when contracted. Google and Mozilla score the sites people run through
-        the audit. Each one has its own privacy policy.
-      </p>
-
-      <h2 class="h2 legal-h2">Your rights</h2>
-      <p>
-        Email <a href="mailto:preston@winterscode.com">preston@winterscode.com</a> and ask
-        for any of these:
-      </p>
-      <ul class="legal-list">
-        <li>A copy of what I have on you</li>
-        <li>Corrections to anything that's wrong</li>
-        <li>Full deletion, no questions asked</li>
-        <li>To opt out of any future contact from me</li>
-      </ul>
-      <p>I'll honor it within a week. Usually same-day.</p>
-
-      <h2 class="h2 legal-h2">Children</h2>
-      <p>
-        This is a business-to-business service. Nothing here is aimed at children under 13,
-        and I don't knowingly collect information from minors.
-      </p>
-
-      <h2 class="h2 legal-h2">When this changes</h2>
-      <p>
-        If I update this policy in any meaningful way, the date at the top moves and the
-        change shows up in the site's public git history (<a href="/changelog">/changelog</a>).
-        Everything is on the record.
-      </p>
+      <div class="legal-folds">
+        <Fold title="What I collect" id="what-i-collect">
+          <p>
+            <strong>When you contact me:</strong> name, email, phone if you share it, business name,
+            city, industry, project type, and whatever you write in the brief. Stored with it: the
+            IP address, country and referring page the request came from, which the site uses to
+            keep spam out. A text or a call reaches my phone like any other.
+          </p>
+          <p>
+            <strong>When you visit the site:</strong> Cloudflare (my host) logs standard server stuff
+            like IP address, browser, and referrer. No Google Analytics. No Facebook Pixel. No
+            advertising trackers. No cross-site cookies.
+          </p>
+        </Fold>
+        <Fold title="What this site loads, and where your words go" id="what-this-site-loads-and-where">
+          <ul class="legal-list">
+            <li><strong>Every page:</strong> Cloudflare hosts it, and Cloudflare Web Analytics counts page
+              views with a small script from static.cloudflareinsights.com. It sets no cookies.</li>
+            <li><strong>The brief form on /contact:</strong> Cloudflare Turnstile, from
+              challenges.cloudflare.com, checks for spam. A brief you send is stored in my Cloudflare
+              account and a copy is emailed to me.</li>
+            <li><strong>The free audit on /audit:</strong> the address you enter goes from my server to
+              Google PageSpeed Insights and Mozilla Observatory, which score it. Results are kept for six
+              hours so a repeat check is quick, and your IP address counts toward a daily limit. An
+              audit link contains only the site address and reruns the check when opened.</li>
+            <li><strong>The MyKonos chat demo:</strong> what you type, and your IP address for its five
+              messages a day, goes to my own server, which runs it through an AI model provider.</li>
+            <li><strong>Cal.com, email and text:</strong> those open only when you tap them.</li>
+          </ul>
+        </Fold>
+        <Fold title="What I do with it" id="what-i-do-with-it">
+          <p>
+            I answer your message, scope your project, prepare a quote, deliver the work, and
+            keep in touch on active builds. That's the whole list. I don't sell, rent, share,
+            or trade client information with marketing companies, data brokers, or anyone else.
+          </p>
+        </Fold>
+        <Fold title="Where it lives" id="where-it-lives">
+          <p>
+            Client emails sit in standard business inboxes. Project code sits in private GitHub
+            repos I control. Anything I build for you that handles your customers' data uses
+            encryption in transit (HTTPS), row-level security on the database, and patched
+            dependencies. I treat your data like I'd want mine treated.
+          </p>
+          <p>
+            <strong>Project notes:</strong> I keep notes on each client project in my own
+            AI-assisted notes system so I don't relearn your business. Ask and I'll delete them.
+          </p>
+        </Fold>
+        <Fold title="Third parties I rely on" id="third-parties-i-rely-on">
+          <p>
+            Cloudflare hosts the site and DNS, checks forms for spam and counts page views. If you choose to pay an invoice online,
+            Stripe takes the card or bank payment, and your card details never touch my servers.
+            Supabase or similar managed backends
+            run client apps when contracted. Google and Mozilla score the sites people run through
+            the audit. Each one has its own privacy policy.
+          </p>
+        </Fold>
+        <Fold title="Your rights" id="your-rights">
+          <p>
+            Email <a href="mailto:preston@winterscode.com">preston@winterscode.com</a> and ask
+            for any of these:
+          </p>
+          <ul class="legal-list">
+            <li>A copy of what I have on you</li>
+            <li>Corrections to anything that's wrong</li>
+            <li>Full deletion, no questions asked</li>
+            <li>To opt out of any future contact from me</li>
+          </ul>
+          <p>I'll honor it within a week. Usually same-day.</p>
+        </Fold>
+        <Fold title="Children" id="children">
+          <p>
+            This is a business-to-business service. Nothing here is aimed at children under 13,
+            and I don't knowingly collect information from minors.
+          </p>
+        </Fold>
+        <Fold title="When this changes" id="when-this-changes">
+          <p>
+            If I update this policy in any meaningful way, the date at the top moves and the
+            change shows up in the site's public git history (<a href="/changelog">/changelog</a>).
+            Everything is on the record.
+          </p>
+        </Fold>
+      </div>
 
       <h2 class="h2 legal-h2">Questions</h2>
       <p>
@@ -241,6 +245,12 @@ const lastUpdated = '2026-11-05';
     color: var(--color-wc-green);
     text-decoration-color: var(--color-wc-green-dim);
   }}
+
+  /* S339 page pass: the sections fold, so the page reads as an index first.
+     The short version stays open on top and Questions stays open below. */
+  .legal-folds { margin-top: 8px; }
+  .legal-folds :global(.wfold-a) { display: flex; flex-direction: column; gap: 12px; }
+  .legal-folds :global(.wfold-a p) { margin: 0; }
 
   .legal-list {
     margin: 4px 0 0;

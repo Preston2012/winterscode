@@ -6,6 +6,7 @@ import PageHero from '../../components/sections/PageHero.astro';
 import Divider from '../../components/ui/Divider.astro';
 import Breadcrumbs from '../../components/ui/Breadcrumbs.astro';
 import Contact from '../../components/sections/Contact.astro';
+import Fold from '../../components/ui/Fold.astro';
 import { smsHref } from '../../lib/text-cta';
 const sms = smsHref(Astro.url.pathname);
 import { breadcrumbSchema, absUrl, BUSINESS_ID } from '../../lib/schema';
@@ -62,7 +63,7 @@ const articleLd = {
   <Divider label="01" />
 
   <article class="ins">
-    <p class="ins-meta mono">Field report · June 2026 · <span class='stat'>169</span> sites audited</p>
+    <p class="ins-meta mono">Field report · June 2026</p>
 
     <p class="ins-lead">
       I wanted a real picture of how small-business websites on the south coast
@@ -71,6 +72,14 @@ const articleLd = {
       speed, accessibility, best practices, and SEO, and Mozilla Observatory,
       which grades security. Here is what came back.
     </p>
+
+    <!-- S339 page pass: the three numbers the report turns on, at a glance,
+         each one stated in full below. -->
+    <ul class="ins-stats wc-plate wc-rv" aria-label="The findings in three numbers">
+      <li><b>0</b><span>of 169 earned an A for security</span></li>
+      <li><b>61</b><span>average speed on a phone, out of 100</span></li>
+      <li><b>11</b><span>of 96 scored hit 90 or better</span></li>
+    </ul>
 
     <h2 class="ins-h">The headline number: no A grades</h2>
     <p>
@@ -144,7 +153,7 @@ const articleLd = {
       This is not a knock on any of these businesses. <span class='hl-green'>It is an open lane.</span> Most
       local sites are slow on a phone, so a fast one stands out. A site that loads fast on a phone, earns a real security grade, and
       has clean SEO starts ahead of nearly everything around it locally, because
-      the competition simply is not trying.
+      so few sites here are built that way yet.
     </p>
     <p>
       You do not have to take my word for where your own site stands. The same
@@ -156,13 +165,11 @@ const articleLd = {
       you what I see.
     </p>
 
-    <p class="ins-note">
-      Methodology: 219 Coos County small businesses surveyed across nine towns.
-      50 had no website. The 169 with a site were graded by Mozilla Observatory.
-      Google Lighthouse returned a mobile score for 96 of them, and the speed
-      average above is drawn from those 96. Platform identified by site
-      fingerprint. Scored in 2026.
-    </p>
+    <div class="ins-method">
+      <Fold title="How it was measured">
+        <p>219 Coos County small businesses surveyed across nine towns. 50 had no website. The 169 with a site were graded by Mozilla Observatory. Google Lighthouse returned a mobile score for 96 of them, and the speed average above is drawn from those 96. Platform identified by site fingerprint. Scored in 2026.</p>
+      </Fold>
+    </div>
   </article>
 
   <Divider label="02" />
@@ -222,12 +229,12 @@ const articleLd = {
     text-underline-offset: 3px;
     font-weight: 600;
   }
-  .ins-note {
-    font-size: 13px !important;
-    color: var(--color-ash-500) !important;
-    font-style: italic;
-    border-top: 1px solid rgba(255, 255, 255, 0.06);
-    padding-top: 16px;
-    margin-top: 28px !important;
-  }
+  .ins-stats { list-style: none; margin: 6px 0 30px; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .ins-stats li { display: grid; align-content: start; gap: 6px; padding: 18px 14px 16px; text-align: center; }
+  .ins-stats li + li { border-left: 1px solid var(--wc-line); }
+  .ins-stats b { font-family: var(--wc-display); font-weight: 500; font-size: 40px; line-height: 1; color: var(--color-copper-bright); letter-spacing: -0.02em; }
+  .ins-stats span { font-size: 12.5px; line-height: 1.4; color: var(--color-ash-300); }
+  @media (min-width: 740px) { .ins-stats b { font-size: 52px; } .ins-stats span { font-size: 14px; } .ins-stats li { padding: 24px 20px 20px; } }
+  .ins-method { margin-top: 28px; }
+
 </style>

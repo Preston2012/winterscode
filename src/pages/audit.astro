@@ -51,7 +51,7 @@ const sms = smsHref(Astro.url.pathname);
           type="text"
           id="au-url"
           name="url"
-          placeholder="example.com or https://example.com"
+          placeholder="yoursite.com"
           inputmode="url"
           autocomplete="url"
           spellcheck="false"
@@ -669,7 +669,7 @@ const sms = smsHref(Astro.url.pathname);
   }
   .au-form-row input {
     font-family: var(--font-mono);
-    font-size: 15px;
+    font-size: 16px; /* 16px or iOS zooms the page on focus */
     color: var(--color-ash-100);
     background: var(--color-bg-card);
     border: 1px solid var(--copper-hairline);
@@ -685,13 +685,14 @@ const sms = smsHref(Astro.url.pathname);
   }
   .au-form-submit {
     font-family: var(--font-sans);
-    font-size: 14px;
+    font-size: 16px;
     font-weight: 600;
     color: var(--color-bg-deep);
     background: var(--color-wc-green);
     border: 0;
     border-radius: 6px;
-    padding: 12px 18px;
+    min-height: 48px;
+    padding: 12px 22px;
     cursor: pointer;
     transition: background-color 0.15s ease;
   }
@@ -712,8 +713,8 @@ const sms = smsHref(Astro.url.pathname);
   }
   .au-form-note {
     font-family: var(--font-sans);
-    font-size: 12px;
-    color: var(--color-ash-500);
+    font-size: 13px;
+    color: var(--color-ash-400);
     margin: 10px 0 0;
     font-style: italic;
   }
@@ -735,9 +736,9 @@ const sms = smsHref(Astro.url.pathname);
     margin: 14px 0 12px;
     display: grid;
     grid-template-columns: 1fr;
-    gap: 6px;
+    gap: 8px;
     font-family: var(--font-sans);
-    font-size: 13px;
+    font-size: 15px;
     color: var(--color-ash-300);
   }
   @media (min-width: 740px) {
@@ -1121,7 +1122,7 @@ const sms = smsHref(Astro.url.pathname);
   .au-form-privacy {
     margin: 6px 0 0;
     font-family: var(--font-sans);
-    font-size: 12.5px;
+    font-size: 13px;
     line-height: 1.5;
     color: var(--color-ash-400);
   }

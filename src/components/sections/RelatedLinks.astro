@@ -19,8 +19,12 @@ interface Props {
   links: LinkItem[];
   /** aria id seed so multiple instances on a page stay unique. */
   id?: string;
+  /** S339 page pass: a long list (the eight towns) reads as a row of chips,
+      not a screen of cards. Defaults on past six links. */
+  compact?: boolean;
 }
 const { title, intro, links, id = 'related' } = Astro.props;
+const compact = Astro.props.compact ?? links.length > 6;
 const headingId = `${id}-h`;
 import Arrow from '../ui/Arrow.astro';
 ---
@@ -31,6 +35,13 @@ import Arrow from '../ui/Arrow.astro';
     {intro && <p class="rl-sub">{intro}</p>}
   </header>
 
+  {compact ? (
+    <ul class="rl-chips">
+      {links.map((l) => (
+        <li><a href={l.href} class="rl-chip">{l.label.replace(/, OR$/, '')}</a></li>
+      ))}
+    </ul>
+  ) : (
   <ul class="rl-grid">
     {links.map((l) => (
       <li class="rl-card">
@@ -42,9 +53,18 @@ import Arrow from '../ui/Arrow.astro';
       </li>
     ))}
   </ul>
+  )}
 </section>
 
 <style>
+  .rl-chips { list-style: none; margin: 16px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+  .rl-chip {
+    display: inline-flex; align-items: center; min-height: 44px; padding: 0 16px;
+    border: 1px solid var(--wc-line, rgba(221, 228, 230, 0.12)); border-radius: 999px;
+    background: var(--wc-raised, #12171a); color: var(--color-ash-100); font-size: 15px; font-weight: 500;
+    transition: border-color .2s ease, color .2s ease;
+  }
+  .rl-chip:hover, .rl-chip:focus-visible { border-color: rgba(200, 128, 74, 0.6); color: var(--color-copper-bright); }
   .rl {
     padding: 32px 4px 24px;
     max-width: 960px;

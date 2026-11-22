@@ -103,7 +103,10 @@ body {
      most common phone-screen failures: mid-word breaks on long words,
      orphaned single-word lines on headlines, URL/email overflow. */
   overflow-wrap: anywhere;
-  hyphens: auto;
+  /* S339 page pass: no automatic hyphens. They split ordinary words in
+     body copy ("remem-ber", "de-sign"); overflow-wrap above still keeps a
+     long URL or email from overflowing. */
+  hyphens: manual;
   word-break: normal;
 }
 

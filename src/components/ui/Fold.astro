@@ -36,7 +36,9 @@ const { title, meta, open = false, group, id, tone = 'dark' } = Astro.props;
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
     transition: border-color .2s ease;
   }
-  .wfold + .wfold { margin-top: 8px; }
+  /* Astro renders this component's script once, right after the first fold,
+     so the second fold follows a script tag, not a fold. */
+  .wfold + .wfold, .wfold + :global(script) + .wfold { margin-top: 8px; }
   .wfold[open] { border-color: rgba(77, 216, 168, 0.4); }
   .wfold--paper { background-color: #f8f6f0; border-color: rgba(20, 24, 22, 0.1); box-shadow: none; }
   .wfold--paper[open] { border-color: rgba(26, 110, 81, 0.45); }

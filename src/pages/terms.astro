@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Breadcrumbs from '../components/ui/Breadcrumbs.astro';
+import Fold from '../components/ui/Fold.astro';
 import { breadcrumbSchema } from '../lib/schema';
 import { smsHref, phoneDisplay } from '../lib/text-cta';
 
@@ -39,81 +40,84 @@ const lastUpdated = '2026-05-13';
         before any code is written. Oregon law applies. Questions? Just ask me.
       </p>
 
-      <h2 class="h2 legal-h2">Using this site</h2>
-      <p>
-        winterscode.com is here to show you what I do, share my work, and get conversations
-        started. Use it however you like. Read it, share it, run my /audit tool against your
-        own site. Don't try to break it, don't scrape it for resale, don't blast contact forms.
-        Standard stuff.
-      </p>
-
-      <h2 class="h2 legal-h2">Free consults aren't a contract</h2>
-      <p>
-        I do free in-person consults in Bandon and free video consults in Coos and Curry counties.
-        Outside that, there's a travel deposit ($250 within 1.5 hours, $400 within 2.5 hours)
-        that credits back to your project if we work together. None of those conversations
-        create a binding engagement. The contract is the Statement of Work we both sign before
-        I start coding.
-      </p>
-
-      <h2 class="h2 legal-h2">Quotes hold for 14 days</h2>
-      <p>
-        Once I give you a quote, it's good for two weeks. After that I may need to refresh it
-        based on my current backlog or any new scope details. I'd rather requote than scramble
-        a job through.
-      </p>
-
-      <h2 class="h2 legal-h2">Work starts when the SOW is signed, the deposit clears, and the materials are in</h2>
-      <p>
-        50% deposit upfront, balance on completion. Standard SOW terms include scope, deliverables,
-        timeline, revision rounds, and what triggers a change order. Inquiries, emails, calls,
-        and consult conversations don't move the clock. The timeline starts when both signatures
-        are on the SOW, the deposit lands, and I have the materials and access the SOW
-        lists, such as copy, photos and logins.
-      </p>
-
-      <h2 class="h2 legal-h2">What's mine, what's yours</h2>
-      <p>
-        Site content (this design, the copy, the tools I built like /audit) is mine. Portfolio
-        work is shown with client permission and remains the client's property. When you hire me,
-        the SOW spells out IP transfer. Typically you own the deliverables, I keep the right to
-        showcase the work and reuse my own internal tooling on other projects. No surprises.
-      </p>
-
-      <h2 class="h2 legal-h2">No warranty on the site itself</h2>
-      <p>
-        winterscode.com is provided as-is. I try to keep it up, the Lighthouse Wall is real-time,
-        the audit tool runs against live APIs. But if it's down for a minute or a check fails, I'm
-        not liable for whatever you missed. Liability on your actual project is governed by the SOW,
-        not this page.
-      </p>
-
-      <h2 class="h2 legal-h2">Limit on liability for the site</h2>
-      <p>
-        For any claim arising specifically from using this website (not from a contracted project),
-        the most I'd owe you is $100. Real damages from a real engagement are governed by your
-        signed MSA and SOW, which have their own warranty and liability terms negotiated per
-        project.
-      </p>
-
-      <h2 class="h2 legal-h2">Links to other sites</h2>
-      <p>
-        I link out to client sites, GitHub repos, and vendor docs. Those are their own things.
-        I don't control what they say or how they handle your data once you leave winterscode.com.
-      </p>
-
-      <h2 class="h2 legal-h2">Oregon law applies</h2>
-      <p>
-        These terms are governed by Oregon law. Any dispute about this website specifically would
-        be filed in the state or federal courts in Coos County, Oregon. I live here. The courthouse
-        is fifteen minutes from my desk.
-      </p>
-
-      <h2 class="h2 legal-h2">When this changes</h2>
-      <p>
-        If I update these terms, the date at the top moves and the change is in the public
-        <a href="/changelog">/changelog</a>. Everything's on the record.
-      </p>
+      <div class="legal-folds">
+        <Fold title="Using this site" id="using-this-site">
+          <p>
+            winterscode.com is here to show you what I do, share my work, and get conversations
+            started. Use it however you like. Read it, share it, run my /audit tool against your
+            own site. Don't try to break it, don't scrape it for resale, don't blast contact forms.
+            Standard stuff.
+          </p>
+        </Fold>
+        <Fold title="Free consults aren't a contract" id="free-consults-arent-a-contract">
+          <p>
+            I do free in-person consults in Bandon and free video consults in Coos and Curry counties.
+            Outside that, there's a travel deposit ($250 within 1.5 hours, $400 within 2.5 hours)
+            that credits back to your project if we work together. None of those conversations
+            create a binding engagement. The contract is the Statement of Work we both sign before
+            I start coding.
+          </p>
+        </Fold>
+        <Fold title="Quotes hold for 14 days" id="quotes-hold-for-14-days">
+          <p>
+            Once I give you a quote, it's good for two weeks. After that I may need to refresh it
+            based on my current backlog or any new scope details. I'd rather requote than scramble
+            a job through.
+          </p>
+        </Fold>
+        <Fold title="Work starts when the SOW is signed, the deposit clears, and the materials are in" id="work-starts-when-the-sow-is">
+          <p>
+            50% deposit upfront, balance on completion. Standard SOW terms include scope, deliverables,
+            timeline, revision rounds, and what triggers a change order. Inquiries, emails, calls,
+            and consult conversations don't move the clock. The timeline starts when both signatures
+            are on the SOW, the deposit lands, and I have the materials and access the SOW
+            lists, such as copy, photos and logins.
+          </p>
+        </Fold>
+        <Fold title="What's mine, what's yours" id="whats-mine-whats-yours">
+          <p>
+            Site content (this design, the copy, the tools I built like /audit) is mine. Portfolio
+            work is shown with client permission and remains the client's property. When you hire me,
+            the SOW spells out IP transfer. Typically you own the deliverables, I keep the right to
+            showcase the work and reuse my own internal tooling on other projects. No surprises.
+          </p>
+        </Fold>
+        <Fold title="No warranty on the site itself" id="no-warranty-on-the-site-itself">
+          <p>
+            winterscode.com is provided as-is. I try to keep it up, the Lighthouse Wall is real-time,
+            the audit tool runs against live APIs. But if it's down for a minute or a check fails, I'm
+            not liable for whatever you missed. Liability on your actual project is governed by the SOW,
+            not this page.
+          </p>
+        </Fold>
+        <Fold title="Limit on liability for the site" id="limit-on-liability-for-the-site">
+          <p>
+            For any claim arising specifically from using this website (not from a contracted project),
+            the most I'd owe you is $100. Real damages from a real engagement are governed by your
+            signed MSA and SOW, which have their own warranty and liability terms negotiated per
+            project.
+          </p>
+        </Fold>
+        <Fold title="Links to other sites" id="links-to-other-sites">
+          <p>
+            I link out to client sites, GitHub repos, and vendor docs. Those are their own things.
+            I don't control what they say or how they handle your data once you leave winterscode.com.
+          </p>
+        </Fold>
+        <Fold title="Oregon law applies" id="oregon-law-applies">
+          <p>
+            These terms are governed by Oregon law. Any dispute about this website specifically would
+            be filed in the state or federal courts in Coos County, Oregon. I live here. The courthouse
+            is fifteen minutes from my desk.
+          </p>
+        </Fold>
+        <Fold title="When this changes" id="when-this-changes">
+          <p>
+            If I update these terms, the date at the top moves and the change is in the public
+            <a href="/changelog">/changelog</a>. Everything's on the record.
+          </p>
+        </Fold>
+      </div>
 
       <h2 class="h2 legal-h2">Questions</h2>
       <p>
