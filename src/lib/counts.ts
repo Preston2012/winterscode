@@ -61,9 +61,14 @@ export function daysWord(key: SiteKey, cap = false): string {
  * reelMissing names it, and the build prints it, so the reel gets recut rather
  * than quietly falling behind the Wall.
  */
-export const REEL_KEYS: SiteKey[] = ['grand', 'bbtd', 'makai', 'taylor', 'seabreeze', 'baseline', 'sogn', 'golf', 'jen'];
+// Preston 2026-11-22: the reel is the eight client sites; Baseline is out.
+export const REEL_KEYS: SiteKey[] = ['grand', 'bbtd', 'makai', 'taylor', 'seabreeze', 'sogn', 'golf', 'jen'];
 /** Sites in the reel whose phone menu opens on camera (South Coast Cuisine has none). */
-export const REEL_MENU_KEYS: SiteKey[] = ['grand', 'makai', 'bbtd', 'sogn', 'taylor', 'seabreeze', 'baseline', 'golf'];
+export const REEL_MENU_KEYS: SiteKey[] = ['grand', 'makai', 'bbtd', 'sogn', 'taylor', 'seabreeze', 'golf'];
+/** The reel's running time, read off the encoded master (47.8 s), rounded to the second. */
+export const REEL_SECONDS = 48;
+/** "0:48" for the door's play label. */
+export const reelClock = `${Math.floor(REEL_SECONDS / 60)}:${String(REEL_SECONDS % 60).padStart(2, '0')}`;
 export const REEL_SITES: MeasuredSite[] = REEL_KEYS.map(site);
 export const reelMissing: MeasuredSite[] = CLIENT_SITES.filter((s) => !REEL_KEYS.includes(s.key));
 if (reelMissing.length) {
