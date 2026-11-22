@@ -9,14 +9,14 @@
  * never goes stale. Preston, same day: no reason names or knocks a
  * competitor; each one stands on what I do.
  */
-import { sites } from '../../lib/portfolio';
-const n = sites.length;
-const words = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve'];
-const count = n < words.length ? words[n].charAt(0).toUpperCase() + words[n].slice(1) : String(n);
+import { numberWord, builtDays, CLIENT_SITES } from '../../lib/counts';
+// S339, 2026-11-22 (Preston): counts come from the Wall's own data, so this
+// list says the same number the Wall shows the day a new site goes live.
+const count = numberWord(CLIENT_SITES.length, true);
 ---
 <ul class="wc-bullets why-list">
   <li><span><b>The work is live.</b> {count} client sites on the coast, each on its own domain and scored on a phone where you can check it yourself, on <a href="/wall">the Wall</a>.</span></li>
-  <li><span><b>Days, not months.</b> <a href="/work/grand-management">Grand Management</a>: 50 bilingual pages in 13 business days. <a href="/work/us-survey-supply">US Survey Supply</a>: 42 pages in 8. Makai Painting: 5.</span></li>
+  <li><span><b>Days, not months.</b> <a href="/work/grand-management">Grand Management</a>: 50 bilingual pages in {builtDays('grand')} business days. <a href="/work/us-survey-supply">US Survey Supply</a>: 42 pages in {builtDays('taylor')}. Makai Painting: {builtDays('makai')}.</span></li>
   <li><span><b>Fast on every phone.</b> Every site I build scores 90 or better on Google's mobile test. The Coos County business sites I <a href="/insights/coos-county-website-audit">audited</a> averaged 61.</span></li>
   <li><span><b>Checked before it ships.</b> Every build passes the same automated check before it goes live: speed, accessibility, security headers, every screen size from a small phone to a wide monitor.</span></li>
   <li><span><b>Hard to break, quick to fix.</b> Each client's code lives in its own private repository with offsite backups, and a bad change rolls back in seconds.</span></li>

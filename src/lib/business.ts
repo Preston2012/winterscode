@@ -1,3 +1,4 @@
+import { bizDaysWord } from './counts';
 /**
  * Business identity, single source of truth.
  *
@@ -373,7 +374,7 @@ export const towns: TownEntry[] = [
       },
       {
         q: 'Have you built for a Bandon business before?',
-        a: 'Yes. Sogn Contracting, a 30-year Bandon contractor, is live with a custom site I built in three business days. SeaBreeze, Bandon By The Dunes, US Survey Supply and Professors Golf are Bandon businesses too, and their sites are live and scored on the Wall.',
+        a: `Yes. Sogn Contracting, a 30-year Bandon contractor, is live with a custom site I built in ${bizDaysWord('sogn')}. SeaBreeze, Bandon By The Dunes, US Survey Supply and Professors Golf are Bandon businesses too, and their sites are live and scored on the Wall.`,
       },
       {
         q: 'My business is seasonal. Does a custom site still make sense?',

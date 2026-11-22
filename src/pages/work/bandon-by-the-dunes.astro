@@ -1,13 +1,14 @@
 ---
 import CaseStudyLayout from '../../components/templates/CaseStudyLayout.astro';
+import { bizDays, builtDays } from '../../lib/counts';
 ---
 <CaseStudyLayout
   slug="bandon-by-the-dunes"
   title="Bandon By The Dunes Realtee Case Study · Winters Code"
-  description="A Bandon brokerage with the whole South Coast market on its own pages, pulled straight from the RMLS feed with no third-party IDX widget. Built in 18 days."
+  description={`A Bandon brokerage with the whole South Coast market on its own pages, pulled straight from the RMLS feed with no third-party IDX widget. Built in ${builtDays('bbtd')} days.`}
   eyebrow="Work · Case Study"
   h1="The whole market, on their own pages."
-  sub="A Bandon real estate brokerage running live RMLS listings with no third-party IDX widget in sight, built in 18 business days."
+  sub={`A Bandon real estate brokerage running live RMLS listings with no third-party IDX widget in sight, built in ${bizDays('bbtd')}.`}
   intro={[
     "Barry Winters and Jodie VanLeuven, the brokers behind Bandon By The Dunes Realtee, are Bandon natives, both Bandon High graduates, both licensed brokers, business partners and life partners. They run a cranberry farm here too. Between them they cover homes, land, commercial and farms across Coos and Curry counties, and the thing they say about themselves is the thing that turned out to matter for the site: <em>they know the houses, the land, and the people.</em>",
     "The hard part of a real estate site is never the design. It is the listings. Almost every brokerage solves it by renting an IDX widget, which drops someone else's search tool into a box on your page. It loads slowly, it looks like a different website, and the listing pages it makes are not yours.",

@@ -21,6 +21,13 @@
 import { smsBase } from '../../lib/text-cta';
 import { v } from '../../lib/asset';
 import { brand } from '../../lib/portfolio';
+import { numberWord, builtDays, REEL_SITES, REEL_MENU_KEYS, OWN_KEYS } from '../../lib/counts';
+
+// Counts and build days come from the Wall's data (lib/counts.ts), never a literal.
+const reelClients = REEL_SITES.filter((s) => !OWN_KEYS.includes(s.key));
+const reelOwn = REEL_SITES.filter((s) => OWN_KEYS.includes(s.key));
+const reelNames = REEL_SITES.map((s) => s.key === 'seabreeze' ? 'SeaBreeze' : s.name.replace(/ Services$/, ''));
+const listed = reelNames.slice(0, -1).join(', ') + ' and ' + reelNames[reelNames.length - 1];
 
 const boardImg = brand[0]?.image;
 
@@ -50,15 +57,15 @@ const DOORS: {
     lead: 'A custom site that says what you do and makes you easy to reach.',
     gets: ['Custom design and code, never a template', 'Words, real photos and branding, included', 'Search Console and Business Profile set up', 'Domain and code in your name'],
     proofWho: 'Grand Management · Coos Bay',
-    proof: '50 bilingual pages, rebuilt off WordPress and live in 13 business days.',
+    proof: `50 bilingual pages, rebuilt off WordPress and live in ${builtDays('grand')} business days.`,
     proofHref: '/work/grand-management',
     // S339 round 4 (Preston): the door shows the work itself, a 52 second
     // reel of nine live sites filmed on a phone (his pick over desktop), each
     // one continuous scroll from hero to footer, the name set beside it.
     film: {
       file: 'sites-reel', poster: '/work/sites-reel-poster-720.webp', dur: '0:52', name: 'the reel',
-      label: 'Reel of nine live sites I built, 52 seconds, no sound, each filmed on a phone and scrolled from top to footer: Grand Management, Bandon By The Dunes Realtee, Makai Painting, US Survey Supply, SeaBreeze, Baseline, Sogn Contracting, Professors Golf and South Coast Cuisine, with eight of their phone menus opening and every footer.',
-      caption: 'Nine live sites, menus to footers', href: '/work', linkLabel: 'See the work',
+      label: `Reel of ${numberWord(REEL_SITES.length)} live sites I built, 52 seconds, no sound, each filmed on a phone and scrolled from top to footer: ${listed}, with ${numberWord(REEL_MENU_KEYS.length)} of their phone menus opening and every footer.`,
+      caption: `${numberWord(reelClients.length, true)} client sites${reelOwn.length ? ' and my own' : ''}, menus to footers`, href: '/work', linkLabel: 'See the work',
     },
     terms: 'Free consult in Bandon, or by video across Coos and Curry',
     more: '/services/web-design', moreLabel: 'Websites in detail',
@@ -107,7 +114,7 @@ const DOORS: {
     film: {
       file: 'auto-reel', poster: '/work/auto-reel-poster-720.webp', dur: '0:29', name: 'the automation reel',
       label: 'Automation reel, 29 seconds, no sound: my live command deck on a phone, a day of runs across 44 loops and the spend tracked against its daily target, then two system blueprints, the action kernel and the portfolio governor.',
-      caption: 'My own ops deck: 44 loops, spend tracked daily',
+      caption: 'My own ops deck, live, spend tracked daily',
     },
     terms: 'Scoped to one task at a time · running costs named up front',
     more: '/services/ai-automation', moreLabel: 'Automation in detail',

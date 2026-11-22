@@ -10,7 +10,7 @@ const { title, meta, open = false, group, id, tone = 'dark' } = Astro.props;
 ---
 <details class:list={['wfold', `wfold--${tone}`]} open={open} name={group} id={id}>
   <summary class="wfold-q">
-    <span class="wfold-t">{title}{meta && <span class="wfold-meta">{meta}</span>}</span>
+    <span class="wfold-t">{title}{meta && <><span class="sr-only">, </span><span class="wfold-meta">{meta}</span></>}</span>
     <span class="wfold-x" aria-hidden="true"></span>
   </summary>
   <div class="wfold-a"><slot /></div>
@@ -52,6 +52,8 @@ const { title, meta, open = false, group, id, tone = 'dark' } = Astro.props;
   .wfold--paper .wfold-q { color: var(--wc-ink); }
   .wfold-q::-webkit-details-marker { display: none; }
   .wfold-q:focus-visible { outline: 2px solid var(--color-wc-green); outline-offset: 2px; }
+  /* The meta line sits beside the title on screen; a hidden comma keeps a screen
+     reader and a copied line from running the two together ("meansplainly"). */
   .wfold-t { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; }
   .wfold-meta { font-size: 13.5px; font-weight: 400; color: var(--color-ash-300); }
   .wfold--paper .wfold-meta { color: var(--wc-ink-soft); }

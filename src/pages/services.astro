@@ -12,6 +12,7 @@ import Contact from '../components/sections/Contact.astro';
 import Breadcrumbs from '../components/ui/Breadcrumbs.astro';
 import { breadcrumbSchema, absUrl } from '../lib/schema';
 import { services } from '../lib/business';
+import { numberWord } from '../lib/counts';
 import TextCta from '../components/ui/TextCta.astro';
 
 const crumbs = [
@@ -39,7 +40,7 @@ const servicesLd = {
 
 <BaseLayout
   title="Services · Websites, Apps & Care Plans · Winters Code"
-  description="Websites, apps, custom software, AI automation, SEO and branding for Oregon coast businesses. Six services, one builder, one price with everything in."
+  description={`Websites, apps, custom software, AI automation, SEO and branding for Oregon coast businesses. ${numberWord(services.length, true)} services, one builder, one price with everything in.`}
 >
   <Fragment slot="head">
     <script type="application/ld+json" set:html={JSON.stringify(breadcrumbLd)} />
