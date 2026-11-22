@@ -11,6 +11,9 @@ import KeyboardShortcuts from '../components/layout/KeyboardShortcuts.astro';
 import Footer from '../components/layout/Footer.astro';
 import TextBar from '../components/layout/TextBar.astro';
 import ogCards from '../lib/og-cards.json';
+import { createHash } from 'node:crypto';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 // Print stylesheet. loaded with media="print" so the browser parses it
 // at lowest priority and NEVER blocks screen paint. Saves ~1KB off the
 // render-blocking BaseLayout CSS chunk.
@@ -73,10 +76,25 @@ const ogImage = ogImageProp === undefined ? ownCard : ogImageProp;
 // builds leave it unset and use the site origin. Canonical never moves.
 declare const __WC_OG_ORIGIN__: string;
 const ogOrigin = (__WC_OG_ORIGIN__ || siteUrl).replace(/\/$/, '');
+// A local card's URL carries the first 8 hex of its own sha256 (S339 round 4b). Facebook,
+// iMessage, Slack and LinkedIn cache a card by URL, so a redrawn card under the same name
+// keeps showing the old one; a new hash is a new URL. The build runs from the repo root.
+const cardVersion = (p: string) => {
+  try {
+    const file = join(process.cwd(), 'public', p.split('?')[0]);
+    return createHash('sha256').update(readFileSync(file)).digest('hex').slice(0, 8);
+  } catch {
+    return null;
+  }
+};
+const ogImageLocal =
+  ogImage && !ogImage.startsWith('http') && !ogImage.includes('?') && cardVersion(ogImage)
+    ? `${ogImage}?v=${cardVersion(ogImage)}`
+    : ogImage;
 const ogImageUrl =
-  ogImage === null ? null : ogImage.startsWith('http') ? ogImage : `${ogOrigin}${ogImage}`;
-// The type follows the file: a page's own card may be a JPEG (S384, the Chere' join card is a photo
-// and a lossless PNG of it runs past 800 KB, over what chat apps fetch for a preview).
+  ogImageLocal === null ? null : ogImageLocal.startsWith('http') ? ogImageLocal : `${ogOrigin}${ogImageLocal}`;
+// The type follows the file. The generated cards are baseline JPEGs: a lossless PNG of a card
+// runs past 800 KB, over what chat apps fetch for a preview (S384).
 const ogImageType = ogImageUrl && /\.jpe?g(\?|$)/i.test(ogImageUrl) ? 'image/jpeg' : 'image/png';
 
 // Preview-deploy guard. Cloudflare Pages sets CF_PAGES_BRANCH on every build.

@@ -26,6 +26,10 @@ const COPPER = {
   '/': 'software.',
   '/about': 'Preston Winters.',
   '/chere': 'back office.',
+  '/chere/join': 'on your phone.',
+  '/chere/privacy': 'in plain English.',
+  '/chere/support': 'a text away.',
+  '/chere/onboard': 'your business.',
   '/process': 'a live site you own.',
   '/audit': 'doing right',
   '/wall': 'live.',
@@ -35,6 +39,11 @@ const COPPER = {
   '/work/grand-management': '13 business days.',
 };
 const SKIP = new Set(['/404', '/lamp', '/media']);
+// Noindex pages that still get sent by text: the Chere' setup link goes to every new customer.
+const KEEP_NOINDEX = new Set(['/chere/onboard']);
+// Chere' pages wear the app's own colors and icon on the same plate (S339 round 4b, Preston
+// 2026-11-22: the blue card had "better branding", the plate cards read better).
+const isChere = (path) => path === '/chere' || path.startsWith('/chere/');
 
 const walk = (dir) => readdirSync(dir).flatMap((f) => {
   const p = join(dir, f);
@@ -49,7 +58,7 @@ for (const file of walk(dist)) {
   const path = rel === '/' || rel === '' ? '/' : rel.replace(/\/$/, '');
   if (SKIP.has(path) || path.startsWith('/api')) continue;
   const html = readFileSync(file, 'utf8');
-  if (/name="robots" content="[^"]*noindex/.test(html)) continue;
+  if (/name="robots" content="[^"]*noindex/.test(html) && !KEEP_NOINDEX.has(path)) continue;
   const m = html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/);
   if (!m) continue;
   const h1 = decode(m[1].replace(/<[^>]+>/g, ' ')).replace(/\s+/g, ' ').trim();
@@ -70,6 +79,8 @@ function split(path, h1) {
 
 const font = (f) => pathToFileURL(join(root, 'public/_fonts', f)).href;
 const seal = pathToFileURL(join(root, 'public/wc-seal-512.webp')).href;
+// The Chere' app icon (wf-seabreeze AppIcon 1024, cut to 256), kept beside this script.
+const chereIcon = pathToFileURL(join(root, 'scripts/cards/chere-icon.png')).href;
 const css = `
 @font-face{font-family:F;src:url(${font('fraunces-normal-400-700.woff2')});font-weight:400 700}
 @font-face{font-family:F;font-style:italic;src:url(${font('fraunces-italic-400-700.woff2')});font-weight:400 700}
@@ -94,6 +105,14 @@ h1{position:absolute;left:92px;right:92px;top:170px;bottom:150px;display:flex;al
 .foot{position:absolute;left:92px;right:92px;bottom:76px;display:flex;align-items:center;justify-content:space-between}
 .tag{font-family:F;font-style:italic;font-size:30px;color:#5fe8b5}
 .url{font-family:M;font-size:18px;letter-spacing:.16em;color:#aab7ba}
+/* Chere': the app icon's own blues, cream type, mint where the site uses copper */
+body.ch{color:#f0ece2;background:radial-gradient(60% 70% at 8% 0%,rgba(0,196,167,.20),transparent 70%),radial-gradient(55% 65% at 100% 100%,rgba(1,109,144,.55),transparent 70%),linear-gradient(150deg,#05506a 0%,#06384b 50%,#062c3b 100%)}
+.ch .plate{border-color:rgba(240,236,226,.16)}
+.ch .rv{background:radial-gradient(circle at 35% 35%,#c9fff3,#4fe0c6 55%,#00977f);box-shadow:0 0 0 4px rgba(79,224,198,.14)}
+.ch .mast img{border-radius:18px;box-shadow:0 8px 22px rgba(0,0,0,.35),0 0 0 1px rgba(240,236,226,.16)}
+.ch .loc{color:#4fe0c6}
+.ch .cu{background:linear-gradient(100deg,#b8f7e9 0%,#6fe9d2 38%,#22cfb2 72%,#00a58c 100%);-webkit-background-clip:text;background-clip:text}
+.ch .tag{color:#f0ece2}.ch .url{color:#b9cdd2}
 .lamp{display:inline-block;width:10px;height:10px;border-radius:50%;background:#5fe8b5;box-shadow:0 0 0 4px rgba(77,216,168,.18),0 0 14px rgba(95,232,181,.7);margin-right:14px;vertical-align:2px}
 `;
 const sizeFor = (t) => (t.length <= 28 ? 112 : t.length <= 44 ? 96 : t.length <= 60 ? 80 : 68);
@@ -105,11 +124,15 @@ const tmp = join(root, 'dist', '.og-card.html');
 const done = [];
 for (const p of pages) {
   const [lead, cu] = split(p.path, p.h1);
-  const body = `<!doctype html><html><head><meta charset="utf-8"><style>${css}</style></head><body>
+  const ch = isChere(p.path);
+  const mast = ch
+    ? `<img src="${chereIcon}" alt=""><div><div class="name">Chere'</div><div class="loc">By Winters Code</div></div>`
+    : `<img src="${seal}" alt=""><div><div class="name">Winters Code</div><div class="loc">Bandon, Oregon</div></div>`;
+  const body = `<!doctype html><html><head><meta charset="utf-8"><style>${css}</style></head><body${ch ? ' class="ch"' : ''}>
 <div class="plate"></div><span class="rv tl"></span><span class="rv tr"></span><span class="rv bl"></span><span class="rv br"></span>
-<div class="mast"><img src="${seal}" alt=""><div><div class="name">Winters Code</div><div class="loc">Bandon, Oregon</div></div></div>
+<div class="mast">${mast}</div>
 <h1 style="font-size:${sizeFor(p.h1)}px"><span class="t">${esc(lead)}<span class="cu">${esc(cu)}</span></span></h1>
-<div class="foot"><div class="tag"><span class="lamp"></span>Help is just a text away.</div><div class="url">WINTERSCODE.COM</div></div>
+<div class="foot"><div class="tag"><span class="lamp"></span>${ch ? 'Said like Sherrie.' : 'Help is just a text away.'}</div><div class="url">${ch ? 'WINTERSCODE.COM/CHERE' : 'WINTERSCODE.COM'}</div></div>
 </body></html>`;
   // A file page, so the fonts and the seal load from disk (setContent runs
   // on about:blank, which may not read file: URLs).
