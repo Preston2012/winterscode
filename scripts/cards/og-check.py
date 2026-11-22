@@ -5,7 +5,8 @@ Per page: og:title, og:description, og:url == canonical, og:image absolute https
 og:image:width/height match the real file, og:image:type matches the bytes,
 og:image:alt, twitter:card summary_large_image, twitter:image == og:image,
 title length, description length. Per card over HTTP: 200, content-type image/*,
-under 300 KB (WhatsApp drops larger previews), 1200x630, RGB baseline-readable."""
+under 300 KB (WhatsApp drops larger previews), 1200x630, RGB baseline-readable.
+Exits 1 when anything is BAD, so a build or deploy gate can stop on it."""
 import sys, re, os, io, glob, html, urllib.request
 from PIL import Image
 dist, base = sys.argv[1].rstrip('/'), sys.argv[2].rstrip('/')
@@ -73,3 +74,4 @@ for img, page in sorted(cards.items()):
     except Exception as e:
         bad += 1; print('BAD ', path, e)
 print('PAGES', len(glob.glob(dist + '/**/*.html', recursive=True)), 'CARDS', len(cards), 'BAD', bad)
+sys.exit(1 if bad else 0)
