@@ -391,7 +391,10 @@ const mediaUrl = (file: string) => {
   }
 
   .chf-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  /* Tags are stored in their real case and set in capitals here, so copied text
+     and screen readers get "Flutter", not "FLUTTER" (S339 round 6). */
   .chf-tag {
+    text-transform: uppercase;
     font-family: var(--font-mono);
     font-size: 9px;
     letter-spacing: 0.1em;
