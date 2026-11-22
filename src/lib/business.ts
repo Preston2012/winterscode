@@ -370,7 +370,7 @@ export const towns: TownEntry[] = [
     faq: [
       {
         q: 'Can we meet in person in Bandon?',
-        a: 'Yes, and it is free. Bandon is home base. I will meet at the Warehouse, Bandon Coffee, Broken Anchor, or Bandon Brewing, no deposit, no pitch deck. Small towns run on trust, and that is easier to build face to face.',
+        a: 'Yes, and it is free. Bandon is home base. I will meet at Warehouse Coffee, Bandon Coffee, Broken Anchor, or Bandon Brewing, no deposit, no pitch deck. Small towns run on trust, and that is easier to build face to face.',
       },
       {
         q: 'Have you built for a Bandon business before?',
@@ -418,7 +418,7 @@ export const towns: TownEntry[] = [
       },
       {
         name: 'Healthcare and professional services',
-        note: 'As the county seat, Coquille carries clinics, offices, and professional services that serve the whole valley. For these, loading fast and reading as credible is most of the job.',
+        note: 'Coquille carries clinics, offices, and professional services that serve the whole valley. For these, loading fast and reading as credible is most of the job.',
       },
     ],
     context:
@@ -621,7 +621,7 @@ export const towns: TownEntry[] = [
       },
     ],
     context:
-      'Port Orford, around 1,100 people in Curry County, is home to one of only two dolly docks in the country, where the fishing fleet is hoisted straight out of the water by crane and parked on the dock; by the city\u2019s own count, nearly 30 commercial boats work from it and landed close to $5 million in a recent year.',
+      'Port Orford, around 1,100 people in Curry County, is home to the only dolly dock on the West Coast, where the fishing fleet is hoisted straight out of the water by crane and parked on the dock; by the city\u2019s own count, nearly 30 commercial boats work from it and landed close to $5 million in a recent year.',
     localAngle: {
       heading: 'Why it matters in Port Orford',
       body: 'Port Orford is tiny and remote, which is exactly why a good site pays off. Visitors and gallery buyers research before they make the drive out here, often from well away, because nobody ends up in Port Orford by accident. That means the decision to stop, book, or buy is made online, ahead of time. When the visitor is choosing ahead of time, the business that loads fast and looks the part gets the stop. Small market, high-intent visitors.',

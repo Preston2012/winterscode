@@ -9,7 +9,7 @@
  * professors-golf portfolio entry and the homepage card.
  */
 import CaseStudyLayout from '../../components/templates/CaseStudyLayout.astro';
-import { bizDaysWord } from '../../lib/counts';
+import { bizDaysWord, builtDays } from '../../lib/counts';
 ---
 <CaseStudyLayout
   slug="professors-golf"
@@ -21,10 +21,10 @@ import { bizDaysWord } from '../../lib/counts';
   intro={[
     "Professors Golf LLC is a Bandon golf service: club fitting, PGA-certified instruction, caddy referrals, local tee times and all-inclusive golf trips.",
     `The first version went up in <span class='hl-copper'>${bizDaysWord('golf')}</span>: a homepage that covers all of it plus an events page, with a click-to-call header and a sharecard built for the group text.`,
-    "It runs in <span class='hl-green'>the client's own Cloudflare account</span>, not mine, so the site is theirs to keep. Its scores are measured on <a href='/wall'>the wall</a> with every other site I build.",
+    "It runs in <span class='hl-green'>the client's own Cloudflare account</span>, not mine, so the site is theirs to keep. Its scores are measured on <a href='/wall'>the Wall</a> with every other site I build.",
   ]}
   stats={[
-    { value: '1', label: 'business day of build time' },
+    { value: String(builtDays('golf')), label: builtDays('golf') === 1 ? 'business day of build time' : 'business days of build time' },
     { value: 'A+', label: 'Mozilla Observatory, measured live' },
   ]}
   relatedLinks={[

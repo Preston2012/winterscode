@@ -8,6 +8,7 @@
  * this file and drop caseStudy from the us-survey-supply portfolio entry and
  * the homepage card.
  */
+import { builtDays } from '../../lib/counts';
 import CaseStudyLayout from '../../components/templates/CaseStudyLayout.astro';
 ---
 <CaseStudyLayout
@@ -15,17 +16,15 @@ import CaseStudyLayout from '../../components/templates/CaseStudyLayout.astro';
   title="US Survey Supply Case Study · Winters Code"
   description="A 42-page rebuild for a Bandon surveying-equipment dealer that ships nationwide: new and used gear, rentals, brochures, repair, training and a quote form."
   eyebrow="Work · Case Study"
-  h1="Forty-two pages on a thirty-two-page contract."
-  sub="A Bandon surveying-equipment dealer that ships nationwide, rebuilt from the ground up: the gear, the rental fleet, the brochures, repair and training, and a quote request form."
+  h1="Forty-two pages, rebuilt from the ground up."
+  sub="A Bandon surveying-equipment dealer that ships nationwide: the gear, the rental fleet, the brochures, repair and training, and a quote request form."
   intro={[
     "US Survey Supply sells surveying equipment out of Bandon and ships it nationwide: new and used GNSS receivers, total stations, data collectors and Carlson software, plus a rental fleet, repair and training.",
-    "The rebuild covers all of it: the product lines, the rental fleet, a brochure library, repair and training pages, and a quote request form. The contract called for <span class='hl-copper'>32 pages</span>. The site went live with <span class='hl-green'>42</span>.",
-    "It is live on their own domain and measured on <a href='/wall'>the wall</a> alongside every other site I build, on the same schedule and with the same tools.",
+    "It is live on their own domain and measured on <a href='/wall'>the Wall</a> alongside every other site I build, on the same schedule and with the same tools.",
   ]}
   stats={[
     { value: '42', label: 'pages live' },
-    { value: '32', label: 'pages in the contract' },
-    { value: '8', label: 'business days of build time' },
+    { value: String(builtDays('taylor')), label: 'business days of build time' },
     { value: 'A+', label: 'Mozilla Observatory, measured live' },
   ]}
   relatedLinks={[

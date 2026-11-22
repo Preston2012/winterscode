@@ -198,7 +198,6 @@ const driveInFaq = town.faq.some((f) => /\b(minutes|hours?)\b[^.]*\b(from Bandon
 
   <section class="loc-folds" aria-label={`More about ${town.name}`}>
     <Fold title={`Built for ${town.name}'s businesses`}>
-      <p>The trades and industries that drive {town.name}, and the kind of work each one needs online.</p>
       {town.industriesDetail && town.industriesDetail.length > 0 ? (
         <dl class="loc-industries-detail">
           {town.industriesDetail.map((ind) => (
@@ -214,24 +213,21 @@ const driveInFaq = town.faq.some((f) => /\b(minutes|hours?)\b[^.]*\b(from Bandon
         </ul>
       )}
     </Fold>
-    {/* S339 copy audit (Preston 2026-11-22: the words were solid, keep them):
-        the town's own local angle is back, folded. */}
-    {town.localAngle && (
-      <Fold title={town.localAngle.heading}>
-        <p set:html={town.localAngle.body} />
-      </Fold>
-    )}
+    {/* S339 reader pass (2026-11-22): each town's localAngle essay retold
+        what the intro, "Why this matters here" and the town's own questions
+        already say, sentence for sentence in meaning, so it stays out. Its
+        data stays in business.ts. */}
     {town.compactServices && (
       <p class="loc-compact">Sites, apps, automation and logo work are all on the <a href="/services" class="loc-link">services page</a>.</p>
     )}
     {!town.compactServices && (
       <Fold title={`What I build for ${town.name}`} meta={`${serviceLinks.length} services`}>
-        <RelatedLinks id="loc-services" title="Services" intro="Every service, available to businesses in your town. The work is mine, end to end." links={serviceLinks} />
+        <RelatedLinks id="loc-services" title="Services" links={serviceLinks} />
       </Fold>
     )}
     {comboLinks.length > 0 && (
       <Fold title={`Other services in ${town.name}`} meta="apps and automation">
-        <RelatedLinks id="loc-combos" title="Apps and automation" intro={`Apps and automation built for ${town.name} businesses, not just sites.`} links={comboLinks} />
+        <RelatedLinks id="loc-combos" title="Apps and automation" links={comboLinks} />
       </Fold>
     )}
     {neighborLinks.length > 0 && (
