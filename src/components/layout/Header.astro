@@ -66,7 +66,7 @@ const navItems = [
   <!-- Desktop horizontal nav, hidden on mobile/tablet -->
   <nav class="topnav-links" aria-label="Primary">
     {navItems.map(({ href, label }) => (
-      <a href={href}>{label}</a>
+      <>{' '}<a href={href}>{label}</a></>
     ))}
   </nav>
 

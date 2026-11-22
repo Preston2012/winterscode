@@ -87,7 +87,7 @@ const legalLinks: L[] = [
       <div class="wc-foot-folds">
         {lines.filter((ln) => ln.title).map((ln) => (
           <details class="wc-foot-fold" data-foot-fold>
-            <summary><span>{ln.title}</span><span class="wc-foot-count">{ln.links.length}</span></summary>
+            <summary><span>{ln.title}</span>{' '}<span class="wc-foot-count">{ln.links.length}</span></summary>
             <nav class="wc-foot-line" aria-label={ln.aria}>
               <ul>
                 {ln.links.map((l) => <li><a href={l.href}>{l.label}</a></li>)}
@@ -109,7 +109,7 @@ const legalLinks: L[] = [
          no bottom padding under it (TextBar). -->
     <div class="wc-foot-chrome" data-textbar-hide>
       <nav class="wc-foot-legal" aria-label="Legal">
-        {legalLinks.map((l) => <a href={l.href}>{l.label}</a>)}
+        {legalLinks.map((l) => <>{' '}<a href={l.href}>{l.label}</a></>)}
       </nav>
       <div class="wc-foot-copy">&copy; {year} Winters Code · Bandon, Oregon</div>
       <p class="wc-foot-fine">

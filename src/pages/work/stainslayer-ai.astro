@@ -8,8 +8,8 @@ const shots = [
   { n: 'scan', cap: 'Emergency scan: fabric, age, type', alt: 'StainSlayer Emergency Scan screen with fabric type, a stain age slider and water or oil based choices.' },
   { n: 'result', cap: 'The verdict, with its safety lines', alt: 'StainSlayer result screen: four numbered removal steps, a safety notice and a Report this advice button.' },
 ];
-const shot = (s) => `<span class="cs-shot"><picture><source type="image/avif" srcset="${v(`/work/stainslayer-${s.n}-360.avif`)} 360w, ${v(`/work/stainslayer-${s.n}-598.avif`)} 598w" sizes="(min-width: 768px) 240px, 70vw"><img src="${v(`/work/stainslayer-${s.n}-598.webp`)}" srcset="${v(`/work/stainslayer-${s.n}-360.webp`)} 360w, ${v(`/work/stainslayer-${s.n}-598.webp`)} 598w" sizes="(min-width: 768px) 240px, 70vw" width="598" height="1300" loading="lazy" decoding="async" alt="${s.alt}"></picture><span class="cs-cap">${s.cap}</span></span>`;
-const gallery = `<span class="cs-shots">${shots.map(shot).join('')}</span>`;
+const shot = (s) => `<span class="cs-shot"><picture><source type="image/avif" srcset="${v(`/work/stainslayer-${s.n}-360.avif`)} 360w, ${v(`/work/stainslayer-${s.n}-598.avif`)} 598w" sizes="(min-width: 768px) 240px, 70vw"><img src="${v(`/work/stainslayer-${s.n}-598.webp`)}" srcset="${v(`/work/stainslayer-${s.n}-360.webp`)} 360w, ${v(`/work/stainslayer-${s.n}-598.webp`)} 598w" sizes="(min-width: 768px) 240px, 70vw" width="598" height="1300" loading="lazy" decoding="async" alt="${s.alt}"></picture> <span class="cs-cap">${s.cap}</span></span>`;
+const gallery = `<span class="cs-shots">${shots.map(shot).join(' ')}</span>`;
 ---
 <CaseStudyLayout
   slug="stainslayer-ai"

@@ -124,7 +124,7 @@ const mediaUrl = (file: string) => {
 
     {(variant === 'work' || variant === 'page') && (
       <div class="chf-tags" role="list">
-        {p.tags.map((t) => <span class="chf-tag" role="listitem">{t}</span>)}
+        {p.tags.map((t) => <>{' '}<span class="chf-tag" role="listitem">{t}</span></>)}
       </div>
     )}
 

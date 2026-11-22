@@ -34,7 +34,7 @@ const sms = about ? smsAboutHref(Astro.url.pathname, about) : smsHref(Astro.url.
   {lead && <p class="tcta-lead" set:html={lead} />}
   <div class="tcta-row">
     <a href={sms} class="wc-btn wc-btn--primary tcta-btn">
-      <span class="tcta-stack"><span class="tcta-label">{label}</span><span class="tcta-num">{phoneDisplay}</span></span>
+      <span class="tcta-stack"><span class="tcta-label">{label}</span>{' '}<span class="tcta-num">{phoneDisplay}</span></span>
       <Arrow size={20} />
     </a>
     {links.map((l) => (

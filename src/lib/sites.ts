@@ -37,9 +37,10 @@ export interface MeasuredSite {
   secFallback?: { grade: string; score: number };
 }
 
-// S339, 2026-11-05: every lhFallback refreshed from the Wall's live
-// /api/workshop read (measured_at 2026-11-05T15:01Z), so a failed live read
-// never shows a buyer an older, lower number than the Wall does.
+// S339, 2026-11-22: every lhFallback and secFallback refreshed from the Wall's
+// live /api/workshop read (Lighthouse measured_at below), so a page that paints
+// before the live read, or without one, shows the Wall's numbers and says when.
+export const LH_FALLBACK_AT = '2026-11-22T21:50:29Z';
 export const SITES: MeasuredSite[] = [
   {
     // S339, 2026-10-28: newest client, live on www since 2026-10-27 (the apex
@@ -49,7 +50,7 @@ export const SITES: MeasuredSite[] = [
     // 2026-10-09 (wc-grandmgmt's first commit), live Tue 2026-10-27.
     key: 'grand', label: 'grandmgmt', name: 'Grand Management Services',
     href: 'https://www.grandmgmt.com', portfolioSlug: 'grand-management', builtDays: 13,
-    published: true, lhFallback: [98, 100, 100, 100], secFallback: { grade: 'A+', score: 125 },
+    published: true, lhFallback: [100, 100, 100, 100], secFallback: { grade: 'A+', score: 125 },
   },
   {
     // S339: newest client, live on www since 2026-10-19 (the apex 301s to www,
@@ -59,7 +60,7 @@ export const SITES: MeasuredSite[] = [
     // Preston 2026-10-22: signed Tue 10-13, live on her go email Mon 10-19.
     key: 'makai', label: 'makaipainting', name: 'Makai Painting',
     href: 'https://www.makaipainting.com', portfolioSlug: 'makai-painting', builtDays: 5,
-    published: true, lhFallback: [99, 100, 100, 100], secFallback: { grade: 'A+', score: 125 },
+    published: true, lhFallback: [93, 100, 100, 100], secFallback: { grade: 'A+', score: 125 },
   },
   {
     // S339: South Coast Cuisine, live since 2026-09-22 on the apex (www 301s
@@ -68,7 +69,7 @@ export const SITES: MeasuredSite[] = [
     // three with the client editor; the larger figure is the one shown.
     key: 'jen', label: 'southcoastcuisine', name: 'South Coast Cuisine',
     href: 'https://southcoastcuisine.net', portfolioSlug: 'south-coast-cuisine', builtDays: 3,
-    published: true, lhFallback: [99, 100, 100, 100], secFallback: { grade: 'A+', score: 140 },
+    published: true, lhFallback: [97, 100, 100, 100], secFallback: { grade: 'A+', score: 140 },
   },
   {
     // Cutover done 2026-09-11 (S230): the apex serves this build.
@@ -86,12 +87,12 @@ export const SITES: MeasuredSite[] = [
   {
     key: 'seabreeze', label: 'seabreeze', name: 'SeaBreeze Landscape Care and Home Repair',
     href: 'https://seabreeze.llc', portfolioSlug: 'seabreeze', builtDays: 7,
-    published: true, lhFallback: [95, 100, 100, 100], secFallback: { grade: 'A+', score: 125 },
+    published: true, lhFallback: [97, 100, 100, 100], secFallback: { grade: 'A+', score: 125 },
   },
   {
     key: 'bbtd', label: 'bandon', name: 'Bandon By The Dunes Realtee',
     href: 'https://www.bandonbythedunesrealtee.net', portfolioSlug: 'bandon-by-the-dunes', builtDays: 18,
-    published: true, lhFallback: [97, 100, 100, 100], secFallback: { grade: 'A+', score: 135 },
+    published: true, lhFallback: [100, 100, 100, 100], secFallback: { grade: 'A+', score: 135 },
   },
   {
     // PSI 2026-09-05 after the contrast pass. One business day, per Preston.
@@ -102,7 +103,7 @@ export const SITES: MeasuredSite[] = [
   {
     key: 'sogn', label: 'sogn', name: 'Sogn Contracting',
     href: 'https://www.sogncontracting.com', portfolioSlug: 'sogn-contracting', builtDays: 3,
-    published: true, lhFallback: [99, 100, 100, 100], secFallback: { grade: 'A+', score: 125 },
+    published: true, lhFallback: [98, 100, 100, 100], secFallback: { grade: 'A+', score: 125 },
   },
   {
     key: 'baseline', label: 'baseline', name: 'Baseline Marketing',
@@ -112,7 +113,7 @@ export const SITES: MeasuredSite[] = [
   {
     key: 'winterscode', label: 'winterscode', name: 'Winters Code',
     href: 'https://winterscode.com',
-    published: true, lhFallback: [99, 100, 100, 100], secFallback: { grade: 'A+', score: 125 },
+    published: true, lhFallback: [100, 100, 100, 100], secFallback: { grade: 'A+', score: 125 },
   },
 ];
 
