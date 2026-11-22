@@ -60,6 +60,9 @@ const canonical = canonicalPath
   : `${siteUrl}${cleanPath || '/'}`;
 const ogImageUrl =
   ogImage === null ? null : ogImage.startsWith('http') ? ogImage : `${siteUrl}${ogImage}`;
+// The type follows the file: a page's own card may be a JPEG (S384, the Chere' join card is a photo
+// and a lossless PNG of it runs past 800 KB, over what chat apps fetch for a preview).
+const ogImageType = ogImageUrl && /\.jpe?g(\?|$)/i.test(ogImageUrl) ? 'image/jpeg' : 'image/png';
 
 // Preview-deploy guard. Cloudflare Pages sets CF_PAGES_BRANCH on every build.
 // Production builds from the default branch stay fully indexable (current
@@ -110,7 +113,7 @@ const isPreviewDeploy = !!cfBranch && cfBranch !== prodBranch;
   {ogImageUrl && (
     <>
       <meta property="og:image" content={ogImageUrl} />
-      <meta property="og:image:type" content="image/png" />
+      <meta property="og:image:type" content={ogImageType} />
       <meta property="og:image:width" content="1200" />
       <meta property="og:image:height" content="630" />
       <meta property="og:image:alt" content={`${title}, winterscode.com`} />
