@@ -76,6 +76,11 @@ const QUESTIONS: { q: string; a: string[]; why?: boolean; link?: { href: string;
   </div>
 </section>
 
+<script>
+  // A tapped question stays where it was when the open answer above it closes.
+  import '../../lib/hold-accordion';
+</script>
+
 <style>
   .sa { padding: var(--home-pad) var(--home-gut); }
   .sa-inner { max-width: var(--home-max); margin: 0 auto; display: grid; gap: clamp(24px, 4vw, 40px); }

@@ -17,6 +17,9 @@ const { title, meta, open = false, group, id, tone = 'dark' } = Astro.props;
 </details>
 
 <script>
+  // A tapped fold in a set stays where it was when an open one above it closes.
+  import '../../lib/hold-accordion';
+
   // An anchor that names a fold, or anything inside one, opens it.
   const openFromHash = () => {
     const id = decodeURIComponent(location.hash.slice(1));
