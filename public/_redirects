@@ -17,3 +17,12 @@
 # S339, 2026-11-22: Professors Golf folds into its /work card (Preston).
 /work/professors-golf /work#professors-golf 301
 /work/professors-golf.html /work#professors-golf 301
+
+# S339, 2026-11-26: retired icon paths point at the color seal. Brave Search still showed the
+# May favicon-w.svg (a currentColor W that renders as a faint grey letter), and favicon.svg was
+# Astro's starter logo; any cache or fetcher that asks for either, or for the conventional
+# apple-touch-icon paths, now gets the seal.
+/favicon-w.svg /wc-stamp-256.png 301
+/favicon.svg /wc-stamp-256.png 301
+/apple-touch-icon.png /wc-stamp-256.png 301
+/apple-touch-icon-precomposed.png /wc-stamp-256.png 301

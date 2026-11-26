@@ -15,9 +15,6 @@
 /favicon.ico
   Cache-Control: public, max-age=86400, must-revalidate
 
-/favicon-w.svg
-  Cache-Control: public, max-age=86400, must-revalidate
-
 /wc-stamp-*
   Cache-Control: public, max-age=86400, must-revalidate
 
