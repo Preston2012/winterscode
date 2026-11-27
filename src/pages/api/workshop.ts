@@ -5,7 +5,8 @@
  * Aggregates 4 data sources, caches via Cloudflare cache, returns JSON.
  *
  * Data sources:
- * - GitHub Events API (deploys, last commit ago), uses GITHUB_TOKEN env
+ * - Deploys (last push, 30-day count): derived numbers the fleet writes to KV
+ *   (key workshop:gh:agg:v1). This Worker holds no GitHub token (S452, T-862).
  * - PageSpeed Insights (Lighthouse for winterscode.com + sogncontracting.com), uses PSI_KEY env
  * - Mozilla Observatory (security headers grade), public API, no key
  * - Cal.com (next availability), public availability API (no key needed for public username)
@@ -32,7 +33,7 @@ interface WorkshopData {
     last_at?: string;      // ISO time of that push, so a cached read recomputes 'last'
     count_30d: number;
     repo_count: number;
-    source: 'live' | 'fallback';
+    source: 'live' | 'cached' | 'fallback';
   };
   lighthouse: {
     winterscode: [number, number, number, number]; // [perf, a11y, seo, best]
@@ -205,214 +206,30 @@ function withTimeout<T>(p: Promise<T>, ms: number, fallback: T): Promise<T> {
   });
 }
 
-async function fetchGitHub(
-  token: string | undefined,
-  kv?: KVNamespace,
-): Promise<WorkshopData['deploys']> {
-  if (!token) return FALLBACK.deploys;
-  // KV cache: GitHub Events API can take 1-3s across 3 paginated pages.
-  // When the outer 5s timeout fires (slow network, GH rate-limit, etc),
-  // we'd lose the deploys row to FALLBACK on every request. Cache successful
-  // results for 5min so the wall doesn't flicker between live/fallback as
-  // edge conditions vary. Short TTL because deploys data changes every push.
-  const CACHE_KEY = 'workshop:gh:v1';
-  // 30d TTL. Retention is decoupled from freshness: REFRESH_AFTER_SEC (5min)
-  // below decides when to re-fetch; this TTL only decides how long the last
-  // good value survives. A long retention means a multi-day GitHub outage
-  // keeps showing 'cached' real numbers instead of dropping to 'fallback'.
-  const CACHE_TTL = 60 * 60 * 24 * 30;
-  // Pre-read cache so non-throwing failure paths can return 'cached' too.
-  // The previous structure only used cache in the catch block, which meant
-  // rate-limit hits (!r.ok -> break -> empty array -> return FALLBACK) never
-  // fell through to cached. Now every failure path can return cached.
-  let lastCached: WorkshopData['deploys'] | undefined;
-  let cacheAgeSec = Infinity;
-  if (kv) {
-    try {
-      // Use getWithMetadata so we know how old the cached value is.
-      // KV doesn't expose put-time directly, so we store cachedAt inside the
-      // value itself going forward. For backwards-compat, treat values
-      // without cachedAt as "fresh enough" (must be recent or KV would have
-      // expired them per the 6h TTL).
-      const c = await kv.get<WorkshopData['deploys'] & { _cachedAt?: number }>(CACHE_KEY, 'json');
-      if (c) {
-        lastCached = c;
-        cacheAgeSec = c._cachedAt ? (Date.now() - c._cachedAt) / 1000 : Infinity; // legacy entry without timestamp = treat as stale, force refresh
-      }
-    } catch { /* KV read failure non-fatal */ }
-  }
-  // CRITICAL: If we have a fresh cached value, return it immediately.
-  // GitHub's authenticated rate limit is 5000/hr. Without this guard, every
-  // /api/workshop request hits GitHub, which exhausts quota in hours under
-  // moderate traffic. Refresh cache only when older than REFRESH_AFTER_SEC.
-  const REFRESH_AFTER_SEC = 5 * 60; // 5 minutes
-  // A cached 'last' string froze at whatever it said when it was written, so
-  // a month-old cache still read "1h ago" on the wall (S339). Recompute it from
-  // the stored push time; an entry without one says nothing rather than lie.
-  // Entries written before last_at existed are rebuilt from the write time
-  // minus the relative string they stored, which is exact to its unit.
-  const UNIT: Record<string, number> = { s: 1, m: 60, h: 3600, d: 86400 };
-  const aged = (c: WorkshopData['deploys'] & { _cachedAt?: number }): WorkshopData['deploys'] => {
-    let iso = c.last_at;
-    if (!iso && c._cachedAt) {
-      const m = /^(\d+)([smhd]) ago$/.exec(c.last || '');
-      if (m) iso = new Date(c._cachedAt - Number(m[1]) * UNIT[m[2]] * 1000).toISOString();
-    }
-    const t = iso ? new Date(iso).getTime() : NaN;
-    const { last_message: _drop, ...pub } = c as typeof c & { last_message?: string };
-    return { ...pub, last: Number.isNaN(t) ? 'unknown' : relativeTime(iso as string), ...(iso ? { last_at: iso } : {}) };
-  };
-  if (lastCached && cacheAgeSec < REFRESH_AFTER_SEC) {
-    return { ...aged(lastCached), source: 'live' as const };
-  }
-  const cachedOrFallback = (): WorkshopData['deploys'] =>
-    lastCached ? { ...aged(lastCached), source: 'cached' as const } : FALLBACK.deploys;
+async function fetchDeploys(kv?: KVNamespace): Promise<WorkshopData['deploys']> {
+  // S452 (T-862): this Worker reads deploy numbers a fleet job writes to KV and
+  // holds no GitHub credential. Only derived numbers arrive here: last push time,
+  // 30-day push count, repository count. No repository name or commit text does.
+  const AGG_KEY = 'workshop:gh:agg:v1';
+  // The job writes every 10 minutes. Past an hour the numbers still show, marked
+  // 'cached', so a fleet outage reads as older data rather than a missing row.
+  const FRESH_SEC = 60 * 60;
+  if (!kv) return FALLBACK.deploys;
   try {
-    // Paginate up to 3 pages (300 events) to capture the full 30-day window.
-    // Single page (100 events) maxes out fast at ~50 in our use case.
-    const headers = {
-      'Authorization': `token ${token}`,
-      'Accept': 'application/vnd.github+json',
-      'User-Agent': 'winterscode-wall/1.0',
+    const a = await kv.get<{ last_at?: string; count_30d?: number; repo_count?: number; pushed_at?: string }>(AGG_KEY, 'json');
+    if (!a || typeof a.count_30d !== 'number' || typeof a.repo_count !== 'number') return FALLBACK.deploys;
+    const t = a.last_at ? new Date(a.last_at).getTime() : NaN;
+    const pushedMs = a.pushed_at ? new Date(a.pushed_at).getTime() : NaN;
+    const fresh = !Number.isNaN(pushedMs) && (Date.now() - pushedMs) / 1000 < FRESH_SEC;
+    return {
+      last: Number.isNaN(t) ? 'unknown' : relativeTime(a.last_at as string),
+      ...(Number.isNaN(t) ? {} : { last_at: a.last_at }),
+      count_30d: a.count_30d,
+      repo_count: a.repo_count,
+      source: fresh ? 'live' : 'cached',
     };
-    const cutoffMs = Date.now() - 30 * 24 * 60 * 60 * 1000;
-    let allEvents: any[] = [];
-    let keepPaging = true;
-    for (let page = 1; page <= 3 && keepPaging; page++) {
-      const r = await fetch(
-        `https://api.github.com/users/Preston2012/events?per_page=100&page=${page}`,
-        { signal: AbortSignal.timeout(5000), headers },
-      );
-      if (!r.ok) break;
-      const pageEvents: any[] = await r.json();
-      if (!Array.isArray(pageEvents) || pageEvents.length === 0) break;
-      allEvents = allEvents.concat(pageEvents);
-      // Stop early if oldest event on this page is already beyond 30 days
-      const oldestOnPage = pageEvents[pageEvents.length - 1];
-      if (oldestOnPage?.created_at && new Date(oldestOnPage.created_at).getTime() < cutoffMs) {
-        keepPaging = false;
-      }
-    }
-    if (!allEvents.length) return cachedOrFallback();
-    const pushEvents = allEvents.filter(e => e.type === 'PushEvent');
-    if (!pushEvents.length) return cachedOrFallback();
-    // Headline deploy = most recent SHOWABLE push: a public repo with commits,
-    // or winterscode itself (private showcase, message pulled directly). Other
-    // private repos (client work) still count in the 30-day totals below but
-    // never surface here, so no client repo name or commit text leaks. Tracks
-    // all public repos, masks private. firstLine caps length; the status chrome
-    // adds a CSS ellipsis so long subjects never overflow the pill or card.
-    const firstLine = (m: string, max = 56): string => {
-      const ln = (m || '').split('\n')[0].trim();
-      return ln.length > max ? ln.slice(0, max).trimEnd() : ln;
-    };
-    const WC_REPO = 'Preston2012/winterscode';
-    const showable = pushEvents.find(
-      e => (e.public === true && e.payload?.commits?.length) || e.repo?.name === WC_REPO,
-    ) ?? pushEvents[0];
-    // THE TIME AND THE MESSAGE COME FROM THE SAME COMMIT, and they did not.
-    // The message for winterscode is pulled live from the commits API because
-    // the events feed omits commits for a private repo, while this line took
-    // its timestamp from the EVENT. So the card paired tonight's commit subject
-    // with "2d ago since last push", which Preston caught on the live wall
-    // 2026-09-10. A timestamp from one source and a message from another is two
-    // facts pretending to be one.
-    let lastAt: string = showable.created_at;
-    let last = relativeTime(lastAt);
-    let last_message: string;
-    if (showable.public === true && showable.payload?.commits?.length) {
-      last_message = firstLine(showable.payload.commits[0].message);
-    } else if (showable.repo?.name === WC_REPO) {
-      // events API omits commits for private repos; pull winterscode's directly
-      let msg = '';
-      try {
-        const cr = await fetch('https://api.github.com/repos/Preston2012/winterscode/commits?per_page=1',
-          { signal: AbortSignal.timeout(4000), headers });
-        if (cr.ok) {
-          const commits: any[] = await cr.json();
-          msg = firstLine(commits?.[0]?.commit?.message ?? '');
-          // Same commit, so the same clock. Author date over committer date is
-          // deliberate: a rebase rewrites the committer date and the wall would
-          // report work as newer than it is.
-          const when = commits?.[0]?.commit?.author?.date;
-          if (when && !Number.isNaN(new Date(when).getTime())) { lastAt = when; last = relativeTime(when); }
-        }
-      } catch { /* fall back to masked label */ }
-      last_message = msg || 'winterscode · main';
-    } else {
-      const repoShort = showable.repo?.name?.split('/').pop() ?? 'repo';
-      last_message = `[private repo] · ${repoShort} · main`;
-    }
-    // S283: the subject no longer leaves the server at all. The scrubber below
-    // kept client names out, but the line still published what the last commit
-    // touched, so a visitor read "gitignore: the golden's per-run diff file" on
-    // the contact page. A deploy time is the fact worth showing; what was in it
-    // is not the reader's business. The variable stays because the same lookup
-    // that produces it is what corrects the timestamp above.
-    // Client-named commit subjects stay out of the public feed.
-    if (/davis|keeli|gernandt|bandonhomes|bandonrealtee|\bbarry\b|\bjodie\b|seabreeze|\bstacy\b/i.test(last_message)) {
-      last_message = 'client build · main';
-    }
-    // S339: the clock is the newest push to ANY repo, private ones included,
-    // because the wall's line is "since last push" and the caption is how
-    // often I push to the sites and apps I run. Keying it to winterscode's
-    // main branch read "8d ago" on a day with dozens of client pushes. The
-    // subject above still never leaves the server.
-    // The authenticated feed mixes private and public events out of time
-    // order (a 10-20 private push sat above 10-22 public ones), so take the
-    // newest timestamp, not the first row.
-    lastAt = pushEvents.reduce((m, e) => (e.created_at > m ? e.created_at : m), pushEvents[0].created_at);
-    // S339 (2026-10-28): the feed stopped carrying the day's pushes. Its newest
-    // PushEvent read 03:22 UTC while that afternoon's merges showed up as
-    // PullRequestEvents within seconds, so the header said "17h ago" minutes
-    // after a production deploy (Preston caught it on his phone). A merged
-    // pull request IS a push to its base branch, and the feed's slimmed payload
-    // marks it with action 'merged' (older entries: 'closed' plus
-    // pull_request.merged). winterscode's own main is also read directly. The
-    // clock is the newest of the three; none of them carries a subject out.
-    for (const e of allEvents) {
-      if (e.type !== 'PullRequestEvent') continue;
-      const a = e.payload?.action;
-      const merged = a === 'merged' || (a === 'closed' && e.payload?.pull_request?.merged === true);
-      const at: string | undefined = e.payload?.pull_request?.merged_at || e.created_at;
-      if (merged && at && at > lastAt) lastAt = at;
-    }
-    try {
-      const mr = await fetch('https://api.github.com/repos/Preston2012/winterscode/commits?sha=main&per_page=1',
-        { signal: AbortSignal.timeout(4000), headers });
-      if (mr.ok) {
-        const mc: any[] = await mr.json();
-        const at: string | undefined = mc?.[0]?.commit?.committer?.date;
-        if (at && !Number.isNaN(new Date(at).getTime()) && new Date(at).toISOString() > new Date(lastAt).toISOString()) {
-          lastAt = new Date(at).toISOString().replace('.000Z', 'Z');
-        }
-      }
-    } catch { /* the feed's clock stands */ }
-    last = relativeTime(lastAt);
-    // 30-day rolling count of push events
-    // cutoffMs already defined above for pagination
-    const recent = pushEvents.filter(e => new Date(e.created_at).getTime() > cutoffMs);
-    const uniqueRepos = new Set(recent.map(e => e.repo?.name).filter(Boolean));
-    const result: WorkshopData['deploys'] = {
-      last,
-      last_at: lastAt,
-      // S339: a live read reports what it counted; flooring it to the
-      // fallback could overstate a quiet month.
-      count_30d: recent.length,
-      repo_count: uniqueRepos.size,
-      source: 'live',
-    };
-    // Cache successful github result so timeouts don't flip the wall to
-    // fallback. Stamp cachedAt so reads can tell if cache is fresh enough
-    // to skip refresh (see REFRESH_AFTER_SEC guard above). Fire-and-forget.
-    if (kv) {
-      try {
-        await kv.put(CACHE_KEY, JSON.stringify({ ...result, _cachedAt: Date.now() }), { expirationTtl: CACHE_TTL });
-      } catch { /* non-fatal */ }
-    }
-    return result;
   } catch {
-    return cachedOrFallback();
+    return FALLBACK.deploys;
   }
 }
 
@@ -885,7 +702,6 @@ async function refreshPSIBackground(
 
 export const GET: APIRoute = async ({ locals }) => {
   const env: any = cfEnv ?? {};
-  const githubToken: string | undefined = env.GITHUB_TOKEN;
   const psiKey: string | undefined = env.PSI_KEY;
   const calUsername: string = env.CAL_USERNAME ?? 'preston-winters';
   const kv = env.SESSION as KVNamespace | undefined;
@@ -903,7 +719,7 @@ export const GET: APIRoute = async ({ locals }) => {
   // Any upstream that misses returns its FALLBACK stub. Endpoint
   // ALWAYS resolves within 4.5s, even on first cold hit.
   const [deploys, lighthouse, security, calendar, engine] = await Promise.all([
-    withTimeout(fetchGitHub(githubToken, kv), 5000, FALLBACK.deploys),
+    withTimeout(fetchDeploys(kv), 3000, FALLBACK.deploys),
     withTimeout(fetchPSI(psiKey, kv), 6500, FALLBACK.lighthouse),
     withTimeout(fetchObservatory(kv), 5000, FALLBACK.security),
     withTimeout(fetchCal(calUsername, kv), 3000, FALLBACK.calendar),
