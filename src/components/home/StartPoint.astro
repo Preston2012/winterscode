@@ -523,7 +523,7 @@ const DOORS: {
   .sp { overflow-x: clip; }
   @media (prefers-reduced-motion: no-preference) {
     @supports (animation-timeline: view()) {
-      .sp-tabs { view-timeline: --sp-tabs block; }
+      .sp-tabs { view-timeline: --sp-tabs block; view-timeline-inset: var(--vi); }
       .sp-tab {
         animation: sp-deal linear both;
         animation-timeline: --sp-tabs;
@@ -535,7 +535,7 @@ const DOORS: {
       .sp-tab:nth-child(4) { --rot: 8deg; --tx: 30px; }
       .sp-panels {
         animation: sp-drawer linear both;
-        animation-timeline: view();
+        animation-timeline: view(block var(--vi));
         animation-range: entry 0% entry 55%;
       }
     }

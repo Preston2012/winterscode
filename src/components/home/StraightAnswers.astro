@@ -147,7 +147,7 @@ const QUESTIONS: { q: string; a: string[]; why?: boolean; link?: { href: string;
   .sa { overflow-x: clip; }
   @media (prefers-reduced-motion: no-preference) {
     @supports (animation-timeline: view()) {
-      .sa-list { view-timeline: --sa-list block; }
+      .sa-list { view-timeline: --sa-list block; view-timeline-inset: var(--vi); }
       .sa-item {
         animation: sa-file linear both;
         animation-timeline: --sa-list;
@@ -160,7 +160,7 @@ const QUESTIONS: { q: string; a: string[]; why?: boolean; link?: { href: string;
       }
       .sa-head :global(.wc-h2) {
         animation: sa-head linear both;
-        animation-timeline: view();
+        animation-timeline: view(block var(--vi));
         animation-range: entry 0% entry 80%;
       }
     }

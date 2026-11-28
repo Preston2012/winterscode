@@ -152,14 +152,17 @@ const fallbackWhen = new Date(LH_FALLBACK_AT).toLocaleDateString('en-US', { mont
 </script>
 
 <style>
-  .wm { padding: var(--home-pad) var(--home-gut); position: relative; isolation: isolate; overflow: hidden; }
+  /* clip, not hidden: hidden makes the section a scroll container, and every
+     view timeline inside it then measured a box that never scrolls, so the
+     photo and the values stopped part-done (S453, Preston's phone). */
+  .wm { padding: var(--home-pad) var(--home-gut); position: relative; isolation: isolate; overflow: clip; }
   .wm::before {
     content: ''; position: absolute; z-index: -1; inset: auto -20% -30% auto; width: 70%; height: 80%;
     background: radial-gradient(closest-side, rgba(77, 216, 168, 0.07), transparent);
     pointer-events: none;
   }
   .wm-inner { max-width: var(--home-max); margin: 0 auto; }
-  .wm-sheet { margin-top: clamp(22px, 3.4vw, 32px); padding: 0; overflow: hidden; }
+  .wm-sheet { margin-top: clamp(22px, 3.4vw, 32px); padding: 0; overflow: clip; }
   .wm-meter { margin: 0; padding: 26px 22px 16px; }
   .wm-meter-cap { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-ash-500); margin-bottom: 16px; }
   .wm-bar + .wm-bar { margin-top: 16px; }
@@ -237,22 +240,22 @@ const fallbackWhen = new Date(LH_FALLBACK_AT).toLocaleDateString('en-US', { mont
       animation-delay: calc(850ms + var(--d) * 45ms);
     }
     @supports (animation-timeline: view()) {
-      .wm-specs { view-timeline: --wm-specs block; }
-      .wm-spec { animation: wm-in linear both; animation-timeline: --wm-specs; animation-range: entry calc(var(--i) * 12%) entry calc(50% + var(--i) * 12%); }
+      .wm-specs { view-timeline: --wm-specs block; view-timeline-inset: var(--vi); }
+      .wm-spec { animation: wm-in linear both; animation-timeline: --wm-specs; animation-range: entry calc(var(--i) * 8%) entry calc(36% + var(--i) * 8%); }
       .wm-spec-h :global(.wm-spec-i) {
         animation: wm-stamp linear both;
         animation-timeline: --wm-specs;
-        animation-range: entry calc(20% + var(--i) * 12%) entry calc(62% + var(--i) * 12%);
+        animation-range: entry calc(8% + var(--i) * 8%) entry calc(46% + var(--i) * 8%);
       }
       .wm-photo {
         animation: wm-develop linear both;
-        animation-timeline: view();
-        animation-range: entry 10% cover 50%;
+        animation-timeline: view(block var(--vi));
+        animation-range: entry 0% entry 100%;
       }
       .wm-who-name {
         animation: wm-in linear both;
-        animation-timeline: view();
-        animation-range: entry 20% cover 40%;
+        animation-timeline: view(block var(--vi));
+        animation-range: entry 0% entry 90%;
       }
     }
   }
@@ -270,7 +273,7 @@ const fallbackWhen = new Date(LH_FALLBACK_AT).toLocaleDateString('en-US', { mont
     100% { opacity: 1; transform: none; }
   }
   @keyframes wm-develop {
-    from { filter: grayscale(1) sepia(0.5) contrast(0.7) brightness(1.5) blur(3px); }
+    from { filter: grayscale(1) sepia(0.5) contrast(0.75) brightness(1.4) blur(2px); }
     60% { filter: grayscale(0.4) sepia(0.25) contrast(0.9) brightness(1.15) blur(0.5px); }
     to { filter: none; }
   }

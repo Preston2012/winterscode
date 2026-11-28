@@ -212,7 +212,7 @@ const BUILDS = [
   .ps-days b { font-variant-numeric: tabular-nums; }
   @media (prefers-reduced-motion: no-preference) {
     @supports (animation-timeline: view()) {
-      .ps-row { view-timeline: --ps-row block; perspective: 1200px; }
+      .ps-row { view-timeline: --ps-row block; view-timeline-inset: var(--vi); perspective: 1200px; }
       .ps-card {
         animation: ps-lift linear both;
         animation-timeline: --ps-row;
@@ -222,15 +222,15 @@ const BUILDS = [
       .ps-main {
         animation: ps-paint linear both;
         animation-timeline: --ps-row;
-        animation-range: entry calc(25% + var(--i) * 14%) cover calc(45% + var(--i) * 8%);
+        animation-range: entry calc(8% + var(--i) * 8%) entry calc(50% + var(--i) * 8%);
       }
-      .ps-ink { view-timeline: --ps-ink block; }
+      .ps-ink { view-timeline: --ps-ink block; view-timeline-inset: var(--vi); }
       .ps-ink :global(.ps-w) {
         animation: ps-word linear both;
         animation-timeline: --ps-ink;
         animation-range:
-          cover calc(22% + var(--w) * (34% / var(--n)))
-          cover calc(22% + (var(--w) + 1.6) * (34% / var(--n)));
+          cover calc(8% + var(--w) * (24% / var(--n)))
+          cover calc(8% + (var(--w) + 1.6) * (24% / var(--n)));
       }
       .ps-quote-mark {
         animation: ps-mark linear both;

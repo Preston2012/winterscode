@@ -39,13 +39,13 @@
       .seam-line {
         transform-origin: 50% 50%;
         animation: seam-run linear both;
-        animation-timeline: view();
-        animation-range: entry 40% cover 45%;
+        animation-timeline: view(block var(--vi));
+        animation-range: entry 10% cover 35%;
       }
       .seam span {
         animation: seam-set linear both;
-        animation-timeline: view();
-        animation-range: entry 0% cover 30%;
+        animation-timeline: view(block var(--vi));
+        animation-range: entry 0% cover 20%;
       }
     }
   }
