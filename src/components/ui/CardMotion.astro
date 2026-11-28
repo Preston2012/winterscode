@@ -137,22 +137,23 @@ const pinDelay = ([x, y]: [number, number]) =>
 )}
 
 <script>
+  // S453 (Preston 2026-11-28): the art starts only once its card is fully in
+  // view and has finished coming in (lib/fully-in-view), not at 40% visible.
+  import { whenFullyInView } from '../../lib/fully-in-view';
   const els = document.querySelectorAll<SVGElement>('[data-card-motion]');
   const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (els.length && !still && 'IntersectionObserver' in window) {
-    const io = new IntersectionObserver((entries) => {
-      for (const en of entries) {
-        const el = en.target as SVGElement;
-        if (en.isIntersecting) {
-          el.classList.add('cm-on');
-          if (!el.classList.contains('cm-played')) el.classList.add('cm-play');
-        } else {
-          el.classList.remove('cm-on');
-          if (el.classList.contains('cm-play')) el.classList.add('cm-played');
-        }
-      }
-    }, { threshold: 0.4 });
-    els.forEach((el) => { el.classList.add('cm-armed'); io.observe(el); });
+    els.forEach((el) => el.classList.add('cm-armed'));
+    whenFullyInView(els, {
+      onIn: (el) => {
+        el.classList.add('cm-on');
+        if (!el.classList.contains('cm-played')) el.classList.add('cm-play');
+      },
+      onOut: (el) => {
+        el.classList.remove('cm-on');
+        if (el.classList.contains('cm-play')) el.classList.add('cm-played');
+      },
+    });
   }
 </script>
 
