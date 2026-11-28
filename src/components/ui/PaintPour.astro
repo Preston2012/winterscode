@@ -99,24 +99,14 @@ const dropDelay = longest.delay + longest.t + 400;
 </svg>
 
 <script>
+  // S453 (Preston 2026-11-28): the pour starts only once its card is fully
+  // in view and has finished coming in (lib/fully-in-view), not at 35%.
+  import { whenFullyInView } from '../../lib/fully-in-view';
   const els = document.querySelectorAll<SVGElement>('[data-pour]');
   const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (els.length && !still && 'IntersectionObserver' in window) {
-    const io = new IntersectionObserver(
-      (entries) => {
-        for (const en of entries) {
-          if (en.isIntersecting && en.intersectionRatio >= 0.35) {
-            en.target.classList.add('is-pouring');
-            io.unobserve(en.target);
-          }
-        }
-      },
-      { threshold: [0, 0.35] },
-    );
-    els.forEach((el) => {
-      el.classList.add('pour-armed');
-      io.observe(el);
-    });
+    els.forEach((el) => el.classList.add('pour-armed'));
+    whenFullyInView(els, { onIn: (el) => el.classList.add('is-pouring') });
   }
 </script>
 
