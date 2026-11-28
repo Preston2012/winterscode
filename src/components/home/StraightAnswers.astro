@@ -11,6 +11,12 @@
  *
  * Round 2 (Preston's phone markup): rounded plates with a gap instead of
  * ruled rows, no Q numbers.
+ *
+ * S453 motion: the questions file in from the right one after another, like
+ * cards slid into a rack, each toggle turning a half turn as it seats. An
+ * opened answer rises into place. The answer's height is never animated:
+ * hold-accordion measures the tapped question in one task (S339, #63), and a
+ * growing height would move it again after that.
  */
 import Arrow from '../ui/Arrow.astro';
 import WhyWintersCode from '../ui/WhyWintersCode.astro';
@@ -59,8 +65,8 @@ const QUESTIONS: { q: string; a: string[]; why?: boolean; link?: { href: string;
     </div>
 
     <div class="sa-list">
-      {QUESTIONS.map((item) => (
-        <details class="sa-item" name="home-faq">
+      {QUESTIONS.map((item, i) => (
+        <details class="sa-item" name="home-faq" style={`--i:${i}`}>
           <summary class="sa-q">
             <span class="sa-q-text">{item.q}</span>
             <span class="sa-toggle" aria-hidden="true"></span>
@@ -134,5 +140,49 @@ const QUESTIONS: { q: string; a: string[]; why?: boolean; link?: { href: string;
 
   @media (prefers-reduced-motion: reduce) {
     .sa-toggle::before, .sa-toggle::after, .sa-item, .sa-toggle { transition: none; }
+  }
+
+  /* ── S453 motion ───────────────────────────────────────────── */
+  /* Questions slide in from the right; clip so none widens the page. */
+  .sa { overflow-x: clip; }
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      .sa-list { view-timeline: --sa-list block; }
+      .sa-item {
+        animation: sa-file linear both;
+        animation-timeline: --sa-list;
+        animation-range: entry calc(var(--i) * 10%) entry calc(45% + var(--i) * 10%);
+      }
+      .sa-toggle {
+        animation: sa-seat linear both;
+        animation-timeline: --sa-list;
+        animation-range: entry calc(10% + var(--i) * 10%) entry calc(55% + var(--i) * 10%);
+      }
+      .sa-head :global(.wc-h2) {
+        animation: sa-head linear both;
+        animation-timeline: view();
+        animation-range: entry 0% entry 80%;
+      }
+    }
+    .sa-item[open] .sa-a > :global(*) { animation: sa-open 360ms cubic-bezier(.2, .8, .2, 1) both; }
+    .sa-item[open] .sa-a > :global(*:nth-child(2)) { animation-delay: 50ms; }
+    .sa-item[open] .sa-a > :global(*:nth-child(3)) { animation-delay: 100ms; }
+    .sa-item[open] .sa-a > :global(*:nth-child(4)) { animation-delay: 150ms; }
+  }
+  @keyframes sa-file {
+    from { opacity: 0; transform: translateX(min(18vw, 140px)) rotate(1.5deg); }
+    to { opacity: 1; transform: none; }
+  }
+  @keyframes sa-seat {
+    from { transform: rotate(-180deg) scale(0.6); }
+    to { transform: none; }
+  }
+  @keyframes sa-head {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: none; }
+  }
+  @keyframes sa-open {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: none; }
   }
 </style>

@@ -10,18 +10,32 @@
  * Keeps id="contact" from the shared closer, so header links to #contact
  * still land; data-textbar-hide sits on the keys row, so the phone thumb bar
  * steps aside only while these keys are on screen.
+ *
+ * S453 motion: the close arrives like a text. A copper typing bubble sits
+ * where the line will be, then the tagline rises in word by word, and the
+ * Text key pings once, the way a phone does when the reply lands. It plays
+ * once, on arrival (lib/in-view), every part under 1000ms. The words are one
+ * string joined with real spaces (S339, section 5), and without script or
+ * with reduced motion the tagline simply sits there.
  */
 import { smsHref, telHref, phoneDisplay } from '../../lib/text-cta';
 import Arrow from '../ui/Arrow.astro';
 
 const sms = smsHref('/');
+const LEAD = ['Help', 'is', 'just', 'a'];
+const headHtml =
+  LEAD.map((w, i) => `<span class="hc-w" style="--w:${i}">${w}</span>`).join(' ') +
+  ` <span class="hc-cu hc-w" style="--w:${LEAD.length}">text away.</span>`;
 ---
 
-<section class="hc" id="contact" aria-labelledby="hc-h2">
+<section class="hc" id="contact" aria-labelledby="hc-h2" data-inview="0.35">
   <div class="hc-glow" aria-hidden="true"></div>
   <div class="hc-inner">
     <p class="wc-eyebrow"><span class="wc-dot" aria-hidden="true"></span>Reach out</p>
-    <h2 class="hc-h2" id="hc-h2">Help is just a <span class="hc-cu">text away.</span></h2>
+    <div class="hc-line">
+      <span class="hc-typing" aria-hidden="true"><i></i><i></i><i></i></span>
+      <h2 class="hc-h2" id="hc-h2" set:html={headHtml} />
+    </div>
     <p class="hc-sub">I'm down the road. I pick up the phone.</p>
 
     <div class="hc-actions" data-textbar-hide>
@@ -62,7 +76,7 @@ const sms = smsHref('/');
     font-size: clamp(44px, 8.6vw, 112px); line-height: 0.98; letter-spacing: -0.025em;
     color: #eef1ec; text-wrap: balance;
   }
-  .hc-cu {
+  .hc-h2 :global(.hc-cu), .hc-cu {
     background: var(--wc-annealed); -webkit-background-clip: text; background-clip: text; color: transparent;
     font-style: italic; padding-right: 0.06em;
   }
@@ -75,4 +89,55 @@ const sms = smsHref('/');
   .hc-btn-num { font-family: var(--font-mono); font-size: 12.5px; font-weight: 400; opacity: 0.78; }
   .hc-reply { margin: 22px 0 0; font-size: 15px; color: var(--color-ash-500); }
 
+
+  /* ── S453 motion ───────────────────────────────────────────── */
+  .hc-line { position: relative; }
+  .hc-h2 :global(.hc-w) { display: inline-block; }
+  .hc-typing {
+    position: absolute; left: 0; top: 0.2em;
+    display: none; align-items: center; gap: 6px;
+    padding: 14px 18px; border-radius: 22px 22px 22px 6px;
+    background: linear-gradient(180deg, #2a221c, #1d1915);
+    border: 1px solid rgba(240, 160, 110, 0.35);
+    box-shadow: 0 14px 30px -16px rgba(0, 0, 0, 0.9);
+    pointer-events: none;
+  }
+  .hc-typing i { width: 8px; height: 8px; border-radius: 50%; background: #f0b07c; }
+  @media (prefers-reduced-motion: no-preference) {
+    :global(.hc[data-armed]) .hc-typing { display: inline-flex; opacity: 0; }
+    :global(.hc[data-armed]:not(.is-in)) .hc-h2 :global(.hc-w) { opacity: 0; transform: translateY(0.5em); }
+    :global(.hc[data-armed].is-in) .hc-typing { animation: hc-bubble 980ms ease both; }
+    :global(.hc[data-armed].is-in) .hc-typing i { animation: hc-dot 420ms ease-in-out 2 both; }
+    :global(.hc[data-armed].is-in) .hc-typing i:nth-child(2) { animation-delay: 120ms; }
+    :global(.hc[data-armed].is-in) .hc-typing i:nth-child(3) { animation-delay: 240ms; }
+    :global(.hc[data-armed].is-in) .hc-h2 :global(.hc-w) {
+      animation: hc-word 520ms cubic-bezier(.2, .85, .25, 1.15) both;
+      animation-delay: calc(760ms + var(--w) * 70ms);
+    }
+    :global(.hc[data-armed].is-in) .hc-btn { animation: hc-ping 900ms ease-out 1300ms both; }
+    :global(.hc[data-armed].is-in) .hc-glow { animation: hc-glow 1000ms ease-out 700ms both; }
+  }
+  @keyframes hc-bubble {
+    0% { opacity: 0; transform: translateY(12px) scale(0.8); }
+    18% { opacity: 1; transform: none; }
+    76% { opacity: 1; transform: none; }
+    100% { opacity: 0; transform: translateY(-8px) scale(0.92); }
+  }
+  @keyframes hc-dot {
+    0%, 100% { transform: none; opacity: 0.45; }
+    50% { transform: translateY(-5px); opacity: 1; }
+  }
+  @keyframes hc-word {
+    from { opacity: 0; transform: translateY(0.5em) rotate(2deg); filter: blur(4px); }
+    to { opacity: 1; transform: none; filter: none; }
+  }
+  @keyframes hc-ping {
+    0% { box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), 0 0 0 0 rgba(95, 232, 181, 0.55); transform: none; }
+    25% { transform: scale(1.03); }
+    100% { box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), 0 0 0 22px rgba(95, 232, 181, 0); transform: none; }
+  }
+  @keyframes hc-glow {
+    from { opacity: 0.2; transform: scale(0.9); }
+    to { opacity: 1; transform: none; }
+  }
 </style>

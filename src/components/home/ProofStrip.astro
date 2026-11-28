@@ -14,10 +14,21 @@
  *
  * Round 2 (Preston's phone markup): rounded plates, the house Arrow, the
  * quote without a rule down its side.
+ *
+ * S453 motion: each card tilts up off the bench as it scrolls in, its picture
+ * painting in from the bottom the way Makai's pages do, and its day count
+ * runs up from zero when the card arrives (the HTML carries the real number,
+ * so it is right without script). Rod Taylor's sentence inks in word by word
+ * as the reader scrolls through it. The words are joined with real spaces in
+ * one string, so no seam can run them together (S339, section 5).
  */
 import Arrow from '../ui/Arrow.astro';
 import CardArt from '../ui/CardArt.astro';
 import { portfolio } from '../../lib/portfolio';
+
+const QUOTE = 'We are proud to endorse and recommend WintersCode.com.';
+const quoteHtml = QUOTE.split(' ').map((w, i) => `<span class="ps-w" style="--w:${i}">${w}</span>`).join(' ');
+const QUOTE_WORDS = QUOTE.split(' ').length;
 
 const liveOf = (slug: string) => {
   const p = portfolio.find((x) => x.slug === slug);
@@ -71,14 +82,14 @@ const BUILDS = [
     </div>
 
     <ul class="ps-row" aria-label="Recent builds">
-      {BUILDS.map((b) => (
-        <li class="ps-card">
-          <article class="ps-link">
+      {BUILDS.map((b, i) => (
+        <li class="ps-card" style={`--i:${i}`}>
+          <article class="ps-link" data-inview="0.4">
             <a class="ps-main" href={b.href} aria-label={`${b.name}: see the build`}>
               <CardArt slug={b.slug} image={{ src: `/work/${b.img}.webp`, srcSmall: `/work/${b.img}-720.webp`, srcXSmall: `/work/${b.img}-480.webp`, alt: b.alt, width: 1200, height: 630 }} sizes="(min-width: 1240px) 370px, (min-width: 900px) 31vw, 80vw" />
             </a>
             <span class="ps-body">
-              <span class="ps-days"><b>{b.days}</b> business days</span>
+              <span class="ps-days"><b data-count={b.days}>{b.days}</b> business days</span>
               <span class="ps-name">{b.name}</span>
               <span class="ps-place">{b.place}</span>
               <span class="ps-line">{b.line}</span>
@@ -94,8 +105,8 @@ const BUILDS = [
 
     <figure class="ps-quote">
       <span class="ps-quote-mark" aria-hidden="true">“</span>
-      <blockquote>
-        <p>We are proud to endorse and recommend WintersCode.com.</p>
+      <blockquote class="ps-ink" style={`--n:${QUOTE_WORDS}`}>
+        <p set:html={quoteHtml} />
       </blockquote>
       <figcaption>
         <span class="ps-quote-who">General Manager, US Survey Supply</span>
@@ -195,5 +206,57 @@ const BUILDS = [
   @media (prefers-reduced-motion: reduce) {
     .ps-link, .ps-img img { transition: none; }
     .ps-link:hover { transform: none; }
+  }
+
+  /* ── S453 motion ───────────────────────────────────────────── */
+  .ps-days b { font-variant-numeric: tabular-nums; }
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      .ps-row { view-timeline: --ps-row block; perspective: 1200px; }
+      .ps-card {
+        animation: ps-lift linear both;
+        animation-timeline: --ps-row;
+        animation-range: entry calc(5% + var(--i) * 14%) entry calc(75% + var(--i) * 12%);
+        transform-origin: 50% 100%;
+      }
+      .ps-main {
+        animation: ps-paint linear both;
+        animation-timeline: --ps-row;
+        animation-range: entry calc(25% + var(--i) * 14%) cover calc(45% + var(--i) * 8%);
+      }
+      .ps-ink { view-timeline: --ps-ink block; }
+      .ps-ink :global(.ps-w) {
+        animation: ps-word linear both;
+        animation-timeline: --ps-ink;
+        animation-range:
+          cover calc(22% + var(--w) * (34% / var(--n)))
+          cover calc(22% + (var(--w) + 1.6) * (34% / var(--n)));
+      }
+      .ps-quote-mark {
+        animation: ps-mark linear both;
+        animation-timeline: --ps-ink;
+        animation-range: entry 0% cover 30%;
+      }
+    }
+  }
+  @keyframes ps-lift {
+    from { opacity: 0; transform: translateY(80px) rotateX(18deg) scale(0.95); }
+    to { opacity: 1; transform: none; }
+  }
+  @keyframes ps-paint {
+    from { clip-path: inset(100% 0 0 0); filter: saturate(0.2) brightness(1.4); }
+    60% { filter: saturate(0.8) brightness(1.1); }
+    to { clip-path: inset(0 0 0 0); filter: none; }
+  }
+  @keyframes ps-word {
+    /* Starts at the page's own dim grey (about 7:1 on the ground), never
+       below contrast, so an audit that reads it before the scroll passes. */
+    from { color: var(--color-ash-500); text-shadow: none; }
+    50% { color: #f6c39c; text-shadow: 0 0 18px rgba(246, 165, 100, 0.35); }
+    to { color: #eef1ec; text-shadow: none; }
+  }
+  @keyframes ps-mark {
+    from { opacity: 0; transform: translateY(-30px) scale(1.6) rotate(-12deg); }
+    to { opacity: 1; transform: none; }
   }
 </style>

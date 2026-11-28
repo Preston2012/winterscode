@@ -48,6 +48,12 @@ import HomeClose from '../components/home/HomeClose.astro';
   </div>
 </BaseLayout>
 
+<script>
+  // S453: the once-on-arrival half of Home's motion (counts, the close).
+  // The scroll-driven half is CSS in each section.
+  import '../lib/in-view';
+</script>
+
 <style is:global>
   /* Home layout. The plates, rivets, buttons and type come from the shop
      system in global.css; Home only sets its own page measure. */

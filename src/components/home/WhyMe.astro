@@ -8,15 +8,24 @@
  * Round 2 (Preston's phone markup): the four values are a 2 by 2 of plates,
  * each with a drawn icon in a fixed corner seat, no numbers. The meter plate carries rivets.
  *
- * The phone-score meter is the section's one moving part: two bars, the
- * county average and the floor every build clears, fill when the meter
- * scrolls into view. Without JavaScript, or with reduced motion, they sit
- * filled. The 61 is from Preston's audit of 169 Coos County business sites
- * (the ones Google could score); the 90 is the floor every build is held to
- * and is measured live on the Wall.
+ * The phone-score meter: two bars, the county average and the floor every
+ * build clears, fill when the meter scrolls into view. Without JavaScript, or
+ * with reduced motion, they sit filled. The 61 is from Preston's audit of 169
+ * Coos County business sites (the ones Google could score); the 90 is the
+ * floor every build is held to and is measured live on the Wall.
+ *
+ * S453 motion (Preston 2026-11-27): the two numbers count up with their bars,
+ * and the floor bar carries the live reading, one dot per live site at its
+ * Google phone score, dropped onto the track after the bar fills. The dots and
+ * the readout under them are painted from the Wall's last dated read
+ * (lib/sites.ts) and replaced by /api/workshop when the meter arrives, so the
+ * line always says when it was measured. A score under the floor would show
+ * under the floor: the meter reports, it does not flatter. The four values
+ * stamp in one by one, and the photo develops like a print as it scrolls in.
  */
 import Arrow from '../ui/Arrow.astro';
 import Icon from '../ui/Icon.astro';
+import { WALL_SITES, LH_FALLBACK_AT } from '../../lib/sites';
 
 const VALUES: { icon: 'keep' | 'all' | 'lock' | 'found'; head: string; body: string }[] = [
   { icon: 'all', head: 'One price', body: 'The quote is what you pay' },
@@ -24,6 +33,11 @@ const VALUES: { icon: 'keep' | 'all' | 'lock' | 'found'; head: string; body: str
   { icon: 'lock', head: 'Locked down', body: 'Security graded live' },
   { icon: 'found', head: 'Readable by all', body: 'Keyboard and contrast built in' },
 ];
+
+// The live reading, painted first from the Wall's last dated read.
+const LIVE = WALL_SITES.filter((s) => s.lhFallback).map((s) => ({ key: s.key, label: s.label, score: (s.lhFallback as number[])[0] }));
+const lowest = Math.min(...LIVE.map((s) => s.score));
+const fallbackWhen = new Date(LH_FALLBACK_AT).toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'America/Los_Angeles' });
 ---
 
 <section class="wm" id="why" aria-labelledby="wm-h2">
@@ -35,21 +49,30 @@ const VALUES: { icon: 'keep' | 'all' | 'lock' | 'found'; head: string; body: str
          The meter and the four values share a riveted plate, the values a
          two-by-two of icon, name and one short line, split by hairlines. -->
     <div class="wm-sheet wc-plate wc-rv">
-      <figure class="wm-meter" data-meter>
+      <figure class="wm-meter" data-meter data-inview="0.45">
         <figcaption class="wm-meter-cap">Google's mobile test, out of 100</figcaption>
         <div class="wm-bar">
-          <div class="wm-bar-label"><span>Coos County business sites, average</span>{' '}<b>61</b></div>
+          <div class="wm-bar-label"><span>Coos County business sites, average</span>{' '}<b data-count="61">61</b></div>
           <div class="wm-track"><span class="wm-fill wm-fill-county"></span></div>
         </div>
         <div class="wm-bar">
-          <div class="wm-bar-label"><span>Every site I build</span>{' '}<b class="wm-mine">90+</b></div>
-          <div class="wm-track"><span class="wm-fill wm-fill-mine"></span><span class="wm-tick" aria-hidden="true"></span></div>
+          <div class="wm-bar-label"><span>Every site I build</span>{' '}<b class="wm-mine" data-count="90">90+</b></div>
+          <div class="wm-track">
+            <span class="wm-fill wm-fill-mine"></span><span class="wm-tick" aria-hidden="true"></span>
+            {LIVE.map((s, i) => (
+              <span class="wm-dot" data-site={s.key} style={`--x:${s.score}%;--d:${i}`} title={`${s.label} ${s.score}`} aria-hidden="true"></span>
+            ))}
+          </div>
+          <p class="wm-live" data-live>
+            <span class="wm-live-lamp" aria-hidden="true"></span>
+            <span><b data-live-n>{LIVE.length}</b> sites, lowest <b data-live-low>{lowest}</b>, measured <span data-live-when>{fallbackWhen}</span></span>
+          </p>
         </div>
         <p class="wm-meter-note">From my audit of 169 Coos County business sites. <a href="/wall">Mine, live on the Wall</a></p>
       </figure>
       <ul class="wm-specs">
-        {VALUES.map((v) => (
-          <li class="wm-spec">
+        {VALUES.map((v, i) => (
+          <li class="wm-spec" style={`--i:${i}`}>
             <span class="wm-spec-h"><Icon name={v.icon} size={18} class="wm-spec-i" />{v.head}</span>
             <span class="wm-spec-b">{v.body}</span>
           </li>
@@ -80,19 +103,51 @@ const VALUES: { icon: 'keep' | 'all' | 'lock' | 'found'; head: string; body: str
 </section>
 
 <script>
-  // Fill the two bars once the meter is on screen. The bars start filled in
-  // the CSS; this only arms the empty state when it can also release it.
+  // The live reading. The bars, counts and dots play through lib/in-view (the
+  // meter carries data-inview); this swaps the painted read for the live one
+  // when the meter arrives, and leaves the dated read in place if the feed is
+  // down. Only a live or cached feed replaces it, never the Worker's static
+  // fallback, which is older than the read already painted.
+  import '../../lib/in-view';
   const meter = document.querySelector<HTMLElement>('[data-meter]');
-  const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (meter && !still && 'IntersectionObserver' in window) {
-    meter.classList.add('wm-armed');
-    const io = new IntersectionObserver((entries) => {
-      if (entries.some((e) => e.isIntersecting)) {
-        meter.classList.add('wm-in');
-        io.disconnect();
+  if (meter) {
+    let done = false;
+    const read = async () => {
+      if (done) return;
+      done = true;
+      try {
+        const r = await fetch('/api/workshop', { headers: { accept: 'application/json' } });
+        if (!r.ok) return;
+        const data = await r.json();
+        const lh = data?.lighthouse;
+        if (!lh || lh.source === 'fallback') return;
+        const scores: number[] = [];
+        meter.querySelectorAll<HTMLElement>('.wm-dot').forEach((dot) => {
+          const q = lh[dot.dataset.site ?? ''];
+          if (!Array.isArray(q) || typeof q[0] !== 'number') return;
+          dot.style.setProperty('--x', `${q[0]}%`);
+          dot.title = `${dot.title.split(' ')[0]} ${q[0]}`;
+          scores.push(q[0]);
+        });
+        if (!scores.length) return;
+        const low = meter.querySelector<HTMLElement>('[data-live-low]');
+        const n = meter.querySelector<HTMLElement>('[data-live-n]');
+        const when = meter.querySelector<HTMLElement>('[data-live-when]');
+        if (low) low.textContent = String(Math.min(...scores));
+        if (n) n.textContent = String(scores.length);
+        if (when && typeof lh.measured === 'string') when.textContent = lh.measured;
+        meter.classList.add('wm-is-live');
+      } catch {
+        // The dated read stays.
       }
-    }, { threshold: 0.45 });
-    io.observe(meter);
+    };
+    if (meter.classList.contains('is-in')) read();
+    else meter.addEventListener('wc:in', read, { once: true });
+    // Without the observer (or with reduced motion) nothing arms; read on idle.
+    if (!meter.hasAttribute('data-armed')) {
+      if ('requestIdleCallback' in window) window.requestIdleCallback(() => { read(); });
+      else window.setTimeout(() => { read(); }, 800);
+    }
   }
 </script>
 
@@ -109,14 +164,33 @@ const VALUES: { icon: 'keep' | 'all' | 'lock' | 'found'; head: string; body: str
   .wm-meter-cap { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-ash-500); margin-bottom: 16px; }
   .wm-bar + .wm-bar { margin-top: 16px; }
   .wm-bar-label { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; font-size: 15px; color: var(--color-ash-300); margin-bottom: 8px; }
-  .wm-bar-label b { flex: none; white-space: nowrap; font-family: var(--wc-display); font-weight: 500; font-size: 30px; line-height: 1; color: var(--color-ash-100); letter-spacing: -0.02em; }
+  .wm-bar-label b { flex: none; white-space: nowrap; font-family: var(--wc-display); font-weight: 500; font-size: 30px; line-height: 1; color: var(--color-ash-100); letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
   .wm-bar-label b.wm-mine { color: var(--color-wc-green-bright); }
-  .wm-track { position: relative; height: 10px; background: rgba(221, 228, 230, 0.07); border-radius: 5px; overflow: hidden; box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.5); }
-  .wm-fill { position: absolute; inset: 0 auto 0 0; border-radius: 5px; transition: width 1.1s cubic-bezier(.2, .7, .2, 1); }
+  .wm-track { position: relative; height: 10px; background: rgba(221, 228, 230, 0.07); border-radius: 5px; box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.5); }
+  .wm-fill { position: absolute; inset: 0 auto 0 0; border-radius: 5px; transition: width 900ms cubic-bezier(.2, .7, .2, 1); }
   .wm-fill-county { width: 61%; background: linear-gradient(90deg, #4a5459, #7d888c); }
-  .wm-fill-mine { width: 90%; background: linear-gradient(90deg, #2f9e78, var(--color-wc-green-bright)); transition-delay: .25s; }
-  .wm-tick { position: absolute; top: 0; bottom: 0; left: 90%; width: 2px; background: rgba(238, 241, 236, 0.55); }
-  :global(.wm-meter.wm-armed:not(.wm-in)) .wm-fill { width: 0; }
+  .wm-fill-mine { width: 90%; background: linear-gradient(90deg, #2f9e78, var(--color-wc-green-bright)); transition-delay: .2s; }
+  .wm-tick { position: absolute; top: -3px; bottom: -3px; left: 90%; width: 2px; background: rgba(238, 241, 236, 0.55); }
+  :global(.wm-meter[data-armed]:not(.is-in)) .wm-fill { width: 0; }
+
+  /* The live dots: one per live site, centred on its score. */
+  .wm-dot {
+    position: absolute; top: 50%; left: var(--x); z-index: 1;
+    width: 8px; height: 8px; margin: -4px 0 0 -4px; border-radius: 50%;
+    background: #f2f5ef; box-shadow: 0 0 0 2px #0f1a16, 0 0 8px rgba(95, 232, 181, 0.55);
+    transition: left 600ms cubic-bezier(.2, .8, .2, 1);
+  }
+  .wm-live {
+    display: flex; align-items: center; gap: 8px;
+    margin: 10px 0 0; font-size: 13.5px; line-height: 1.4; color: var(--color-ash-300);
+  }
+  .wm-live b { color: #eef1ec; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .wm-live-lamp {
+    flex: none; width: 7px; height: 7px; border-radius: 50%; background: #6c777b;
+    transition: background-color .3s ease, box-shadow .3s ease;
+  }
+  :global(.wm-meter.wm-is-live) .wm-live-lamp { background: var(--color-wc-green-bright); box-shadow: 0 0 0 3px rgba(77, 216, 168, 0.16), 0 0 10px rgba(95, 232, 181, 0.55); }
+
   .wm-meter-note { margin: 14px 0 0; font-size: 13.5px; line-height: 1.5; color: var(--color-ash-500); }
   .wm-meter-note a { color: var(--color-wc-green); text-decoration: underline; text-underline-offset: 3px; }
 
@@ -154,5 +228,52 @@ const VALUES: { icon: 'keep' | 'all' | 'lock' | 'found'; head: string; body: str
     .wm-who-copy { grid-column: auto; }
   }
 
-  @media (prefers-reduced-motion: reduce) { .wm-fill { transition: none; } }
+  /* ── S453 motion ───────────────────────────────────────────── */
+  @media (prefers-reduced-motion: no-preference) {
+    /* The dots drop onto the track once the floor bar has filled. */
+    :global(.wm-meter[data-armed]:not(.is-in)) .wm-dot { opacity: 0; transform: translateY(-16px) scale(0.4); }
+    :global(.wm-meter[data-armed].is-in) .wm-dot {
+      animation: wm-drop 420ms cubic-bezier(.2, .9, .3, 1.35) both;
+      animation-delay: calc(850ms + var(--d) * 45ms);
+    }
+    @supports (animation-timeline: view()) {
+      .wm-specs { view-timeline: --wm-specs block; }
+      .wm-spec { animation: wm-in linear both; animation-timeline: --wm-specs; animation-range: entry calc(var(--i) * 12%) entry calc(50% + var(--i) * 12%); }
+      .wm-spec-h :global(.wm-spec-i) {
+        animation: wm-stamp linear both;
+        animation-timeline: --wm-specs;
+        animation-range: entry calc(20% + var(--i) * 12%) entry calc(62% + var(--i) * 12%);
+      }
+      .wm-photo {
+        animation: wm-develop linear both;
+        animation-timeline: view();
+        animation-range: entry 10% cover 50%;
+      }
+      .wm-who-name {
+        animation: wm-in linear both;
+        animation-timeline: view();
+        animation-range: entry 20% cover 40%;
+      }
+    }
+  }
+  @keyframes wm-drop {
+    from { opacity: 0; transform: translateY(-16px) scale(0.4); }
+    to { opacity: 1; transform: none; }
+  }
+  @keyframes wm-in {
+    from { opacity: 0; transform: translateY(26px); }
+    to { opacity: 1; transform: none; }
+  }
+  @keyframes wm-stamp {
+    0% { opacity: 0; transform: scale(2.4) rotate(-24deg); }
+    70% { opacity: 1; transform: scale(0.88) rotate(4deg); }
+    100% { opacity: 1; transform: none; }
+  }
+  @keyframes wm-develop {
+    from { filter: grayscale(1) sepia(0.5) contrast(0.7) brightness(1.5) blur(3px); }
+    60% { filter: grayscale(0.4) sepia(0.25) contrast(0.9) brightness(1.15) blur(0.5px); }
+    to { filter: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) { .wm-fill, .wm-dot { transition: none; } }
 </style>
