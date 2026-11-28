@@ -49,7 +49,34 @@ export function countUp(el: HTMLElement, ms = 900): void {
   requestAnimationFrame(step);
 }
 
-function arrive(el: HTMLElement): void {
+/**
+ * LANDED, NOT SCROLLED. A reader who opens the page partway down (a link to
+ * #contact, a reload, the back button) asked to be there. A section already
+ * on screen when the page opens that way shows finished: is-instant turns its
+ * intro off (index.astro) and its numbers are already final in the HTML.
+ * Everything below still plays as the reader scrolls on.
+ */
+const nav = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming | undefined;
+const landed = location.hash.length > 1 || nav?.type === 'reload' || nav?.type === 'back_forward';
+let opening = landed;
+// The opening lasts until the browser has finished putting the reader where
+// they asked to be. The site scrolls smoothly, so a jump to #contact is a
+// glide of half a second or more: the opening ends 200ms after the last
+// scroll of it, or 1.5s after load if nothing scrolls.
+if (opening) {
+  let quiet = 0;
+  const end = () => { opening = false; removeEventListener('scroll', onScroll); };
+  const onScroll = () => { clearTimeout(quiet); quiet = window.setTimeout(end, 200); };
+  addEventListener('scroll', onScroll, { passive: true });
+  addEventListener('load', () => { quiet = window.setTimeout(end, 1500); }, { once: true });
+}
+
+function arrive(el: HTMLElement, instant: boolean): void {
+  if (instant) {
+    el.classList.add('is-instant', 'is-in');
+    el.dispatchEvent(new CustomEvent('wc:in'));
+    return;
+  }
   el.classList.add('is-in');
   el.querySelectorAll<HTMLElement>('[data-count]').forEach((c) => countUp(c));
   el.dispatchEvent(new CustomEvent('wc:in'));
@@ -60,6 +87,11 @@ if (!w[FLAG] && !still && 'IntersectionObserver' in window) {
   const byThreshold = new Map<number, HTMLElement[]>();
   document.querySelectorAll<HTMLElement>('[data-inview]').forEach((el) => {
     const th = Number(el.dataset.inview) || 0.35;
+    // Landed with it already on screen: never hide it, not even for a frame.
+    if (landed) {
+      const r = el.getBoundingClientRect();
+      if (r.bottom > 0 && r.top < innerHeight) { el.classList.add('is-in', 'is-instant'); return; }
+    }
     el.dataset.armed = '';
     const list = byThreshold.get(th) ?? [];
     list.push(el);
@@ -71,7 +103,7 @@ if (!w[FLAG] && !still && 'IntersectionObserver' in window) {
       entries.forEach((e) => {
         if (!e.isIntersecting) return;
         io.unobserve(e.target);
-        arrive(e.target as HTMLElement);
+        arrive(e.target as HTMLElement, opening);
       });
     }, { threshold: th });
     list.forEach((el) => io.observe(el));

@@ -55,6 +55,10 @@ import HomeClose from '../components/home/HomeClose.astro';
 </script>
 
 <style is:global>
+  /* S453: a section the reader landed on (lib/in-view, "landed, not
+     scrolled") shows finished: no intro, no fill, no drop. */
+  .home .is-instant, .home .is-instant * { animation: none !important; transition: none !important; }
+
   /* Home layout. The plates, rivets, buttons and type come from the shop
      system in global.css; Home only sets its own page measure. */
   .home {

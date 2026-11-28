@@ -141,7 +141,12 @@ const BUILDS = [
     list-style: none; margin: clamp(24px, 4vw, 40px) 0 0; padding: 4px var(--home-gut) 8px;
     display: grid; grid-auto-flow: column; grid-auto-columns: 80%;
     gap: 12px;
-    overflow-x: auto; overscroll-behavior-x: contain;
+    /* Sideways only. With overflow-x alone the row's y axis computes to
+       auto, and a card mid-entrance (80px low) gave it room to scroll, so
+       a drag that started on the card scrolled the row, not the page
+       (S453, Preston's phone). hidden keeps the row's y axis out of touch
+       scrolling; the drag goes to the page. */
+    overflow-x: auto; overflow-y: hidden; overscroll-behavior-x: contain;
     scroll-snap-type: x mandatory; scroll-padding: 0 var(--home-gut);
     scrollbar-width: none;
   }
