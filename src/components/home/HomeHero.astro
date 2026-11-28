@@ -72,7 +72,7 @@ const cordD = (c: (typeof CORDS)[number]) => `M${at(c.a).x} ${at(c.a).y} Q${c.cx
 <section class="hh" id="hero" aria-labelledby="hh-h1">
   <div class="hh-glow" aria-hidden="true"></div>
 
-  <svg class="hh-knot" viewBox="0 0 600 520" preserveAspectRatio="xMidYMid meet" aria-hidden="true" focusable="false">
+  <svg class="hh-knot" viewBox="0 0 600 520" preserveAspectRatio="xMidYMid meet" aria-hidden="true" focusable="false" data-inview="0.3" data-after=".hh-facts li:last-child .hf-press">
     <g class="hk-cords">
       {CORDS.map((c, i) => (
         <path class={`hk-cord hk-${c.tone}`} d={cordD(c)} pathLength="1" style={`--i:${i}`} />
@@ -259,8 +259,14 @@ const cordD = (c: (typeof CORDS)[number]) => `M${at(c.a).x} ${at(c.a).y} Q${c.cx
   .hk-text { font-family: var(--font-mono); font-size: 18px; letter-spacing: 0.02em; fill: #b9c5c8; }
 
   /* ── Motion ──────────────────────────────────────────────────
-     Load: cords draw, chips drop onto the cords, the numbers press in, the
-     copper word takes one flash of heat. All under 1000ms.
+     Reading order (Preston, 20:09: "the animation should follow attention
+     and human reading pace down the page"): nothing below moves while the
+     eye is still above it. The headline lands still; at 0.5s "software."
+     takes its flash of heat; from 1.35s the three numbers press in, left to
+     right; then the knot draws, only after the last number has landed
+     (data-after) and only once it is on screen (on a phone it sits below the
+     first screen, and drew unseen).
+     Every move is under 1000ms.
      Scroll (the hero's own exit): the knot pulls down into the seam's rivet
      and the glow drifts; the copy stays put until it is mostly gone. */
   @media (prefers-reduced-motion: no-preference) {
@@ -268,11 +274,20 @@ const cordD = (c: (typeof CORDS)[number]) => `M${at(c.a).x} ${at(c.a).y} Q${c.cx
        alone, then the knot draws in behind it. Started at once, its frames
        ran while the page was still painting and cost the first paint about
        250ms on Lighthouse's throttled phone (S453, measured). */
-    .hh { --hh-t0: 650ms; }
-    .hk-cord { stroke-dasharray: 1; stroke-dashoffset: 1; animation: hk-draw 900ms cubic-bezier(.3, .6, .2, 1) both; animation-delay: calc(var(--hh-t0) + var(--i) * 40ms); }
-    .hk-pop { transform-box: view-box; animation: hk-drop 560ms cubic-bezier(.2, .9, .25, 1.25) both; animation-delay: calc(var(--hh-t0) + 120ms + var(--i) * 55ms); }
-    .hf-press { animation: hf-press 640ms cubic-bezier(.2, .85, .25, 1.1) both; animation-delay: calc(var(--hh-t0) + var(--i) * 110ms); }
-    .hh-cu { animation: hh-heat 900ms ease-out both; animation-delay: calc(var(--hh-t0) + 300ms); }
+    .hh-cu { animation: hh-heat 900ms ease-out both; animation-delay: 500ms; }
+    .hf-press { animation: hf-press 640ms cubic-bezier(.2, .85, .25, 1.1) both; animation-delay: calc(1350ms + var(--i) * 120ms); }
+    .hk-cord { stroke-dasharray: 1; }
+    .hk-pop { transform-box: view-box; }
+    /* The knot plays when lib/in-view marks it arrived (data-after holds that
+       until the numbers have landed). Until then it waits drawn-out, and only
+       where a script is running to release it; a landed reader gets it
+       finished. */
+    .hh-knot.is-in:not(.is-instant) .hk-cord { animation: hk-draw 900ms cubic-bezier(.3, .6, .2, 1) both; animation-delay: calc(var(--i) * 40ms); }
+    .hh-knot.is-in:not(.is-instant) .hk-pop { animation: hk-drop 560ms cubic-bezier(.2, .9, .25, 1.25) both; animation-delay: calc(120ms + var(--i) * 55ms); }
+    @media (scripting: enabled) {
+      .hh-knot:not(.is-in) .hk-cord { stroke-dashoffset: 1; animation: hk-failsafe-cord 1ms 6s forwards; }
+      .hh-knot:not(.is-in) .hk-pop { opacity: 0; animation: hk-failsafe-pop 1ms 6s forwards; }
+    }
 
     @supports (animation-timeline: view()) {
       .hk-chip {
@@ -304,7 +319,10 @@ const cordD = (c: (typeof CORDS)[number]) => `M${at(c.a).x} ${at(c.a).y} Q${c.cx
       }
     }
   }
-  @keyframes hk-draw { to { stroke-dashoffset: 0; } }
+  @keyframes hk-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+  /* If the script never runs, the knot still shows after 6s. */
+  @keyframes hk-failsafe-cord { to { stroke-dashoffset: 0; } }
+  @keyframes hk-failsafe-pop { to { opacity: 1; } }
   @keyframes hk-drop {
     from { opacity: 0; transform: translateY(-110px) rotate(-28deg) scale(0.5); }
     70% { opacity: 1; transform: translateY(8px) rotate(4deg) scale(1.04); }
