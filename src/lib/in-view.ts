@@ -9,10 +9,6 @@
  *   data-inview          the element to watch. It gets data-armed at once and
  *                        the class is-in when it is on screen.
  *   data-inview="0.4"    the visible fraction that counts as arrived.
- *   data-after="SEL"     not before the element SEL has finished its own
- *                        animation, so a move further along waits for the
- *                        one before it (reading order, Preston 2026-11-27).
- *                        Order by construction, not by two clocks.
  *   data-count="13"      a number inside a watched element that counts up
  *                        from zero on arrival. Its text in the HTML is the
  *                        final value, so without JavaScript, with reduced
@@ -117,13 +113,7 @@ if (!w[FLAG] && !still && 'IntersectionObserver' in window) {
       entries.forEach((e) => {
         if (!e.isIntersecting) return;
         io.unobserve(e.target);
-        const el = e.target as HTMLElement;
-        const instant = opening;
-        const dep = el.dataset.after ? document.querySelector<HTMLElement>(el.dataset.after) : null;
-        const pending = dep?.getAnimations().filter((a) => a.playState === 'running' || a.pending) ?? [];
-        if (!instant && pending.length) {
-          Promise.all(pending.map((a) => a.finished.catch(() => undefined))).then(() => setTimeout(() => arrive(el, false), 120));
-        } else arrive(el, instant);
+        arrive(e.target as HTMLElement, opening);
       });
     }, { threshold: th });
     list.forEach((el) => io.observe(el));
