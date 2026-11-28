@@ -211,7 +211,7 @@ const DOORS: {
                     <source src={mediaUrl(`${d.film.file}.webm`)} type="video/webm" />
                     <source src={mediaUrl(`${d.film.file}.mp4`)} type="video/mp4" />
                   </video>
-                  <button type="button" class="sp-play" hidden aria-label={`Play · ${d.film.dur}, ${d.film.name}`}><span class="sp-play-key" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor"/></svg></span><span class="sp-play-chip">Play · {d.film.dur}</span></button>
+                  <button type="button" class="sp-play" hidden aria-label={`Play · ${d.film.dur}, ${d.film.name}`}><span class="sp-play-key" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor"/></svg></span></button>
                 </div>
                 <figcaption>
                   <span class="sp-proof-who">{d.film.caption}</span>
@@ -233,7 +233,7 @@ const DOORS: {
                     <source src={mediaUrl('chere-master.webm')} type="video/webm" />
                     <source src={mediaUrl('chere-master.mp4')} type="video/mp4" />
                   </video>
-                  <button type="button" class="sp-play" hidden aria-label="Play · 1:32, the demo"><span class="sp-play-key" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor"/></svg></span><span class="sp-play-chip">Play · 1:32</span></button>
+                  <button type="button" class="sp-play" hidden aria-label="Play · 1:32, the demo"><span class="sp-play-key" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor"/></svg></span></button>
                 </div>
                 <figcaption>
                   <span class="sp-proof-who">{d.proofWho}</span>
@@ -488,7 +488,9 @@ const DOORS: {
   /* The play key: the native bar covers a third of a 16:9 poster on a phone,
      so it waits until play. Without JavaScript the native controls stay. */
   .sp-vwrap { position: relative; }
-  /* The key sits in the bottom corner, so the poster's own title stays in view. */
+  /* The key sits in the bottom corner, so the poster's own title stays in view.
+     Just the round key: the "Play · 0:48" pill beside it crowded the reel
+     (Preston, S453 phone review). The length stays in the key's label. */
   .sp-play {
     position: absolute; inset: 0; display: flex; flex-direction: row; align-items: flex-end; justify-content: flex-start; gap: 12px;
     width: 100%; border: 0; padding: 14px; cursor: pointer; border-radius: var(--wc-r);
@@ -504,10 +506,6 @@ const DOORS: {
   .sp-play-key svg { width: 24px; height: 24px; }
   .sp-play:hover .sp-play-key, .sp-play:focus-visible .sp-play-key { transform: scale(1.06); }
   .sp-play:focus-visible { outline: 2px solid var(--color-wc-green); outline-offset: 3px; }
-  .sp-play-chip {
-    font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: #eef1ec;
-    background: rgba(10, 13, 12, 0.82); border: 1px solid rgba(200, 128, 74, 0.45); border-radius: 999px; padding: 6px 12px; margin-bottom: 11px;
-  }
   .sp-video figcaption { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0 14px; }
   /* Branding door: the graphics board itself, not a sentence about it. */
   .sp-board { margin: 0; display: grid; gap: 8px; }
