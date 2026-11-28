@@ -82,7 +82,7 @@ const fallbackWhen = new Date(LH_FALLBACK_AT).toLocaleDateString('en-US', { mont
     <a class="wc-link wm-compare" href="/pricing#compare">Comparing quotes? Ask these five <Arrow size={16} /></a>
 
     <div class="wm-who wc-plate">
-      <img
+      <span class="wm-photo-frame"><img
         class="wm-photo"
         src="/photo/preston-560.webp"
         srcset="/photo/preston-560.webp 560w, /photo/preston-840.webp 840w"
@@ -92,7 +92,7 @@ const fallbackWhen = new Date(LH_FALLBACK_AT).toLocaleDateString('en-US', { mont
         height="530"
         loading="lazy"
         decoding="async"
-      />
+      /></span>
       <p class="wm-who-name">I'm Preston Winters. <span>Sixth generation Bandon.</span></p>
       <div class="wm-who-copy">
         <p class="wm-who-body">The person you text is the person who builds it, and the one who keeps it running.</p>
@@ -220,6 +220,7 @@ const fallbackWhen = new Date(LH_FALLBACK_AT).toLocaleDateString('en-US', { mont
     display: grid; grid-template-columns: 104px 1fr; gap: 16px 18px; align-items: center;
     padding: 18px;
   }
+  .wm-photo-frame { display: block; overflow: clip; border-radius: var(--wc-r-sm); }
   .wm-photo { display: block; width: 100%; height: auto; aspect-ratio: 1; object-fit: cover; object-position: 25% 70%; border-radius: var(--wc-r-sm); }
   .wm-who-name { margin: 0; font-family: var(--wc-display); font-weight: 500; font-size: clamp(22px, 2.6vw, 32px); line-height: 1.15; color: #eef1ec; letter-spacing: -0.01em; }
   .wm-who-name span { color: var(--color-ash-300); }
@@ -273,9 +274,9 @@ const fallbackWhen = new Date(LH_FALLBACK_AT).toLocaleDateString('en-US', { mont
     100% { opacity: 1; transform: none; }
   }
   @keyframes wm-develop {
-    from { filter: grayscale(1) sepia(0.5) contrast(0.75) brightness(1.4) blur(2px); }
+    from { transform: scale(1.7); filter: grayscale(1) sepia(0.6) contrast(0.7) brightness(1.5) blur(3px); }
     60% { filter: grayscale(0.4) sepia(0.25) contrast(0.9) brightness(1.15) blur(0.5px); }
-    to { filter: none; }
+    to { transform: none; filter: none; }
   }
 
   @media (prefers-reduced-motion: reduce) { .wm-fill, .wm-dot { transition: none; } }

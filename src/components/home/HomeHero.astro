@@ -52,7 +52,7 @@ const CHIPS = [
   { t: 'auto-renew wrong card', x: 318, y: 318, r: -6 },
   { t: 'needs login', x: 506, y: 392, r: -12, hot: true },
   { t: 'trial ending', x: 168, y: 438, r: 9 },
-].map((c, i) => ({ ...c, i, w: Math.round(c.t.length * 7.3 + 38), dx: SINK.x - c.x, dy: SINK.y - c.y }));
+].map((c, i) => ({ ...c, i, w: Math.round(c.t.length * 10.9 + 48), dx: SINK.x - c.x, dy: SINK.y - c.y }));
 const at = (i: number) => CHIPS[i];
 // Cords: pairs of chips, bent through a control point that crosses the field.
 const CORDS: { a: number; b: number; cx: number; cy: number; tone: 'cu' | 'red' | 'ash' }[] = [
@@ -82,9 +82,9 @@ const cordD = (c: (typeof CORDS)[number]) => `M${at(c.a).x} ${at(c.a).y} Q${c.cx
       <g class="hk-chip" style={`--i:${c.i};--dx:${c.dx}px;--dy:${c.dy}px;transform-origin:${c.x}px ${c.y}px`}>
         <g class="hk-pop" style={`transform-origin:${c.x}px ${c.y}px`}>
           <g transform={`translate(${c.x} ${c.y}) rotate(${c.r})`}>
-            <rect x={-c.w / 2} y="-15" width={c.w} height="30" rx="15" class="hk-plate" />
-            <circle cx={-c.w / 2 + 16} cy="0" r="3.6" class={c.hot ? 'hk-led hk-led-hot' : 'hk-led'} />
-            <text x={-c.w / 2 + 27} y="4.4" class="hk-text">{c.t}</text>
+            <rect x={-c.w / 2} y="-21" width={c.w} height="42" rx="21" class="hk-plate" />
+            <circle cx={-c.w / 2 + 20} cy="0" r="5" class={c.hot ? 'hk-led hk-led-hot' : 'hk-led'} />
+            <text x={-c.w / 2 + 35} y="6.2" class="hk-text">{c.t}</text>
           </g>
         </g>
       </g>
@@ -230,17 +230,23 @@ const cordD = (c: (typeof CORDS)[number]) => `M${at(c.a).x} ${at(c.a).y} Q${c.cx
   /* --kx and --ky carry the knot's own centre to the seam's rivet (the
      section's bottom centre) as it pulls in; the figures follow from each
      placement's right, width, top and height. */
+  /* Round 2 (Preston: "too subtle"): under 1024px the knot is its own band
+     under the facts, at full strength, so it pulls into the seam directly
+     below it. The H1 above never moves. */
   .hh-knot {
-    position: absolute; z-index: -1; pointer-events: none;
-    right: -18%; top: 0; width: 96%; height: 62%;
-    opacity: 0.32;
+    position: relative; z-index: 0; pointer-events: none;
+    order: 2; display: block;
+    width: 100%; max-width: 560px; height: auto; aspect-ratio: 600 / 520; margin: 26px auto 0;
+    opacity: 0.95;
     overflow: visible;
-    --kx: -20vw; --ky: 57%;
+    --kx: 0px; --ky: 22%;
   }
-  @media (min-width: 700px) { .hh-knot { right: -6%; width: 70%; height: 70%; top: 2%; opacity: 0.42; --kx: -21vw; --ky: 36%; } }
+  .hh-inner { order: 1; width: 100%; }
+  @media (max-width: 1023.98px) { .hh { display: flex; flex-direction: column; } }
+  @media (min-width: 700px) { .hh-knot { max-width: 520px; --ky: 16%; } }
   /* Desktop: the open ground right of the sub-copy and buttons, under the
      H1, never across it. */
-  @media (min-width: 1024px) { .hh-knot { right: -4%; width: 36%; height: 50%; top: 46%; opacity: 0.55; --kx: -36vw; --ky: 4%; } }
+  @media (min-width: 1024px) { .hh-knot { position: absolute; z-index: -1; margin: 0; max-width: none; aspect-ratio: auto; right: -4%; width: 36%; height: 50%; top: 46%; opacity: 0.6; --kx: -36vw; --ky: 4%; } }
   @media (min-width: 1280px) { .hh-knot { right: 0; width: min(34vw, 520px); height: 46%; top: 50%; opacity: 0.85; --kx: calc(min(34vw, 520px) / 2 - 50vw); --ky: 5%; } }
 
   .hk-cord { fill: none; stroke-width: 1.6; stroke-linecap: round; vector-effect: non-scaling-stroke; }
@@ -250,7 +256,7 @@ const cordD = (c: (typeof CORDS)[number]) => `M${at(c.a).x} ${at(c.a).y} Q${c.cx
   .hk-plate { fill: #151b1f; stroke: rgba(221, 228, 230, 0.16); stroke-width: 1; }
   .hk-led { fill: #6c777b; }
   .hk-led-hot { fill: #e2654f; }
-  .hk-text { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.02em; fill: #aab7ba; }
+  .hk-text { font-family: var(--font-mono); font-size: 18px; letter-spacing: 0.02em; fill: #b9c5c8; }
 
   /* ── Motion ──────────────────────────────────────────────────
      Load: cords draw, chips drop onto the cords, the numbers press in, the
@@ -300,7 +306,8 @@ const cordD = (c: (typeof CORDS)[number]) => `M${at(c.a).x} ${at(c.a).y} Q${c.cx
   }
   @keyframes hk-draw { to { stroke-dashoffset: 0; } }
   @keyframes hk-drop {
-    from { opacity: 0; transform: translateY(-26px) scale(0.86); }
+    from { opacity: 0; transform: translateY(-110px) rotate(-28deg) scale(0.5); }
+    70% { opacity: 1; transform: translateY(8px) rotate(4deg) scale(1.04); }
     to { opacity: 1; transform: none; }
   }
   @keyframes hf-press {

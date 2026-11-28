@@ -59,17 +59,27 @@ export function countUp(el: HTMLElement, ms = 900): void {
 const nav = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming | undefined;
 const landed = location.hash.length > 1 || nav?.type === 'reload' || nav?.type === 'back_forward';
 let opening = landed;
-// The opening lasts until the browser has finished putting the reader where
-// they asked to be. The site scrolls smoothly, so a jump to #contact is a
-// glide of half a second or more: the opening ends 200ms after the last
-// scroll of it, or 1.5s after load if nothing scrolls.
-if (opening) {
-  let quiet = 0;
-  const end = () => { opening = false; removeEventListener('scroll', onScroll); };
-  const onScroll = () => { clearTimeout(quiet); quiet = window.setTimeout(end, 200); };
-  addEventListener('scroll', onScroll, { passive: true });
-  addEventListener('load', () => { quiet = window.setTimeout(end, 1500); }, { once: true });
-}
+// The opening lasts until the reader does something: the first touch, wheel,
+// click or key. Until then every scroll is the browser putting them where
+// the link or the reload asked (Chrome glides there, WebKit jumps in two
+// steps and reports a beat later), so anything that arrives is landed on.
+// Timing it instead raced WebKit (S453 audit).
+const INPUTS = ['touchstart', 'wheel', 'pointerdown', 'keydown'];
+const end = () => { opening = false; INPUTS.forEach((t) => removeEventListener(t, end, true)); };
+const open = () => {
+  opening = true;
+  INPUTS.forEach((t) => addEventListener(t, end, { capture: true, passive: true }));
+};
+if (opening) open();
+// A tap on a link to a section of this page (the header's Contact, say) is a
+// landing too: the reader asked to be there. The tap's own pointerdown has
+// already ended any opening, so the click starts a new one, which the
+// reader's next touch or key ends.
+addEventListener('click', (e) => {
+  const a = (e.target as Element | null)?.closest?.('a[href*="#"]') as HTMLAnchorElement | null;
+  if (!a || a.pathname !== location.pathname || a.origin !== location.origin || a.hash.length < 2) return;
+  setTimeout(open, 0);
+}, true);
 
 function arrive(el: HTMLElement, instant: boolean): void {
   if (instant) {

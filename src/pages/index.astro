@@ -58,6 +58,58 @@ import HomeClose from '../components/home/HomeClose.astro';
   /* S453: a section the reader landed on (lib/in-view, "landed, not
      scrolled") shows finished: no intro, no fill, no drop. */
   .home .is-instant, .home .is-instant * { animation: none !important; transition: none !important; }
+  /* Keyboard focus shows its element finished: tabbing scrolls a control
+     just into view, mid-entrance, and a focus ring belongs on something
+     fully there (S453 audit: a card link focused at 0.87 opacity). */
+  .home :has(:focus-visible) { animation: none !important; }
+
+  /* S453 round 2: every section headline rises out of a cut as it scrolls
+     in, and its soft second half (.wc-soft) surfaces after it; the eyebrow
+     above slides in with its copper dot setting like a rivet. The hero's
+     H1 is the LCP element and never moves; the close has its own entrance.
+     Finished before the headline reaches the upper two thirds of the
+     visible band, so it never sits half revealed where it is read. */
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      .home section:not(.hh):not(.hc) .wc-h2 {
+        animation: home-h2 linear both;
+        animation-timeline: view(block var(--vi));
+        animation-range: entry 0% cover 22%;
+      }
+      .home section:not(.hh):not(.hc) .wc-h2 .wc-soft {
+        animation: home-soft linear both;
+        animation-timeline: view(block var(--vi));
+        animation-range: entry 30% cover 26%;
+      }
+      .home section:not(.hh) .wc-eyebrow {
+        animation: home-brow linear both;
+        animation-timeline: view(block var(--vi));
+        animation-range: entry 0% entry 100%;
+      }
+      .home section:not(.hh) .wc-eyebrow .wc-dot {
+        animation: home-dot linear both;
+        animation-timeline: view(block var(--vi));
+        animation-range: entry 20% cover 14%;
+      }
+    }
+  }
+  @keyframes home-h2 {
+    from { clip-path: inset(0 -6% 100% -6%); transform: translateY(0.55em); }
+    to { clip-path: inset(-12% -6% -14% -6%); transform: none; }
+  }
+  @keyframes home-soft {
+    from { opacity: 0; filter: blur(8px); }
+    to { opacity: 1; filter: none; }
+  }
+  @keyframes home-brow {
+    from { opacity: 0; transform: translateX(-48px); }
+    to { opacity: 1; transform: none; }
+  }
+  @keyframes home-dot {
+    0% { transform: scale(0); }
+    60% { transform: scale(2.2); box-shadow: 0 0 0 3px rgba(211, 130, 60, 0.14), 0 0 16px 4px rgba(246, 165, 100, 0.6); }
+    100% { transform: none; }
+  }
 
   /* Home layout. The plates, rivets, buttons and type come from the shop
      system in global.css; Home only sets its own page measure. */

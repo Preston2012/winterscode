@@ -527,10 +527,10 @@ const DOORS: {
         animation-timeline: --sp-tabs;
         animation-range: entry calc(10% + var(--i) * 12%) entry calc(70% + var(--i) * 10%);
       }
-      .sp-tab:nth-child(1) { --rot: -7deg; --tx: -30px; }
-      .sp-tab:nth-child(2) { --rot: 5deg; --tx: 24px; }
-      .sp-tab:nth-child(3) { --rot: -4deg; --tx: -18px; }
-      .sp-tab:nth-child(4) { --rot: 8deg; --tx: 30px; }
+      .sp-tab:nth-child(1) { --rot: -16deg; --tx: -90px; }
+      .sp-tab:nth-child(2) { --rot: 12deg; --tx: 80px; }
+      .sp-tab:nth-child(3) { --rot: -10deg; --tx: -70px; }
+      .sp-tab:nth-child(4) { --rot: 18deg; --tx: 100px; }
       .sp-panels {
         animation: sp-drawer linear both;
         animation-timeline: view(block var(--vi));
@@ -544,13 +544,15 @@ const DOORS: {
     .sp-panel.sp-swap .sp-gets li:nth-child(4) { animation-delay: 180ms; }
   }
   @keyframes sp-deal {
-    from { opacity: 0; transform: translate(var(--tx, 0), 70px) rotate(var(--rot, 0deg)) scale(0.94); }
+    /* Scale stays at or above 1: a control measured mid-entrance must
+       never read under 44px (the breakpoint sweep's floor). */
+    from { opacity: 0; transform: translate(var(--tx, 0), 190px) rotate(var(--rot, 0deg)) scale(1.1); }
     to { opacity: 1; transform: none; }
   }
   /* No fade: the panel carries text, and a part-faded state reads as low
      contrast to an audit that never scrolls. */
   @keyframes sp-drawer {
-    from { transform: translateY(90px); }
+    from { transform: translateY(200px) rotate(-2.5deg) scale(1.06); }
     to { transform: none; }
   }
   @keyframes sp-swap {

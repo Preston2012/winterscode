@@ -119,7 +119,9 @@ const BUILDS = [
 </section>
 
 <style>
-  .ps { padding: var(--home-pad) 0; }
+  /* clip: the row sweeps in from off screen (S453 round 2) and must not
+     widen the page. clip, not hidden, so view timelines still see the page. */
+  .ps { padding: var(--home-pad) 0; overflow-x: clip; }
   .ps-inner { max-width: calc(var(--home-max) + 2 * var(--home-gut)); margin: 0 auto; }
   .ps-head, .ps-quote, .ps-all { padding: 0 var(--home-gut); }
   .ps-head { display: flex; flex-direction: column; gap: 14px; }
@@ -218,16 +220,21 @@ const BUILDS = [
   @media (prefers-reduced-motion: no-preference) {
     @supports (animation-timeline: view()) {
       .ps-row { view-timeline: --ps-row block; view-timeline-inset: var(--vi); perspective: 1200px; }
-      .ps-card {
-        animation: ps-lift linear both;
+      .ps-row {
+        animation: ps-sweep linear both;
         animation-timeline: --ps-row;
-        animation-range: entry calc(5% + var(--i) * 14%) entry calc(75% + var(--i) * 12%);
-        transform-origin: 50% 100%;
+        animation-range: entry 0% entry 90%;
+      }
+      .ps-card {
+        animation: ps-swing linear both;
+        animation-timeline: --ps-row;
+        animation-range: entry calc(var(--i) * 8%) entry calc(80% + var(--i) * 6%);
+        transform-origin: 0% 50%;
       }
       .ps-main {
         animation: ps-paint linear both;
         animation-timeline: --ps-row;
-        animation-range: entry calc(8% + var(--i) * 8%) entry calc(50% + var(--i) * 8%);
+        animation-range: entry calc(4% + var(--i) * 4%) entry calc(30% + var(--i) * 5%);
       }
       .ps-ink { view-timeline: --ps-ink block; view-timeline-inset: var(--vi); }
       .ps-ink :global(.ps-w) {
@@ -240,14 +247,21 @@ const BUILDS = [
       .ps-quote-mark {
         animation: ps-mark linear both;
         animation-timeline: --ps-ink;
-        animation-range: entry 0% cover 30%;
+        animation-range: entry 0% cover 16%;
       }
     }
   }
-  @keyframes ps-lift {
-    from { opacity: 0; transform: translateY(80px) rotateX(18deg) scale(0.95); }
+  @keyframes ps-sweep {
+    from { transform: translateX(78vw); }
+    to { transform: none; }
+  }
+  @keyframes ps-swing {
+    from { opacity: 0; transform: translateX(calc(var(--i) * 22vw)) rotateY(-42deg); }
     to { opacity: 1; transform: none; }
   }
+  /* The day count is the headline of each card: set large. */
+  .ps-days b { font-size: 62px; }
+  @media (min-width: 900px) { .ps-days b { font-size: 72px; } }
   @keyframes ps-paint {
     from { clip-path: inset(100% 0 0 0); filter: saturate(0.2) brightness(1.4); }
     60% { filter: saturate(0.8) brightness(1.1); }
