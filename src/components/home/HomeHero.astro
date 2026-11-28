@@ -18,6 +18,16 @@
  *
  * Display face: the serif, ruled by Preston 2026-11-21 (the Plex Sans
  * preview switch is gone).
+ *
+ * S453 motion (Preston 2026-11-27, "each section feels impactful and
+ * different"): the Tangle comes back as the hero's backdrop, not as a
+ * section. Its own status badges, the pain the H1 names, hang knotted on
+ * cords behind the headline; they draw in on load. As the reader scrolls
+ * away from the hero the knot pulls down into one point, the rivet of the
+ * seam below, which then welds out into a clean line. The H1 never moves at
+ * load (it is the LCP element); "software." takes one flash of heat, and
+ * the three numbers press in. The backdrop is one inline SVG, aria-hidden,
+ * text drawn in SVG so it is never read as page copy.
  */
 import { smsHref } from '../../lib/text-cta';
 import Arrow from '../ui/Arrow.astro';
@@ -28,10 +38,59 @@ const FACTS = [
   { href: '/services#sites', top: 'Builds starting at', big: '3', bot: 'business days' },
   { href: '/wall', top: "Google's phone test", big: '90+', bot: 'on every site' },
 ];
+
+// The knot. Labels are the Tangle's own badges (sections/Tangle.astro),
+// positions and tilts placed by eye on a 600 by 520 field. Each chip pulls
+// toward (300, 540), just under the field: the seam's rivet.
+const SINK = { x: 300, y: 540 };
+const CHIPS = [
+  { t: 'forgot password', x: 150, y: 70, r: -8, hot: true },
+  { t: '47 unread', x: 440, y: 46, r: 10 },
+  { t: 'expired plan', x: 312, y: 160, r: -14, hot: true },
+  { t: '2FA loop again', x: 488, y: 218, r: 8 },
+  { t: 'double-booked', x: 118, y: 262, r: 12, hot: true },
+  { t: 'auto-renew wrong card', x: 318, y: 318, r: -6 },
+  { t: 'needs login', x: 506, y: 392, r: -12, hot: true },
+  { t: 'trial ending', x: 168, y: 438, r: 9 },
+].map((c, i) => ({ ...c, i, w: Math.round(c.t.length * 7.3 + 38), dx: SINK.x - c.x, dy: SINK.y - c.y }));
+const at = (i: number) => CHIPS[i];
+// Cords: pairs of chips, bent through a control point that crosses the field.
+const CORDS: { a: number; b: number; cx: number; cy: number; tone: 'cu' | 'red' | 'ash' }[] = [
+  { a: 0, b: 3, cx: 420, cy: 300, tone: 'cu' },
+  { a: 1, b: 4, cx: 160, cy: 40, tone: 'ash' },
+  { a: 2, b: 6, cx: 140, cy: 360, tone: 'red' },
+  { a: 3, b: 7, cx: 520, cy: 520, tone: 'cu' },
+  { a: 4, b: 5, cx: 260, cy: 180, tone: 'red' },
+  { a: 5, b: 1, cx: 600, cy: 260, tone: 'ash' },
+  { a: 6, b: 0, cx: 300, cy: 20, tone: 'cu' },
+  { a: 7, b: 2, cx: 40, cy: 120, tone: 'ash' },
+  { a: 0, b: 5, cx: 60, cy: 420, tone: 'red' },
+];
+const cordD = (c: (typeof CORDS)[number]) => `M${at(c.a).x} ${at(c.a).y} Q${c.cx} ${c.cy} ${at(c.b).x} ${at(c.b).y}`;
 ---
 
 <section class="hh" id="hero" aria-labelledby="hh-h1">
   <div class="hh-glow" aria-hidden="true"></div>
+
+  <svg class="hh-knot" viewBox="0 0 600 520" preserveAspectRatio="xMidYMid meet" aria-hidden="true" focusable="false">
+    <g class="hk-cords">
+      {CORDS.map((c, i) => (
+        <path class={`hk-cord hk-${c.tone}`} d={cordD(c)} pathLength="1" style={`--i:${i}`} />
+      ))}
+    </g>
+    {CHIPS.map((c) => (
+      <g class="hk-chip" style={`--i:${c.i};--dx:${c.dx}px;--dy:${c.dy}px;transform-origin:${c.x}px ${c.y}px`}>
+        <g class="hk-pop" style={`transform-origin:${c.x}px ${c.y}px`}>
+          <g transform={`translate(${c.x} ${c.y}) rotate(${c.r})`}>
+            <rect x={-c.w / 2} y="-15" width={c.w} height="30" rx="15" class="hk-plate" />
+            <circle cx={-c.w / 2 + 16} cy="0" r="3.6" class={c.hot ? 'hk-led hk-led-hot' : 'hk-led'} />
+            <text x={-c.w / 2 + 27} y="4.4" class="hk-text">{c.t}</text>
+          </g>
+        </g>
+      </g>
+    ))}
+  </svg>
+
   <div class="hh-inner">
     <p class="wc-eyebrow"><span class="wc-dot" aria-hidden="true"></span>Independent studio · Bandon,&nbsp;Oregon</p>
 
@@ -50,11 +109,11 @@ const FACTS = [
     </div>
 
     <ul class="hh-facts wc-plate wc-rv" aria-label="At a glance">
-      {FACTS.map((f) => (
-        <li>
+      {FACTS.map((f, i) => (
+        <li style={`--i:${i}`}>
           <a href={f.href}>
             <span class="hf-top">{f.top}</span>
-            <b class="hf-big">{f.big}</b>
+            <b class="hf-big"><span class="hf-press">{f.big}</span></b>
             <span class="hf-bot">{f.bot}</span>
             <Arrow dir="up-right" size={14} class="hf-go" />
           </a>
@@ -70,18 +129,19 @@ const FACTS = [
     overflow: hidden;
     isolation: isolate;
     padding: clamp(48px, 8vw, 120px) var(--home-gut) clamp(44px, 7vw, 104px);
+    view-timeline: --hh block;
   }
   .hh-glow {
     position: absolute;
     inset: -20% -10% auto -10%;
     height: 140%;
-    z-index: -1;
+    z-index: -2;
     background:
       radial-gradient(48% 42% at 12% 18%, rgba(240, 160, 110, 0.13), transparent 70%),
       radial-gradient(40% 46% at 92% 88%, rgba(77, 216, 168, 0.08), transparent 72%);
     pointer-events: none;
   }
-  .hh-inner { max-width: var(--home-max); margin: 0 auto; }
+  .hh-inner { max-width: var(--home-max); margin: 0 auto; position: relative; }
   .hh .wc-eyebrow { margin-bottom: clamp(20px, 3vw, 34px); }
 
   .hh-h1 {
@@ -142,8 +202,12 @@ const FACTS = [
   .hf-big {
     font-family: var(--wc-display); font-weight: 500;
     font-size: clamp(28px, 4.2vw, 44px); line-height: 1.05; letter-spacing: -0.02em;
-    background: var(--wc-annealed); -webkit-background-clip: text; background-clip: text; color: transparent;
     padding: 0 0.04em;
+    overflow: hidden;
+  }
+  .hf-press {
+    display: inline-block;
+    background: var(--wc-annealed); -webkit-background-clip: text; background-clip: text; color: transparent;
   }
   .hh-facts :global(.hf-go) { position: absolute; top: 10px; right: 10px; color: var(--color-ash-500); transition: color .2s ease, transform .2s ease; }
   /* Clear the corner rivet on the last cell. */
@@ -157,5 +221,117 @@ const FACTS = [
   @media (max-width: 359px) {
     .hh-cta { grid-template-columns: 1fr; }
     .hf-top, .hf-bot { font-size: 11.5px; }
+  }
+
+  /* ── The knot ────────────────────────────────────────────────
+     Phones: a faint field behind the top of the headline, texture rather
+     than reading matter. From 1024px it sits in the open right half beside
+     the H1 at full strength. */
+  /* --kx and --ky carry the knot's own centre to the seam's rivet (the
+     section's bottom centre) as it pulls in; the figures follow from each
+     placement's right, width, top and height. */
+  /* Round 2 moved it into a band under the facts on phones; Preston ruled
+     it back (20:26): background up top, or gone. */
+  .hh-knot {
+    position: absolute; z-index: -1; pointer-events: none;
+    right: -18%; top: 0; width: 96%; height: 62%;
+    opacity: 0.32;
+    overflow: visible;
+    --kx: -20vw; --ky: 57%;
+  }
+  @media (min-width: 700px) { .hh-knot { right: -6%; width: 70%; height: 70%; top: 2%; opacity: 0.42; --kx: -21vw; --ky: 36%; } }
+  /* Desktop: the open ground right of the sub-copy and buttons, under the
+     H1, never across it. */
+  @media (min-width: 1024px) { .hh-knot { right: -4%; width: 36%; height: 50%; top: 46%; opacity: 0.55; --kx: -36vw; --ky: 4%; } }
+  @media (min-width: 1280px) { .hh-knot { right: 0; width: min(34vw, 520px); height: 46%; top: 50%; opacity: 0.85; --kx: calc(min(34vw, 520px) / 2 - 50vw); --ky: 5%; } }
+
+  .hk-cord { fill: none; stroke-width: 1.6; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+  .hk-cu { stroke: rgba(211, 130, 60, 0.55); }
+  .hk-red { stroke: rgba(214, 96, 80, 0.5); }
+  .hk-ash { stroke: rgba(170, 183, 186, 0.32); }
+  .hk-plate { fill: #151b1f; stroke: rgba(221, 228, 230, 0.16); stroke-width: 1; }
+  .hk-led { fill: #6c777b; }
+  .hk-led-hot { fill: #e2654f; }
+  .hk-text { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.02em; fill: #aab7ba; }
+
+  /* ── Motion ──────────────────────────────────────────────────
+     Reading order (Preston, 20:09: "the animation should follow attention
+     and human reading pace down the page"): nothing below moves while the
+     eye is still above it. The headline lands still; at 0.5s "software."
+     takes its flash of heat; from 1.0s the knot draws in behind the top of
+     the page; from 1.65s the three numbers press in, left to right. One
+     clock (CSS delays from first style) for all three, so the order cannot
+     drift. Every move is under 1000ms.
+     Scroll (the hero's own exit): the knot pulls down into the seam's rivet
+     and the glow drifts; the copy stays put until it is mostly gone. */
+  @media (prefers-reduced-motion: no-preference) {
+    /* The intro waits for the first paint (--hh-t0): the headline lands
+       alone, then the knot draws in behind it. Started at once, its frames
+       ran while the page was still painting and cost the first paint about
+       250ms on Lighthouse's throttled phone (S453, measured). */
+    .hh-cu { animation: hh-heat 900ms ease-out both; animation-delay: 500ms; }
+    .hk-cord { stroke-dasharray: 1; animation: hk-draw 900ms cubic-bezier(.3, .6, .2, 1) both; animation-delay: calc(1000ms + var(--i) * 40ms); }
+    .hk-pop { transform-box: view-box; animation: hk-drop 560ms cubic-bezier(.2, .9, .25, 1.25) both; animation-delay: calc(1100ms + var(--i) * 55ms); }
+    .hf-press { animation: hf-press 640ms cubic-bezier(.2, .85, .25, 1.1) both; animation-delay: calc(1650ms + var(--i) * 120ms); }
+
+    @supports (animation-timeline: view()) {
+      .hk-chip {
+        transform-box: view-box;
+        animation: hk-sink linear both;
+        animation-timeline: --hh;
+        animation-range: exit 0% exit 62%;
+      }
+      .hh-knot {
+        animation: hk-center linear both;
+        animation-timeline: --hh;
+        animation-range: exit 0% exit 62%;
+      }
+      .hk-cords {
+        transform-box: view-box; transform-origin: 300px 540px;
+        animation: hk-cords-sink linear both;
+        animation-timeline: --hh;
+        animation-range: exit 0% exit 50%;
+      }
+      .hh-glow {
+        animation: hh-drift linear both;
+        animation-timeline: --hh;
+        animation-range: exit 0% exit 100%;
+      }
+      .hh-inner {
+        animation: hh-leave linear both;
+        animation-timeline: --hh;
+        animation-range: exit 35% exit 100%;
+      }
+    }
+  }
+  @keyframes hk-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+
+  @keyframes hk-drop {
+    from { opacity: 0; transform: translateY(-26px) scale(0.86); }
+    to { opacity: 1; transform: none; }
+  }
+  @keyframes hf-press {
+    from { opacity: 0; transform: translateY(70%); }
+    to { opacity: 1; transform: none; }
+  }
+  @keyframes hh-heat {
+    0% { filter: brightness(1) saturate(1); }
+    35% { filter: brightness(1.55) saturate(1.35) drop-shadow(0 0 14px rgba(247, 165, 100, 0.45)); }
+    100% { filter: brightness(1) saturate(1); }
+  }
+  @keyframes hk-sink {
+    to { transform: translate(var(--dx), var(--dy)) rotate(0deg) scale(0.2); opacity: 0; }
+  }
+  @keyframes hk-center {
+    to { transform: translate(var(--kx), var(--ky)); }
+  }
+  @keyframes hk-cords-sink {
+    to { transform: scale(0.06, 0.02); opacity: 0; }
+  }
+  @keyframes hh-drift {
+    to { transform: translate3d(0, 18%, 0) scale(1.1); opacity: 0.6; }
+  }
+  @keyframes hh-leave {
+    to { transform: translateY(-48px); opacity: 0.25; }
   }
 </style>

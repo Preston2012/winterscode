@@ -17,6 +17,15 @@
  * Tabs pattern (WAI-ARIA APG): roving tabindex, arrow keys, Home and End.
  * Every panel is in the HTML, so search engines and screen readers get all
  * four. Without JavaScript all four panels show, stacked.
+ *
+ * S453 motion: the four doors are dealt onto the bench as the section scrolls
+ * in, each from its own tilt, and the open panel rises like a drawer pulled
+ * out under them (CSS view timelines, no script). Switching doors slides the
+ * new panel in. The two silent reels (sites, automation) play muted and
+ * looped while they are on screen, the way a shop window runs; the play key
+ * still starts the reel over with its controls. The Chere' demo has music,
+ * so it never starts on its own. No reel starts on its own for a reader who
+ * asked for less motion or for less data.
  */
 import { smsBase } from '../../lib/text-cta';
 import { v } from '../../lib/asset';
@@ -139,6 +148,7 @@ const DOORS: {
           aria-controls={`sp-panel-${d.id}`}
           aria-selected={i === 0 ? 'true' : 'false'}
           tabindex={i === 0 ? 0 : -1}
+          style={`--i:${i}`}
         >
           <Icon name={d.icon} class="sp-tab-icon" />
           <span class="sp-tab-need">{d.need}</span>
@@ -201,7 +211,7 @@ const DOORS: {
                     <source src={mediaUrl(`${d.film.file}.webm`)} type="video/webm" />
                     <source src={mediaUrl(`${d.film.file}.mp4`)} type="video/mp4" />
                   </video>
-                  <button type="button" class="sp-play" hidden aria-label={`Play · ${d.film.dur}, ${d.film.name}`}><span class="sp-play-key" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor"/></svg></span><span class="sp-play-chip">Play · {d.film.dur}</span></button>
+                  <button type="button" class="sp-play" hidden aria-label={`Play · ${d.film.dur}, ${d.film.name}`}><span class="sp-play-key" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor"/></svg></span></button>
                 </div>
                 <figcaption>
                   <span class="sp-proof-who">{d.film.caption}</span>
@@ -223,7 +233,7 @@ const DOORS: {
                     <source src={mediaUrl('chere-master.webm')} type="video/webm" />
                     <source src={mediaUrl('chere-master.mp4')} type="video/mp4" />
                   </video>
-                  <button type="button" class="sp-play" hidden aria-label="Play · 1:32, the demo"><span class="sp-play-key" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor"/></svg></span><span class="sp-play-chip">Play · 1:32</span></button>
+                  <button type="button" class="sp-play" hidden aria-label="Play · 1:32, the demo"><span class="sp-play-key" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor"/></svg></span></button>
                 </div>
                 <figcaption>
                   <span class="sp-proof-who">{d.proofWho}</span>
@@ -253,6 +263,10 @@ const DOORS: {
   // Tabs: click, arrow keys, Home and End. Runs once per page; the section
   // works as four stacked panels until this marks it ready.
   const root = document.querySelector<HTMLElement>('.sp');
+  const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // Save-Data is a request for less download; a reel is 3 to 4 MB.
+  const lean = Boolean((navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData);
+  let wake = () => {};
   if (root) {
     const tabs = Array.from(root.querySelectorAll<HTMLButtonElement>('[role="tab"]'));
     const panels = Array.from(root.querySelectorAll<HTMLElement>('[role="tabpanel"]'));
@@ -261,11 +275,17 @@ const DOORS: {
         const on = k === i;
         t.setAttribute('aria-selected', on ? 'true' : 'false');
         t.tabIndex = on ? 0 : -1;
+        if (on && panels[k].hidden && !still) {
+          panels[k].classList.remove('sp-swap');
+          void panels[k].offsetWidth;
+          panels[k].classList.add('sp-swap');
+        }
         panels[k].hidden = !on;
         // A door that closes stops its video: a hidden player has no controls to stop it with.
         if (!on) panels[k].querySelectorAll('video').forEach((v) => v.pause());
       });
       if (focus) tabs[i].focus();
+      wake();
     };
     tabs.forEach((t, i) => {
       t.addEventListener('click', () => select(i, false));
@@ -286,9 +306,43 @@ const DOORS: {
       const vid = w.querySelector('video'); const key = w.querySelector<HTMLButtonElement>('.sp-play');
       if (!vid || !key) return;
       vid.controls = false; key.hidden = false;
-      key.addEventListener('click', () => { key.hidden = true; vid.controls = true; vid.play().catch(() => {}); });
-      vid.addEventListener('play', () => { key.hidden = true; vid.controls = true; vids.forEach((o) => { if (o !== vid) o.pause(); }); });
+      key.addEventListener('click', () => {
+        // From the shop window to the real thing: start over, with controls.
+        if (vid.dataset.ambient) { delete vid.dataset.ambient; vid.loop = false; vid.currentTime = 0; }
+        key.hidden = true; vid.controls = true; vid.play().catch(() => {});
+      });
+      vid.addEventListener('play', () => {
+        if (vid.dataset.ambient) return;
+        key.hidden = true; vid.controls = true;
+        vids.forEach((o) => { if (o !== vid) o.pause(); });
+      });
     });
+
+    // Ambient reels: the silent ones only (they carry the muted attribute),
+    // playing while at least half on screen and their door is open.
+    const silent = vids.filter((v) => v.hasAttribute('muted'));
+    if (!still && !lean && silent.length && 'IntersectionObserver' in window) {
+      const seen = new Set<HTMLVideoElement>();
+      const tryPlay = (v: HTMLVideoElement) => {
+        const panel = v.closest<HTMLElement>('[role="tabpanel"]');
+        if (!seen.has(v) || panel?.hidden || v.controls) return;
+        if (!v.paused) return;
+        v.dataset.ambient = '1'; v.muted = true; v.loop = true;
+        v.play().catch(() => { delete v.dataset.ambient; });
+      };
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((e) => {
+          const v = e.target as HTMLVideoElement;
+          if (e.isIntersecting) { seen.add(v); tryPlay(v); }
+          else { seen.delete(v); if (v.dataset.ambient) v.pause(); }
+        });
+      }, { threshold: 0.5 });
+      silent.forEach((v) => io.observe(v));
+      wake = () => silent.forEach((v) => {
+        const panel = v.closest<HTMLElement>('[role="tabpanel"]');
+        if (panel?.hidden) { if (v.dataset.ambient) v.pause(); } else tryPlay(v);
+      });
+    }
     select(0, false);
     root.classList.add('sp-ready');
   }
@@ -434,7 +488,9 @@ const DOORS: {
   /* The play key: the native bar covers a third of a 16:9 poster on a phone,
      so it waits until play. Without JavaScript the native controls stay. */
   .sp-vwrap { position: relative; }
-  /* The key sits in the bottom corner, so the poster's own title stays in view. */
+  /* The key sits in the bottom corner, so the poster's own title stays in view.
+     Just the round key: the "Play · 0:48" pill beside it crowded the reel
+     (Preston, S453 phone review). The length stays in the key's label. */
   .sp-play {
     position: absolute; inset: 0; display: flex; flex-direction: row; align-items: flex-end; justify-content: flex-start; gap: 12px;
     width: 100%; border: 0; padding: 14px; cursor: pointer; border-radius: var(--wc-r);
@@ -450,14 +506,61 @@ const DOORS: {
   .sp-play-key svg { width: 24px; height: 24px; }
   .sp-play:hover .sp-play-key, .sp-play:focus-visible .sp-play-key { transform: scale(1.06); }
   .sp-play:focus-visible { outline: 2px solid var(--color-wc-green); outline-offset: 3px; }
-  .sp-play-chip {
-    font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: #eef1ec;
-    background: rgba(10, 13, 12, 0.82); border: 1px solid rgba(200, 128, 74, 0.45); border-radius: 999px; padding: 6px 12px; margin-bottom: 11px;
-  }
   .sp-video figcaption { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0 14px; }
   /* Branding door: the graphics board itself, not a sentence about it. */
   .sp-board { margin: 0; display: grid; gap: 8px; }
   .sp-board-link { display: block; border-radius: var(--wc-r); overflow: hidden; border: 1px solid rgba(20, 24, 22, 0.15); background: #0e1214; }
   .sp-board img { display: block; width: 100%; height: auto; }
   .sp-board figcaption { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0 14px; }
+
+  /* ── S453 motion ─────────────────────────────────────────────
+     The deal: each door comes in from its own tilt and offset, one after
+     another along the section's entry. The drawer: the open panel rises
+     from behind the doors. The swap: a newly opened door's panel slides in. */
+  /* The doors deal in from the sides; clip so none widens the page. */
+  .sp { overflow-x: clip; }
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      .sp-tabs { view-timeline: --sp-tabs block; view-timeline-inset: var(--vi); }
+      .sp-tab {
+        animation: sp-deal linear both;
+        animation-timeline: --sp-tabs;
+        animation-range: entry calc(10% + var(--i) * 12%) entry calc(70% + var(--i) * 10%);
+      }
+      .sp-tab:nth-child(1) { --rot: -16deg; --tx: -90px; }
+      .sp-tab:nth-child(2) { --rot: 12deg; --tx: 80px; }
+      .sp-tab:nth-child(3) { --rot: -10deg; --tx: -70px; }
+      .sp-tab:nth-child(4) { --rot: 18deg; --tx: 100px; }
+      .sp-panels {
+        animation: sp-drawer linear both;
+        animation-timeline: view(block var(--vi));
+        animation-range: entry 0% entry 55%;
+      }
+    }
+    .sp-panel.sp-swap { animation: sp-swap 420ms cubic-bezier(.2, .8, .2, 1) both; }
+    .sp-panel.sp-swap .sp-gets li { animation: sp-bullet 380ms ease-out both; }
+    .sp-panel.sp-swap .sp-gets li:nth-child(2) { animation-delay: 60ms; }
+    .sp-panel.sp-swap .sp-gets li:nth-child(3) { animation-delay: 120ms; }
+    .sp-panel.sp-swap .sp-gets li:nth-child(4) { animation-delay: 180ms; }
+  }
+  @keyframes sp-deal {
+    /* Scale stays at or above 1: a control measured mid-entrance must
+       never read under 44px (the breakpoint sweep's floor). */
+    from { opacity: 0; transform: translate(var(--tx, 0), 190px) rotate(var(--rot, 0deg)) scale(1.1); }
+    to { opacity: 1; transform: none; }
+  }
+  /* No fade: the panel carries text, and a part-faded state reads as low
+     contrast to an audit that never scrolls. */
+  @keyframes sp-drawer {
+    from { transform: translateY(200px) rotate(-2.5deg) scale(1.06); }
+    to { transform: none; }
+  }
+  @keyframes sp-swap {
+    from { opacity: 0; transform: translateY(18px); clip-path: inset(0 0 14% 0 round var(--wc-r-lg)); }
+    to { opacity: 1; transform: none; clip-path: inset(0 0 0 0 round var(--wc-r-lg)); }
+  }
+  @keyframes sp-bullet {
+    from { opacity: 0; transform: translateX(-10px); }
+    to { opacity: 1; transform: none; }
+  }
 </style>
